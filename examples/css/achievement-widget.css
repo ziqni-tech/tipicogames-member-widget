@@ -1,0 +1,154 @@
+.cl-achievement-widget-wrapper *{
+    box-sizing: border-box;
+    font-size: 14px;
+    line-height: 20px;
+    color: #515151;
+}
+.cl-achievement-widget-wrapper{
+    float:left;
+    width:100%;
+    min-width:200px;
+    height:auto;
+    margin:0;
+    padding: 0;
+    box-sizing:border-box;
+    position:relative;
+    z-index:100;
+    overflow:inherit;
+    visibility:visible;
+    outline:none;
+    font-family: Helvetica, Arial, serif;
+    border:1px solid #333333;
+    display: block;
+    background: #ffffff;
+    max-width: 500px;
+}
+.cl-achievement-widget-inner-wrapper{
+    float:left;
+    width:100%;
+    padding:5px;
+}
+.cl-achievement-widget-list{
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    float: left;
+    width: 100%;
+    max-height: 440px;
+    overflow: auto;
+}
+.cl-aw-item-wrapper{
+    float:left;
+    width:100%;
+    margin: 0 0 5px 0;
+    border:1px solid #999999;
+    transition: all 0.2s;
+}
+.cl-aw-item-wrapper:hover{
+    background:rgba(72,150,238,0.1);
+}
+.cl-aw-item-wrapper:last-child{
+    margin:0;
+}
+.cl-aw-item-wrapper .cl-aw-item-inner-wrapper{
+    float:left;
+    width:100%;
+}
+.cl-aw-item-wrapper .cl-aw-item-inner-wrapper.cl-no-data{
+    padding: 20px;
+}
+.cl-aw-item-wrapper .cl-aw-item-icon-wrapper{
+    float:left;
+    width:20%;
+    padding:5px 10px 5px 5px;
+}
+.cl-aw-item-wrapper .cl-aw-item-icon-inner-wrapper{
+    float: left;
+    width: 100%;
+    max-width: 180px;
+    max-height: 180px;
+    border-radius: 50%;
+    border: 3px solid #489eed;
+    overflow: hidden;
+    background: #ffffff;
+}
+.cl-aw-item-wrapper .cl-aw-item-icon{
+    float:left;
+    width:100%;
+    padding:5px;
+}
+.cl-aw-item-wrapper .cl-aw-item-indicator{
+    float:left;
+    width:60%;
+}
+.cl-aw-item-wrapper .cl-aw-item-completion{
+    float:left;
+    width:20%;
+}
+.cl-aw-item-wrapper .cl-aw-item-completion-element{
+    float:left;
+    background-size:100%;
+}
+.cl-aw-item-wrapper .cl-aw-item-completion-image{
+    width: 100%;
+    float: left;
+    padding: 15px;
+    opacity:0.4;
+}
+.cl-aw-item-wrapper .cl-aw-item-completion-image.cl-achieved{
+    opacity:1;
+}
+.cl-aw-item-wrapper .cl-aw-item-label{
+    float: left;
+    width: 100%;
+    padding: 10px 0 0 0;
+    font-weight: bold;
+    font-size: 16px;
+}
+.cl-aw-item-wrapper .cl-aw-item-description{
+    float:left;
+    width:100%;
+}
+.cl-aw-item-wrapper .cl-aw-item-progressBar-wrapper{
+    float:left;
+    width:100%;
+    margin:5px 0 5px 0;
+    border:1px solid #489eed;
+}
+.cl-aw-item-wrapper .cl-aw-item-progressBar{
+    float:left;
+    width:0%;
+    background:#489eed;
+    height:20px;
+}
+.cl-aw-item-wrapper.achieved .cl-aw-item-progressBar{
+    width:100%;
+}
+
+
+/**
+ * Resize
+ */
+.cl-achievement-widget-wrapper.cl-size-2x * {
+    font-size: 12px;
+    line-height: 18px;
+}
+.cl-size-2x .cl-aw-item-wrapper .cl-aw-item-icon-wrapper {
+    width: 25%;
+}
+.cl-size-2x .cl-aw-item-wrapper .cl-aw-item-indicator {
+    width: 55%;
+}
+.cl-size-2x .cl-aw-item-wrapper .cl-aw-item-icon-inner-wrapper{
+    max-width: 70px;
+    max-height: 70px;
+    min-width: 70px;
+    min-height: 70px;
+}
+.cl-size-2x .cl-aw-item-wrapper .cl-aw-item-progressBar-wrapper {
+    padding: 3px 0 0 0;
+}
+.cl-size-2x .cl-aw-item-wrapper .cl-aw-item-progressBar {
+    height: 18px;
+}
+

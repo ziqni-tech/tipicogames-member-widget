@@ -1,0 +1,56 @@
+{
+    "time": {
+        "days": "d",
+        "hours": "h",
+        "minutesShortHand": "min",
+        "minutes": "m",
+        "seconds": "s"
+    },
+    "achievements": {
+        "label": "Postignuća",
+        "more": "Više",
+        "complete": "dovršeno 100%"
+    },
+    "tournaments": {
+        "label": "Turniri",
+        "enter": "Uđite na turnir",
+        "readyCompetitions": "Budući turniri",
+        "activeCompetitions": "Aktivni turniri",
+        "finishedCompetitions": "Završeni turniri",
+        "finishing": "Završava",
+        "finished": "Završeno",
+        "registered": "Registrirano",
+        "noAvailableCompetitions": "Nema dostupnog natjecanja"
+    },
+    "leaderboard": {
+        "rank": "Rang",
+        "name": "Ime",
+        "points": "Bodovi",
+        "prize": "Nagrada",
+        "you": "Vas"
+    },
+    "miniLeaderboard": {
+        "highScore": "Najbolji rezultat",
+        "lastScore": "Zadnji rezultat",
+        "rank": "Rang",
+        "startsIn": "Počinje za",
+        "started": "započeo",
+        "starting": "počinje",
+        "finishing": "završava",
+        "finished": "završeno"
+    },
+    "rewards": {
+        "label": "Nagrade",
+        "claim": "Preuzmi sada",
+        "claimed": "Preuzeto",
+        "availableRewards": "Dostupne nagrade",
+        "rewards": "Preuzete nagrade",
+        "expiredRewards": "Istekle nagrade"
+    },
+    "messages": {
+        "label": "Poruke"
+    },
+    "global": {
+        "copy": "Pokreće Ziqni"
+    }
+}

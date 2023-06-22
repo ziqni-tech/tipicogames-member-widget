@@ -1,0 +1,56 @@
+{
+    "time": {
+        "days": "d",
+        "hours": "t",
+        "minutesShortHand": "min",
+        "minutes": "m",
+        "seconds": "s"
+    },
+    "achievements": {
+        "label": "Prestasjoner",
+        "more": "Mer",
+        "complete": "fullført 100%"
+    },
+    "tournaments": {
+        "label": "Turneringer",
+        "enter": "Delta i turnering",
+        "readyCompetitions": "Kommende turneringer",
+        "activeCompetitions": "Aktive turneringer",
+        "finishedCompetitions": "Ferdige turneringer",
+        "finishing": "Avslutter",
+        "finished": "Ferdig",
+        "registered": "Registrert",
+        "noAvailableCompetitions": "Ingen tilgjengelig konkurranse"
+    },
+    "leaderboard": {
+        "rank": "Rang",
+        "name": "Navn",
+        "points": "Poeng",
+        "prize": "Premie",
+        "you": "Du"
+    },
+    "miniLeaderboard": {
+        "highScore": "Høy poengsum",
+        "lastScore": "Siste poengsum",
+        "rank": "Rang",
+        "startsIn": "Starter om",
+        "started": "startet",
+        "starting": "starter",
+        "finishing": "avslutter",
+        "finished": "ferdig"
+    },
+    "rewards": {
+        "label": "Bonuser",
+        "claim": "Krev nå",
+        "claimed": "Krevde",
+        "availableRewards": "Tilgjengelige bonuser",
+        "rewards": "Krevde bonuser",
+        "expiredRewards": "Utløpte bonuser"
+    },
+    "messages": {
+        "label": "Meldinger"
+    },
+    "global": {
+        "copy": "Drevet av Ziqni"
+    }
+}

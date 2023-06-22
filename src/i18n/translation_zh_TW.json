@@ -1,0 +1,56 @@
+{
+    "time": {
+        "days": "d",
+        "hours": "h",
+        "minutesShortHand": "min",
+        "minutes": "m",
+        "seconds": "s"
+    },
+    "achievements": {
+        "label": "成就",
+        "more": "更多",
+        "complete": "完成 100％"
+    },
+    "tournaments": {
+        "label": "錦標賽",
+        "enter": "參加錦標賽",
+        "readyCompetitions": "即將開始的錦標賽",
+        "activeCompetitions": "正在進行的錦標賽",
+        "finishedCompetitions": "已完成的錦標賽",
+        "finishing": "正在完成",
+        "finished": "已完成",
+        "registered": "已註冊",
+        "noAvailableCompetitions": "沒有可用的競爭"
+    },
+    "leaderboard": {
+        "rank": "排名",
+        "name": "名稱",
+        "points": "積點",
+        "prize": "獎品",
+        "you": "您"
+    },
+    "miniLeaderboard": {
+        "highScore": "高分",
+        "lastScore": "最後得分",
+        "rank": "排名",
+        "startsIn": "開始於",
+        "started": "開始了",
+        "starting": "開始",
+        "finishing": "正在完成",
+        "finished": "已完成"
+    },
+    "rewards": {
+        "label": "獎勵",
+        "claim": "立即領取",
+        "claimed": "已領取",
+        "availableRewards": "可用的獎勵",
+        "rewards": "已領取的獎勵",
+        "expiredRewards": "已過期的獎勵"
+    },
+    "messages": {
+        "label": "留言內容"
+    },
+    "global": {
+        "copy": "由 Ziqni 支援"
+    }
+}

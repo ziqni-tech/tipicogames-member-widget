@@ -1,0 +1,56 @@
+{
+    "time": {
+        "days": "d",
+        "hours": "h",
+        "minutesShortHand": "分",
+        "minutes": "m",
+        "seconds": "s"
+    },
+    "achievements": {
+        "label": "成就",
+        "more": "更多",
+        "complete": "完成100％"
+    },
+    "tournaments": {
+        "label": "锦标赛",
+        "enter": "参加锦标赛",
+        "readyCompetitions": "即将举行的锦标赛",
+        "activeCompetitions": "进行中锦标赛",
+        "finishedCompetitions": "已结束锦标赛",
+        "finishing": "即将完成",
+        "finished": "已完成",
+        "registered": "已注册",
+        "noAvailableCompetitions": "没有可用的竞争"
+    },
+    "leaderboard": {
+        "rank": "排名",
+        "name": "名字",
+        "points": "分数",
+        "prize": "奖",
+        "you": "您"
+    },
+    "miniLeaderboard": {
+        "highScore": "高分",
+        "lastScore": "最后得分",
+        "rank": "排名",
+        "startsIn": "开始于",
+        "started": "开始了",
+        "starting": "开始",
+        "finishing": "即将完成",
+        "finished": "已完成"
+    },
+    "rewards": {
+        "label": "奖励",
+        "claim": "现在领取",
+        "claimed": "已领取",
+        "availableRewards": "可用奖励",
+        "rewards": "已领取奖励",
+        "expiredRewards": "过期奖励"
+    },
+    "messages": {
+        "label": "留言内容"
+    },
+    "global": {
+        "copy": "由Ziqni提供支持"
+    }
+}

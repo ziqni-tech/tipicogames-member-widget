@@ -1,0 +1,56 @@
+{
+    "time": {
+        "days": "روز",
+        "hours": "ساعت",
+        "minutesShortHand": "دقیقه",
+        "minutes": "دقیقه",
+        "seconds": "ثانیه"
+    },
+    "achievements": {
+        "label": "دستاوردها",
+        "more": "موارد بیشتر",
+        "complete": "100% کامل"
+    },
+    "tournaments": {
+		"label":"مسابقات",
+        "enter": "ورود به مسابقه",
+        "readyCompetitions": "مسابقات پیش رو",
+        "activeCompetitions": "مسابقات فعال",
+        "finishedCompetitions": "مسابقات به اتمام رسیده",
+        "finishing": "در حال اتمام",
+        "finished": "تمام شد",
+        "registered": "ثبت شده",
+        "noAvailableCompetitions": "هیچ   رقابتی موجود نیست"
+    },
+    "leaderboard": {
+        "rank": "رتبه",
+        "name": "نام",
+        "points": "امتیاز",
+        "prize": "جایزه",
+        "you": "شما"
+    },
+    "miniLeaderboard": {
+        "highScore": "امتیاز بالا",
+        "lastScore": "آخرین امتیاز",
+        "rank": "رتبه",
+        "startsIn": "شروع در",
+        "started": "شروع شد",
+        "starting": "در حال شروع",
+        "finishing": "در حال اتمام",
+        "finished": "تمام شد"
+    },
+    "rewards": {
+        "label": "پاداش ها",
+        "claim": "همین الان مطالبه کنید",
+        "claimed": "مطالبه شد",
+        "availableRewards": "پاداش های موجود",
+        "rewards": "پاداش های مطالبه شده",
+        "expiredRewards": "پاداش های منقضی شده"
+    },
+    "messages": {
+        "label": "پیام ها"
+    },
+    "global": {
+        "copy": "قدرت گرفته از Ziqni"
+    }
+}

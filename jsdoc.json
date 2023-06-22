@@ -1,0 +1,40 @@
+{
+	"tags": {
+		"allowUnknownTags": true
+	},
+	"source": {
+		"include": ["./src", "./README.md"],
+		"includePattern": ".js$",
+		"excludePattern": "(node_modules/|docs)"
+	},
+	"plugins": [
+		"plugins/markdown"
+	],
+	"markdown": {
+		"parser": "gfm",
+		"hardwrap": true,
+		"idInHeadings": true
+	},
+	"opts": {
+		"encoding": "utf8",
+		"destination": "docs/",
+		"recurse": true,
+		"template": "node_modules/docdash"
+	},
+	"templates": {
+		"cleverLinks": false,
+		"monospaceLinks": false,
+		"default": {
+			"outputSourceFiles": true,
+			"includeDate": false
+		}
+	},
+	"docdash": {
+		"static": true,
+		"sort": true,
+		"search": true,
+		"collapse": true,
+		"removeQuotes": "none",
+		"scripts": []
+	}
+}

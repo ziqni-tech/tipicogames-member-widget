@@ -1,0 +1,56 @@
+{
+    "time": {
+        "days": "dagar",
+        "hours": "timmar",
+        "minutesShortHand": "min",
+        "minutes": "minuter",
+        "seconds": "sekunder"
+    },
+    "achievements": {
+        "label": "bedrifter",
+        "more": "mer",
+        "complete": "komplett 100 %"
+    },
+    "tournaments": {
+		"label":"turneringar",
+        "enter": "Delta i turneringen",
+        "readyCompetitions": "Kommande turneringar",
+        "activeCompetitions": "Aktiva turneringar",
+        "finishedCompetitions": "Avslutade turneringar",
+        "finishing": "Avslutande",
+        "finished": "Avslutad",
+        "registered": "Registrerad",
+        "noAvailableCompetitions": "Ingen tillgänglig tävling"
+    },
+    "leaderboard": {
+        "rank": "rangordna",
+        "name": "namn",
+        "points": "poäng",
+        "prize": "pris",
+        "you": "Du"
+    },
+    "miniLeaderboard": {
+        "highScore": "Högt resultat",
+        "lastScore": "Senaste resultat",
+        "rank": "Rangordna",
+        "startsIn": "Startar om",
+        "started": "startade",
+        "starting": "Startar",
+        "finishing": "avslutande",
+        "finished": "avslutad"
+    },
+    "rewards": {
+        "label": "Belöningar",
+        "claim": "Gör anspråk på nu",
+        "claimed": "Belöningar",
+        "availableRewards": "Tillgängliga belöningar",
+        "rewards": "I anspråktagna belöningar",
+        "expiredRewards": "Utgångna belöningar"
+    },
+    "messages": {
+        "label": "Meddelanden"
+    },
+    "global": {
+        "copy": "Drivs av Ziqni"
+    }
+}

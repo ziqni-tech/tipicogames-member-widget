@@ -1,0 +1,56 @@
+{
+    "time": {
+        "days": "д",
+        "hours": "ч",
+        "minutesShortHand": "мин",
+        "minutes": "м",
+        "seconds": "с"
+    },
+    "achievements": {
+        "label": "Достижения",
+        "more": "Больше",
+        "complete": "завершенные 100%"
+    },
+    "tournaments": {
+        "label": "Турниры",
+        "enter": "Введите турнир",
+        "readyCompetitions": "Предстоящие турниры",
+        "activeCompetitions": "Активные турниры",
+        "finishedCompetitions": "Завершенные турниры",
+        "finishing": "Заканчивается",
+        "finished": "Завершенные",
+        "registered": "Зарегистрированные",
+        "noAvailableCompetitions": "Нет доступных соревнований"
+    },
+    "leaderboard": {
+        "rank": "Ранг",
+        "name": "Название",
+        "points": "Очки",
+        "prize": "Приз",
+        "you": "Вы"
+    },
+    "miniLeaderboard": {
+        "highScore": "Рекорд",
+        "lastScore": "Последний результат",
+        "rank": "Ранг",
+        "startsIn": "Начинается через",
+        "started": "началось",
+        "starting": "начинается",
+        "finishing": "заканчивается",
+        "finished": "завершенные"
+    },
+    "rewards": {
+        "label": "Награды",
+        "claim": "Запросить сейчас",
+        "claimed": "Запрошенные",
+        "availableRewards": "Доступные награды",
+        "rewards": "Запрошенные награды",
+        "expiredRewards": "Просроченные награды"
+    },
+    "messages": {
+        "label": "Сообщения"
+    },
+    "global": {
+        "copy": "При поддержке Ziqni"
+    }
+}

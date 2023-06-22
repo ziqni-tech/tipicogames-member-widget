@@ -1,0 +1,20 @@
+{
+  "extends": "standard",
+  "env": {
+    "node": true,
+    "browser": true,
+    "es6": true
+  },
+  "ignorePatterns": [
+    "**/dependencies/*.js",
+    "**/polyfills/*.js",
+    "_ziqni-member-widget.js",
+    "_ziqni-member-widget-selfinit.js"
+  ],
+  "rules": {
+    "semi": ["error", "always"],
+    "no-extra-semi": "off",
+    "no-useless-escape": "off",
+    "no-prototype-builtins": "off"
+  }
+}

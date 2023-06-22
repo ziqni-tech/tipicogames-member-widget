@@ -1,0 +1,56 @@
+{
+    "time": {
+        "days": "p",
+        "hours": "t",
+        "minutesShortHand": "min",
+        "minutes": "m",
+        "seconds": "s"
+    },
+    "achievements": {
+        "label": "Saavutukset",
+        "more": "Lisää",
+        "complete": "valmis 100 %"
+    },
+    "tournaments": {
+        "label": "Turnaukset",
+        "enter": "Osallistu turnaukseen",
+        "readyCompetitions": "Tulevat turnaukset",
+        "activeCompetitions": "Aktiiviset turnaukset",
+        "finishedCompetitions": "Päättyneet turnaukset",
+        "finishing": "Viimeistellään",
+        "finished": "Päättynyt",
+        "registered": "Rekisteröity",
+        "noAvailableCompetitions": "Ei saatavilla olevaa kilpailua"
+    },
+    "leaderboard": {
+        "rank": "Sijoitus",
+        "name": "Nimi",
+        "points": "Pisteet",
+        "prize": "Palkinto",
+        "you": "Sinä"
+    },
+    "miniLeaderboard": {
+        "highScore": "Korkeat pisteet",
+        "lastScore": "Viimeiset pisteet",
+        "rank": "Sijoitus",
+        "startsIn": "Alkaa",
+        "started": "alkoi",
+        "starting": "aloitetaan",
+        "finishing": "viimeistellään",
+        "finished": "valmis"
+    },
+    "rewards": {
+        "label": "Palkinnot",
+        "claim": "Lunasta nyt",
+        "claimed": "Lunastettu",
+        "availableRewards": "Käytettävissä olevat palkinnot",
+        "rewards": "Lunastetut palkinnot",
+        "expiredRewards": "Vanhentuneet palkinnot"
+    },
+    "messages": {
+        "label": "Viestit"
+    },
+    "global": {
+        "copy": "Toimitti Ziqni"
+    }
+}

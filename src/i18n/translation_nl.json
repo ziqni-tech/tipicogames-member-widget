@@ -1,0 +1,56 @@
+{
+  "time": {
+    "days": "dag(en)",
+    "hours": "uur",
+    "minutesShortHand": "min.",
+    "minutes": "min.",
+    "seconds": "sec."
+  },
+  "achievements": {
+    "label": "Prestaties",
+    "more": "Meer",
+    "complete": "100% afgerond"
+  },
+  "tournaments": {
+    "label": "Toernooien",
+    "enter": "Deelnemen aan het toernooi",
+    "readyCompetitions": "Aankomende toernooien",
+    "activeCompetitions": "Actieve toernooien",
+    "finishedCompetitions": "Afgeronde toernooien",
+    "finishing": "Wordt afgerond",
+    "finished": "Afgelopen",
+    "registered": "Geregistreerd",
+    "noAvailableCompetitions": "Geen wedstrijd beschikbaar"
+  },
+  "leaderboard": {
+    "rank": "Rang",
+    "name": "Naam",
+    "points": "Punten",
+    "prize": "Prijs",
+    "you": "U"
+  },
+  "miniLeaderboard": {
+    "highScore": "Hoogste score",
+    "lastScore": "Laatste score",
+    "rank": "Rang",
+    "startsIn": "Begint over",
+    "started": "begonnen",
+    "starting": "wordt gestart",
+    "finishing": "wordt afgerond",
+    "finished": "afgelopen"
+  },
+  "rewards": {
+    "label": "Beloningen",
+    "claim": "Nu claimen",
+    "claimed": "Geclaimd",
+    "availableRewards": "Beschikbare beloningen",
+    "rewards": "Geclaimde beloningen",
+    "expiredRewards": "Verlopen beloningen"
+  },
+  "messages": {
+    "label": "Berichten"
+  },
+  "global": {
+    "copy": "Mogelijk gemaakt door Ziqni"
+  }
+}

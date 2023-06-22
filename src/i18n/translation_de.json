@@ -1,0 +1,56 @@
+{
+    "time": {
+        "days": "t",
+        "hours": "h",
+        "minutesShortHand": "min",
+        "minutes": "m",
+        "seconds": "s"
+    },
+    "achievements": {
+        "label": "Erfolge",
+        "more": "Mehr",
+        "complete": "100% abschließen"
+    },
+    "tournaments": {
+        "label": "Turniere",
+        "enter": "Turnier betreten",
+        "readyCompetitions": "Kommende Turniere",
+        "activeCompetitions": "Aktive Turniere",
+        "finishedCompetitions": "Abgeschlossene Turniere",
+        "finishing": "Abschließen",
+        "finished": "Abgeschlossen",
+        "registered": "Registriert",
+        "noAvailableCompetitions": "Keine verfügbare Konkurrenz"
+    },
+    "leaderboard": {
+        "rank": "Rang",
+        "name": "Name",
+        "points": "Punkte",
+        "prize": "Preis",
+        "you": "Sie"
+    },
+    "miniLeaderboard": {
+        "highScore": "Bestenliste",
+        "lastScore": "Letzte Punktzahl",
+        "rank": "Rang",
+        "startsIn": "Started in",
+        "started": "gestarted",
+        "starting": "started",
+        "finishing": "Abschließen",
+        "finished": "abgeschlossen"
+    },
+    "rewards": {
+        "label": "Prämien",
+        "claim": "Jetzt beanspruchen",
+        "claimed": "Beansprucht",
+        "availableRewards": "Verfügbare Prämien",
+        "rewards": "Beanspruchte Prämien",
+        "expiredRewards": "Abgelaufene Prämien"
+    },
+    "messages": {
+        "label": "Mitteilungen"
+    },
+    "global": {
+        "copy": "Unterstützt von Ziqni"
+    }
+}

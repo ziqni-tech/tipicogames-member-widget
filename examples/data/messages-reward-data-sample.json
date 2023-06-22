@@ -1,0 +1,29 @@
+{
+  "time": "2020-04-21T14:12:21.375Z",
+  "data": {
+    "accountId": "AWDdD_J_CgpY-bw2S2Sy",
+    "memberId": "AWGFuzP7Ly92DwXg4ae1",
+    "reward": {
+      "jsonClass": "Reward",
+      "entityType": "contest",
+      "entityId": "obkDiHEBy_ovdDa908lQ",
+      "rewardRank": "1-10",
+      "rewardName": "asdasda",
+      "value": 100.0,
+      "rewardType": "AWDdEArLCgpY-bw2S2S3",
+      "description": "",
+      "delay": 0,
+      "memberAcknowledgmentRequired": false,
+      "metadata": [],
+      "accountId": "AWDdD_J_CgpY-bw2S2Sy",
+      "created": "2020-04-17T12:01:24.335+0000",
+      "id": "orkDiHEBy_ovdDa908lv",
+      "translations": {}
+    },
+    "claimed": true,
+    "entityType": "Contest",
+    "entityId": "obkDiHEBy_ovdDa908lQ",
+    "created": "2020-04-20T13:11:02.787+0000",
+    "id": "s9m2l3EBjDPdSQhEqRqD"
+  }
+}

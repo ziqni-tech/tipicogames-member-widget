@@ -1,0 +1,56 @@
+{
+    "time": {
+        "days": "d",
+        "hours": "h",
+        "minutesShortHand": "min",
+        "minutes": "m",
+        "seconds": "s"
+    },
+    "achievements": {
+        "label": "Osiągnięcia",
+        "more": "Więcej",
+        "complete": "Ukończono w 100%"
+    },
+    "tournaments": {
+        "label": "Turnieje",
+        "enter": "Weź udział w turnieju",
+        "readyCompetitions": "Nadchodzące turnieje",
+        "activeCompetitions": "Trwające trunieje",
+        "finishedCompetitions": "Zakończone turnieje",
+        "finishing": "Kończy się",
+        "finished": "Zakończone",
+        "registered": "Zarejestrowano",
+        "noAvailableCompetitions": "Brak dostępnej konkurencji"
+    },
+    "leaderboard": {
+        "rank": "Ocena",
+        "name": "Nazwa",
+        "points": "Pkt.",
+        "prize": "Nagroda",
+        "you": "Ty"
+    },
+    "miniLeaderboard": {
+        "highScore": "Najlepszy wynik",
+        "lastScore": "Ostatni wynik",
+        "rank": "Oceń",
+        "startsIn": "Rozpocznie się za",
+        "started": "zaczęło się",
+        "starting": "rozpoczęte",
+        "finishing": "kończy się",
+        "finished": "zakończone"
+    },
+    "rewards": {
+        "label": "Nagrody",
+        "claim": "Odbierz teraz",
+        "claimed": "Odebrane",
+        "availableRewards": "Dostępne nagrody",
+        "rewards": "Odebrane nagrody",
+        "expiredRewards": "Wygasłe nagrody"
+    },
+    "messages": {
+        "label": "Wiadomości"
+    },
+    "global": {
+        "copy": "Obsługiwane przez Ziqni"
+    }
+}

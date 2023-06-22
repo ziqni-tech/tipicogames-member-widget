@@ -1,0 +1,33 @@
+{
+  "meta": {
+    "time": "2020-04-21T13:54:16.052Z"
+  },
+  "aggregations": [{
+    "items": [{
+      "value": "2",
+      "count": 1
+    }, {
+      "value": "3",
+      "count": 1
+    }, {
+      "value": "4",
+      "count": 17
+    }, {
+      "value": "5",
+      "count": 20
+    }, {
+      "value": "6",
+      "count": 57
+    }, {
+      "value": "7",
+      "count": 1
+    }, {
+      "value": "8",
+      "count": 1
+    }, {
+      "value": "9",
+      "count": 1
+    }]
+  }],
+  "data": {}
+}

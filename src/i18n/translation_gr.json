@@ -1,0 +1,56 @@
+{
+    "time": {
+        "days": "ημέρες",
+        "hours": "ώρες",
+        "minutesShortHand": "λεπ",
+        "minutes": "λεπτά",
+        "seconds": "δευτερόλεπτα"
+    },
+    "achievements": {
+        "label": "επιτεύγματα",
+        "more": "περισσότερα",
+        "complete": "ολοκλήρωση 100%"
+    },
+    "tournaments": {
+		"label":"τουρνουά",
+        "enter": "Είσοδος σε τουρνουά",
+        "readyCompetitions": "Επερχόμενα Τουρνουά",
+        "activeCompetitions": "Ενεργά Τουρνουά",
+        "finishedCompetitions": "Συμπληρωμένα Τουρνουά",
+        "finishing": "Ολοκληρώνονται",
+        "finished": "Ολοκληρώθηκαν",
+        "registered": "Εγγεγραμμένοι",
+        "noAvailableCompetitions": "Μη διαθέσιμος διαγωνισμός"
+    },
+    "leaderboard": {
+        "rank": "θέση",
+        "name": "όνομα",
+        "points": "βαθμοί",
+        "prize": "έπαθλο",
+        "you": "Εσείς"
+    },
+    "miniLeaderboard": {
+        "highScore": "Υψηλότερο Σκορ",
+        "lastScore": "Τελευταίο Σκορ",
+        "rank": "Θέση",
+        "startsIn": "Ξεκινά σε",
+        "started": "ξεκίνησε",
+        "starting": "Ξεκινά ",
+        "finishing": "Ολοκληρώνονται",
+        "finished": "Ολοκληρώθηκαν"
+    },
+    "rewards": {
+        "label": "Βραβεία",
+        "claim": "Διεκδίκηση Τώρα",
+        "claimed": "Διεκδικήθηκαν",
+        "availableRewards": "Διαθέσιμα Βραβεία",
+        "rewards": "Βραβεία που διεκδικήθηκαν",
+        "expiredRewards": "Βραβεία που έληξαν"
+    },
+    "messages": {
+        "label": "Μηνύματα"
+    },
+    "global": {
+        "copy": "Με τη δύναμη της Ziqni"
+    }
+}

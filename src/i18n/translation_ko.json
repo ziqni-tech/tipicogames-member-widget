@@ -1,0 +1,56 @@
+{
+    "time": {
+        "days": "일",
+        "hours": "시간",
+        "minutesShortHand": "분",
+        "minutes": "분",
+        "seconds": "초"
+    },
+    "achievements": {
+        "label": "업적",
+        "more": "더 보기",
+        "complete": "100% 완료"
+    },
+    "tournaments": {
+        "label": "토너먼트",
+        "enter": "토너먼트 참가",
+        "readyCompetitions": "예정된 토너먼트",
+        "activeCompetitions": "현재 토너먼트",
+        "finishedCompetitions": "완료된 토너먼트",
+        "finishing": "마무리 중",
+        "finished": "완료",
+        "registered": "등록 완료",
+        "noAvailableCompetitions": "사용 가능한 경쟁이 없습니다."
+    },
+    "leaderboard": {
+        "rank": "순위",
+        "name": "이름",
+        "points": "포인트",
+        "prize": "상",
+        "you": "당신"
+    },
+    "miniLeaderboard": {
+        "highScore": "최고 점수",
+        "lastScore": "최근 점수",
+        "rank": "순위",
+        "startsIn": "남은 시작 시간",
+        "started": "시작",
+        "starting": "시작",
+        "finishing": "마무리 중",
+        "finished": "완료"
+    },
+    "rewards": {
+        "label": "보상",
+        "claim": "지금 받기",
+        "claimed": "받기 완료",
+        "availableRewards": "받을 수 있는 보상",
+        "rewards": "받은 보상",
+        "expiredRewards": "만료된 보상"
+    },
+    "messages": {
+        "label": "메시지"
+    },
+    "global": {
+        "copy": "Ziqni 운영"
+    }
+}

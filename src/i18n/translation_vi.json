@@ -1,0 +1,56 @@
+{
+    "time": {
+        "days": "ngày",
+        "hours": "giờ",
+        "minutesShortHand": "phút",
+        "minutes": "phút",
+        "seconds": "giây"
+    },
+    "achievements": {
+        "label": "Thành tích",
+        "more": "Thêm",
+        "complete": "hoàn thành 100%"
+    },
+    "tournaments": {
+        "label": "Giải đấu",
+        "enter": "Tham gia giải đấu",
+        "readyCompetitions": "Các giải đấu sắp tới",
+        "activeCompetitions": "Các giải đấu đang diễn ra",
+        "finishedCompetitions": "Các giải đấu đã hoàn thành",
+        "finishing": "Đang hoàn thành",
+        "finished": "Đã hoàn thành",
+        "registered": "Đã đăng ký",
+        "noAvailableCompetitions": "Không có cạnh tranh"
+    },
+    "leaderboard": {
+        "rank": "Xếp hạng",
+        "name": "Tên",
+        "points": "Điểm",
+        "prize": "Giải thưởng",
+        "you": "Bạn"
+    },
+    "miniLeaderboard": {
+        "highScore": "Điểm cao",
+        "lastScore": "Điểm gần nhất",
+        "rank": "Xếp hạng",
+        "startsIn": "Bắt đầu sau",
+        "started": "đã bắt đầu",
+        "starting": "đang bắt đầu",
+        "finishing": "đang hoàn thành",
+        "finished": "đã hoàn thành"
+    },
+    "rewards": {
+        "label": "Phần thưởng",
+        "claim": "Nhận ngay",
+        "claimed": "Đã nhận",
+        "availableRewards": "Phần thưởng có sẵn",
+        "rewards": "Phần thưởng đã được nhận",
+        "expiredRewards": "Phần thưởng đã hết hạn"
+    },
+    "messages": {
+        "label": "Tin nhắn"
+    },
+    "global": {
+        "copy": "Được cung cấp bởi Ziqni"
+    }
+}

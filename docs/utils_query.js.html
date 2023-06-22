@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>utils/query.js - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    <input type="text" id="nav-search" placeholder="Search" />
+    
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="cLabs.Ajax.html">Ajax</a><ul class='methods'><li data-type='method' style='display: none;'><a href="cLabs.Ajax.html#.abort">abort</a></li><li data-type='method' style='display: none;'><a href="cLabs.Ajax.html#.getData">getData</a></li></ul></li><li><a href="LbWidget.html">LbWidget</a><ul class='members'><li data-type='member' style='display: none;'><a href="LbWidget.html#.this.settings">this.settings</a></li><li data-type='member' style='display: none;'><a href="LbWidget.html#~competitionCheckAjax">competitionCheckAjax</a></li><li data-type='member' style='display: none;'><a href="LbWidget.html#~competitionFinishedCheckAjax">competitionFinishedCheckAjax</a></li></ul><ul class='methods'><li data-type='method' style='display: none;'><a href="LbWidget.html#.this.formatDateTime">this.formatDateTime</a></li><li data-type='method' style='display: none;'><a href="LbWidget.html#.this.init">this.init</a></li><li data-type='method' style='display: none;'><a href="LbWidget.html#.this.openWithTabAndAction">this.openWithTabAndAction</a></li></ul></li><li><a href="MainWidget.html">MainWidget</a><ul class='members'><li data-type='member' style='display: none;'><a href="MainWidget.html#.this.settings">this.settings</a></li></ul><ul class='methods'><li data-type='method' style='display: none;'><a href="MainWidget.html#.this.accordionStyle">this.accordionStyle</a></li></ul></li><li><a href="Messaging.html">Messaging</a><ul class='members'><li data-type='member' style='display: none;'><a href="Messaging.html#.this.settings">this.settings</a></li></ul><ul class='methods'><li data-type='method' style='display: none;'><a href="Messaging.html#.this.hearBeatCheck">this.hearBeatCheck</a></li></ul></li><li><a href="MiniScoreBoard.html">MiniScoreBoard</a><ul class='members'><li data-type='member' style='display: none;'><a href="MiniScoreBoard.html#.this.settings">this.settings</a></li></ul></li><li><a href="Notifications.html">Notifications</a><ul class='members'><li data-type='member' style='display: none;'><a href="Notifications.html#.this.settings">this.settings</a></li></ul></li></ul><h3>Modules</h3><ul><li><a href="module-utils.html">utils</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils.html#._hasClass">_hasClass</a></li><li data-type='method' style='display: none;'><a href="module-utils.html#.addClass">addClass</a></li><li data-type='method' style='display: none;'><a href="module-utils.html#.closest">closest</a></li><li data-type='method' style='display: none;'><a href="module-utils.html#.formatNumberLeadingZeros">formatNumberLeadingZeros</a></li><li data-type='method' style='display: none;'><a href="module-utils.html#.isElement">isElement</a></li><li data-type='method' style='display: none;'><a href="module-utils.html#.objectCount">objectCount</a></li><li data-type='method' style='display: none;'><a href="module-utils.html#.objectIterator">objectIterator</a></li><li data-type='method' style='display: none;'><a href="module-utils.html#.query">query</a></li><li data-type='method' style='display: none;'><a href="module-utils.html#.remove">remove</a></li><li data-type='method' style='display: none;'><a href="module-utils.html#.removeClass">removeClass</a></li><li data-type='method' style='display: none;'><a href="module-utils.html#.scrollEnabled">scrollEnabled</a></li><li data-type='method' style='display: none;'><a href="module-utils.html#.sizeof">sizeof</a></li><li data-type='method' style='display: none;'><a href="module-utils.html#.stringContains">stringContains</a></li><li data-type='method' style='display: none;'><a href="module-utils.html#.stripHtml">stripHtml</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#getData">getData</a></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">utils/query.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import cLabs from '../modules/cLabs';
+import trim from './trim';
+
+/**
+ * Query selector, supports CSS element selection
+ *
+ * Supports:
+ *  - Class selection: ".element"
+ *  - ID selection: "#element"
+ *  - Tag selection: "div"
+ *  - Multi depth selection: '.element ul li'
+ *
+ * @memberOf module:utils
+ * @static
+ * @param {Object} "optional"
+ * @param {String} CSS element selector
+ * @returns {(Object|null|Array)} depending on the provided selector results can vary (null, node, NodeList array)
+ */
+const query = function (doc, selector) {
+  var result;
+
+  var tmpDoc = doc; var tmpSelector = selector; // used for debug only
+
+  if (typeof doc === 'string' &amp;&amp; selector === undefined) {
+    selector = doc;
+    doc = document;
+  }
+
+  try {
+    if (doc !== null) {
+      selector = trim(selector); //
+
+      if (selector.match(cLabs.classSelector)) {
+        result = doc.getElementsByClassName(selector.replace('.', ''));
+      } else if (selector.match(cLabs.idSelector)) {
+        result = document.getElementById(selector.replace('#', ''));
+      } else if (selector.match(cLabs.tagSelector)) {
+        result = doc.getElementsByTagName(selector);
+      } else {
+        result = doc.querySelectorAll(selector);
+      }
+    }
+
+    if (result !== null &amp;&amp; result !== undefined &amp;&amp; result.nodeType) {
+      return result;
+    } else if (result !== null &amp;&amp; result !== undefined &amp;&amp; result.length === 1) {
+      return result[0];
+    } else if (result !== null &amp;&amp; result !== undefined &amp;&amp; result.length > 0) {
+      return Array.prototype.slice.call(result);
+    } else {
+      return null;
+    }
+  } catch (e) {
+    console.log(e);
+    console.log(tmpSelector);
+    console.log(tmpDoc);
+    console.log(doc, selector);
+  }
+};
+
+export default query;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+<script src="scripts/search.js" defer></script>
+
+
+<script src="scripts/collapse.js" defer></script>
+
+
+</body>
+</html>

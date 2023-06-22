@@ -1,0 +1,56 @@
+{
+    "time": {
+        "days": "日",
+        "hours": "時間",
+        "minutesShortHand": "分",
+        "minutes": "分",
+        "seconds": "秒"
+    },
+    "achievements": {
+        "label": "実績",
+        "more": "その他",
+        "complete": "100％完了"
+    },
+    "tournaments": {
+        "label": "トーナメント",
+        "enter": "トーナメントに参加",
+        "readyCompetitions": "今後のトーナメント",
+        "activeCompetitions": "有効なトーナメント",
+        "finishedCompetitions": "終了したトーナメント",
+        "finishing": "もうすぐ終了",
+        "finished": "終了",
+        "registered": "登録済み",
+        "noAvailableCompetitions": "利用可能な競争はありません"
+    },
+    "leaderboard": {
+        "rank": "ランク",
+        "name": "名前",
+        "points": "ポイント",
+        "prize": "賞",
+        "you": "君は"
+    },
+    "miniLeaderboard": {
+        "highScore": "ハイスコア",
+        "lastScore": "最終スコア",
+        "rank": "ランク",
+        "startsIn": "開始",
+        "started": "開始しました",
+        "starting": "もうすぐ開始",
+        "finishing": "もうすぐ終了",
+        "finished": "終了"
+    },
+    "rewards": {
+        "label": "特典",
+        "claim": "今すぐ獲得",
+        "claimed": "獲得済み",
+        "availableRewards": "獲得できる特典",
+        "rewards": "獲得した特典",
+        "expiredRewards": "期限切れの特典"
+    },
+    "messages": {
+        "label": "メッセージ"
+    },
+    "global": {
+        "copy": "提供元：Ziqni"
+    }
+}

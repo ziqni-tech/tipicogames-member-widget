@@ -1,0 +1,14 @@
+{
+  "meta": {
+    "time": "2020-04-21T11:37:07.165Z"
+  },
+  "data": {
+    "jsonClass": "Member",
+    "accountId": "Asd3-_J_CgpY-bw2S2Sy",
+    "memberType": "Individual",
+    "name": "Jon Doe",
+    "memberRefId": "jon-doe-Asd3-_J_CgpY-bw2S2Sy",
+    "groups": ["CL"],
+    "id": "123456"
+  }
+}

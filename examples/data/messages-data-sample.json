@@ -1,0 +1,19 @@
+{
+  "meta": {
+    "time": "2020-04-21T11:37:07.165Z"
+  },
+  "data": {
+    "jsonClass": "MemberMessage",
+    "accountId": "AWDdD_J_CgpY-bw2S2Sy",
+    "memberId": "AWGFuzP7Ly92DwXg4ae1",
+    "eventRefType": "MemberNotificationType",
+    "eventReferenceId": "N0WG3HIBMuFywk4C_oR_",
+    "messageType": "Notification",
+    "subject": "new live test 2020 - this is a new long subject line",
+    "body": "as dasd asd asd asd asd<br> Ut malesuada vulputate tellus, sit amet varius tortor pharetra sit amet. Mauris volutpat quam non sapien facilisis, et ornare nisl condimentum. Ut varius consequat metus. Nullam pulvinar arcu ut eros finibus, eget vehicula nibh vehicula. Nulla facilisi. Aenean malesuada tempor malesuada. Nam gravida risus sed nulla dictum ultrices. Donec ac magna at ex auctor consectetur. Nunc nisi nisi, fringilla et molestie eu, rutrum auctor dui. Etiam commodo porttitor lacus placerat efficitur. Vestibulum condimentum elit imperdiet lacinia rhoncus. Integer fringilla nisi lectus, quis pellentesque dui sodales nec",
+    "status": "New",
+    "created": "2020-06-22T14:58:02.165+0000",
+    "metadata": [],
+    "id": "F0WJ3HIBMuFywk4CQZY1"
+  }
+}

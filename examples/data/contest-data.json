@@ -1,0 +1,307 @@
+{
+	"meta": {
+		"time": "2019-08-07T21:49:15.400Z"
+	},
+	"data": {
+		"jsonClass": "Contest",
+		"accountId": "AV8mpBQQybvwgeEgJ4j0",
+		"competitionId": "easNKWwBtLaK9eexHrKh",
+		"number": 0,
+		"label": "Contest label",
+		"description": "",
+		"termsConditions": "",
+		"round": 1,
+		"roundType": "TimeBound",
+		"entrantsFromContest": [],
+		"options": {
+			"numberOfEntrants": {
+				"jsonClass": "MaxMin",
+				"minimum": 1
+			},
+			"products": [],
+			"ruleSets": [{
+				"jsonClass": "RuleSet",
+				"priority": 1,
+				"scope": "contest",
+				"action": "contest.points.calculated.by",
+				"conditions": [{
+					"jsonClass": "MainConditionSet",
+					"matchCondition": "Any",
+					"mustEvaluateTo": true,
+					"rules": [{
+						"jsonClass": "MainRule",
+						"fact": "event.action.type",
+						"operator": "==",
+						"constant": "qs.ach.sakurafortune.bonus.3"
+					}, {
+						"jsonClass": "MainRule",
+						"fact": "event.action.type",
+						"operator": "==",
+						"constant": "qs.ach.sakurafortune.free.spins.2"
+					}]
+				}]
+			}, {
+				"jsonClass": "RuleSet",
+				"priority": 2,
+				"scope": "contest",
+				"action": "open.contest",
+				"conditions": [{
+					"jsonClass": "MainConditionSet",
+					"matchCondition": "All",
+					"mustEvaluateTo": true,
+					"rules": [{
+						"jsonClass": "MainRule",
+						"fact": "contest.parents.status",
+						"operator": "==",
+						"constant": "$finalised.status"
+					}]
+				}]
+			}, {
+				"jsonClass": "RuleSet",
+				"priority": 3,
+				"scope": "contest",
+				"action": "finish.contest",
+				"conditions": [{
+					"jsonClass": "MainConditionSet",
+					"matchCondition": "All",
+					"mustEvaluateTo": true,
+					"rules": [{
+						"jsonClass": "MainRule",
+						"fact": "contest.active.elapsed",
+						"operator": ">=",
+						"constant": "$competition.scheduled.end"
+					}]
+				}]
+			}, {
+				"jsonClass": "RuleSet",
+				"priority": 4,
+				"scope": "contest",
+				"action": "finalise.contest",
+				"conditions": [{
+					"jsonClass": "MainConditionSet",
+					"matchCondition": "All",
+					"mustEvaluateTo": true,
+					"rules": [{
+						"jsonClass": "MainRule",
+						"fact": "contest.finish.elapsed",
+						"operator": ">=",
+						"constant": "1"
+					}]
+				}]
+			}],
+			"isPublic": true,
+			"autoStart": true,
+			"autoStartRetryInterval": 1000,
+			"autoStop": true,
+			"autoStopRetryInterval": 1000,
+			"scheduledDates": {
+				"jsonClass": "StartEndDate",
+				"start": "2019-08-06T22:00:00.000+00:00",
+				"end": "2019-08-07T21:59:00.000+00:00"
+			},
+			"actualDates": {
+				"jsonClass": "StartEndDate",
+				"start": "2019-08-06T22:00:15.143+00:00"
+			},
+			"optinRequiredForEntrants": false,
+			"useGlobalEvents": false
+		},
+		"metadata": [{
+			"jsonClass": "Metadata",
+			"key": "theme",
+			"value": "summer"
+		}],
+		"created": "2019-07-25T12:15:10.776+00:00",
+		"id": "fqsOKWwBtLaK9eexe7K4",
+		"translations": {
+			"de": [{
+				"jsonClass": "Translation",
+				"fieldName": "label",
+				"text": ""
+			}],
+			"en": [{
+				"jsonClass": "Translation",
+				"fieldName": "label",
+				"text": ""
+			}]
+		},
+		"status": "Active",
+		"statusCode": 2,
+		"translatableFields": ["label", "description", "termsConditions"],
+		"rewards": [{
+			"jsonClass": "Reward",
+			"entityId": "fqsOKWwBtLaK9eexe7K4",
+			"rewardRank": [2],
+			"rewardName": "2",
+			"value": 500.0,
+			"rewardType": "aBqEYWIB74iUEvQwVWPb",
+			"description": "",
+			"delay": 0,
+			"memberAcknowledgmentRequired": false,
+			"metadata": [],
+			"accountId": "AV8mpBQQybvwgeEgJ4j0",
+			"pointInTime": "2019-07-25T12:10:50.156+00:00",
+			"period": 0,
+			"created": "2019-07-25T12:15:10.864+00:00",
+			"id": "XPIOKWwB6LuaHhNwfPIQ",
+			"translations": {},
+			"translatableFields": ["rewardName", "description"],
+			"rewardTypeObject": {
+				"jsonClass": "RewardType",
+				"name": "Real money [EUR]",
+				"key": "real-money-eur",
+				"description": "Cash reward payed out in Euros",
+				"accountId": "AV8mpBQQybvwgeEgJ4j0",
+				"system": false,
+				"metadata": [],
+				"created": "2018-03-26T08:54:45.467+00:00",
+				"id": "aBqEYWIB74iUEvQwVWPb"
+			}
+		}, {
+			"jsonClass": "Reward",
+			"entityId": "fqsOKWwBtLaK9eexe7K4",
+			"rewardRank": [5],
+			"rewardName": "5",
+			"value": 100.0,
+			"rewardType": "aBqEYWIB74iUEvQwVWPb",
+			"description": "",
+			"delay": 0,
+			"memberAcknowledgmentRequired": false,
+			"metadata": [],
+			"accountId": "AV8mpBQQybvwgeEgJ4j0",
+			"pointInTime": "2019-07-25T12:10:50.157+00:00",
+			"period": 0,
+			"created": "2019-07-25T12:15:10.859+00:00",
+			"id": "W_IOKWwB6LuaHhNwfPIL",
+			"translations": {},
+			"translatableFields": ["rewardName", "description"],
+			"rewardTypeObject": {
+				"jsonClass": "RewardType",
+				"name": "Real money [EUR]",
+				"key": "real-money-eur",
+				"description": "Cash reward payed out in Euros",
+				"accountId": "AV8mpBQQybvwgeEgJ4j0",
+				"system": false,
+				"metadata": [],
+				"created": "2018-03-26T08:54:45.467+00:00",
+				"id": "aBqEYWIB74iUEvQwVWPb"
+			}
+		}, {
+			"jsonClass": "Reward",
+			"entityId": "fqsOKWwBtLaK9eexe7K4",
+			"rewardRank": [4],
+			"rewardName": "4",
+			"value": 150.0,
+			"rewardType": "aBqEYWIB74iUEvQwVWPb",
+			"description": "",
+			"delay": 0,
+			"memberAcknowledgmentRequired": false,
+			"metadata": [],
+			"accountId": "AV8mpBQQybvwgeEgJ4j0",
+			"pointInTime": "2019-07-25T12:10:50.157+00:00",
+			"period": 0,
+			"created": "2019-07-25T12:15:10.868+00:00",
+			"id": "XfIOKWwB6LuaHhNwfPIU",
+			"translations": {},
+			"translatableFields": ["rewardName", "description"],
+			"rewardTypeObject": {
+				"jsonClass": "RewardType",
+				"name": "Real money [EUR]",
+				"key": "real-money-eur",
+				"description": "Cash reward payed out in Euros",
+				"accountId": "AV8mpBQQybvwgeEgJ4j0",
+				"system": false,
+				"metadata": [],
+				"created": "2018-03-26T08:54:45.467+00:00",
+				"id": "aBqEYWIB74iUEvQwVWPb"
+			}
+		}, {
+			"jsonClass": "Reward",
+			"entityId": "fqsOKWwBtLaK9eexe7K4",
+			"rewardRank": [6, 7, 8, 9, 10],
+			"rewardName": "6-10",
+			"value": 50.0,
+			"rewardType": "aBqEYWIB74iUEvQwVWPb",
+			"description": "",
+			"delay": 0,
+			"memberAcknowledgmentRequired": false,
+			"metadata": [],
+			"accountId": "AV8mpBQQybvwgeEgJ4j0",
+			"pointInTime": "2019-07-25T12:10:50.157+00:00",
+			"period": 0,
+			"created": "2019-07-25T12:15:10.881+00:00",
+			"id": "YPIOKWwB6LuaHhNwfPIh",
+			"translations": {},
+			"translatableFields": ["rewardName", "description"],
+			"rewardTypeObject": {
+				"jsonClass": "RewardType",
+				"name": "Real money [EUR]",
+				"key": "real-money-eur",
+				"description": "Cash reward payed out in Euros",
+				"accountId": "AV8mpBQQybvwgeEgJ4j0",
+				"system": false,
+				"metadata": [],
+				"created": "2018-03-26T08:54:45.467+00:00",
+				"id": "aBqEYWIB74iUEvQwVWPb"
+			}
+		}, {
+			"jsonClass": "Reward",
+			"entityId": "fqsOKWwBtLaK9eexe7K4",
+			"rewardRank": [1],
+			"rewardName": "1",
+			"value": 750.0,
+			"rewardType": "aBqEYWIB74iUEvQwVWPb",
+			"description": "",
+			"delay": 0,
+			"memberAcknowledgmentRequired": false,
+			"metadata": [],
+			"accountId": "AV8mpBQQybvwgeEgJ4j0",
+			"pointInTime": "2019-07-25T12:10:50.156+00:00",
+			"period": 0,
+			"created": "2019-07-25T12:15:10.872+00:00",
+			"id": "XvIOKWwB6LuaHhNwfPIY",
+			"translations": {},
+			"translatableFields": ["rewardName", "description"],
+			"rewardTypeObject": {
+				"jsonClass": "RewardType",
+				"name": "Real money [EUR]",
+				"key": "real-money-eur",
+				"description": "Cash reward payed out in Euros",
+				"accountId": "AV8mpBQQybvwgeEgJ4j0",
+				"system": false,
+				"metadata": [],
+				"created": "2018-03-26T08:54:45.467+00:00",
+				"id": "aBqEYWIB74iUEvQwVWPb"
+			}
+		}, {
+			"jsonClass": "Reward",
+			"entityId": "fqsOKWwBtLaK9eexe7K4",
+			"rewardRank": [3],
+			"rewardName": "3",
+			"value": 250.0,
+			"rewardType": "aBqEYWIB74iUEvQwVWPb",
+			"description": "",
+			"delay": 0,
+			"memberAcknowledgmentRequired": false,
+			"metadata": [],
+			"accountId": "AV8mpBQQybvwgeEgJ4j0",
+			"pointInTime": "2019-07-25T12:10:50.156+00:00",
+			"period": 0,
+			"created": "2019-07-25T12:15:10.877+00:00",
+			"id": "X_IOKWwB6LuaHhNwfPId",
+			"translations": {},
+			"translatableFields": ["rewardName", "description"],
+			"rewardTypeObject": {
+				"jsonClass": "RewardType",
+				"name": "Real money [EUR]",
+				"key": "real-money-eur",
+				"description": "Cash reward payed out in Euros",
+				"accountId": "AV8mpBQQybvwgeEgJ4j0",
+				"system": false,
+				"metadata": [],
+				"created": "2018-03-26T08:54:45.467+00:00",
+				"id": "aBqEYWIB74iUEvQwVWPb"
+			}
+		}]
+	}
+}

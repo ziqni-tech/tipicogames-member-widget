@@ -1,0 +1,80 @@
+{
+  "time": "2021-03-15T23:42:47.165Z",
+  "data": {
+    "statusCode": 5,
+    "numberOfRounds": 1,
+    "description": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean fringilla arcu nibh. Fusce blandit, est id sodales blandit, nunc odio fermentum ex, ut pulvinar neque arcu vel quam. In gravida scelerisque orci, eget rutrum lorem tincidunt et. Donec finibus nunc orci. Donec porttitor pharetra aliquet. Morbi laoreet nunc leo, sit amet dapibus augue tempor vel.</p><img src='images/banner-example-4.jpeg'><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean fringilla arcu nibh. Fusce blandit, est id sodales blandit, nunc odio fermentum ex, ut pulvinar neque arcu vel quam. In gravida scelerisque orci, eget rutrum lorem tincidunt et. Donec finibus nunc orci. Donec porttitor pharetra aliquet. Morbi laoreet nunc leo, sit amet dapibus augue tempor vel. Donec finibus nunc orci. Donec porttitor pharetra aliquet. Morbi laoreet nunc leo, sit amet dapibus augue tempor vel. Donec finibus nunc orci. Donec porttitor pharetra aliquet. Morbi laoreet nunc leo, sit amet dapibus augue tempor vel. Donec finibus nunc orci. Donec porttitor pharetra aliquet. Morbi laoreet nunc leo, sit amet dapibus augue tempor vel. Donec finibus nunc orci. Donec porttitor pharetra aliquet. Morbi laoreet nunc leo, sit amet dapibus augue tempor vel. Donec finibus nunc orci. Donec porttitor pharetra aliquet. Morbi laoreet nunc leo, sit amet dapibus augue tempor vel. Donec finibus nunc orci. Donec porttitor pharetra aliquet. Morbi laoreet nunc leo, sit amet dapibus augue tempor vel. Donec finibus nunc orci. Donec porttitor pharetra aliquet. Morbi laoreet nunc leo, sit amet dapibus augue tempor vel. Donec finibus nunc orci. Donec porttitor pharetra aliquet. Morbi laoreet nunc leo, sit amet dapibus augue tempor vel.</p>",
+    "optinRequired": false,
+    "label": "Competition example 4 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean fringilla arcu nibh.",
+    "contests": [
+      {
+        "statusCode": 2,
+        "number": 0,
+        "entrantsFromContest": [],
+        "description": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean fringilla arcu nibh. Fusce blandit, est id sodales blandit, nunc odio fermentum ex, ut pulvinar neque arcu vel quam. In gravida scelerisque orci, eget rutrum lorem tincidunt et. Donec finibus nunc orci. Donec porttitor pharetra aliquet. Morbi laoreet nunc leo, sit amet dapibus augue tempor vel.</p><img src='images/banner-example-4.jpeg'><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean fringilla arcu nibh. Fusce blandit, est id sodales blandit, nunc odio fermentum ex, ut pulvinar neque arcu vel quam. In gravida scelerisque orci, eget rutrum lorem tincidunt et. Donec finibus nunc orci. Donec porttitor pharetra aliquet. Morbi laoreet nunc leo, sit amet dapibus augue tempor vel. Donec finibus nunc orci. Donec porttitor pharetra aliquet. Morbi laoreet nunc leo, sit amet dapibus augue tempor vel. Donec finibus nunc orci. Donec porttitor pharetra aliquet. Morbi laoreet nunc leo, sit amet dapibus augue tempor vel. Donec finibus nunc orci. Donec porttitor pharetra aliquet. Morbi laoreet nunc leo, sit amet dapibus augue tempor vel. Donec finibus nunc orci. Donec porttitor pharetra aliquet. Morbi laoreet nunc leo, sit amet dapibus augue tempor vel. Donec finibus nunc orci. Donec porttitor pharetra aliquet. Morbi laoreet nunc leo, sit amet dapibus augue tempor vel. Donec finibus nunc orci. Donec porttitor pharetra aliquet. Morbi laoreet nunc leo, sit amet dapibus augue tempor vel. Donec finibus nunc orci. Donec porttitor pharetra aliquet. Morbi laoreet nunc leo, sit amet dapibus augue tempor vel. Donec finibus nunc orci. Donec porttitor pharetra aliquet. Morbi laoreet nunc leo, sit amet dapibus augue tempor vel.</p>",
+        "label": "Competition example 4 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean fringilla arcu nibh.",
+        "jsonClass": "Contest",
+        "rewards": [{
+          "jsonClass": "Reward",
+          "entityType": "contest",
+          "entityId": "jDiMnHEBEECEIMYxY9hG",
+          "rewardRank": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+          "rewardName": "Top 10",
+          "value": 1000.0,
+          "rewardType": "AWDdEArLCgpY-bw2S2S3",
+          "description": "",
+          "delay": 0,
+          "memberAcknowledgmentRequired": false,
+          "metadata": [],
+          "accountId": "Asd3-_J_CgpY-bw2S2Sy",
+          "created": "2020-04-21T11:42:58.389+0000",
+          "id": "12345678",
+          "translations": {},
+          "translatableFields": ["rewardName", "description"],
+          "rewardTypeObject": {
+            "jsonClass": "RewardType",
+            "name": "Points",
+            "key": "points",
+            "description": "",
+            "accountId": "AWDdD_J_CgpY-bw2S2Sy",
+            "system": true,
+            "metadata": [],
+            "created": "2018-01-09T22:35:04.267+0000",
+            "id": "AWDdEArLCgpY-bw2S2S3"
+          },
+          "unitOfMeasure": {
+            "name": "EUR",
+            "jsonClass": "UnitOfMeasure",
+            "key": "EUR",
+            "symbol": "€",
+            "isoCode": "EUR",
+            "id": "OoDDaGYBdjx9MNzr9v8G",
+            "multiplier": 2.0,
+            "unitOfMeasureType": "Currency"
+          }
+        }],
+        "actualStart": "2021-03-15T23:49:30.357+0000",
+        "scheduledStart": "2021-03-15T23:55:00.000+0000",
+        "id": "EhdEOHgBgc9ofrhHczEj",
+        "termsConditions": "<p>a sda das das<br></p>",
+        "status": "Active",
+        "scheduledEnd": "2021-03-17T00:04:00.000+0000",
+        "round": 1,
+        "competitionId": "ARdEOHgBgc9ofrhHYzE3",
+        "roundType": "TimeBound",
+        "strategy": {
+          "type": "SumBest",
+          "limitUpdatesTo": 0,
+          "sumBestXOf": 10,
+          "recordTimeWhenSumReaches": 0.0
+        }
+      }
+    ],
+    "scheduledStart": "2021-03-15T23:49:00.000+0000",
+    "actualStart": "2021-03-15T23:51:30.357+0000",
+    "id": "4",
+    "termsConditions": "<p>a sda das das<br></p>",
+    "status": "Active",
+    "scheduledEnd": "2021-03-17T00:04:00.000+0000"
+  }
+}

@@ -1,0 +1,17 @@
+{
+	"meta": {
+		"time": "2021-01-24T00:29:40.180Z"
+	},
+	"data": {
+		"accountId": "AV4pi7vSeqp9M3jxdmJR",
+		"memberId": "kc_LMXcBfAgbovxzleN7",
+		"participationId": "r3aT9XYBvC6zCqIBaHIS",
+		"value": 0.0,
+		"bestScores": [],
+		"timestamp": 0,
+		"updateCount": 0,
+		"markerTimeStamp": 0,
+		"goalReached": false,
+		"statusCode": -1
+	}
+}

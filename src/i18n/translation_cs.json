@@ -1,0 +1,56 @@
+{
+    "time": {
+        "days": "d",
+        "hours": "h",
+        "minutesShortHand": "min",
+        "minutes": "m",
+        "seconds": "s"
+    },
+    "achievements": {
+        "label": "Úspěchy",
+        "more": "Více",
+        "complete": "dokončeno 100 %"
+    },
+    "tournaments": {
+        "label": "Turnaje",
+        "enter": "Účastnit se turnaje",
+        "readyCompetitions": "Nadcházející turnaje",
+        "activeCompetitions": "Aktivní turnaje",
+        "finishedCompetitions": "Dokončené turnaje",
+        "finishing": "Dokončování",
+        "finished": "Dokončeno",
+        "registered": "Registrace",
+        "noAvailableCompetitions": "Žádná dostupná konkurence"
+    },
+    "leaderboard": {
+        "rank": "Pořadí",
+        "name": "Jméno",
+        "points": "Body",
+        "prize": "Cena",
+        "you": "Vy"
+    },
+    "miniLeaderboard": {
+        "highScore": "Nejvyšší skóre",
+        "lastScore": "Poslední skóre",
+        "rank": "Pořadí",
+        "startsIn": "Zahájeno za",
+        "started": "začal",
+        "starting": "zahajování",
+        "finishing": "dokončování",
+        "finished": "dokončeno"
+    },
+    "rewards": {
+        "label": "Odměny",
+        "claim": "Získat nyní",
+        "claimed": "Získáno",
+        "availableRewards": "Dostupné odměny",
+        "rewards": "Získané odměny",
+        "expiredRewards": "Prošlé odměny"
+    },
+    "messages": {
+        "label": "Zprávy"
+    },
+    "global": {
+        "copy": "Běží na Ziqni"
+    }
+}

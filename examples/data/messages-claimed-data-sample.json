@@ -1,0 +1,616 @@
+{
+  "meta": {
+    "time": "2020-04-21T14:09:30.320Z",
+    "totalRecordsFound": 35,
+    "skip": 0,
+    "limit": 100
+  },
+  "data": [{
+    "jsonClass": "MemberMessage",
+    "accountId": "AWDdD_J_CgpY-bw2S2Sy",
+    "memberId": "AWGFuzP7Ly92DwXg4ae1",
+    "eventRefType": "ContestType",
+    "eventReferenceId": "obkDiHEBy_ovdDa908lQ",
+    "messageType": "Reward",
+    "subject": "asda sdasd asd",
+    "body": "",
+    "prize": {
+      "accountId": "AWDdD_J_CgpY-bw2S2Sy",
+      "memberId": "AWGFuzP7Ly92DwXg4ae1",
+      "reward": {
+        "jsonClass": "Reward",
+        "entityType": "contest",
+        "entityId": "obkDiHEBy_ovdDa908lQ",
+        "rewardRank": "1-10",
+        "rewardName": "asdasda",
+        "value": 100.0,
+        "rewardType": "AWDdEArLCgpY-bw2S2S3",
+        "description": "",
+        "delay": 0,
+        "memberAcknowledgmentRequired": false,
+        "metadata": [],
+        "accountId": "AWDdD_J_CgpY-bw2S2Sy",
+        "created": "2020-04-17T12:01:24.335+0000",
+        "id": "orkDiHEBy_ovdDa908lv",
+        "translations": {}
+      },
+      "claimed": true,
+      "entityType": "Contest",
+      "entityId": "obkDiHEBy_ovdDa908lQ",
+      "created": "2020-04-20T13:11:02.787+0000",
+      "id": "s9m2l3EBjDPdSQhEqRqD"
+    },
+    "status": "New",
+    "created": "2020-04-20T13:11:02.789+0000",
+    "metadata": [{
+      "jsonClass": "Metadata",
+      "key": "icon",
+      "value": ""
+    }],
+    "id": "tNm2l3EBjDPdSQhEqRqF"
+  }, {
+    "jsonClass": "MemberMessage",
+    "accountId": "AWDdD_J_CgpY-bw2S2Sy",
+    "memberId": "AWGFuzP7Ly92DwXg4ae1",
+    "eventRefType": "ContestType",
+    "eventReferenceId": "A6IZZG4Bn1xTN4Z4ti3G",
+    "messageType": "Reward",
+    "subject": "OPT-IN test with finalise",
+    "body": "<p>&nbsp;asd ahsd kashdajkshda kjshdasd asd<br></p> Ut malesuada vulputate tellus, sit amet varius tortor pharetra sit amet. Mauris volutpat quam non sapien facilisis, et ornare nisl condimentum. Ut varius consequat metus. Nullam pulvinar arcu ut eros finibus, eget vehicula nibh vehicula. Nulla facilisi. Aenean malesuada tempor malesuada. Nam gravida risus sed nulla dictum ultrices. Donec ac magna at ex auctor consectetur. Nunc nisi nisi, fringilla et molestie eu, rutrum auctor dui. Etiam commodo porttitor lacus placerat efficitur. Vestibulum condimentum elit imperdiet lacinia rhoncus. Integer fringilla nisi lectus, quis pellentesque dui sodales nec",
+    "prize": {
+      "accountId": "AWDdD_J_CgpY-bw2S2Sy",
+      "memberId": "AWGFuzP7Ly92DwXg4ae1",
+      "reward": {
+        "jsonClass": "Reward",
+        "entityType": "contest",
+        "entityId": "A6IZZG4Bn1xTN4Z4ti3G",
+        "rewardRank": "1-10",
+        "rewardName": "asd",
+        "value": 100.0,
+        "rewardType": "AWDdEArLCgpY-bw2S2S3",
+        "description": "",
+        "delay": 0,
+        "memberAcknowledgmentRequired": false,
+        "metadata": [],
+        "accountId": "AWDdD_J_CgpY-bw2S2Sy",
+        "created": "2019-11-13T09:30:37.173+0000",
+        "id": "BKIZZG4Bn1xTN4Z4ti31",
+        "translations": {}
+      },
+      "claimed": true,
+      "entityType": "Contest",
+      "entityId": "A6IZZG4Bn1xTN4Z4ti3G",
+      "created": "2019-11-13T10:39:43.093+0000",
+      "id": "LpRYZG4B4QFNF1eE-W37"
+    },
+    "status": "New",
+    "created": "2019-11-13T10:39:43.179+0000",
+    "metadata": [{
+      "jsonClass": "Metadata",
+      "key": "icon",
+      "value": ""
+    }],
+    "id": "L5RYZG4B4QFNF1eE-m1L"
+  }, {
+    "jsonClass": "MemberMessage",
+    "accountId": "AWDdD_J_CgpY-bw2S2Sy",
+    "memberId": "AWGFuzP7Ly92DwXg4ae1",
+    "eventRefType": "Achievement",
+    "eventReferenceId": "wRGGPGgBGF3MrwoEIitI",
+    "messageType": "Reward",
+    "subject": "achievement scoring test",
+    "body": "asd",
+    "status": "New",
+    "created": "2019-09-18T07:55:24.663+0000",
+    "metadata": [{
+      "jsonClass": "Metadata",
+      "key": "icon",
+      "value": "gaeG22EBrGt8uv3BrZn8"
+    }],
+    "id": "mXdeQ20B8OmC0SGibKZ3"
+  }, {
+    "jsonClass": "MemberMessage",
+    "accountId": "AWDdD_J_CgpY-bw2S2Sy",
+    "memberId": "AWGFuzP7Ly92DwXg4ae1",
+    "eventRefType": "Achievement",
+    "eventReferenceId": "EqrF52gBqUy1w6w3QSdb",
+    "messageType": "Reward",
+    "subject": "CL test ACH",
+    "body": "a sdsa dasdasasda<br>",
+    "status": "New",
+    "created": "2019-09-01T13:35:16.904+0000",
+    "metadata": [{
+      "jsonClass": "Metadata",
+      "key": "icon",
+      "value": "gaeG22EBrGt8uv3BrZn8"
+    }],
+    "id": "YSgJ7WwBMaTFfFtreSio"
+  }, {
+    "jsonClass": "MemberMessage",
+    "accountId": "AWDdD_J_CgpY-bw2S2Sy",
+    "memberId": "AWGFuzP7Ly92DwXg4ae1",
+    "eventRefType": "Achievement",
+    "eventReferenceId": "wRGGPGgBGF3MrwoEIitI",
+    "messageType": "Reward",
+    "subject": "achievement scoring test",
+    "body": "asd",
+    "status": "New",
+    "created": "2019-02-13T16:49:34.308+0000",
+    "metadata": [{
+      "jsonClass": "Metadata",
+      "key": "icon",
+      "value": "gaeG22EBrGt8uv3BrZn8"
+    }],
+    "id": "k6nD52gBPI8hagyMeutk"
+  }, {
+    "jsonClass": "MemberMessage",
+    "accountId": "AWDdD_J_CgpY-bw2S2Sy",
+    "memberId": "AWGFuzP7Ly92DwXg4ae1",
+    "eventReferenceId": "XhAmQmgBXWpL5fOpJAuE",
+    "messageType": "Reward",
+    "subject": "1",
+    "body": "Reward awarded",
+    "status": "New",
+    "created": "2019-01-12T13:00:22.565+0000",
+    "metadata": [],
+    "id": "XxAmQmgBXWpL5fOpJAul"
+  }, {
+    "jsonClass": "MemberMessage",
+    "accountId": "AWDdD_J_CgpY-bw2S2Sy",
+    "memberId": "AWGFuzP7Ly92DwXg4ae1",
+    "eventRefType": "Achievement",
+    "eventReferenceId": "wRGGPGgBGF3MrwoEIitI",
+    "messageType": "Reward",
+    "subject": "achievement scoring test",
+    "body": "asd",
+    "status": "New",
+    "created": "2019-01-11T11:32:39.070+0000",
+    "metadata": [{
+      "jsonClass": "Metadata",
+      "key": "icon",
+      "value": "gaeG22EBrGt8uv3BrZn8"
+    }],
+    "id": "CMCvPGgBolnscP-meKge"
+  }, {
+    "jsonClass": "MemberMessage",
+    "accountId": "AWDdD_J_CgpY-bw2S2Sy",
+    "memberId": "AWGFuzP7Ly92DwXg4ae1",
+    "eventReferenceId": "f-0dE2cBGzyxRIVTpAFA",
+    "messageType": "Reward",
+    "subject": "asd",
+    "body": "Reward awarded",
+    "status": "New",
+    "created": "2018-11-14T16:46:08.994+0000",
+    "metadata": [],
+    "id": "gO0dE2cBGzyxRIVTpAFi"
+  }, {
+    "jsonClass": "MemberMessage",
+    "accountId": "AWDdD_J_CgpY-bw2S2Sy",
+    "memberId": "AWGFuzP7Ly92DwXg4ae1",
+    "eventRefType": "Achievement",
+    "eventReferenceId": "SWI18WUBl6vMDE-19vzV",
+    "messageType": "Reward",
+    "subject": "CL ACH restriction",
+    "body": "",
+    "status": "New",
+    "created": "2018-11-12T16:04:17.783+0000",
+    "metadata": [{
+      "jsonClass": "Metadata",
+      "key": "icon",
+      "value": "gaeG22EBrGt8uv3BrZn8"
+    }],
+    "id": "VJyqCGcB5Wa8bgftmp33"
+  }, {
+    "jsonClass": "MemberMessage",
+    "accountId": "AWDdD_J_CgpY-bw2S2Sy",
+    "memberId": "AWGFuzP7Ly92DwXg4ae1",
+    "eventRefType": "Achievement",
+    "eventReferenceId": "SWI18WUBl6vMDE-19vzV",
+    "messageType": "Reward",
+    "subject": "CL ACH restriction",
+    "body": "",
+    "status": "New",
+    "created": "2018-11-12T15:16:43.904+0000",
+    "metadata": [{
+      "jsonClass": "Metadata",
+      "key": "icon",
+      "value": "gaeG22EBrGt8uv3BrZn8"
+    }],
+    "id": "npV_CGcB5Wa8bgftD_QA"
+  }, {
+    "jsonClass": "MemberMessage",
+    "accountId": "AWDdD_J_CgpY-bw2S2Sy",
+    "memberId": "AWGFuzP7Ly92DwXg4ae1",
+    "eventRefType": "Achievement",
+    "eventReferenceId": "SWI18WUBl6vMDE-19vzV",
+    "messageType": "Reward",
+    "subject": "CL ACH restriction",
+    "body": "",
+    "status": "New",
+    "created": "2018-11-12T14:17:21.381+0000",
+    "metadata": [{
+      "jsonClass": "Metadata",
+      "key": "icon",
+      "value": "gaeG22EBrGt8uv3BrZn8"
+    }],
+    "id": "U45ICGcB5Wa8bgftsgLl"
+  }, {
+    "jsonClass": "MemberMessage",
+    "accountId": "AWDdD_J_CgpY-bw2S2Sy",
+    "memberId": "AWGFuzP7Ly92DwXg4ae1",
+    "eventReferenceId": "VtwwsWYBTVLxQLJLCh9y",
+    "messageType": "Reward",
+    "subject": "1",
+    "body": "Reward awarded",
+    "status": "New",
+    "created": "2018-10-26T16:23:27.612+0000",
+    "metadata": [],
+    "id": "V9wwsWYBTVLxQLJLCh98"
+  }, {
+    "jsonClass": "MemberMessage",
+    "accountId": "AWDdD_J_CgpY-bw2S2Sy",
+    "memberId": "AWGFuzP7Ly92DwXg4ae1",
+    "eventRefType": "Achievement",
+    "eventReferenceId": "SWI18WUBl6vMDE-19vzV",
+    "messageType": "Reward",
+    "subject": "CL ACH restriction",
+    "body": "",
+    "status": "New",
+    "created": "2018-10-26T16:21:50.700+0000",
+    "metadata": [{
+      "jsonClass": "Metadata",
+      "key": "icon",
+      "value": "gaeG22EBrGt8uv3BrZn8"
+    }],
+    "id": "CdsusWYBTVLxQLJLj0rs"
+  }, {
+    "jsonClass": "MemberMessage",
+    "accountId": "AWDdD_J_CgpY-bw2S2Sy",
+    "memberId": "AWGFuzP7Ly92DwXg4ae1",
+    "eventRefType": "Achievement",
+    "eventReferenceId": "SWI18WUBl6vMDE-19vzV",
+    "messageType": "Reward",
+    "subject": "CL ACH restriction",
+    "body": "",
+    "status": "New",
+    "created": "2018-10-26T16:21:39.721+0000",
+    "metadata": [{
+      "jsonClass": "Metadata",
+      "key": "icon",
+      "value": "gaeG22EBrGt8uv3BrZn8"
+    }],
+    "id": "N9susWYBTVLxQLJLZTcJ"
+  }, {
+    "jsonClass": "MemberMessage",
+    "accountId": "AWDdD_J_CgpY-bw2S2Sy",
+    "memberId": "AWGFuzP7Ly92DwXg4ae1",
+    "eventRefType": "Achievement",
+    "eventReferenceId": "SWI18WUBl6vMDE-19vzV",
+    "messageType": "Reward",
+    "subject": "CL ACH restriction",
+    "body": "",
+    "status": "New",
+    "created": "2018-10-26T16:21:26.061+0000",
+    "metadata": [{
+      "jsonClass": "Metadata",
+      "key": "icon",
+      "value": "gaeG22EBrGt8uv3BrZn8"
+    }],
+    "id": "AtsusWYBTVLxQLJLLyKt"
+  }, {
+    "jsonClass": "MemberMessage",
+    "accountId": "AWDdD_J_CgpY-bw2S2Sy",
+    "memberId": "AWGFuzP7Ly92DwXg4ae1",
+    "eventRefType": "Achievement",
+    "eventReferenceId": "SWI18WUBl6vMDE-19vzV",
+    "messageType": "Reward",
+    "subject": "CL ACH restriction",
+    "body": "",
+    "status": "New",
+    "created": "2018-10-26T16:21:07.359+0000",
+    "metadata": [{
+      "jsonClass": "Metadata",
+      "key": "icon",
+      "value": "gaeG22EBrGt8uv3BrZn8"
+    }],
+    "id": "6totsWYBTVLxQLJL5s2f"
+  }, {
+    "jsonClass": "MemberMessage",
+    "accountId": "AWDdD_J_CgpY-bw2S2Sy",
+    "memberId": "AWGFuzP7Ly92DwXg4ae1",
+    "eventRefType": "Achievement",
+    "eventReferenceId": "SWI18WUBl6vMDE-19vzV",
+    "messageType": "Reward",
+    "subject": "CL ACH restriction",
+    "body": "",
+    "status": "New",
+    "created": "2018-10-26T16:20:52.067+0000",
+    "metadata": [{
+      "jsonClass": "Metadata",
+      "key": "icon",
+      "value": "gaeG22EBrGt8uv3BrZn8"
+    }],
+    "id": "BNotsWYBTVLxQLJLqrnj"
+  }, {
+    "jsonClass": "MemberMessage",
+    "accountId": "AWDdD_J_CgpY-bw2S2Sy",
+    "memberId": "AWGFuzP7Ly92DwXg4ae1",
+    "eventRefType": "Achievement",
+    "eventReferenceId": "SWI18WUBl6vMDE-19vzV",
+    "messageType": "Reward",
+    "subject": "CL ACH restriction",
+    "body": "",
+    "status": "New",
+    "created": "2018-10-26T16:20:38.167+0000",
+    "metadata": [{
+      "jsonClass": "Metadata",
+      "key": "icon",
+      "value": "gaeG22EBrGt8uv3BrZn8"
+    }],
+    "id": "AdotsWYBTVLxQLJLdKWX"
+  }, {
+    "jsonClass": "MemberMessage",
+    "accountId": "AWDdD_J_CgpY-bw2S2Sy",
+    "memberId": "AWGFuzP7Ly92DwXg4ae1",
+    "eventRefType": "Achievement",
+    "eventReferenceId": "SWI18WUBl6vMDE-19vzV",
+    "messageType": "Reward",
+    "subject": "CL ACH restriction",
+    "body": "",
+    "status": "New",
+    "created": "2018-10-26T16:20:23.201+0000",
+    "metadata": [{
+      "jsonClass": "Metadata",
+      "key": "icon",
+      "value": "gaeG22EBrGt8uv3BrZn8"
+    }],
+    "id": "cdotsWYBTVLxQLJLOo0h"
+  }, {
+    "jsonClass": "MemberMessage",
+    "accountId": "AWDdD_J_CgpY-bw2S2Sy",
+    "memberId": "AWGFuzP7Ly92DwXg4ae1",
+    "eventRefType": "Achievement",
+    "eventReferenceId": "SWI18WUBl6vMDE-19vzV",
+    "messageType": "Reward",
+    "subject": "CL ACH restriction",
+    "body": "",
+    "status": "New",
+    "created": "2018-10-26T16:20:09.463+0000",
+    "metadata": [{
+      "jsonClass": "Metadata",
+      "key": "icon",
+      "value": "gaeG22EBrGt8uv3BrZn8"
+    }],
+    "id": "m9otsWYBTVLxQLJLBFh3"
+  }, {
+    "jsonClass": "MemberMessage",
+    "accountId": "AWDdD_J_CgpY-bw2S2Sy",
+    "memberId": "AWGFuzP7Ly92DwXg4ae1",
+    "eventRefType": "Achievement",
+    "eventReferenceId": "SWI18WUBl6vMDE-19vzV",
+    "messageType": "Reward",
+    "subject": "CL ACH restriction",
+    "body": "",
+    "status": "New",
+    "created": "2018-10-26T13:34:18.949+0000",
+    "metadata": [{
+      "jsonClass": "Metadata",
+      "key": "icon",
+      "value": "gaeG22EBrGt8uv3BrZn8"
+    }],
+    "id": "bB2VsGYB5TbZXrPbL39F"
+  }, {
+    "jsonClass": "MemberMessage",
+    "accountId": "AWDdD_J_CgpY-bw2S2Sy",
+    "memberId": "AWGFuzP7Ly92DwXg4ae1",
+    "eventReferenceId": "J26SgWYBt-2pO13ioBZj",
+    "messageType": "Reward",
+    "subject": "1st",
+    "body": "Reward awarded",
+    "status": "New",
+    "created": "2018-10-17T10:29:22.185+0000",
+    "metadata": [],
+    "id": "KG6SgWYBt-2pO13ioBaJ"
+  }, {
+    "jsonClass": "MemberMessage",
+    "accountId": "AWDdD_J_CgpY-bw2S2Sy",
+    "memberId": "AWGFuzP7Ly92DwXg4ae1",
+    "eventRefType": "Achievement",
+    "eventReferenceId": "SWI18WUBl6vMDE-19vzV",
+    "messageType": "Reward",
+    "subject": "CL ACH restriction",
+    "body": "",
+    "status": "New",
+    "created": "2018-10-17T09:43:24.023+0000",
+    "metadata": [{
+      "jsonClass": "Metadata",
+      "key": "icon",
+      "value": "gaeG22EBrGt8uv3BrZn8"
+    }],
+    "id": "_9dogWYB9dlnPy5XihJ3"
+  }, {
+    "jsonClass": "MemberMessage",
+    "accountId": "AWDdD_J_CgpY-bw2S2Sy",
+    "memberId": "AWGFuzP7Ly92DwXg4ae1",
+    "eventRefType": "Achievement",
+    "eventReferenceId": "SWI18WUBl6vMDE-19vzV",
+    "messageType": "Reward",
+    "subject": "CL ACH restriction",
+    "body": "",
+    "status": "New",
+    "created": "2018-10-17T09:21:55.674+0000",
+    "metadata": [{
+      "jsonClass": "Metadata",
+      "key": "icon",
+      "value": "gaeG22EBrGt8uv3BrZn8"
+    }],
+    "id": "C9RUgWYB9dlnPy5X4Sja"
+  }, {
+    "jsonClass": "MemberMessage",
+    "accountId": "AWDdD_J_CgpY-bw2S2Sy",
+    "memberId": "AWGFuzP7Ly92DwXg4ae1",
+    "eventRefType": "Achievement",
+    "eventReferenceId": "SWI18WUBl6vMDE-19vzV",
+    "messageType": "Reward",
+    "subject": "CL ACH restriction",
+    "body": "",
+    "status": "New",
+    "created": "2018-10-17T09:04:33.186+0000",
+    "metadata": [{
+      "jsonClass": "Metadata",
+      "key": "icon",
+      "value": "gaeG22EBrGt8uv3BrZn8"
+    }],
+    "id": "KRZEgWYBR1oxqqhD-QOi"
+  }, {
+    "jsonClass": "MemberMessage",
+    "accountId": "AWDdD_J_CgpY-bw2S2Sy",
+    "memberId": "AWGFuzP7Ly92DwXg4ae1",
+    "eventRefType": "Achievement",
+    "eventReferenceId": "SWI18WUBl6vMDE-19vzV",
+    "messageType": "Reward",
+    "subject": "CL ACH restriction",
+    "body": "",
+    "status": "New",
+    "created": "2018-10-17T09:00:36.450+0000",
+    "metadata": [{
+      "jsonClass": "Metadata",
+      "key": "icon",
+      "value": "gaeG22EBrGt8uv3BrZn8"
+    }],
+    "id": "2BVBgWYBR1oxqqhDXGvi"
+  }, {
+    "jsonClass": "MemberMessage",
+    "accountId": "AWDdD_J_CgpY-bw2S2Sy",
+    "memberId": "AWGFuzP7Ly92DwXg4ae1",
+    "eventRefType": "Achievement",
+    "eventReferenceId": "SWI18WUBl6vMDE-19vzV",
+    "messageType": "Reward",
+    "subject": "CL ACH restriction",
+    "body": "",
+    "status": "New",
+    "created": "2018-10-17T08:55:32.884+0000",
+    "metadata": [{
+      "jsonClass": "Metadata",
+      "key": "icon",
+      "value": "gaeG22EBrGt8uv3BrZn8"
+    }],
+    "id": "jBQ8gWYBR1oxqqhDu60U"
+  }, {
+    "jsonClass": "MemberMessage",
+    "accountId": "AWDdD_J_CgpY-bw2S2Sy",
+    "memberId": "AWGFuzP7Ly92DwXg4ae1",
+    "eventRefType": "Achievement",
+    "eventReferenceId": "23lk5mUBY8dZ9bBC_gYq",
+    "messageType": "Reward",
+    "subject": "test",
+    "body": "",
+    "status": "New",
+    "created": "2018-09-17T07:19:43.792+0000",
+    "metadata": [{
+      "jsonClass": "Metadata",
+      "key": "icon",
+      "value": "gaeG22EBrGt8uv3BrZn8"
+    }],
+    "id": "Jsdm5mUBRf1we4gAOSuw"
+  }, {
+    "jsonClass": "MemberMessage",
+    "accountId": "AWDdD_J_CgpY-bw2S2Sy",
+    "memberId": "AWGFuzP7Ly92DwXg4ae1",
+    "eventRefType": "Achievement",
+    "eventReferenceId": "23lk5mUBY8dZ9bBC_gYq",
+    "messageType": "Reward",
+    "subject": "test",
+    "body": "",
+    "status": "New",
+    "created": "2018-09-17T07:19:31.371+0000",
+    "metadata": [{
+      "jsonClass": "Metadata",
+      "key": "icon",
+      "value": "gaeG22EBrGt8uv3BrZn8"
+    }],
+    "id": "L8dm5mUBRf1we4gACSkr"
+  }, {
+    "jsonClass": "MemberMessage",
+    "accountId": "AWDdD_J_CgpY-bw2S2Sy",
+    "memberId": "AWGFuzP7Ly92DwXg4ae1",
+    "eventReferenceId": "nIpUhGUBzmcodhDCkf54",
+    "messageType": "Reward",
+    "subject": "1",
+    "body": "Reward awarded",
+    "status": "New",
+    "created": "2018-08-29T06:17:39.461+0000",
+    "metadata": [],
+    "id": "nYpUhGUBzmcodhDCkf6F"
+  }, {
+    "jsonClass": "MemberMessage",
+    "accountId": "AWDdD_J_CgpY-bw2S2Sy",
+    "memberId": "AWGFuzP7Ly92DwXg4ae1",
+    "eventRefType": "Achievement",
+    "eventReferenceId": "bv1dJWUBbQ4M40MIboyG",
+    "messageType": "Reward",
+    "subject": "hello world",
+    "body": "",
+    "status": "New",
+    "created": "2018-08-29T06:11:53.787+0000",
+    "metadata": [{
+      "jsonClass": "Metadata",
+      "key": "icon",
+      "value": "gaeG22EBrGt8uv3BrZn8"
+    }],
+    "id": "WopPhGUBzmcodhDCS8w7"
+  }, {
+    "jsonClass": "MemberMessage",
+    "accountId": "AWDdD_J_CgpY-bw2S2Sy",
+    "memberId": "AWGFuzP7Ly92DwXg4ae1",
+    "eventReferenceId": "w7RLgGUB66vnkU0hBfrS",
+    "messageType": "Reward",
+    "subject": "1",
+    "body": "Reward awarded",
+    "status": "New",
+    "created": "2018-08-28T11:28:45.110+0000",
+    "metadata": [],
+    "id": "xLRLgGUB66vnkU0hBvo2"
+  }, {
+    "jsonClass": "MemberMessage",
+    "accountId": "AWDdD_J_CgpY-bw2S2Sy",
+    "memberId": "AWGFuzP7Ly92DwXg4ae1",
+    "eventRefType": "Achievement",
+    "eventReferenceId": "cf1hJWUBbQ4M40MIDoyk",
+    "messageType": "Reward",
+    "subject": "test 2",
+    "body": "",
+    "status": "New",
+    "created": "2018-08-28T10:29:00.032+0000",
+    "metadata": [{
+      "jsonClass": "Metadata",
+      "key": "icon",
+      "value": "e6eG22EBrGt8uv3BlZnE"
+    }],
+    "id": "3QsUgGUBTKq_G60VUoAA"
+  }, {
+    "jsonClass": "MemberMessage",
+    "accountId": "AWDdD_J_CgpY-bw2S2Sy",
+    "memberId": "AWGFuzP7Ly92DwXg4ae1",
+    "eventReferenceId": "SKCQJGUBpNwoYU1mA0yy",
+    "messageType": "Reward",
+    "subject": "asd",
+    "body": "Reward awarded",
+    "status": "New",
+    "created": "2018-08-10T15:59:02.789+0000",
+    "metadata": [],
+    "id": "c6CQJGUBpNwoYU1mBEyF"
+  }, {
+    "jsonClass": "MemberMessage",
+    "accountId": "AWDdD_J_CgpY-bw2S2Sy",
+    "memberId": "AWGFuzP7Ly92DwXg4ae1",
+    "eventReferenceId": "dZEOJGUBpNwoYU1mAxvg",
+    "messageType": "Reward",
+    "subject": "1",
+    "body": "Reward awarded",
+    "status": "New",
+    "created": "2018-08-10T13:37:03.159+0000",
+    "metadata": [],
+    "id": "dpEOJGUBpNwoYU1mBBu3"
+  }]
+}

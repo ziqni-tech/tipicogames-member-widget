@@ -1,0 +1,56 @@
+{
+    "time": {
+        "days": "hari",
+        "hours": "jam",
+        "minutesShortHand": "min",
+        "minutes": "minit",
+        "seconds": "saat"
+    },
+    "achievements": {
+        "label": "pencapaian",
+        "more": "lagi",
+        "complete": "lengkap 100%"
+    },
+    "tournaments": {
+		"label":"pertandingan",
+        "enter": "pertandingan",
+        "readyCompetitions": "Pertandingan Akan Datang",
+        "activeCompetitions": "Pertandingan Aktif",
+        "finishedCompetitions": "Pertandingan Selesai",
+        "finishing": "Akan Tamat",
+        "finished": "Tamat",
+        "registered": "Didaftar",
+        "noAvailableCompetitions": "Tiada pertandingan tersedia"
+    },
+    "leaderboard": {
+        "rank": "kedudukan",
+        "name": "nama",
+        "points": "mata",
+        "prize": "hadiah",
+        "you": "Anda"
+    },
+    "miniLeaderboard": {
+        "highScore": "Skor Tinggi",
+        "lastScore": "Skor Terakhir",
+        "rank": "Kedudukan",
+        "startsIn": "Bermula dalam",
+        "started": "bermula",
+        "starting": "Bermula",
+        "finishing": "akan tamat",
+        "finished": "tamat"
+    },
+    "rewards": {
+        "label": "Ganjaran",
+        "claim": "Tuntut Sekarang",
+        "claimed": "Dituntut",
+        "availableRewards": "Ganjaran Tersedia",
+        "rewards": "Ganjaran Yang Dituntut",
+        "expiredRewards": "Ganjaran Luput"
+    },
+    "messages": {
+        "label": "Mesej"
+    },
+    "global": {
+        "copy": "Dikuasakan oleh Ziqni"
+    }
+}

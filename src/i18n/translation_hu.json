@@ -1,0 +1,56 @@
+{
+    "time": {
+        "days": "nap",
+        "hours": "óra",
+        "minutesShortHand": "λεπ",
+        "minutes": "perc",
+        "seconds": "másodperc"
+    },
+    "achievements": {
+        "label": "eredmények",
+        "more": "több",
+        "complete": "100% kész"
+    },
+    "tournaments": {
+		"label":"bajnokságok",
+        "enter": "Belépés a bajnokságba",
+        "readyCompetitions": "Közelgő bajnokságok",
+        "activeCompetitions": "Aktív bajnokságok",
+        "finishedCompetitions": "Befejezett bajnokságok",
+        "finishing": "Befejezés",
+        "finished": "Befejezve",
+        "registered": "Regisztrált",
+        "noAvailableCompetitions": "Nincs elérhető verseny"
+    },
+    "leaderboard": {
+        "rank": "rangsor",
+        "name": "név",
+        "points": "pont",
+        "prize": "díj",
+        "you": "Te"
+    },
+    "miniLeaderboard": {
+        "highScore": "Magas pontszám",
+        "lastScore": "Utolsó pontszám",
+        "rank": "rangsor",
+        "startsIn": "Kezdés:",
+        "started": "elkezdődött",
+        "starting": "Kezdés",
+        "finishing": "befejezés",
+        "finished": "befejezve"
+    },
+    "rewards": {
+        "label": "Jutalmak",
+        "claim": "Igénylés most",
+        "claimed": "Igényelve",
+        "availableRewards": "Elérhető jutalmak",
+        "rewards": "Igényelt jutalmak",
+        "expiredRewards": "Lejárt jutalmak"
+    },
+    "messages": {
+        "label": "Üzenetek"
+    },
+    "global": {
+        "copy": "Üzemeltető: Ziqni"
+    }
+}

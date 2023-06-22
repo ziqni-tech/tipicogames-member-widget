@@ -1,0 +1,56 @@
+{
+    "time": {
+        "days": "d",
+        "hours": "h",
+        "minutesShortHand": "min",
+        "minutes": "m",
+        "seconds": "s"
+    },
+    "achievements": {
+        "label": "Resultater",
+        "more": "Mere",
+        "complete": "færdiggør 100%"
+    },
+    "tournaments": {
+        "label": "Turneringer",
+        "enter": "Gå ind i turnering",
+        "readyCompetitions": "Kommende turneringer",
+        "activeCompetitions": "Aktive turneringer",
+        "finishedCompetitions": "Afsluttede turneringer",
+        "finishing": "Afslutter",
+        "finished": "Afsluttet",
+        "registered": "Registreret",
+        "noAvailableCompetitions": "Ingen tilgængelig konkurrence"
+    },
+    "leaderboard": {
+        "rank": "Rang",
+        "name": "Navn",
+        "points": "Point",
+        "prize": "Præmie",
+        "you": "Du"
+    },
+    "miniLeaderboard": {
+        "highScore": "Højeste score",
+        "lastScore": "Sidste score",
+        "rank": "Rang",
+        "startsIn": "Begynder i",
+        "started": "startede",
+        "starting": "begynder",
+        "finishing": "afslutter",
+        "finished": "afsluttet"
+    },
+    "rewards": {
+        "label": "Belønninger",
+        "claim": "Kræv nu",
+        "claimed": "Krævet",
+        "availableRewards": "Tilgængelige belønninger",
+        "rewards": "Krævede belønninger",
+        "expiredRewards": "Udløbne belønninger"
+    },
+    "messages": {
+        "label": "Beskeder"
+    },
+    "global": {
+        "copy": "Drives af Ziqni"
+    }
+}

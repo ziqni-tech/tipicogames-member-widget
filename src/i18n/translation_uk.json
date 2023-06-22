@@ -1,0 +1,56 @@
+{
+    "time": {
+        "days": "днів",
+        "hours": "год",
+        "minutesShortHand": "хв",
+        "minutes": "хв",
+        "seconds": "с"
+    },
+    "achievements": {
+        "label": "Досягнення",
+        "more": "Більше",
+        "complete": "завершено 100%"
+    },
+    "tournaments": {
+        "label": "Турніри",
+        "enter": "Увійти в турнір",
+        "readyCompetitions": "Майбутні турніри",
+        "activeCompetitions": "Активні турніри",
+        "finishedCompetitions": "Закінчені турніри",
+        "finishing": "Закінчуються",
+        "finished": "Закінчені",
+        "registered": "Зареєстровані",
+        "noAvailableCompetitions": "Відсутні конкуренції"
+    },
+    "leaderboard": {
+        "rank": "Місце",
+        "name": "Ім'я",
+        "points": "Очки",
+        "prize": "Приз",
+        "you": "Ви"
+    },
+    "miniLeaderboard": {
+        "highScore": "Високий результат",
+        "lastScore": "Останній результат",
+        "rank": "Місце",
+        "startsIn": "Починаються в",
+        "started": "розпочато",
+        "starting": "починаються",
+        "finishing": "закінчуються",
+        "finished": "закінчені"
+    },
+    "rewards": {
+        "label": "Винагороди",
+        "claim": "Запитати зараз",
+        "claimed": "Запитані",
+        "availableRewards": "Доступні винагороди",
+        "rewards": "Запитані винагороди",
+        "expiredRewards": "Прострочені винагороди"
+    },
+    "messages": {
+        "label": "Повідомлення"
+    },
+    "global": {
+        "copy": "На платформі Ziqni"
+    }
+}

@@ -1,0 +1,194 @@
+.cl-leaderboard-container, .cl-leaderboard-widget{
+    float:left;
+    width:100%;
+    max-width:570px;
+    min-width:200px;
+    height:auto;
+    margin:0;
+    padding: 0;
+    box-sizing:border-box;
+    position:relative;
+    z-index:100;
+    overflow:inherit;
+    visibility:visible;
+    outline:none;
+    font-family: Helvetica, Arial, serif;
+    border:none;
+    display: block;
+}
+.cl-leaderboard-wrapper{
+    float:left;
+    width:100%;
+    max-width:450px;
+    min-width:200px;
+    height:auto;
+    margin:0;
+    padding: 7px 5px;
+    box-sizing:border-box;
+    position:relative;
+    z-index:100;
+    overflow:hidden;
+    visibility:visible;
+    outline:none;
+    box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2);
+    background: #ffffff none repeat scroll 0 0;
+}
+.cl-leaderboard-wrapper *{
+    box-sizing:border-box;
+    font-size:14px;
+    line-height:20px;
+}
+.cl-leaderboard-wrapper ul{
+    float: left;
+    list-style: outside none none;
+    margin: 0;
+    max-height: 250px;
+    overflow: auto;
+    padding: 5px 15px;
+    width: 100%;
+}
+.cl-leaderboard-wrapper .cl-leaderboard-preloader {
+    bottom: 3px;
+    height: 24px;
+    position: absolute;
+    right: 3px;
+    width: 24px;
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 4px;
+}
+.cl-leaderboard-wrapper ul .headers{
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.cl-leaderboard-wrapper ul .headers div{
+    font-size: 12px;
+}
+.cl-leaderboard-wrapper ul li{
+    float:left;
+    font-size: 11px;
+    width:100%;
+    padding:0;
+    margin:0;
+    border-bottom:1px solid #eeeeee;
+}
+.cl-leaderboard-wrapper ul li div{
+    font-size: 12px;
+}
+.cl-leaderboard-wrapper .cl-left{
+    float:left;
+}
+.cl-leaderboard-wrapper .cl-right{
+    float:right;
+}
+.cl-leaderboard-wrapper .cl-position{
+    width:15%;
+}
+.cl-leaderboard-wrapper .cl-entrant{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 65%;
+}
+.cl-leaderboard-wrapper .cl-points{
+    width:20%;
+}
+.cl-leaderboard-wrapper .cl-prizes{
+    width:15%;
+}
+.cl-leaderboard-wrapper .no-data{
+    font-size: 12px;
+    line-height: 36px;
+}
+
+
+.cl-leaderboard-wrapper .cl-with-prizes .cl-entrant{
+    width: 45%;
+}
+
+
+
+
+
+
+
+
+/**
+ * Competition leaderboard extention
+ */
+.cl-leaderboard-round-navigation {
+    border: medium none;
+    box-shadow: none;
+    float: right;
+    list-style: outside none none;
+    margin: 0 1px -1px 10px;
+    padding: 0;
+    position: relative;
+    width: 80%;
+    z-index: 101;
+}
+.cl-leaderboard-round-navigation li{
+    background: #ffffff none repeat scroll 0 0;
+    border: 1px solid #eeeeee;
+    border-radius: 3px 3px 0 0;
+    box-shadow: 0 -2px 2px 0 rgba(0, 0, 0, 0.05);
+    float: left;
+    font-size: 12px;
+    line-height: 20px;
+    padding: 0 7px;
+    width: auto;
+    cursor:pointer;
+    opacity: 0.4;
+}
+.cl-leaderboard-round-navigation li:hover{
+    background: #eeeeee;
+}
+.cl-leaderboard-round-navigation li.cl-active-round {
+    border-bottom: medium none;
+    background: #ffffff;
+    opacity: 1;
+}
+.cl-leaderboard-contest-navigation {
+    border: medium none;
+    box-shadow: -2px -1px 3px 0 rgba(0, 0, 0, 0.05);
+    float: left;
+    list-style: outside none none;
+    margin: 0 0 0 0;
+    padding: 0;
+    position: relative;
+    text-align: right;
+    width: 20%;
+    z-index: 101;
+}
+.cl-leaderboard-contest-navigation li{
+    background: #ffffff none repeat scroll 0 0;
+    border: 1px solid #eeeeee;
+    float: left;
+    line-height: 20px;
+    list-style: outside none none;
+    margin: 0;
+    padding: 0 7px;
+    text-align: right;
+    width: 100%;
+    cursor:pointer;
+    opacity: 0.4;
+}
+.cl-leaderboard-contest-navigation li:hover{
+    background: #eeeeee;
+}
+.cl-leaderboard-contest-navigation li.cl-active-contest {
+    border-right: medium none;
+    background: #ffffff;
+    opacity: 1;
+}
+.cl-leaderboard-contest-navigation li.hidden{
+    display:none;
+}
+.cl-leaderboard-widget-inner-wrapper {
+    float: left;
+    margin: 0;
+    padding: 0;
+    width: 80%;
+}
+

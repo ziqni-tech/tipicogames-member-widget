@@ -1,0 +1,22 @@
+{
+	"meta": {
+		"time": "2019-09-19T13:21:49.290Z",
+		"totalRecordsFound": 1,
+		"skip": 0,
+		"limit": 20
+	},
+	"data": [
+		{
+			"statusCode": 3,
+			"numberOfRounds": 1,
+			"description": "<p>Lipsum<br></p>",
+			"optinRequired": false,
+			"label": "Competition example",
+			"scheduledStart": "2019-09-21T09:55:00.000+00:00",
+			"id": "YthZrmwB7dlu_BFFAVXc",
+			"termsConditions": "",
+			"status": "Ready",
+			"scheduledEnd": "2019-09-23T10:55:00.000+00:00"
+		}
+	]
+}

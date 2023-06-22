@@ -1,0 +1,34 @@
+{
+	"meta": {
+		"time": "2019-08-08T11:52:45.987Z"
+	},
+	"data": {
+		"lastUpdated": "2019-08-08T11:36:44.605+00:00",
+		"accountId": "AV4pi7vSeqp9M3jxdmJR",
+		"matchedCount": 0,
+		"achievementId": "ubmB_GkBDlJanIOlWt2O",
+		"memberId": "uhEDcWwBEiOIcOpo57j-",
+		"list": [{
+			"percentageComplete": 0.15,
+			"rule": {
+				"jsonClass": "MainRule",
+				"fact": "event.count",
+				"operator": ">=",
+				"constant": "20",
+				"id": "uLmB_GkBDlJanIOlWt2N",
+				"subConditions": [{
+					"jsonClass": "SubConditionSet",
+					"matchCondition": "All",
+					"mustEvaluateTo": true,
+					"subRules": [{
+						"jsonClass": "SubRule",
+						"fact": "event.action.type",
+						"operator": "==",
+						"constant": "win"
+					}]
+				}]
+			}
+		}],
+		"goalPercentageComplete": 0.15
+	}
+}

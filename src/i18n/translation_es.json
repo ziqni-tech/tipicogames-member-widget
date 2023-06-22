@@ -1,0 +1,56 @@
+{
+    "time": {
+        "days": "d",
+        "hours": "h",
+        "minutesShortHand": "min",
+        "minutes": "m",
+        "seconds": "s"
+    },
+    "achievements": {
+        "label": "Logros",
+        "more": "Más",
+        "complete": "completar 100%"
+    },
+    "tournaments": {
+        "label": "Torneos",
+        "enter": "Entrar en el torneo",
+        "readyCompetitions": "Próximos torneos",
+        "activeCompetitions": "Torneos activos",
+        "finishedCompetitions": "Torneos terminados",
+        "finishing": "Terminando",
+        "finished": "Terminado",
+        "registered": "Registrado",
+        "noAvailableCompetitions": "Sin competencia disponible"
+    },
+    "leaderboard": {
+        "rank": "Clasificación",
+        "name": "Nombre",
+        "points": "Puntos",
+        "prize": "Premio",
+        "you": "Usted"
+    },
+    "miniLeaderboard": {
+        "highScore": "Puntuación más alta",
+        "lastScore": "Ultima puntuación",
+        "rank": "Clasificación",
+        "startsIn": "Empieza en",
+        "started": "empezado",
+        "starting": "empezando",
+        "finishing": "terminando",
+        "finished": "terminado"
+    },
+    "rewards": {
+        "label": "Recompensas",
+        "claim": "Reclamar ahora",
+        "claimed": "Reclamado",
+        "availableRewards": "Recompensas disponibles",
+        "rewards": "Recompensas reclamadas",
+        "expiredRewards": "Recompensas caducadas"
+    },
+    "messages": {
+        "label": "Mensajes"
+    },
+    "global": {
+        "copy": "Desarrollado por Ziqni"
+    }
+}

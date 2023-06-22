@@ -1,0 +1,56 @@
+{
+    "time": {
+        "days": "d",
+        "hours": "h",
+        "minutesShortHand": "min",
+        "minutes": "min",
+        "seconds": "sek"
+    },
+    "achievements": {
+        "label": "Sasniegumi",
+        "more": "Vairāk",
+        "complete": "100% pabeigts"
+    },
+    "tournaments": {
+        "label": "Turnīri",
+        "enter": "Pievienoties turnīram",
+        "readyCompetitions": "Gaidāmie turnīri",
+        "activeCompetitions": "Aktīvie turnīri",
+        "finishedCompetitions": "Pabeigtie turnīri",
+        "finishing": "Beidzas",
+        "finished": "Pabeigti",
+        "registered": "Reģistrēti",
+        "noAvailableCompetitions": "Nav pieejama konkurence"
+    },
+    "leaderboard": {
+        "rank": "Pozīcija",
+        "name": "Vārds",
+        "points": "Punkti",
+        "prize": "Balva",
+        "you": "Jūs"
+    },
+    "miniLeaderboard": {
+        "highScore": "Labākais rezultāts",
+        "lastScore": "Pēdējais rezultāts",
+        "rank": "Pozīcija",
+        "startsIn": "sākas pēc",
+        "started": "sākās",
+        "starting": "sākas",
+        "finishing": "beidzas",
+        "finished": "beigušies"
+    },
+    "rewards": {
+        "label": "Atlīdzības",
+        "claim": "Pieprasīt tagad",
+        "claimed": "Pieprasītas",
+        "availableRewards": "Pieejamās atlīdzības",
+        "rewards": "Pieprasītās atlīdzības",
+        "expiredRewards": "Nesaņemtās atlīdzības"
+    },
+    "messages": {
+        "label": "Ziņojumi"
+    },
+    "global": {
+        "copy": "Darbojas ar Ziqni atbalstu"
+    }
+}

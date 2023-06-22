@@ -1,0 +1,36 @@
+{
+	"meta": {
+		"time": "2019-08-08T11:52:45.878Z"
+	},
+	"data": [{
+		"name": "test",
+		"scheduling": {
+			"scheduleType": "Once",
+			"every": [],
+			"startDate": "2019-04-08T10:31:00.000+00:00",
+			"onlyAggregateOnActiveDays": false
+		},
+		"description": "as dasdasd",
+		"icon": "daeC22EBrGt8uv3Bd5lJ",
+		"deprecated": false,
+		"achievementLiveStatus": "Live",
+		"initialState": 0,
+		"id": "ubmB_GkBDlJanIOlWt2O",
+		"category": ["test"]
+	}, {
+		"name": "Castle",
+		"scheduling": {
+			"scheduleType": "Once",
+			"every": [],
+			"startDate": "2018-02-28T08:23:27.473+00:00",
+			"onlyAggregateOnActiveDays": false
+		},
+		"description": "Demo Castle object",
+		"icon": "bKeC22EBrGt8uv3BUZn4",
+		"deprecated": true,
+		"achievementLiveStatus": "Live",
+		"initialState": 0,
+		"id": "bqeC22EBrGt8uv3BWZno",
+		"category": ["Demo"]
+	}]
+}

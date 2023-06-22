@@ -1,0 +1,56 @@
+{
+    "time": {
+        "days": "d",
+        "hours": "v",
+        "minutesShortHand": "min",
+        "minutes": "m",
+        "seconds": "s"
+    },
+    "achievements": {
+        "label": "Pasiekimai",
+        "more": "Daugiau",
+        "complete": "užbaigtas 100%"
+    },
+    "tournaments": {
+        "label": "Turnyrai",
+        "enter": "Dalyvauti Turnyre",
+        "readyCompetitions": "Būsimi Turnyrai",
+        "activeCompetitions": "Vykstantys Turnyrai",
+        "finishedCompetitions": "Pasibaigę turnyrai",
+        "finishing": "Besibaigiantys",
+        "finished": "Pasibaigę",
+        "registered": "Užregistruotas",
+        "noAvailableCompetitions": "Šiuo metu turnyrų nėra"
+    },
+    "leaderboard": {
+        "rank": "Vieta",
+        "name": "Vardas",
+        "points": "Taškai",
+        "prize": "Prizai",
+        "you": "Jūs"
+    },
+    "miniLeaderboard": {
+        "highScore": "Aukščiausias rezultatas",
+        "lastScore": "Paskutinis rezultatas",
+        "rank": "Vieta",
+        "startsIn": "Prasided už",
+        "started": "prasidėjo",
+        "starting": "prasideda",
+        "finishing": "baigiasi",
+        "finished": "pasibaigė"
+    },
+    "rewards": {
+        "label": "Apdovanojimai",
+        "claim": "Atsiimti dabar",
+        "claimed": "Atsiimtas",
+        "availableRewards": "Galimi Apdovanojimai",
+        "rewards": "Atsiimti Apdovanojimai",
+        "expiredRewards": "Pasibaigė Galioti Apdovanojimai"
+    },
+    "messages": {
+        "label": "Žinutės"
+    },
+    "global": {
+        "copy": "Sukūrė Ziqni"
+    }
+}

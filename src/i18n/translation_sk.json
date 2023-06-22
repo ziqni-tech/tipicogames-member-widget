@@ -1,0 +1,56 @@
+{
+    "time": {
+        "days": "dní",
+        "hours": "hodín",
+        "minutesShortHand": "min",
+        "minutes": "minút",
+        "seconds": "sekúnd"
+    },
+    "achievements": {
+        "label": "misie",
+        "more": "viac",
+        "complete": "100% dokončené"
+    },
+    "tournaments": {
+		"label":"turnaje",
+        "enter": "Vstúpiť do turnaja",
+        "readyCompetitions": "Nadchádzajúce turnaje",
+        "activeCompetitions": "Aktívne turnaje",
+        "finishedCompetitions": "Ukončené turnaje",
+        "finishing": "Končí sa",
+        "finished": "Ukončené",
+        "registered": "Zaregistrovaný",
+        "noAvailableCompetitions": "Súťaž nie je k dispozícii"
+    },
+    "leaderboard": {
+        "rank": "úroveň",
+        "name": "meno",
+        "points": "body",
+        "prize": "cena",
+        "you": "Ty"
+    },
+    "miniLeaderboard": {
+        "highScore": "Najvyššie skóre",
+        "lastScore": "Posledné skóre",
+        "rank": "úroveň",
+        "startsIn": "Začiatok o",
+        "started": "začalo sa",
+        "starting": "Začína sa",
+        "finishing": "Končí sa",
+        "finished": "Ukončené"
+    },
+    "rewards": {
+        "label": "Odmeny",
+        "claim": "Uplatniť teraz",
+        "claimed": "Uplatnené",
+        "availableRewards": "Odmeny k dispozícii",
+        "rewards": "Uplatnené odmeny",
+        "expiredRewards": "Expirované odmeny"
+    },
+    "messages": {
+        "label": "Správy"
+    },
+    "global": {
+        "copy": "Beží na Ziqni"
+    }
+}

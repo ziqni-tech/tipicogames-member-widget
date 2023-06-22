@@ -1,0 +1,56 @@
+{
+    "time": {
+        "days": "วัน",
+        "hours": "ชม.",
+        "minutesShortHand": "นาที",
+        "minutes": "นาที",
+        "seconds": "วินาที"
+    },
+    "achievements": {
+        "label": "ความสำเร็จ",
+        "more": "เพิ่มเติม",
+        "complete": "เสร็จสมบูรณ์ 100%"
+    },
+    "tournaments": {
+        "label": "การแข่งขัน",
+        "enter": "เข้าสู่การแข่งขัน",
+        "readyCompetitions": "การแข่งขันที่จะเกิดขึ้น",
+        "activeCompetitions": "การแข่งขันที่ดำเนินการอยู่",
+        "finishedCompetitions": "การแข่งขันเสร็จสิ้น",
+        "finishing": "กำลังดำเนินการ",
+        "finished": "เสร็จสิ้น",
+        "registered": "ลงทะเบียนแล้ว",
+        "noAvailableCompetitions": "ไม่มีการแข่งขัน"
+    },
+    "leaderboard": {
+        "rank": "อันดับ",
+        "name": "ชื่อ",
+        "points": "แต้ม",
+        "prize": "รางวัล",
+        "you": "คุณ"
+    },
+    "miniLeaderboard": {
+        "highScore": "คะแนนสูงสุด",
+        "lastScore": "คะแนนล่าสุด",
+        "rank": "อันดับ",
+        "startsIn": "เริ่มต้นใน",
+        "started": "เริ่มแล้ว",
+        "starting": "กำลังเริ่ม",
+        "finishing": "กำลังดำเนินการ",
+        "finished": "เสร็จสิ้น"
+    },
+    "rewards": {
+        "label": "รางวัล",
+        "claim": "รับทันที",
+        "claimed": "รับแล้ว",
+        "availableRewards": "รางวัลที่มี",
+        "rewards": "รางวัลที่รับแล้ว",
+        "expiredRewards": "รางวัลที่หมดอายุ"
+    },
+    "messages": {
+        "label": "ข้อความ"
+    },
+    "global": {
+        "copy": "ทำงานด้วย Ziqni"
+    }
+}

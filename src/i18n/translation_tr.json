@@ -1,0 +1,56 @@
+{
+    "time": {
+        "days": "gün",
+        "hours": "saat",
+        "minutesShortHand": "dk",
+        "minutes": "dakika",
+        "seconds": "saniye"
+    },
+    "achievements": {
+        "label": "başarılar",
+        "more": "daha fazla",
+        "complete": "%100 tamamla"
+    },
+    "tournaments": {
+		"label":"turnuvalar",
+        "enter": "Turnuvaya gir",
+        "readyCompetitions": "Yaklaşan Turnuvalar",
+        "activeCompetitions": "Aktif Turnuvalar",
+        "finishedCompetitions": "Bitmiş Turnuvalar",
+        "finishing": "Bitiyor",
+        "finished": "Bitti",
+        "registered": "Kayıtlı",
+        "noAvailableCompetitions": "Mevcut yarışma yok"
+    },
+    "leaderboard": {
+        "rank": "sıralama",
+        "name": "adı",
+        "points": "puan",
+        "prize": "ödül",
+        "you": "Sen"
+    },
+    "miniLeaderboard": {
+        "highScore": "En Yüksek Skor",
+        "lastScore": "Son Skor",
+        "rank": "Sıralama",
+        "startsIn": "Başlamasına kalan süre:",
+        "started": "başladı",
+        "starting": "Başlıyor ",
+        "finishing": "bitiyor",
+        "finished": "bitti"
+    },
+    "rewards": {
+        "label": "Ödüller",
+        "claim": "Şimdi Al",
+        "claimed": "Alındı",
+        "availableRewards": "Kullanılabilir Ödüller",
+        "rewards": "Alınan Ödüller",
+        "expiredRewards": "Süresi Dolan Ödüller"
+    },
+    "messages": {
+        "label": "Mesajlar"
+    },
+    "global": {
+        "copy": "Ziqni tarafından destekleniyor"
+    }
+}

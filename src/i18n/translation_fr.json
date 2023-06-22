@@ -1,0 +1,56 @@
+{
+    "time": {
+        "days": "j",
+        "hours": "h",
+        "minutesShortHand": "min",
+        "minutes": "m",
+        "seconds": "s"
+    },
+    "achievements": {
+        "label": "Succès",
+        "more": "Plus",
+        "complete": "terminé à 100 %"
+    },
+    "tournaments": {
+        "label": "Tournois",
+        "enter": "Participer au tournoi",
+        "readyCompetitions": "Tournois à venir",
+        "activeCompetitions": "Tournois actifs",
+        "finishedCompetitions": "Tournois terminés",
+        "finishing": "Se termine",
+        "finished": "Terminé",
+        "registered": "Inscrit",
+        "noAvailableCompetitions": "Aucun concours disponible"
+    },
+    "leaderboard": {
+        "rank": "Rang",
+        "name": "Nom",
+        "points": "Points",
+        "prize": "Prix",
+        "you": "Tu"
+    },
+    "miniLeaderboard": {
+        "highScore": "Meilleur score",
+        "lastScore": "Dernier score",
+        "rank": "Rang",
+        "startsIn": "Débute dans",
+        "started": "commencé",
+        "starting": "débute",
+        "finishing": "Se termine",
+        "finished": "terminé"
+    },
+    "rewards": {
+        "label": "Récompenses",
+        "claim": "Échanger maintenant",
+        "claimed": "Échangées",
+        "availableRewards": "Récompenses disponibles",
+        "rewards": "Récompenses échangées",
+        "expiredRewards": "Récompenses expirées"
+    },
+    "messages": {
+        "label": "Messages"
+    },
+    "global": {
+        "copy": "Optimisé par Ziqni"
+    }
+}

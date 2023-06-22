@@ -1,0 +1,56 @@
+{
+    "time": {
+        "days": "hari",
+        "hours": "jam",
+        "minutesShortHand": "mnt",
+        "minutes": "menit",
+        "seconds": "detik"
+    },
+    "achievements": {
+        "label": "prestasi",
+        "more": "selengkapnya",
+        "complete": "selesaikan 100%"
+    },
+    "tournaments": {
+		"label":"turnamen",
+        "enter": "Masuki turnamen",
+        "readyCompetitions": "Turnamen Mendatang",
+        "activeCompetitions": "Turnamen Aktif",
+        "finishedCompetitions": "Turnamen Selesai",
+        "finishing": "Terakhir",
+        "finished": "Selesai",
+        "registered": "Terdaftar",
+        "noAvailableCompetitions": "Tidak ada kompetisi"
+    },
+    "leaderboard": {
+        "rank": "peringkat",
+        "name": "nama",
+        "points": "poin",
+        "prize": "hadiah",
+        "you": "Anda"
+    },
+    "miniLeaderboard": {
+        "highScore": "Skor Tinggi",
+        "lastScore": "Skor Terakhir",
+        "rank": "Peringkat",
+        "startsIn": "Mulai dalam",
+        "started": "dimulai",
+        "starting": "Mulai",
+        "finishing": "terakhir",
+        "finished": "selesai"
+    },
+    "rewards": {
+        "label": "Imbalan",
+        "claim": "Klaim Sekarang",
+        "claimed": "Diklaim",
+        "availableRewards": "Imbalan Tersedia",
+        "rewards": "Imbalan Diklaim",
+        "expiredRewards": "Imbalan Kedaluwarsa"
+    },
+    "messages": {
+        "label": "Pesan"
+    },
+    "global": {
+        "copy": "Didukung oleh Ziqni"
+    }
+}
