@@ -513,9 +513,6 @@ export const MainWidget = function (options) {
     var sectionACHListBody = document.createElement('div');
     var sectionACHListBodyResults = document.createElement('div');
 
-    var sectionACHFooter = document.createElement('div');
-    var sectionACHFooterContent = document.createElement('div');
-
     var sectionAchievementDetailsContainer = document.createElement('div');
     var sectionAchievementDetailsHeader = document.createElement('div');
     var sectionAchievementDetailsHeaderLabel = document.createElement('div');
@@ -546,10 +543,6 @@ export const MainWidget = function (options) {
     sectionACHListBody.setAttribute('class', 'cl-main-widget-ach-list-body');
     sectionACHListBodyResults.setAttribute('class', 'cl-main-widget-ach-list-body-res');
 
-    // footer
-    sectionACHFooter.setAttribute('class', 'cl-main-widget-ach-footer');
-    sectionACHFooterContent.setAttribute('class', 'cl-main-widget-ach-footer-content');
-
     // details section
     sectionAchievementDetailsContainer.setAttribute('class', 'cl-main-widget-ach-details-container');
     sectionAchievementDetailsHeader.setAttribute('class', 'cl-main-widget-ach-details-header');
@@ -561,9 +554,6 @@ export const MainWidget = function (options) {
     sectionAchievementDetailsBody.setAttribute('class', 'cl-main-widget-ach-details-body');
     sectionAchievementDetailsOptInContainer.setAttribute('class', 'cl-main-widget-ach-details-optin-container');
     sectionAchievementDetailsOptInAction.setAttribute('class', 'cl-main-widget-ach-details-optin-action');
-
-    sectionACHHeaderLabel.innerHTML = _this.settings.lbWidget.settings.translation.achievements.label;
-    sectionACHFooterContent.innerHTML = _this.settings.lbWidget.settings.translation.global.copy;
 
     sectionAchievementDetailsOptInAction.innerHTML = _this.settings.lbWidget.settings.translation.tournaments.enter;
     sectionAchievementDetailsOptInAction.href = 'javascript:void(0);';
@@ -592,12 +582,9 @@ export const MainWidget = function (options) {
     sectionACHListBody.appendChild(sectionACHListBodyResults);
     sectionACHList.appendChild(sectionACHListBody);
 
-    sectionACHFooter.appendChild(sectionACHFooterContent);
-
     sectionACH.appendChild(sectionACHHeader);
     sectionACH.appendChild(sectionACHDetails);
     sectionACH.appendChild(sectionACHList);
-    sectionACH.appendChild(sectionACHFooter);
     sectionACH.appendChild(sectionAchievementDetailsContainer);
 
     return sectionACH;
@@ -1994,24 +1981,26 @@ export const MainWidget = function (options) {
   };
 
   this.achievementItem = function (ach, achieved, perc) {
-    var _this = this;
-    var listItem = document.createElement('div');
-    var detailsContainer = document.createElement('div');
-    var detailsWrapper = document.createElement('div');
-    var label = document.createElement('div');
-    var description = document.createElement('div');
-    var progressionWrapper = document.createElement('div');
-    var progressionCont = document.createElement('div');
-    var progressionBar = document.createElement('div');
-    var moreButton = document.createElement('a');
-    var enterButton = document.createElement('a');
-    var leaveButton = document.createElement('a');
-    var progressionButton = document.createElement('a');
-    var cpomntainsImage = (typeof ach.icon !== 'undefined' && ach.icon.length > 0);
+    const _this = this;
+    const listItem = document.createElement('div');
+    const detailsContainer = document.createElement('div');
+    const detailsWrapper = document.createElement('div');
+    const descriptionWrapper = document.createElement('div');
+    const label = document.createElement('div');
+    const description = document.createElement('div');
+    const progressionWrapper = document.createElement('div');
+    const progressionCont = document.createElement('div');
+    const progressionBar = document.createElement('div');
+    const moreButton = document.createElement('a');
+    const enterButton = document.createElement('a');
+    const leaveButton = document.createElement('a');
+    const progressionButton = document.createElement('a');
+    const cpomntainsImage = (typeof ach.icon !== 'undefined' && ach.icon.length > 0);
 
     listItem.setAttribute('class', 'cl-ach-list-item cl-ach-' + ach.id + (cpomntainsImage ? ' cl-ach-with-image' : ''));
     detailsContainer.setAttribute('class', 'cl-ach-list-details-cont');
     detailsWrapper.setAttribute('class', 'cl-ach-list-details-wrap');
+    descriptionWrapper.setAttribute('class', 'cl-ach-list-details-description-wrap');
     label.setAttribute('class', 'cl-ach-list-details-label');
     description.setAttribute('class', 'cl-ach-list-details-description');
     progressionWrapper.setAttribute('class', 'cl-ach-list-progression');
@@ -2023,7 +2012,6 @@ export const MainWidget = function (options) {
     progressionButton.setAttribute('class', 'cl-ach-list-in-progress');
 
     moreButton.dataset.id = ach.id;
-    moreButton.innerHTML = _this.settings.lbWidget.settings.translation.achievements.more;
     moreButton.href = 'javascript:void(0);';
 
     enterButton.dataset.id = ach.id;
@@ -2041,9 +2029,13 @@ export const MainWidget = function (options) {
     listItem.dataset.id = ach.id;
 
     label.innerHTML = ach.name;
+    description.innerHTML = ach.description ? ach.description.replace(/(<([^>]+)>)/gi, '') : '';
 
-    detailsWrapper.appendChild(label);
-    detailsWrapper.appendChild(description);
+    descriptionWrapper.appendChild(label);
+    descriptionWrapper.appendChild(description);
+
+    detailsWrapper.appendChild(descriptionWrapper);
+    detailsWrapper.appendChild(moreButton);
 
     if (cpomntainsImage) {
       var image = new Image();
@@ -2063,21 +2055,20 @@ export const MainWidget = function (options) {
     progressionCont.appendChild(progressionBar);
     progressionWrapper.appendChild(progressionCont);
 
+    listItem.appendChild(detailsContainer);
+
     if (Array.isArray(ach.constraints) && ach.constraints.includes('optinRequiredForEntrants')) {
       if (ach.optInStatus && ach.optInStatus >= 15 && ach.optInStatus <= 35) {
-        progressionWrapper.appendChild(leaveButton);
+        listItem.appendChild(progressionWrapper);
+        listItem.appendChild(leaveButton);
       } else if (!isNaN(ach.optInStatus) && (ach.optInStatus === 10 || ach.optInStatus === 0)) {
-        progressionWrapper.appendChild(progressionButton);
+        listItem.appendChild(progressionButton);
       } else {
-        progressionWrapper.appendChild(enterButton);
+        listItem.appendChild(enterButton);
       }
-      addClass(listItem, 'cl-ach-list-item--notentered');
+    } else {
+      listItem.appendChild(progressionWrapper);
     }
-
-    progressionWrapper.appendChild(moreButton);
-
-    listItem.appendChild(detailsContainer);
-    listItem.appendChild(progressionWrapper);
 
     return listItem;
   };
@@ -2093,9 +2084,7 @@ export const MainWidget = function (options) {
     if (!ach) return;
 
     const bar = query(ach, '.cl-ach-list-progression-bar');
-    const percValue = ((percentageComplete > 1 || percentageComplete === 0) ? percentageComplete : 1) + '%';
-    bar.innerHTML = (percentageComplete > 25 || (percentageComplete > 15 && parseInt(this.settings.section.offsetWidth) > 450)) ? percValue : '';
-    bar.style.width = percValue;
+    bar.style.width = ((percentageComplete > 1 || percentageComplete === 0) ? percentageComplete : 1) + '%';
   };
 
   this.achievementListLayout = function (pageNumber, achievementData) {
@@ -2427,27 +2416,24 @@ export const MainWidget = function (options) {
     const achList = query(_this.settings.section, '.' + _this.settings.lbWidget.settings.navigation.achievements.containerClass + ' .cl-main-widget-ach-list-body-res');
 
     objectIterator(query(achList, '.cl-ach-list-item'), function (ach) {
-      var id = ach.dataset.id;
-      var issuedStatus = (issued.findIndex(i => i.entityId === id) !== -1);
+      const id = ach.dataset.id;
+      const issuedStatus = (issued.findIndex(i => i.entityId === id) !== -1);
 
-      var perc = 0;
+      let perc = 0;
       mapObject(progression, function (pr) {
         if (pr.entityId === id) {
           perc = parseInt(pr.percentageComplete);
         }
       });
 
-      if (ach !== null) {
-        var bar = query(ach, '.cl-ach-list-progression-bar');
+      const bar = query(ach, '.cl-ach-list-progression-bar');
 
+      if (bar) {
         if (issuedStatus) {
           addClass(bar, 'cl-ach-complete');
-          bar.innerHTML = _this.settings.lbWidget.settings.translation.achievements.complete;
           bar.style.width = '100%';
         } else {
-          var percValue = ((perc > 1 || perc === 0) ? perc : 1) + '%';
-          bar.innerHTML = (perc > 25 || (perc > 15 && parseInt(_this.settings.section.offsetWidth) > 450)) ? percValue : '';
-          bar.style.width = percValue;
+          bar.style.width = ((perc > 1 || perc === 0) ? perc : 1) + '%';
         }
       }
     });
