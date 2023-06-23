@@ -10,10 +10,10 @@
     "label": "Achievements",
     "more": "More",
     "complete": "complete 100%",
-    "enter": "Enter Achievement",
-    "leave": "Leave Achievement",
+    "enter": "Opt in",
+    "leave": "Opt out",
     "listEnterBtn": "Opt in",
-    "listLeaveBtn": "Leave",
+    "listLeaveBtn": "Opt out",
     "listProgressionBtn": "Processing..."
   },
   "tournaments": {
