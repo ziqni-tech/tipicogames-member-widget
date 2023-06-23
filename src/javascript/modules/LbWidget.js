@@ -1919,6 +1919,15 @@ export const LbWidget = function (options) {
         _this.settings.mainWidget.loadAchievementDetails(data, function () {
         });
       });
+      // load achievement details
+    } else if (hasClass(el, 'cl-ach-list-details-label')) {
+      const wrapper = el.closest('.cl-ach-list-item');
+      const id = wrapper.dataset.id;
+      _this.getAchievement(id, function (data) {
+        _this.settings.achievements.activeAchievementId = data.id;
+        _this.settings.mainWidget.loadAchievementDetails(data, function () {
+        });
+      });
 
       // leaderboard details back button
     } else if (hasClass(el, 'cl-main-widget-lb-details-back-btn')) {

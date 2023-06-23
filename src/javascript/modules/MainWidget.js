@@ -494,36 +494,34 @@ export const MainWidget = function (options) {
   };
 
   this.achievementsAreaLayout = function () {
-    var _this = this;
-    var sectionACH = document.createElement('div');
+    const _this = this;
+    const sectionACH = document.createElement('div');
 
-    var sectionACHHeader = document.createElement('div');
-    var sectionACHHeaderLabel = document.createElement('div');
-    var sectionACHHeaderDate = document.createElement('div');
-    var sectionACHHeaderClose = document.createElement('div');
+    const sectionACHHeader = document.createElement('div');
+    const sectionACHHeaderLabel = document.createElement('div');
+    const sectionACHHeaderDate = document.createElement('div');
+    const sectionACHHeaderClose = document.createElement('div');
 
-    var sectionACHDetails = document.createElement('div');
-    var sectionACHDetailsInfo = document.createElement('div');
-    var sectionACHDetailsInfoIcon = document.createElement('div');
-    var sectionACHDetailsContentContainer = document.createElement('div');
-    var sectionACHDetailsContentContainerLabel = document.createElement('div');
-    var sectionACHDetailsContentContainerDate = document.createElement('div');
+    const sectionACHDetails = document.createElement('div');
+    const sectionACHDetailsInfo = document.createElement('div');
+    const sectionACHDetailsInfoIcon = document.createElement('div');
+    const sectionACHDetailsContentContainer = document.createElement('div');
+    const sectionACHDetailsContentContainerLabel = document.createElement('div');
+    const sectionACHDetailsContentContainerDate = document.createElement('div');
 
-    var sectionACHList = document.createElement('div');
-    var sectionACHListBody = document.createElement('div');
-    var sectionACHListBodyResults = document.createElement('div');
+    const sectionACHList = document.createElement('div');
+    const sectionACHListBody = document.createElement('div');
+    const sectionACHListBodyResults = document.createElement('div');
 
-    var sectionAchievementDetailsContainer = document.createElement('div');
-    var sectionAchievementDetailsHeader = document.createElement('div');
-    var sectionAchievementDetailsHeaderLabel = document.createElement('div');
-    var sectionAchievementDetailsHeaderDate = document.createElement('div');
-    var sectionAchievementDetailsBackBtn = document.createElement('a');
-    var sectionAchievementDetailsBodyContainer = document.createElement('div');
-    var sectionAchievementDetailsBodyImageContainer = document.createElement('div');
-    var sectionAchievementDetailsBody = document.createElement('div');
+    const sectionAchievementDetailsContainer = document.createElement('div');
 
-    var sectionAchievementDetailsOptInContainer = document.createElement('div');
-    var sectionAchievementDetailsOptInAction = document.createElement('a');
+    const sectionAchievementDetailsBackBtn = document.createElement('a');
+    const sectionAchievementDetailsBodyContainer = document.createElement('div');
+    const sectionAchievementDetailsBodyImageContainer = document.createElement('div');
+    const sectionAchievementDetailsBody = document.createElement('div');
+
+    const sectionAchievementDetailsOptInContainer = document.createElement('div');
+    const sectionAchievementDetailsOptInAction = document.createElement('a');
 
     sectionACH.setAttribute('class', _this.settings.lbWidget.settings.navigation.achievements.containerClass + ' cl-main-section-item');
     sectionACHHeader.setAttribute('class', 'cl-main-widget-ach-header');
@@ -545,9 +543,6 @@ export const MainWidget = function (options) {
 
     // details section
     sectionAchievementDetailsContainer.setAttribute('class', 'cl-main-widget-ach-details-container');
-    sectionAchievementDetailsHeader.setAttribute('class', 'cl-main-widget-ach-details-header');
-    sectionAchievementDetailsHeaderLabel.setAttribute('class', 'cl-main-widget-ach-details-header-label');
-    sectionAchievementDetailsHeaderDate.setAttribute('class', 'cl-main-widget-ach-details-header-date');
     sectionAchievementDetailsBackBtn.setAttribute('class', 'cl-main-widget-ach-details-back-btn');
     sectionAchievementDetailsBodyContainer.setAttribute('class', 'cl-main-widget-ach-details-body-container');
     sectionAchievementDetailsBodyImageContainer.setAttribute('class', 'cl-main-widget-ach-details-body-image-cont');
@@ -558,9 +553,6 @@ export const MainWidget = function (options) {
     sectionAchievementDetailsOptInAction.innerHTML = _this.settings.lbWidget.settings.translation.tournaments.enter;
     sectionAchievementDetailsOptInAction.href = 'javascript:void(0);';
 
-    sectionAchievementDetailsHeader.appendChild(sectionAchievementDetailsHeaderLabel);
-    sectionAchievementDetailsHeader.appendChild(sectionAchievementDetailsHeaderDate);
-    sectionAchievementDetailsContainer.appendChild(sectionAchievementDetailsHeader);
     sectionAchievementDetailsContainer.appendChild(sectionAchievementDetailsBackBtn);
     sectionAchievementDetailsBodyContainer.appendChild(sectionAchievementDetailsBodyImageContainer);
     sectionAchievementDetailsBodyContainer.appendChild(sectionAchievementDetailsBody);
@@ -2060,7 +2052,7 @@ export const MainWidget = function (options) {
     if (Array.isArray(ach.constraints) && ach.constraints.includes('optinRequiredForEntrants')) {
       if (ach.optInStatus && ach.optInStatus >= 15 && ach.optInStatus <= 35) {
         listItem.appendChild(progressionWrapper);
-        listItem.appendChild(leaveButton);
+        // listItem.appendChild(leaveButton);
       } else if (!isNaN(ach.optInStatus) && (ach.optInStatus === 10 || ach.optInStatus === 0)) {
         listItem.appendChild(progressionButton);
       } else {
@@ -2131,7 +2123,7 @@ export const MainWidget = function (options) {
 
   this.loadAchievementDetails = async function (data, callback) {
     const _this = this;
-    const label = query(_this.settings.achievement.detailsContainer, '.cl-main-widget-ach-details-header-label');
+    const label = document.querySelector('.cl-main-widget-ach-header-label');
     const body = query(_this.settings.achievement.detailsContainer, '.cl-main-widget-ach-details-body');
     const image = query(_this.settings.achievement.detailsContainer, '.cl-main-widget-ach-details-body-image-cont');
 
@@ -2197,7 +2189,10 @@ export const MainWidget = function (options) {
   };
 
   this.hideAchievementDetails = function (callback) {
-    var _this = this;
+    const _this = this;
+    const label = document.querySelector('.cl-main-widget-ach-header-label');
+
+    label.innerHTML = '';
 
     removeClass(_this.settings.achievement.detailsContainer, 'cl-show');
     setTimeout(function () {
