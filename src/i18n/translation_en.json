@@ -18,7 +18,8 @@
   },
   "tournaments": {
     "label": "Tournaments",
-    "enter": "Enter Tournament",
+    "enter": "Opt in",
+    "leave": "Opt out",
     "processing": "Processing...",
     "readyCompetitions": "Upcoming Tournaments",
     "activeCompetitions": "Active Tournaments",
@@ -26,7 +27,8 @@
     "finishing": "Finishing",
     "finished": "Finished",
     "registered": "Registered",
-    "noAvailableCompetitions": "No available competition"
+    "noAvailableCompetitions": "No available competition",
+    "leaderboard": "Leaderboard"
   },
   "leaderboard": {
     "rank": "Rank",
