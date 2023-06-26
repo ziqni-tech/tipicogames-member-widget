@@ -472,6 +472,50 @@ export const LbWidget = function (options) {
       this.settings.tournaments.finishedTotalCount = finishedCompetitions.meta.totalRecordsFound;
     }
 
+    const optInActiveCompetitions = this.settings.tournaments.activeCompetitions.filter(c => c.constraints && c.constraints.includes('optinRequiredForEntrants'));
+    const optInReadyCompetitions = this.settings.tournaments.readyCompetitions.filter(c => c.constraints && c.constraints.includes('optinRequiredForEntrants'));
+
+    let activeOptInIds = [];
+    if (optInActiveCompetitions.length) {
+      activeOptInIds = optInActiveCompetitions.map(a => {
+        if (a.constraints && a.constraints.includes('optinRequiredForEntrants')) {
+          return a.id;
+        }
+      });
+
+      if (activeOptInIds.length) {
+        const statuses = await this.getCompetitionOptInStatus(activeOptInIds);
+        if (statuses.length) {
+          statuses.forEach(s => {
+            const idx = this.settings.tournaments.activeCompetitions.findIndex(a => a.id === s.entityId);
+            if (idx !== -1) {
+              this.settings.tournaments.activeCompetitions[idx].optInStatusCode = s.statusCode;
+            }
+          });
+        }
+      }
+
+      let readyOptInIds = [];
+      if (optInReadyCompetitions.length) {
+        readyOptInIds = optInReadyCompetitions.map(a => {
+          if (a.constraints && a.constraints.includes('optinRequiredForEntrants')) {
+            return a.id;
+          }
+        });
+        if (readyOptInIds.length) {
+          const statuses = await this.getCompetitionOptInStatus(readyOptInIds);
+          if (statuses.length) {
+            statuses.forEach(s => {
+              const idx = this.settings.tournaments.readyCompetitions.findIndex(a => a.id === s.entityId);
+              if (idx !== -1) {
+                this.settings.tournaments.readyCompetitions[idx].optInStatusCode = s.statusCode;
+              }
+            });
+          }
+        }
+      }
+    }
+
     if (typeof callback === 'function') {
       callback();
     }
@@ -1253,13 +1297,13 @@ export const LbWidget = function (options) {
     });
   };
 
-  this.optInMemberToActiveCompetition = async function (callback) {
+  this.optInMemberToActiveCompetition = async function (callback, id = null) {
     if (!this.settings.apiWs.optInApiWsClient) {
       this.settings.apiWs.optInApiWsClient = new OptInApiWs(this.apiClientStomp);
     }
 
     const optInRequest = ManageOptinRequest.constructFromObject({
-      entityId: this.settings.competition.activeCompetition.id,
+      entityId: id ?? this.settings.competition.activeCompetition.id,
       entityType: 'Competition',
       action: 'join'
     }, null);
@@ -1329,7 +1373,7 @@ export const LbWidget = function (options) {
         )
       ) {
         const optInStatus = await this.getCompetitionOptInStatus(
-          this.settings.competition.activeCompetition.id
+          [this.settings.competition.activeCompetition.id]
         );
 
         if (optInStatus.length && optInStatus[0].statusCode >= 15 && optInStatus[0].statusCode <= 35) {
@@ -1767,6 +1811,18 @@ export const LbWidget = function (options) {
         });
       });
 
+      // Tournaments list opt-in action
+    } else if (hasClass(el, 'cl-tour-list-enter') && !hasClass(el, 'checking')) {
+      addClass(el, 'checking');
+
+      const preLoader = _this.settings.mainWidget.preloader();
+      preLoader.show(async function () {
+        await _this.optInMemberToActiveCompetition(async function () {
+          await _this.checkForAvailableCompetitions(null);
+          _this.settings.mainWidget.loadCompetitionList(preLoader.hide());
+        }, el.dataset.id);
+      });
+
       // Leaderboard details opt-out action
     } else if (hasClass(el, 'cl-main-widget-lb-optout-action')) {
       const preLoader = _this.settings.mainWidget.preloader();
@@ -2131,7 +2187,7 @@ export const LbWidget = function (options) {
     }
   };
 
-  this.getCompetitionOptInStatus = async function (competitionId) {
+  this.getCompetitionOptInStatus = async function (competitionIds) {
     if (!this.settings.apiWs.optInApiWsClient) {
       this.settings.apiWs.optInApiWsClient = new OptInApiWs(this.apiClientStomp);
     }
@@ -2139,13 +2195,13 @@ export const LbWidget = function (options) {
     const optInStatesRequest = OptInStatesRequest.constructFromObject({
       optinStatesFilter: {
         entityTypes: ['Competition'],
-        ids: [competitionId],
+        ids: competitionIds,
         statusCodes: {
           gt: -5,
           lt: 40
         },
         skip: 0,
-        limit: 1
+        limit: 20
       }
     }, null);
 

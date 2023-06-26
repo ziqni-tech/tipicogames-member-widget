@@ -785,7 +785,7 @@ export const MiniScoreBoard = function (options) {
         this.settings.lbWidget.settings.competition.activeCompetition.constraints.includes('optinRequiredForEntrants')
       ) {
         const optInStatus = await this.settings.lbWidget.getCompetitionOptInStatus(
-          _this.settings.lbWidget.settings.competition.activeCompetition.id
+          [_this.settings.lbWidget.settings.competition.activeCompetition.id]
         );
         if (optInStatus.length && optInStatus[0].status === 'Entrant') {
           _this.layoutDefaultOrEmpty();
@@ -811,25 +811,6 @@ export const MiniScoreBoard = function (options) {
       if (typeof callback === 'function') {
         callback();
       }
-
-      // if (typeof _this.settings.lbWidget.settings.competition.activeCompetition.optinRequired === 'boolean' && _this.settings.lbWidget.settings.competition.activeCompetition.optinRequired && typeof _this.settings.lbWidget.settings.competition.activeCompetition.optin === 'boolean' && !_this.settings.lbWidget.settings.competition.activeCompetition.optin) {
-      //   _this.layoutRequiresOptIn();
-      //   callback();
-      // } else if (
-      //   _this.settings.lbWidget.settings.competition.activeContest !== null &&
-      //   _this.settings.lbWidget.settings.competition.activeContest.strategies.strategyType === 'SumBest'
-      // ) {
-      //   _this.layoutSumBestOf();
-      //   callback();
-      // } else if (_this.settings.lbWidget.settings.competition.activeContest !== null && _this.settings.lbWidget.settings.competition.activeContest.strategies.strategyType === 'FirstTo') {
-      //   _this.layoutFirstToOrEmpty(_this.settings.lbWidget.settings.competition.activeContest.strategies);
-      //   callback();
-      // } else if (_this.settings.lbWidget.settings.competition.activeContestId !== null) {
-      //   _this.layoutDefaultOrEmpty();
-      //   callback();
-      // } else {
-      //   _this.layoutDefaultOrEmpty();
-      // }
     } else {
       _this.clearAll();
     }
@@ -880,7 +861,6 @@ export const MiniScoreBoard = function (options) {
 
   this.loadScoreBoard = function () {
     var _this = this;
-
     _this.initLayout(function () {
       _this.loadInfoArea(function () {
         _this.updateScoreBoard();
