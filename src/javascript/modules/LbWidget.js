@@ -1271,6 +1271,24 @@ export const LbWidget = function (options) {
     });
   };
 
+  this.optOutMemberFromActiveCompetition = async function (callback) {
+    if (!this.settings.apiWs.optInApiWsClient) {
+      this.settings.apiWs.optInApiWsClient = new OptInApiWs(this.apiClientStomp);
+    }
+
+    const optInRequest = ManageOptinRequest.constructFromObject({
+      entityId: this.settings.competition.activeCompetition.id,
+      entityType: 'Competition',
+      action: 'leave'
+    }, null);
+
+    await this.settings.apiWs.optInApiWsClient.manageOptin(optInRequest, (json) => {
+      if (typeof callback === 'function') {
+        callback();
+      }
+    });
+  };
+
   var revalidationCount = 0;
   this.revalidateIfSuccessfullOptIn = function (callback) {
     var _this = this;
@@ -1742,6 +1760,18 @@ export const LbWidget = function (options) {
       const preLoader = _this.settings.mainWidget.preloader();
       preLoader.show(async function () {
         await _this.optInMemberToActiveCompetition(function () {
+          setTimeout(function () {
+            preLoader.hide();
+            _this.settings.mainWidget.loadLeaderboard();
+          }, 2000);
+        });
+      });
+
+      // Leaderboard details opt-out action
+    } else if (hasClass(el, 'cl-main-widget-lb-optout-action')) {
+      const preLoader = _this.settings.mainWidget.preloader();
+      preLoader.show(async function () {
+        await _this.optOutMemberFromActiveCompetition(function () {
           setTimeout(function () {
             preLoader.hide();
             _this.settings.mainWidget.loadLeaderboard();

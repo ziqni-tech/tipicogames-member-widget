@@ -351,6 +351,9 @@ export const MainWidget = function (options) {
     var sectionLBOptInContainer = document.createElement('div');
     var sectionLBOptInAction = document.createElement('a');
 
+    const sectionLBOptOutAction = document.createElement('div');
+    const sectionLBOptOutActionWrapper = document.createElement('div');
+
     var sectionLBFooter = document.createElement('div');
     var sectionLBFooterContent = document.createElement('div');
 
@@ -420,13 +423,17 @@ export const MainWidget = function (options) {
 
     sectionLBOptInContainer.setAttribute('class', 'cl-main-widget-lb-optin-container');
     sectionLBOptInAction.setAttribute('class', 'cl-main-widget-lb-optin-action');
+    sectionLBOptOutAction.setAttribute('class', 'cl-main-widget-lb-optout-action');
+    sectionLBOptOutActionWrapper.setAttribute('class', 'cl-main-widget-lb-optout-action-wrapper');
 
     // sectionLBHeaderLabel.innerHTML = _this.settings.lbWidget.settings.translation.tournaments.label;
     sectionLBFooterContent.innerHTML = _this.settings.lbWidget.settings.translation.global.copy;
     sectionTournamentDetailsOptInAction.innerHTML = _this.settings.lbWidget.settings.translation.tournaments.enter;
     sectionTournamentDetailsOptInAction.href = 'javascript:void(0);';
+    sectionLBOptOutAction.innerHTML = _this.settings.lbWidget.settings.translation.tournaments.leave;
     sectionLBOptInAction.innerHTML = _this.settings.lbWidget.settings.translation.tournaments.enter;
     sectionLBOptInAction.href = 'javascript:void(0);';
+    sectionLBDetailsDescriptionClose.innerHTML = _this.settings.lbWidget.settings.translation.tournaments.leaderboard;
 
     sectionLBHeaderList.appendChild(sectionLBHeaderListIcon);
     sectionLBHeader.appendChild(sectionLBHeaderList);
@@ -448,7 +455,9 @@ export const MainWidget = function (options) {
 
     if (!_this.settings.lbWidget.settings.leaderboard.layoutSettings.titleLinkToDetailsPage) {
       sectionLBDetailsDescriptionContainer.appendChild(sectionLBDetailsDescription);
-      sectionLBDetailsDescriptionContainer.appendChild(sectionLBDetailsDescriptionClose);
+      sectionLBOptOutActionWrapper.appendChild(sectionLBDetailsDescriptionClose);
+      sectionLBOptOutActionWrapper.appendChild(sectionLBOptOutAction);
+      sectionLBDetailsDescriptionContainer.appendChild(sectionLBOptOutActionWrapper);
       sectionLBDetails.appendChild(sectionLBDetailsDescriptionContainer);
     }
 
@@ -1462,6 +1471,7 @@ export const MainWidget = function (options) {
 
   this.leaderboardOptInCheck = async function () {
     const optIn = query(this.settings.section, '.cl-main-widget-lb-optin-action');
+    const optOut = query(this.settings.section, '.cl-main-widget-lb-optout-action');
 
     if (
       typeof this.settings.lbWidget.settings.competition.activeCompetition !== 'undefined' &&
@@ -1475,17 +1485,21 @@ export const MainWidget = function (options) {
 
       if (optInStatus.length && optInStatus[0].statusCode >= 15 && optInStatus[0].statusCode <= 35) {
         optIn.parentNode.style.display = 'none';
+        optOut.style.display = 'flex';
       } else if (optInStatus.length && (optInStatus[0].statusCode === 10 || optInStatus[0].statusCode === 0)) {
         optIn.innerHTML = this.settings.lbWidget.settings.translation.tournaments.processing;
         addClass(optIn, 'checking');
         optIn.parentNode.style.display = 'block';
+        optOut.style.display = 'none';
       } else {
         optIn.innerHTML = this.settings.lbWidget.settings.translation.tournaments.enter;
         optIn.parentNode.style.display = 'block';
+        optOut.style.display = 'none';
         removeClass(optIn, 'checking');
       }
     } else {
       optIn.parentNode.style.display = 'none';
+      optOut.style.display = 'none';
     }
   };
 
@@ -1648,7 +1662,7 @@ export const MainWidget = function (options) {
     }
 
     if (!isVisible) {
-      if (area !== null && member !== null) {
+      if (area !== null && member !== null && !area.closest('.cl-main-active-embedded-description')) {
         area.style.display = 'block';
       } else {
         area.style.display = 'none';
