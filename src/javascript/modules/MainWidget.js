@@ -70,22 +70,26 @@ export const MainWidget = function (options) {
       timerInterval: null
     },
     tournamentsSection: {
-      accordionLayout: [{
-        label: 'Upcoming Tournaments',
-        type: 'readyCompetitions',
-        show: false,
-        showTopResults: 1
-      }, {
-        label: 'Active Tournaments',
-        type: 'activeCompetitions',
-        show: true,
-        showTopResults: 1
-      }, {
-        label: 'Finished Tournaments',
-        type: 'finishedCompetitions',
-        show: false,
-        showTopResults: 1
-      }]
+      accordionLayout: [
+        {
+          label: 'Active Tournaments',
+          type: 'activeCompetitions',
+          show: true,
+          showTopResults: 1
+        },
+        {
+          label: 'Upcoming Tournaments',
+          type: 'readyCompetitions',
+          show: true,
+          showTopResults: 1
+        },
+        {
+          label: 'Finished Tournaments',
+          type: 'finishedCompetitions',
+          show: true,
+          showTopResults: 1
+        }
+      ]
     },
     rewardsSection: {
       accordionLayout: [
@@ -101,12 +105,6 @@ export const MainWidget = function (options) {
           show: false,
           showTopResults: 1
         }
-        // {
-        //   label: 'Expired Rewards',
-        //   type: 'expiredRewards',
-        //   show: false,
-        //   showTopResults: 1
-        // }
       ]
     },
     active: false,
@@ -372,6 +370,7 @@ export const MainWidget = function (options) {
     var sectionTournamentListBody = document.createElement('div');
     var sectionTournamentListBodyResults = document.createElement('div');
     var sectionTournamentBackAction = document.createElement('a');
+    const sectionTournamentCloseAction = document.createElement('div');
 
     sectionLB.setAttribute('class', _this.settings.lbWidget.settings.navigation.tournaments.containerClass + ' cl-main-section-item cl-main-active-section' + (_this.settings.lbWidget.settings.leaderboard.layoutSettings.imageBanner ? ' cl-main-section-image-banner-active' : ''));
     sectionLBHeader.setAttribute('class', 'cl-main-widget-lb-header');
@@ -418,6 +417,7 @@ export const MainWidget = function (options) {
 
     sectionTournamentList.setAttribute('class', 'cl-main-widget-tournaments-list');
     sectionTournamentBackAction.setAttribute('class', 'cl-main-widget-tournaments-back-btn');
+    sectionTournamentCloseAction.setAttribute('class', 'cl-main-widget-tournaments-close-btn');
     sectionTournamentListBody.setAttribute('class', 'cl-main-widget-tournaments-list-body');
     sectionTournamentListBodyResults.setAttribute('class', 'cl-main-widget-tournaments-list-body-res');
 
@@ -477,6 +477,7 @@ export const MainWidget = function (options) {
     sectionTournamentListBody.appendChild(sectionTournamentListBodyResults);
     sectionTournamentList.appendChild(sectionTournamentListBody);
     sectionTournamentList.appendChild(sectionTournamentBackAction);
+    sectionTournamentList.appendChild(sectionTournamentCloseAction);
 
     sectionTournamentDetailsHeader.appendChild(sectionTournamentDetailsHeaderLabel);
     sectionTournamentDetailsHeader.appendChild(sectionTournamentDetailsHeaderDate);
@@ -1480,7 +1481,7 @@ export const MainWidget = function (options) {
       this.settings.lbWidget.settings.competition.activeCompetition.constraints.includes('optinRequiredForEntrants')
     ) {
       const optInStatus = await this.settings.lbWidget.getCompetitionOptInStatus(
-        this.settings.lbWidget.settings.competition.activeCompetition.id
+        [this.settings.lbWidget.settings.competition.activeCompetition.id]
       );
 
       if (optInStatus.length && optInStatus[0].statusCode >= 15 && optInStatus[0].statusCode <= 35) {
@@ -1785,95 +1786,11 @@ export const MainWidget = function (options) {
     }, 50);
   };
 
-  this.loadCompetitionList = function (
-    callback,
-    readyPageNumber = 1,
-    activePageNumber = 1,
-    finishedPageNumber = 1
-  ) {
+  this.loadCompetitionList = function (callback) {
     const _this = this;
     const listResContainer = query(_this.settings.tournamentListContainer, '.cl-main-widget-tournaments-list-body-res');
     const listIcon = query(_this.settings.container, '.cl-main-widget-lb-header-list-icon');
     const preLoader = _this.preloader();
-
-    const totalCount = _this.settings.lbWidget.settings.tournaments.totalCount;
-    const readyTotalCount = _this.settings.lbWidget.settings.tournaments.readyTotalCount;
-    const finishedTotalCount = _this.settings.lbWidget.settings.tournaments.finishedTotalCount;
-    const itemsPerPage = 20;
-
-    let paginator = query(listResContainer, '.paginator-active');
-    if (!paginator && totalCount > itemsPerPage) {
-      const pagesCount = Math.ceil(totalCount / itemsPerPage);
-      paginator = document.createElement('div');
-      paginator.setAttribute('class', 'paginator-active');
-      addClass(paginator, 'paginator');
-      addClass(paginator, 'accordion');
-
-      let page = '';
-
-      for (let i = 0; i < pagesCount; i++) {
-        page += '<span class="paginator-item" data-page=' + (i + 1) + '\>' + (i + 1) + '</span>';
-      }
-      paginator.innerHTML = page;
-    }
-
-    let readyPaginator = query(listResContainer, '.paginator-ready');
-    if (!readyPaginator && readyTotalCount > itemsPerPage) {
-      const pagesCount = Math.ceil(readyTotalCount / itemsPerPage);
-      readyPaginator = document.createElement('div');
-      readyPaginator.setAttribute('class', 'paginator-ready');
-      addClass(readyPaginator, 'paginator');
-      addClass(readyPaginator, 'accordion');
-
-      let page = '';
-
-      for (let i = 0; i < pagesCount; i++) {
-        page += '<span class="paginator-item" data-page=' + (i + 1) + '\>' + (i + 1) + '</span>';
-      }
-      readyPaginator.innerHTML = page;
-    }
-
-    let finishedPaginator = query(listResContainer, '.paginator-finished');
-    if (!finishedPaginator && finishedTotalCount > itemsPerPage) {
-      const pagesCount = Math.ceil(finishedTotalCount / itemsPerPage);
-      finishedPaginator = document.createElement('div');
-      finishedPaginator.setAttribute('class', 'paginator-finished');
-      addClass(finishedPaginator, 'paginator');
-      addClass(finishedPaginator, 'accordion');
-
-      let page = '';
-
-      for (let i = 0; i < pagesCount; i++) {
-        page += '<span class="paginator-item" data-page=' + (i + 1) + '\>' + (i + 1) + '</span>';
-      }
-      finishedPaginator.innerHTML = page;
-    }
-
-    if (readyPageNumber > 1) {
-      _this.settings.tournamentsSection.accordionLayout.map(t => {
-        if (t.type === 'readyCompetitions') {
-          t.show = true;
-        } else {
-          t.show = false;
-        }
-      });
-    } else if (finishedPageNumber > 1) {
-      _this.settings.tournamentsSection.accordionLayout.map(t => {
-        if (t.type === 'finishedCompetitions') {
-          t.show = true;
-        } else {
-          t.show = false;
-        }
-      });
-    } else {
-      _this.settings.tournamentsSection.accordionLayout.map(t => {
-        if (t.type === 'activeCompetitions') {
-          t.show = true;
-        } else {
-          t.show = false;
-        }
-      });
-    }
 
     preLoader.show(function () {
       listIcon.style.opacity = '0';
@@ -1900,51 +1817,6 @@ export const MainWidget = function (options) {
 
       listResContainer.innerHTML = '';
       listResContainer.appendChild(accordionObj);
-
-      if (finishedPaginator) {
-        const finishedContainer = query(listResContainer, '.finishedCompetitions');
-        if (finishedContainer) {
-          const paginatorItems = query(finishedPaginator, '.paginator-item');
-          paginatorItems.forEach(item => {
-            removeClass(item, 'active');
-            if (Number(item.dataset.page) === Number(finishedPageNumber)) {
-              addClass(item, 'active');
-            }
-          });
-
-          finishedContainer.appendChild(finishedPaginator);
-        }
-      }
-
-      if (readyPaginator) {
-        const readyContainer = query(listResContainer, '.readyCompetitions');
-        if (readyContainer) {
-          const paginatorItems = query(readyPaginator, '.paginator-item');
-          paginatorItems.forEach(item => {
-            removeClass(item, 'active');
-            if (Number(item.dataset.page) === Number(readyPageNumber)) {
-              addClass(item, 'active');
-            }
-          });
-
-          readyContainer.appendChild(readyPaginator);
-        }
-      }
-
-      if (paginator) {
-        const activeContainer = query(listResContainer, '.activeCompetitions');
-        if (activeContainer) {
-          const paginatorItems = query(paginator, '.paginator-item');
-          paginatorItems.forEach(item => {
-            removeClass(item, 'active');
-            if (Number(item.dataset.page) === Number(activePageNumber)) {
-              addClass(item, 'active');
-            }
-          });
-
-          activeContainer.appendChild(paginator);
-        }
-      }
 
       _this.settings.tournamentListContainer.style.display = 'block';
       setTimeout(function () {
@@ -2559,27 +2431,37 @@ export const MainWidget = function (options) {
   };
 
   this.tournamentItem = function (tournament) {
-    // var _this = this;
-    var listItem = document.createElement('div');
-    var detailsContainer = document.createElement('div');
-    var detailsWrapper = document.createElement('div');
-    var label = document.createElement('div');
-    var description = document.createElement('div');
-    var descriptionContent = stripHtml(tournament.description);
+    const listItem = document.createElement('div');
+    const detailsContainer = document.createElement('div');
+    const detailsWrapper = document.createElement('div');
+    const label = document.createElement('div');
+    const description = document.createElement('div');
+    const descriptionContent = stripHtml(tournament.description);
+    const enterButton = document.createElement('div');
 
     listItem.setAttribute('class', 'cl-tour-list-item cl-tour-' + tournament.id);
     detailsContainer.setAttribute('class', 'cl-tour-list-details-cont');
     detailsWrapper.setAttribute('class', 'cl-tour-list-details-wrap');
     label.setAttribute('class', 'cl-tour-list-details-label');
     description.setAttribute('class', 'cl-tour-list-details-description');
+    enterButton.setAttribute('class', 'cl-tour-list-enter');
 
     listItem.dataset.id = tournament.id;
+    enterButton.dataset.id = tournament.id;
     label.innerHTML = tournament.name ?? '';
     description.innerHTML = (descriptionContent.length > 100) ? descriptionContent.substr(0, 100) + '...' : descriptionContent;
+    enterButton.innerHTML = this.settings.lbWidget.settings.translation.tournaments.enter;
 
     detailsWrapper.appendChild(label);
     detailsWrapper.appendChild(description);
     detailsContainer.appendChild(detailsWrapper);
+
+    if (tournament.statusCode !== 45 && Array.isArray(tournament.constraints) && tournament.constraints.includes('optinRequiredForEntrants')) {
+      if ((tournament.optInStatus && tournament.optInStatusCode === 5) || !tournament.optInStatusCode) {
+        detailsContainer.appendChild(enterButton);
+      }
+    }
+
     listItem.appendChild(detailsContainer);
 
     return listItem;

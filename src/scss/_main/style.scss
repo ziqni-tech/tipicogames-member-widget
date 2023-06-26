@@ -1027,20 +1027,18 @@
 
 .cl-main-widget-wrapper .cl-main-widget-navigation-container {
   position: absolute;
-  width: 92px;
-  height: 100%;
+  width: 100%;
   z-index: 2;
   left: 0;
-  top: 0;
+  top: 20px;
 }
 .cl-main-widget-wrapper .cl-hidden-navigation .cl-main-widget-navigation-container {
   display:none;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-items {
-  float: left;
   width: 100%;
-  padding: 25px 0 0 0;
+  display: flex;
 }
 
 
@@ -2058,9 +2056,9 @@
  */
 .cl-main-widget-tournaments-list {
   position: absolute;
-  height: calc(100% - 54px);
+  height: 100%;
   background: var(--lb3-tournament-list-bg-color);
-  top: 30px;
+  top: 0;
   left: -200px;
   width: 100%;
   z-index: 10;
@@ -2079,16 +2077,15 @@
 
 .cl-main-widget-tournaments-list .cl-main-widget-tournaments-list-body {
   position: relative;
-  float: left;
   width: 100%;
   z-index: 1;
   overflow: auto;
-  height: calc(100% - 50px);
-  top: 50px;
+  height: calc(100% - 76px);
+  top: 76px;
+  padding: 0 16px;
 }
 
 .cl-main-widget-tournaments-list .cl-main-widget-tournaments-list-body .cl-main-widget-tournaments-list-body-res {
-  float: left;
   width: 100%;
 }
 
@@ -2103,6 +2100,20 @@
   background-size: 100%;
   cursor: pointer;
   z-index: 1;
+}
+
+.cl-main-widget-tournaments-list .cl-main-widget-tournaments-close-btn {
+  position: absolute;
+  display: block;
+  background-image: url(../../images/close-icon.svg);
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  background-size: 100%;
+  width: 40px;
+  height: 40px;
+  right: 16px;
+  top: 16px;
+  cursor: pointer;
 }
 
 
@@ -2884,47 +2895,20 @@
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-accordion-container {
-  float: left;
   width: 100%;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-accordion-container .cl-accordion {
-  float: left;
   width: 100%;
+  margin-bottom: 40px;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-accordion-container .cl-accordion-label {
-  float: left;
   width: 100%;
-  text-align: center;
-  height: 26px;
-  line-height: 26px;
-  font-size: 14px;
-  text-transform: uppercase;
-  color: var(--light-font-color);
-  font-weight: bold;
-  position: relative;
-  z-index: 1;
-  background: var(--lb3-rewards-accordion-bg-color);
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-accordion-container .cl-accordion-label:hover {
-  background: var(--lb3-rewards-accordion-hover-color);
-}
-
-.cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-accordion-container .cl-accordion-label::after {
-  content: "+";
-  color: var(--lb3-tournament-list-accordion-label-icon);
-  width: 20px;
-  height: 26px;
-  position: absolute;
-  top: 0;
-  right: 30px;
-  line-height: 24px;
-  font-size: 23px;
+  color: #131313;
+  font-size: 13px;
+  font-weight: 700;
+  padding-bottom: 16px;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-accordion-container .cl-accordion-entry {
@@ -2933,22 +2917,8 @@
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-accordion-container .cl-accordion-list-container {
-  float: left;
   width: 100%;
-  min-height: 682px;
-  max-height: 325px;
-  overflow: auto;
   display: none;
-}
-
-.cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-accordion-container .cl-shown .cl-accordion-label {
-  background: var(--lb3-rewards-accordion-container-show-bg-color);
-  color: var(--lb3-rewards-accordion-container-show-color);
-}
-
-.cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-accordion-container .cl-shown .cl-accordion-label::after {
-  content: "-";
-  color: var(--lb3-tournament-list-accordion-label-icon-show);
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-accordion-container .cl-shown .cl-accordion-entry {
@@ -2959,58 +2929,75 @@
   display: block;
 }
 
-
-.cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-tournaments-list .cl-main-accordion-container .cl-accordion-label {
-  background: var(--lb3-tournament-list-accordion-label-back);
-}
-
-.cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-tournaments-list .cl-main-accordion-container .cl-accordion-label:hover {
-  background: var(--lb3-tournament-list-accordion-label-back-hover);
-}
-
-.cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-tournaments-list .cl-main-accordion-container .cl-shown .cl-accordion-label {
-  background: var(--lb3-tournament-list-accordion-label-back-show);
-  color: var(--lb3-tournament-list-accordion-label-color-show);
-}
-
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-tournaments-list .cl-accordion-list {
-  float: left;
   width: 100%;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-tournaments-list .cl-tour-list-details-cont {
-  float: left;
   width: 100%;
-  padding: 10px 30px 15px 30px;
-  margin: 0;
-  border-bottom: var(--lb3-tournament-list-item-cont-border-bottom);
+  padding: 16px;
+  margin-bottom: 8px;
   transition: background-color 0.3s ease;
   cursor: pointer;
-}
-
-.cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-tournaments-list .cl-tour-list-details-cont:hover {
-  background-color: var(--lb3-tournament-list-item-cont-back-hover);
+  border-radius: 8px;
+  background: rgba(19, 19, 19, 0.04);
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-tournaments-list .cl-tour-list-details-label {
-  float: left;
   width: 100%;
-  color: var(--primary-font-color);
+  color: #000;
   text-transform: uppercase;
   font-size: 14px;
-  font-weight: 500;
+  line-height: 22px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 40px;
+  position: relative;
+}
+
+.cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-tournaments-list .cl-tour-list-details-label::after {
+  content: "";
+  display: block;
+  width: 6px;
+  height: 10px;
+  background-image: url(../../images/more.svg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  position: absolute;
+  right: 0;
+  top: 5px;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-tournaments-list .cl-tour-list-details-description {
-  float: left;
-  width: 100%;
   font-size: 11px;
   max-height: 40px;
-  line-height: 16px;
-  color: var(--primary-font-color);
-  min-height: 16px;
+  line-height: 18px;
+  color: rgba(19,19,19,.72);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 40px;
 }
 
+.cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-tournaments-list .cl-tour-list-enter {
+  height: 32px;
+  width: 100%;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #fff;
+  padding: 4px 16px;
+  border-radius: 8px;
+  background: #63b250;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  margin-top: 8px;
+}
 
 .cl-main-widget-wrapper .cl-main-widget-reward-details-container {
   position: absolute;
@@ -3986,291 +3973,3 @@
   left: 0;
   top: 0;
 }
-
-
-/**
- * *************************************
- * ********** Mobile Devices ***********
- * *************************************
- */
-/* Portrait and Landscape [@media only screen and (min-device-width: 375px) and (max-device-width: 812px)] */
-@media (max-width: 1000px) {
-  .cl-main-widget-wrapper .cl-main-widget-section-container .cl-growth-col {
-    max-width: 55px;
-  }
-  .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-section-image-banner-active .cl-main-widget-lb-leaderboard {
-    top: 213px;
-    height: calc(100% - 210px);
-  }
-  .cl-main-widget-wrapper .cl-main-widget-section-container.cl-hidden-copyright .cl-main-section-image-banner-active .cl-main-widget-lb-leaderboard {
-    height: calc(100% - 200px);
-    top: 212px;
-  }
-  .cl-main-widget-wrapper .cl-main-widget-section-container.cl-main-active-embedded-description.cl-hidden-copyright .cl-main-section-image-banner-active .cl-main-widget-lb-details-description-container {
-    height: calc(100% - 190px);
-  }
-  .cl-main-widget-wrapper .cl-main-widget-section-container.cl-hidden-copyright .cl-main-widget-tournaments-list {
-    height: calc(100% - 30px);
-  }
-}
-
-@media (max-width: 812px) {
-  .cl-main-widget-tournaments-list {
-    height: calc(100% - 62px);
-    top: 40px;
-  }
-  .cl-main-widget-wrapper .cl-main-widget-navigation-container {
-    width: 91%;
-    height: 88px;
-    left: 25px;
-  }
-  .cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-items {
-    padding: 0;
-  }
-  .cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-lb {
-    float: left;
-    margin: 0px -5px 0 -3px;
-    width: 76px;
-    height: 76px;
-  }
-  .cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-lb.cl-active-nav, .cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-lb.cl-active-nav:hover {
-    margin: 0 -6px 0 -3px;
-    width: 88px;
-    height: 88px;
-  }
-  .cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-ach {
-    float: left;
-    margin: 0px -5px 0 1px;
-    width: 76px;
-    height: 76px;
-  }
-  .cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-ach.cl-active-nav, .cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-ach.cl-active-nav:hover {
-    margin: 0 -6px 0 -3px;
-    width: 88px;
-    height: 88px;
-  }
-  .cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-rewards {
-    float: left;
-    margin: 0px -5px 0 1px;
-    width: 76px;
-    height: 76px;
-  }
-  .cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-rewards.cl-active-nav, .cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-rewards.cl-active-nav:hover {
-    margin: 0 -6px 0 -3px;
-    width: 88px;
-    height: 88px;
-  }
-  .cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-inbox {
-    float: left;
-    margin: 0px -5px 0 1px;
-    width: 76px;
-    height: 76px;
-  }
-  .cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-inbox.cl-active-nav, .cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-inbox.cl-active-nav:hover {
-    margin: 0 -6px 0 -3px;
-    width: 88px;
-    height: 88px;
-  }
-  .cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-missions {
-    float: left;
-    margin: 0px -5px 0 1px;
-    width: 76px;
-    height: 76px;
-  }
-  .cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-missions.cl-active-nav, .cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-missions.cl-active-nav:hover {
-    margin: 0 -6px 0 -3px;
-    width: 88px;
-    height: 88px;
-  }
-  .cl-main-widget-wrapper .cl-hidden-navigation .cl-main-widget-section-container {
-    padding: 0 0 0 0;
-  }
-  .cl-main-widget-wrapper .cl-hidden-navigation .cl-main-widget-pre-loader{
-    height: 100%;
-    width: 100%;
-    top:0;
-  }
-  .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-lb-header .cl-main-widget-lb-header-date {
-    line-height: 42px;
-    font-size: 14px;
-  }
-  .cl-widget-ms-wrapper .cl-main-widget-lb-header-date .time-ind {
-    font-size: 7px;
-  }
-  .cl-main-widget-wrapper .cl-main-widget-lb-details-container {
-    height: calc(100% - 64px);
-    top: 42px;
-  }
-
-  .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-section-image-banner-active .cl-main-widget-lb-leaderboard {
-    top: 220px;
-    height: calc(100% - 216px);
-  }
-  .cl-main-widget-wrapper .cl-main-widget-section-container.cl-hidden-copyright .cl-main-section-image-banner-active .cl-main-widget-lb-leaderboard {
-    height: calc(100% - 204px);
-    top: 220px;
-  }
-  .cl-main-widget-wrapper .cl-main-widget-section-container.cl-main-active-embedded-description .cl-main-section-image-banner-active .cl-main-widget-lb-details-description-container {
-    height: calc(100% - 295px);
-  }
-  .cl-main-widget-wrapper .cl-main-widget-section-container.cl-main-active-embedded-description.cl-hidden-copyright .cl-main-section-image-banner-active .cl-main-widget-lb-details-description-container {
-    height: calc(100% - 200px);
-  }
-
-  .cl-main-widget-wrapper .cl-main-widget-section-container.cl-hidden-copyright .cl-main-widget-ach-details-container {
-    height: calc(100% - 42px);
-    top: 42px;
-  }
-
-  .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-reward-header {
-    height:42px;
-  }
-  .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-reward-header .cl-main-widget-reward-header-close {
-    width: 40px;
-    height: 40px;
-    right: 0px;
-    top: 0px;
-  }
-  .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-reward-list {
-    padding-top: 42px;
-  }
-  .cl-main-widget-wrapper .cl-main-widget-section-container.cl-hidden-copyright .cl-main-widget-reward-details-container {
-    height: calc(100% - 42px);
-    top: 42px;
-  }
-  .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-reward-header .cl-main-widget-reward-header-label {
-    line-height: 42px;
-    font-size: 16px;
-  }
-  .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-inbox-list-body {
-    height: 100%;
-  }
-}
-
-@media (max-height: 520px) and (max-width: 812px) {
-  .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-lb-header .cl-main-widget-lb-header-date {
-    line-height: 34px;
-    font-size: 13px;
-  }
-  .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-lb-details {
-    height: 38px;
-  }
-  .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-lb-details-content {
-    padding: 2px 0 0 0;
-  }
-  .cl-main-widget-wrapper .cl-hidden-navigation .cl-main-widget-pre-loader{
-    height: 100%;
-    width: 100%;
-    top:0;
-  }
-  .cl-main-widget-wrapper .cl-main-widget-navigation-container {
-    height: 66px;
-  }
-  .cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-lb {
-    float: left;
-    margin: 0px -5px 0 -3px;
-    width: 58px;
-    height: 58px;
-  }
-  .cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-lb.cl-active-nav, .cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-lb.cl-active-nav:hover {
-    margin: 0 -6px 0 1px;
-    width: 68px;
-    height: 68px;
-  }
-  .cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-ach {
-    float: left;
-    margin: 0px -5px 0 3px;
-    width: 58px;
-    height: 58px;
-  }
-  .cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-ach.cl-active-nav, .cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-ach.cl-active-nav:hover {
-    margin: 0 -6px 0 1px;
-    width: 68px;
-    height: 68px;
-  }
-  .cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-rewards {
-    float: left;
-    margin: 0px -5px 0 3px;
-    width: 58px;
-    height: 58px;
-  }
-  .cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-rewards.cl-active-nav, .cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-rewards.cl-active-nav:hover {
-    margin: 0 -6px 0 1px;
-    width: 68px;
-    height: 68px;
-  }
-  .cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-inbox {
-    float: left;
-    margin: 0px -5px 0 3px;
-    width: 58px;
-    height: 58px;
-  }
-  .cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-inbox.cl-active-nav, .cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-inbox.cl-active-nav:hover {
-    margin: 0 -6px 0 -3px;
-    width: 68px;
-    height: 68px;
-  }
-  .cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-missions {
-    float: left;
-    margin: 0px -5px 0 3px;
-    width: 58px;
-    height: 58px;
-  }
-  .cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-missions.cl-active-nav, .cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-missions.cl-active-nav:hover {
-    margin: 0 -6px 0 -3px;
-    width: 68px;
-    height: 68px;
-  }
-  .cl-main-widget-wrapper .cl-hidden-navigation .cl-main-widget-section-container {
-    padding: 0 0 0 0;
-  }
-}
-
-/**
- * for retina resolution
- */
-@media only screen and (min--moz-device-pixel-ratio: 2),
-only screen and (-o-min-device-pixel-ratio: 2/1),
-only screen and (-webkit-min-device-pixel-ratio: 2),
-only screen and (min-device-pixel-ratio: 2) {
-
-  .cl-widget-ms-wrapper .cl-widget-ms-icon-wrapper .cl-widget-ms-icon {
-    background-image: $lb3-widget-icon-2x;
-  }
-  .cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-ach {
-    background-image: $lb3-achievements-icon-bg-image-2x;
-  }
-  .cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-lb {
-    background-image: $lb3-tournament-icon-bg-image-2x;
-  }
-  .cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-rewards {
-    background-image: $lb3-rewards-icon-bg-image-2x;
-  }
-  .cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-inbox {
-    background-image: $lb3-messages-icon-bg-image-2x;
-  }
-  .cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-missions {
-    background-image: $lb3-missions-icon-bg-image-2x;
-  }
-  .cl-widget-notif-wrapper .cl-widget-notif-icon-wrapper .cl-widget-notif-icon {
-    background-image: $lb3-achievements-icon-bg-image-2x;
-  }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
