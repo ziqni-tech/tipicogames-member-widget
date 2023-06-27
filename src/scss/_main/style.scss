@@ -1013,7 +1013,7 @@
 
 .cl-main-widget-wrapper.cl-show {
   opacity: 1;
-  transition: all 0.3s ease;
+  transition: all 0.5s ease;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-inner-wrapper {
@@ -1021,16 +1021,18 @@
   width: 100%;
   height: 100%;
   z-index: 1;
-  left: 0;
-  top: 0;
+  display: flex;
+  align-items: flex-end;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-navigation-container {
   position: absolute;
-  width: 100%;
-  z-index: 2;
-  left: 0;
-  top: 20px;
+  width: calc(100% - 16px);
+  z-index: 3;
+  left: 8px;
+  top: 80px;
+  opacity: 1;
+  transition: opacity 0.3s ease;
 }
 .cl-main-widget-wrapper .cl-hidden-navigation .cl-main-widget-navigation-container {
   display:none;
@@ -1039,112 +1041,31 @@
 .cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-items {
   width: 100%;
   display: flex;
+  justify-content: space-around;
 }
 
 
 .cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-navigation-item {
   position:relative;
+  color: rgba(19, 19, 19, 0.32);
+  font-size: 13px;
+  font-weight: 700;
+  padding-bottom: 8px;
 }
 
 
 .cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-navigation-item .cl-main-navigation-item-count {
-  position: absolute;
-  top: 4px;
-  right: 3px;
+  display: inline-block;
   width: auto;
   padding: 0 3px;
+  margin: 0 4px;
   border-radius: 50%;
   font-size: 10px;
-  color: var(--primary-font-color);
-  background: var(--primary-background-color);
-  min-width: 18px;
+  color: #fff;
+  background: #63b250;
+  min-width: 16px;
   text-align: center;
-  line-height: 15px;
-}
-.cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-active-nav .cl-main-navigation-item .cl-main-navigation-item-count {
-  top: 10px;
-  line-height: 18px;
-  font-size: 12px;
-}
-
-.cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-lb {
-  margin: -3px -3px;
-  width: var(--lb3-widget-navigation-icon-width);
-  height: var(--lb3-widget-navigation-icon-height);
-  background-image: $lb3-tournament-icon-bg-image;
-  background-repeat: no-repeat;
-  background-color: transparent;
-  background-size: 100%;
-}
-
-.cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-lb-icon {
-  display: block;
-  min-height: 100%;
-  background-image: $lb3-tournament-icon;
-  background-repeat: no-repeat;
-  background-position: 50% 50%;
-  background-size: 50%;
-  opacity: 0.7;
-}
-
-.cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-ach {
-  margin: -6px -3px;
-  width: var(--lb3-widget-navigation-icon-width);
-  height: var(--lb3-widget-navigation-icon-height);
-  background-image: $lb3-achievements-icon-bg-image;
-  background-repeat: no-repeat;
-  background-color: transparent;
-  background-size: 100%;
-}
-
-.cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-ach-icon {
-  display: block;
-  min-height: 100%;
-  background-image: $lb3-achievements-icon;
-  background-repeat: no-repeat;
-  background-position: 50% 50%;
-  background-size: 45%;
-  opacity: 0.7;
-}
-
-.cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-rewards {
-  margin: -6px -3px;
-  width: var(--lb3-widget-navigation-icon-width);
-  height: var(--lb3-widget-navigation-icon-height);
-  background-image: $lb3-rewards-icon-bg-image;
-  background-repeat: no-repeat;
-  background-color: transparent;
-  background-size: 100%;
-}
-
-.cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-rewards-icon {
-  display: block;
-  min-height: 100%;
-  background-image: $lb3-rewards-icon;
-  background-repeat: no-repeat;
-  background-position: 50% 50%;
-  background-size: 45%;
-  opacity: 0.7;
-}
-
-.cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-inbox {
-  margin: -3px -3px;
-  width: var(--lb3-widget-navigation-icon-width);
-  height: var(--lb3-widget-navigation-icon-height);
-  background-image: $lb3-messages-icon-bg-image;
-  background-repeat: no-repeat;
-  background-color: transparent;
-  background-size: 100%;
-}
-
-.cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-inbox-icon {
-  display: block;
-  min-height: 100%;
-  background-image: $lb3-messages-icon;
-  background-repeat: no-repeat;
-  background-position: 50% 42%;
-  background-size: 45%;
-  opacity: 0.7;
+  line-height: 16px;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-missions {
@@ -1167,115 +1088,30 @@
   opacity: 0.7;
 }
 
-.cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-lb:hover {
-  opacity: 0.8;
+.cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-item {
+  display: flex;
+  flex-grow: 1;
+  justify-content: center;
 }
 
-.cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-lb-icon:hover {
-  opacity: 1;
+.cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-item.cl-active-nav {
+  color: #131313;
+  border-bottom: solid 2px #131313;
 }
 
-.cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-ach:hover {
-  opacity: 0.8;
-}
-
-.cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-ach-icon:hover {
-  opacity: 1;
-}
-
-.cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-rewards:hover {
-  opacity: 0.8;
-}
-
-.cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-rewards-icon:hover {
-  opacity: 1;
-}
-
-.cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-inbox:hover {
-  opacity: 0.8;
-}
-
-.cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-inbox-icon:hover {
-  opacity: 1;
-}
-
-.cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-missions:hover {
-  opacity: 0.8;
-}
-
-.cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-missions-icon:hover {
-  opacity: 1;
-}
-
-
-.cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-lb.cl-active-nav, .cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-lb.cl-active-nav:hover {
-  width: 92px;
-  height: 92px;
-  opacity: 1;
-  margin: -3px -3px 3px -3px;
-}
-
-.cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-lb.cl-active-nav .cl-main-widget-navigation-lb-icon, .cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-lb.cl-active-nav .cl-main-widget-navigation-lb-icon:hover {
-  opacity: 1;
-}
-
-.cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-ach.cl-active-nav, .cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-ach.cl-active-nav:hover {
-  width: 92px;
-  height: 92px;
-  opacity: 1;
-  margin: -3px -3px 3px -3px;
-}
-
-.cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-ach.cl-active-nav .cl-main-widget-navigation-ach-icon, .cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-ach.cl-active-nav .cl-main-widget-navigation-ach-icon:hover {
-  opacity: 1;
-}
-
-.cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-rewards.cl-active-nav, .cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-rewards.cl-active-nav:hover {
-  width: 92px;
-  height: 92px;
-  opacity: 1;
-  margin: -3px -3px 3px -3px;
-}
-
-.cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-rewards.cl-active-nav .cl-main-widget-navigation-rewards-icon, .cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-rewards.cl-active-nav .cl-main-widget-navigation-rewards-icon:hover {
-  opacity: 1;
-}
-
-.cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-inbox.cl-active-nav, .cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-inbox.cl-active-nav:hover {
-  width: 92px;
-  height: 92px;
-  opacity: 1;
-  margin: -3px -3px 3px -3px;
-}
-
-.cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-inbox.cl-active-nav .cl-main-widget-navigation-inbox-icon, .cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-inbox.cl-active-nav .cl-main-widget-navigation-inbox-icon:hover {
-  opacity: 1;
-}
-
-.cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-missions.cl-active-nav, .cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-missions.cl-active-nav:hover {
-  width: 92px;
-  height: 92px;
-  opacity: 1;
-  margin: -3px -3px 3px -3px;
-}
-
-.cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-missions.cl-active-nav .cl-main-widget-navigation-missions-icon, .cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-missions.cl-active-nav .cl-main-widget-navigation-missions-icon:hover {
-  opacity: 1;
+.cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-item.cl-active-nav .cl-main-navigation-item {
+  color: #131313;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-items .cl-hidden-navigation-item{
   display: none;
 }
 
-
 .cl-main-widget-wrapper .cl-main-widget-section-container {
   position: relative;
   width: 100%;
-  height: 100%;
+  height: calc(100% - 172px);
   z-index: 1;
-  left: 0;
-  top: 0;
-  padding: 172px 0 0 0;
 }
 .cl-main-widget-wrapper .cl-hidden-navigation .cl-main-widget-section-container {
   padding: 0 0 0 0;
@@ -1286,7 +1122,7 @@
   position: relative;
   width: 100%;
   height: 100%;
-  z-index: 1;
+  z-index: 2;
   left: 0;
   top: 0;
   background: var(--primary-color);
@@ -1989,7 +1825,7 @@
   right: 0;
   bottom: 0;
   width: 100%;
-  height: calc(100% - 172px);
+  height: 100%;
   background: rgba(0, 0, 0, 0.3);
   opacity: 0;
   display: none;
@@ -2061,7 +1897,7 @@
   top: 0;
   left: -200px;
   width: 100%;
-  z-index: 10;
+  z-index: 3;
   opacity: 0;
   display: none;
   transition: all 0.3s ease;
@@ -2081,7 +1917,7 @@
   z-index: 1;
   overflow: auto;
   height: calc(100% - 76px);
-  top: 76px;
+  top: 134px;
   padding: 0 16px;
 }
 
@@ -2100,6 +1936,7 @@
   background-size: 100%;
   cursor: pointer;
   z-index: 1;
+  display: none;
 }
 
 .cl-main-widget-tournaments-list .cl-main-widget-tournaments-close-btn {
@@ -2372,7 +2209,7 @@
   width: 100%;
   height: 100%;
   z-index: 1;
-  padding: 80px 0 22px 0;
+  padding: 134px 0 22px 0;
   background: #ffffff;
 }
 .cl-main-widget-wrapper .cl-main-widget-section-container.cl-hidden-copyright .cl-main-widget-ach-list {
@@ -3265,7 +3102,7 @@
   width: 100%;
   height: 100%;
   z-index: 1;
-  padding: 80px 0 22px 0;
+  padding: 134px 0 22px 0;
   background: var(--lb3-messages-item-bg-color);
 }
 .cl-main-widget-wrapper .cl-main-widget-section-container.cl-hidden-copyright .cl-main-widget-inbox-list {

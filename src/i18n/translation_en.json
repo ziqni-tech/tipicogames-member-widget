@@ -6,6 +6,13 @@
     "minutes": "m",
     "seconds": "s"
   },
+  "menu": {
+    "tournaments": "Tournaments",
+    "achievements": "Achievements",
+    "rewards": "Awards",
+    "inbox": "Messages",
+    "missions": "Missions"
+  },
   "achievements": {
     "label": "Achievements",
     "more": "More",
