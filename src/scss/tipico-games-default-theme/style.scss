@@ -48,51 +48,6 @@
       color: var(--dark-font-color);
     }
   }
-  .cl-main-widget-navigation-container {
-    .cl-main-widget-navigation-items {
-      .cl-main-widget-navigation-item {
-        transition: transform 0.3s, opacity  0.3s;
-        opacity: 0.8;
-        &.cl-active-nav {
-          opacity: 1;
-        }
-        &.grow {
-          opacity: 1;
-          //width: 92px;
-          //height: 92px;
-          transform: scale(1.1, 1.1);
-        }
-        &.decrease {
-          opacity: 0.8;
-          //width: 73px;
-          //height: 73px;
-          transform: scale(0.9, 0.9);
-        }
-        &:hover {
-          opacity: 0.9;
-        }
-        .cl-main-navigation-item-count {
-          font-weight: bold;
-          box-shadow: -1px 2px 5px #000000;
-        }
-      }
-      .cl-main-widget-navigation-lb-icon {
-        opacity: 1;
-      }
-      .cl-main-widget-navigation-ach-icon {
-        opacity: 1;
-      }
-      .cl-main-widget-navigation-rewards-icon {
-        opacity: 1;
-      }
-      .cl-main-widget-navigation-inbox-icon {
-        opacity: 1;
-      }
-      .cl-main-widget-navigation-missions-icon {
-        opacity: 1;
-      }
-    }
-  }
 }
 
 .cl-main-widget-wrapper .cl-main-section-image-banner-active .cl-main-widget-lb-details-image-container {

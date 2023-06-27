@@ -200,19 +200,21 @@ export const MainWidget = function (options) {
   };
 
   this.navigationItems = function (container, navigationList) {
-    var _this = this;
+    const _this = this;
 
     // sorting navigation by order number
     navigationList.sort(_this.navigationSorter);
 
     mapObject(navigationList, function (val, key) {
-      var navigationItem = document.createElement('div');
-      var navigationItemIcon = document.createElement('div');
-      var navigationItemCount = document.createElement('div');
+      const navigationItem = document.createElement('div');
+      const navigationItemIcon = document.createElement('div');
+      const navigationItemCount = document.createElement('div');
 
       navigationItem.setAttribute('class', _this.settings.lbWidget.settings.navigation[val.key].navigationClass + ' cl-main-widget-navigation-item' + (_this.settings.lbWidget.settings.navigation[val.key].enable ? '' : ' cl-hidden-navigation-item'));
       navigationItemIcon.setAttribute('class', _this.settings.lbWidget.settings.navigation[val.key].navigationClassIcon + ' cl-main-navigation-item');
       navigationItemCount.setAttribute('class', 'cl-main-navigation-item-count');
+
+      navigationItemIcon.innerHTML = _this.settings.lbWidget.settings.translation.menu[val.key];
 
       navigationItemIcon.appendChild(navigationItemCount);
       navigationItem.appendChild(navigationItemIcon);
@@ -281,6 +283,7 @@ export const MainWidget = function (options) {
 
     navigationContainer.appendChild(navigationItems);
 
+    mainSectionContainer.appendChild(navigationContainer);
     mainSectionContainer.appendChild(sectionLB);
     mainSectionContainer.appendChild(sectionACH);
     mainSectionContainer.appendChild(sectionRewards);
@@ -288,7 +291,7 @@ export const MainWidget = function (options) {
     mainSectionContainer.appendChild(sectionMissions);
     mainSectionContainer.appendChild(preLoaderContainer);
 
-    innerWrapper.appendChild(navigationContainer);
+    // innerWrapper.appendChild(navigationContainer);
     innerWrapper.appendChild(mainSectionContainer);
     wrapper.appendChild(innerWrapper);
 
@@ -1457,6 +1460,9 @@ export const MainWidget = function (options) {
   };
 
   this.showEmbeddedCompetitionDetailsContent = function (callback) {
+    const menu = document.querySelector('.cl-main-widget-navigation-container');
+    menu.style.opacity = '0';
+
     if (hasClass(this.settings.section, 'cl-main-active-embedded-description')) {
       removeClass(this.settings.section, 'cl-main-active-embedded-description');
     } else {
@@ -1789,11 +1795,21 @@ export const MainWidget = function (options) {
   this.loadCompetitionList = function (callback) {
     const _this = this;
     const listResContainer = query(_this.settings.tournamentListContainer, '.cl-main-widget-tournaments-list-body-res');
-    const listIcon = query(_this.settings.container, '.cl-main-widget-lb-header-list-icon');
+    // const listIcon = query(_this.settings.container, '.cl-main-widget-lb-header-list-icon');
     const preLoader = _this.preloader();
+    const menu = document.querySelector('.cl-main-widget-navigation-container');
+    const optInContainer = document.querySelector('.cl-main-widget-lb-optin-container');
+
+    if (optInContainer) {
+      optInContainer.style.display = 'none';
+    }
+
+    if (menu) {
+      menu.style.opacity = '1';
+    }
 
     preLoader.show(function () {
-      listIcon.style.opacity = '0';
+      // listIcon.style.opacity = '0';
       const accordionObj = _this.accordionStyle(_this.settings.tournamentsSection.accordionLayout, function (accordionSection, listContainer, topEntryContainer, layout) {
         const tournamentData = _this.settings.lbWidget.settings.tournaments[layout.type];
 
@@ -2012,6 +2028,11 @@ export const MainWidget = function (options) {
     const label = document.querySelector('.cl-main-widget-ach-header-label');
     const body = query(_this.settings.achievement.detailsContainer, '.cl-main-widget-ach-details-body');
     const image = query(_this.settings.achievement.detailsContainer, '.cl-main-widget-ach-details-body-image-cont');
+    const menu = document.querySelector('.cl-main-widget-navigation-container');
+
+    if (menu) {
+      menu.style.opacity = '0';
+    }
 
     let optinRequiredForEntrants = false;
 
@@ -2077,6 +2098,11 @@ export const MainWidget = function (options) {
   this.hideAchievementDetails = function (callback) {
     const _this = this;
     const label = document.querySelector('.cl-main-widget-ach-header-label');
+    const menu = document.querySelector('.cl-main-widget-navigation-container');
+
+    if (menu) {
+      menu.style.opacity = '1';
+    }
 
     label.innerHTML = '';
 
@@ -2149,6 +2175,11 @@ export const MainWidget = function (options) {
     const label = document.querySelector('.cl-main-widget-inbox-header-label');
     const body = query(_this.settings.messages.detailsContainer, '.cl-main-widget-inbox-details-body');
     const created = new Date(data.created).toLocaleDateString();
+    const menu = document.querySelector('.cl-main-widget-navigation-container');
+
+    if (menu) {
+      menu.style.opacity = '0';
+    }
 
     if (!data || !data.subject) {
       return;
@@ -2268,8 +2299,13 @@ export const MainWidget = function (options) {
   };
 
   this.hideMessageDetails = function (callback) {
-    var _this = this;
+    const _this = this;
     const label = document.querySelector('.cl-main-widget-inbox-header-label');
+    const menu = document.querySelector('.cl-main-widget-navigation-container');
+
+    if (menu) {
+      menu.style.opacity = '1';
+    }
 
     label.innerHTML = '';
 
@@ -2457,7 +2493,7 @@ export const MainWidget = function (options) {
     detailsContainer.appendChild(detailsWrapper);
 
     if (tournament.statusCode !== 45 && Array.isArray(tournament.constraints) && tournament.constraints.includes('optinRequiredForEntrants')) {
-      if ((tournament.optInStatus && tournament.optInStatusCode === 5) || !tournament.optInStatusCode) {
+      if ((tournament.optInStatusCode && tournament.optInStatusCode === 5) || !tournament.optInStatusCode) {
         detailsContainer.appendChild(enterButton);
       }
     }
@@ -2850,7 +2886,7 @@ export const MainWidget = function (options) {
 
     listIcon.style.opacity = '1';
     _this.hideEmbeddedCompetitionDetailsContent();
-    _this.hideCompetitionList();
+    // _this.hideCompetitionList();
 
     setTimeout(function () {
       if (typeof callback !== 'undefined') callback();
@@ -2862,7 +2898,8 @@ export const MainWidget = function (options) {
 
     _this.settings.active = true;
 
-    _this.loadLeaderboard();
+    // _this.loadLeaderboard();
+    _this.loadCompetitionList();
 
     _this.settings.container.style.display = 'block';
     _this.settings.overlayContainer.style.display = 'block';

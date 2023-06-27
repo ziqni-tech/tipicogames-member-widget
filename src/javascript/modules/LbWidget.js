@@ -1928,7 +1928,14 @@ export const LbWidget = function (options) {
       _this.settings.notifications.hideNotification();
 
       // close leaderboard window
-    } else if (hasClass(el, 'cl-main-widget-lb-header-close') || hasClass(el, 'cl-main-widget-ach-header-close') || hasClass(el, 'cl-main-widget-reward-header-close') || hasClass(el, 'cl-main-widget-inbox-header-close') || hasClass(el, 'cl-widget-main-widget-overlay-wrapper')) {
+    } else if (
+      hasClass(el, 'cl-main-widget-lb-header-close') ||
+      hasClass(el, 'cl-main-widget-ach-header-close') ||
+      hasClass(el, 'cl-main-widget-reward-header-close') ||
+      hasClass(el, 'cl-main-widget-inbox-header-close') ||
+      hasClass(el, 'cl-widget-main-widget-overlay-wrapper') ||
+      hasClass(el, 'cl-main-widget-tournaments-close-btn')
+    ) {
       _this.settings.mainWidget.hide(function () {
         _this.settings.miniScoreBoard.settings.active = true;
         _this.settings.miniScoreBoard.settings.container.style.display = 'block';
