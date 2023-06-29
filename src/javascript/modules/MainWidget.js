@@ -1795,7 +1795,6 @@ export const MainWidget = function (options) {
   this.loadCompetitionList = function (callback) {
     const _this = this;
     const listResContainer = query(_this.settings.tournamentListContainer, '.cl-main-widget-tournaments-list-body-res');
-    // const listIcon = query(_this.settings.container, '.cl-main-widget-lb-header-list-icon');
     const preLoader = _this.preloader();
     const menu = document.querySelector('.cl-main-widget-navigation-container');
     const optInContainer = document.querySelector('.cl-main-widget-lb-optin-container');
@@ -1809,10 +1808,8 @@ export const MainWidget = function (options) {
     }
 
     preLoader.show(function () {
-      // listIcon.style.opacity = '0';
       const accordionObj = _this.accordionStyle(_this.settings.tournamentsSection.accordionLayout, function (accordionSection, listContainer, topEntryContainer, layout) {
         const tournamentData = _this.settings.lbWidget.settings.tournaments[layout.type];
-
         if (typeof tournamentData !== 'undefined') {
           if (tournamentData.length === 0) {
             accordionSection.style.display = 'none';
@@ -1880,6 +1877,7 @@ export const MainWidget = function (options) {
     const detailsContainer = document.createElement('div');
     const detailsWrapper = document.createElement('div');
     const descriptionWrapper = document.createElement('div');
+    const icon = document.createElement('div');
     const label = document.createElement('div');
     const description = document.createElement('div');
     const progressionWrapper = document.createElement('div');
@@ -1895,6 +1893,7 @@ export const MainWidget = function (options) {
     detailsContainer.setAttribute('class', 'cl-ach-list-details-cont');
     detailsWrapper.setAttribute('class', 'cl-ach-list-details-wrap');
     descriptionWrapper.setAttribute('class', 'cl-ach-list-details-description-wrap');
+    icon.setAttribute('class', 'cl-ach-list-details-icon');
     label.setAttribute('class', 'cl-ach-list-details-label');
     description.setAttribute('class', 'cl-ach-list-details-description');
     progressionWrapper.setAttribute('class', 'cl-ach-list-progression');
@@ -1904,6 +1903,10 @@ export const MainWidget = function (options) {
     enterButton.setAttribute('class', 'cl-ach-list-enter');
     leaveButton.setAttribute('class', 'cl-ach-list-leave');
     progressionButton.setAttribute('class', 'cl-ach-list-in-progress');
+
+    if (ach.iconLink) {
+      icon.setAttribute('style', 'background-image: url(' + ach.iconLink + ')');
+    }
 
     moreButton.dataset.id = ach.id;
     moreButton.href = 'javascript:void(0);';
@@ -1928,6 +1931,7 @@ export const MainWidget = function (options) {
     descriptionWrapper.appendChild(label);
     descriptionWrapper.appendChild(description);
 
+    detailsWrapper.appendChild(icon);
     detailsWrapper.appendChild(descriptionWrapper);
     detailsWrapper.appendChild(moreButton);
 
@@ -2898,7 +2902,6 @@ export const MainWidget = function (options) {
 
     _this.settings.active = true;
 
-    // _this.loadLeaderboard();
     _this.loadCompetitionList();
 
     _this.settings.container.style.display = 'block';

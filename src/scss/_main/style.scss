@@ -2401,12 +2401,21 @@
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-section-ach .cl-ach-list-details-wrap {
   width: 100%;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  position: relative;
+}
+
+.cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-section-ach .cl-ach-list-details-icon {
+  width: 32px;
+  height: 32px;
+  margin-right: 16px;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-section-ach .cl-ach-list-details-description-wrap {
-  width: 85%;
+  width: 75%;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-section-ach .cl-ach-with-image .cl-ach-list-details-wrap {
@@ -2484,7 +2493,8 @@
   background-image: url(../../images/more.svg);
   background-size: cover;
   background-repeat: no-repeat;
-  flex-shrink: 0;
+  position: absolute;
+  right: 0;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-section-ach .cl-ach-list-enter {
