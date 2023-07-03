@@ -1894,8 +1894,7 @@
   position: absolute;
   height: 100%;
   background: var(--lb3-tournament-list-bg-color);
-  top: 0;
-  left: -200px;
+  top: -100%;
   width: 100%;
   z-index: 3;
   opacity: 0;
@@ -1907,7 +1906,7 @@
 }
 
 .cl-main-widget-tournaments-list.cl-show {
-  left: 0;
+  top: 0;
   opacity: 1;
 }
 
@@ -3573,12 +3572,12 @@
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-section-item {
   transition: all 0.3s ease;
   opacity: 0;
-  left: -40px;
+  top: 60px;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-section-item.cl-main-active-section {
   opacity: 1;
-  left: 0;
+  top: 0;
 }
 
 .cl-main-widget-wrapper {
