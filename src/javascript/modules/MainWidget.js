@@ -1463,11 +1463,8 @@ export const MainWidget = function (options) {
     const menu = document.querySelector('.cl-main-widget-navigation-container');
     menu.style.opacity = '0';
 
-    if (hasClass(this.settings.section, 'cl-main-active-embedded-description')) {
-      removeClass(this.settings.section, 'cl-main-active-embedded-description');
-    } else {
-      addClass(this.settings.section, 'cl-main-active-embedded-description');
-    }
+    this.settings.section.classList.add('cl-main-active-embedded-description');
+
     if (typeof callback === 'function') callback();
   };
 
@@ -1843,7 +1840,7 @@ export const MainWidget = function (options) {
   };
 
   this.hideCompetitionList = function (callback) {
-    var _this = this;
+    const _this = this;
     const listIcon = query(_this.settings.container, '.cl-main-widget-lb-header-list-icon');
 
     listIcon.style.opacity = '1';
@@ -1851,10 +1848,9 @@ export const MainWidget = function (options) {
     _this.missingMemberReset();
 
     removeClass(_this.settings.tournamentListContainer, 'cl-show');
+    _this.settings.tournamentListContainer.style.display = 'none';
 
     setTimeout(function () {
-      _this.settings.tournamentListContainer.style.display = 'none';
-
       if (typeof callback === 'function') callback();
     }, 200);
   };
@@ -2364,7 +2360,7 @@ export const MainWidget = function (options) {
     const _this = this;
 
     _this.settings.lbWidget.checkForAvailableAchievements(pageNumber, function (achievementData) {
-      _this.settings.lbWidget.updateAchievementNavigationCounts();
+      // _this.settings.lbWidget.updateAchievementNavigationCounts();
       _this.achievementListLayout(pageNumber, achievementData);
 
       const idList = _this.settings.lbWidget.settings.achievements.list.map(a => a.id);

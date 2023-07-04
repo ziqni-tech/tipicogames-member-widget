@@ -1398,7 +1398,7 @@ export const LbWidget = function (options) {
     ) {
       var count = (_this.settings.miniScoreBoard.settings.active) ? 0 : _this.settings.leaderboard.fullLeaderboardSize;
       _this.getLeaderboardData(count, function (data) {
-        if (_this.settings.miniScoreBoard.settings.active) _this.settings.miniScoreBoard.loadScoreBoard();
+        // if (_this.settings.miniScoreBoard.settings.active) _this.settings.miniScoreBoard.loadScoreBoard();
         if (_this.settings.mainWidget.settings.active) _this.settings.mainWidget.loadLeaderboard();
       });
     }
@@ -1416,7 +1416,7 @@ export const LbWidget = function (options) {
     }
 
     _this.checkForAvailableCompetitions(async function () {
-      _this.updateLeaderboardNavigationCounts();
+      // _this.updateLeaderboardNavigationCounts();
       await _this.prepareActiveCompetition(function () {
         // clear to not clash with LB refresh that could happen at same time
         if (_this.settings.leaderboard.refreshInterval) {
@@ -1482,9 +1482,9 @@ export const LbWidget = function (options) {
       clearTimeout(_this.settings.leaderboard.refreshInterval);
     }
 
-    if (_this.settings.miniScoreBoard) {
-      _this.settings.miniScoreBoard.clearAll();
-    }
+    // if (_this.settings.miniScoreBoard) {
+    //   _this.settings.miniScoreBoard.clearAll();
+    // }
     if (_this.settings.mainWidget) {
       _this.settings.mainWidget.clearAll();
     }
@@ -1523,11 +1523,6 @@ export const LbWidget = function (options) {
   };
 
   this.restartActivity = function (callback) {
-    var _this = this;
-
-    // _this.activeDataRefresh();
-    _this.settings.miniScoreBoard.updateScoreBoard();
-
     if (typeof callback === 'function') {
       callback();
     }
@@ -1598,23 +1593,20 @@ export const LbWidget = function (options) {
   this.startup = function () {
     var _this = this;
 
-    _this.settings.miniScoreBoard.initLayout(function () {
-      _this.settings.miniScoreBoard.settings.active = true;
-      _this.activeDataRefresh(function () {
-        _this.settings.partialFunctions.startupCallback(_this);
-      });
-
-      if (_this.settings.enableNotifications) {
-        _this.settings.notifications.init();
-        _this.settings.canvasAnimation.init();
-      }
-
-      _this.cleanup();
-
-      if (typeof _this.settings.callback === 'function') {
-        _this.settings.callback();
-      }
+    _this.activeDataRefresh(function () {
+      _this.settings.partialFunctions.startupCallback(_this);
     });
+
+    if (_this.settings.enableNotifications) {
+      _this.settings.notifications.init();
+      _this.settings.canvasAnimation.init();
+    }
+
+    _this.cleanup();
+
+    if (typeof _this.settings.callback === 'function') {
+      _this.settings.callback();
+    }
   };
 
   var _cleanupInstance;
@@ -1698,7 +1690,7 @@ export const LbWidget = function (options) {
           // load achievement data
           if (_this.settings.navigation.achievements.enable) {
             _this.checkForAvailableAchievements(1, function () {
-              _this.updateAchievementNavigationCounts();
+              // _this.updateAchievementNavigationCounts();
             });
           }
 
@@ -1728,9 +1720,6 @@ export const LbWidget = function (options) {
             });
           }
         });
-        setTimeout(function () {
-          _this.settings.miniScoreBoard.settings.container.style.display = 'none';
-        }, 200);
       });
     }
   };
@@ -1753,10 +1742,6 @@ export const LbWidget = function (options) {
           actionCallback();
         }
       });
-
-      setTimeout(function () {
-        _this.settings.miniScoreBoard.settings.container.style.display = 'none';
-      }, 200);
     } else {
       _this.deactivateCompetitionsAndLeaderboards(function () {
         _this.settings.mainWidget.initLayout(function () {
@@ -1768,9 +1753,6 @@ export const LbWidget = function (options) {
             }
           });
         });
-        setTimeout(function () {
-          _this.settings.miniScoreBoard.settings.container.style.display = 'none';
-        }, 200);
       });
     }
   };
@@ -1936,12 +1918,7 @@ export const LbWidget = function (options) {
       hasClass(el, 'cl-widget-main-widget-overlay-wrapper') ||
       hasClass(el, 'cl-main-widget-tournaments-close-btn')
     ) {
-      _this.settings.mainWidget.hide(function () {
-        _this.settings.miniScoreBoard.settings.active = true;
-        _this.settings.miniScoreBoard.settings.container.style.display = 'block';
-
-        _this.activeDataRefresh();
-      });
+      _this.closeEverything();
 
       // load embedded competition details
     } else if (!_this.settings.leaderboard.layoutSettings.titleLinkToDetailsPage && (
@@ -2134,12 +2111,7 @@ export const LbWidget = function (options) {
         _this.settings.tournaments.activeCompetitionId = tournamentId;
         _this.activeDataRefresh(function () {
           _this.settings.mainWidget.hideCompetitionList(function () {
-            if (!_this.settings.leaderboard.layoutSettings.titleLinkToDetailsPage) {
-              _this.settings.mainWidget.showEmbeddedCompetitionDetailsContent(function () {});
-            } else if (_this.settings.competition.activeContest !== null) {
-              _this.settings.mainWidget.loadCompetitionDetails(function () {});
-            }
-
+            _this.settings.mainWidget.showEmbeddedCompetitionDetailsContent(function () {});
             preLoader.hide();
           });
         });
@@ -2167,8 +2139,8 @@ export const LbWidget = function (options) {
         case 27: // on escape
           if (_this.settings.mainWidget.settings.active) {
             _this.settings.mainWidget.hide(function () {
-              _this.settings.miniScoreBoard.settings.active = true;
-              _this.settings.miniScoreBoard.settings.container.style.display = 'block';
+              // _this.settings.miniScoreBoard.settings.active = true;
+              // _this.settings.miniScoreBoard.settings.container.style.display = 'block';
 
               _this.activeDataRefresh();
             });
@@ -2270,20 +2242,29 @@ export const LbWidget = function (options) {
   };
 
   this.closeEverything = function () {
-    var _this = this;
+    const _this = this;
 
     _this.deactivateCompetitionsAndLeaderboards(function () {
       _this.settings.leaderboard.leaderboardData = [];
-      setTimeout(function () {
-        _this.settings.miniScoreBoard.settings.container.style.display = 'none';
-      }, 200);
     });
 
-    _this.settings.mainWidget.hide();
+    // _this.settings.mainWidget.hide();
     _this.settings.mainWidget.settings.preLoader.preLoaderActive = false;
     this.stopActivity();
-    this.apiClientStomp.disconnect();
+
+    if (this.apiClientStomp) {
+      this.apiClientStomp.disconnect();
+    }
     this.apiClientStomp = null;
+
+    const widgetWrapper = document.querySelector('.cl-main-widget-wrapper');
+    const overlayWrapper = document.querySelector('.cl-widget-main-widget-overlay-wrapper');
+    if (widgetWrapper) {
+      widgetWrapper.remove();
+    }
+    if (overlayWrapper) {
+      overlayWrapper.remove();
+    }
   };
 
   var restartReloadInterval;
@@ -2301,8 +2282,8 @@ export const LbWidget = function (options) {
               _this.settings.mainWidget.destroyLayout();
 
               restartReloadInterval = setTimeout(function () {
-                _this.settings.miniScoreBoard.settings.active = true;
-                _this.settings.miniScoreBoard.settings.container.style.display = 'block';
+                // _this.settings.miniScoreBoard.settings.active = true;
+                // _this.settings.miniScoreBoard.settings.container.style.display = 'block';
                 _this.startup();
               }, 300);
             });
@@ -2358,7 +2339,7 @@ export const LbWidget = function (options) {
             this.settings.partialFunctions.leaderboardDataResponseParser(leaderboardEntries, function (lbData) {
               _this.settings.leaderboard.leaderboardData = lbData;
             });
-            this.settings.miniScoreBoard.loadScoreBoard();
+            // this.settings.miniScoreBoard.loadScoreBoard();
             this.settings.mainWidget.loadLeaderboard();
           }
         }
@@ -2375,7 +2356,7 @@ export const LbWidget = function (options) {
         }
         if (json && json.entityType === 'Contest') {
           _this.checkForAvailableCompetitions(async function () {
-            _this.updateLeaderboardNavigationCounts();
+            // _this.updateLeaderboardNavigationCounts();
           });
           if (headers.callback && headers.callback === 'entityStateChanged') {
             if (typeof this.settings.callbacks.onContestStatusChanged === 'function') {
@@ -2387,7 +2368,7 @@ export const LbWidget = function (options) {
         }
         if (json && json.entityType === 'Competition') {
           _this.checkForAvailableCompetitions(async function () {
-            _this.updateLeaderboardNavigationCounts();
+            // _this.updateLeaderboardNavigationCounts();
           });
           if (headers.callback && headers.callback === 'entityStateChanged') {
             if (typeof this.settings.callbacks.onCompetitionStatusChanged === 'function') {
@@ -2452,33 +2433,28 @@ export const LbWidget = function (options) {
       this.applyAppearance();
 
       this.loadMember((member) => {
-        this.loadWidgetTranslations(() => {
-          if (this.settings.miniScoreBoard === null) {
-            this.settings.canvasAnimation = new CanvasAnimation();
-            this.settings.notifications = new Notifications({
-              canvasInstance: this.settings.canvasAnimation
-            });
-            this.settings.miniScoreBoard = new MiniScoreBoard({
-              active: true
-            });
-            this.settings.mainWidget = new MainWidget();
+        this.loadWidgetTranslations(async () => {
+          this.settings.canvasAnimation = new CanvasAnimation();
+          this.settings.notifications = new Notifications({
+            canvasInstance: this.settings.canvasAnimation
+          });
+          this.settings.miniScoreBoard = new MiniScoreBoard({
+            active: false
+          });
+          this.settings.mainWidget = new MainWidget();
 
-            this.settings.notifications.settings.lbWidget = this;
-            this.settings.miniScoreBoard.settings.lbWidget = this;
-            this.settings.mainWidget.settings.lbWidget = this;
-            this.settings.canvasAnimation.settings.lbWidget = this;
+          this.settings.notifications.settings.lbWidget = this;
+          this.settings.miniScoreBoard.settings.lbWidget = this;
+          this.settings.mainWidget.settings.lbWidget = this;
+          this.settings.canvasAnimation.settings.lbWidget = this;
 
-            this.startup();
-            this.eventListeners();
-          } else {
-            this.settings.mainWidget.hide(() => {
-              this.deactivateCompetitionsAndLeaderboards(() => {
-                this.settings.miniScoreBoard.settings.active = true;
-                this.settings.miniScoreBoard.settings.container.style.display = 'block';
-                this.startup();
-              });
-            });
-          }
+          await this.checkForAvailableCompetitions();
+
+          this.settings.mainWidget.loadLeaderboard();
+
+          this.startup();
+          this.eventListeners();
+          this.clickedMiniScoreBoard();
         });
       });
     });
