@@ -1911,6 +1911,7 @@ export const LbWidget = function (options) {
 
       // close leaderboard window
     } else if (
+      hasClass(el, 'cl-main-widget-section-container-close') ||
       hasClass(el, 'cl-main-widget-lb-header-close') ||
       hasClass(el, 'cl-main-widget-ach-header-close') ||
       hasClass(el, 'cl-main-widget-reward-header-close') ||
