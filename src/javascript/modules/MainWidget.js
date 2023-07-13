@@ -239,6 +239,7 @@ export const MainWidget = function (options) {
     const navigationItems = document.createElement('div');
 
     const mainSectionContainer = document.createElement('div');
+    const mainSectionContainerClose = document.createElement('div');
 
     const preLoaderContainer = document.createElement('div');
     const preLoaderContent = document.createElement('div');
@@ -269,6 +270,7 @@ export const MainWidget = function (options) {
     navigationItems.setAttribute('class', 'cl-main-widget-navigation-items');
 
     mainSectionContainer.setAttribute('class', 'cl-main-widget-section-container' + (_this.settings.lbWidget.settings.showCopyright ? '' : ' cl-hidden-copyright'));
+    mainSectionContainerClose.setAttribute('class', 'cl-main-widget-section-container-close');
 
     preLoaderContainer.setAttribute('class', 'cl-main-widget-pre-loader');
     preLoaderContent.setAttribute('class', 'cl-main-widget-pre-loader-content');
@@ -283,6 +285,7 @@ export const MainWidget = function (options) {
 
     navigationContainer.appendChild(navigationItems);
 
+    mainSectionContainer.appendChild(mainSectionContainerClose);
     mainSectionContainer.appendChild(navigationContainer);
     mainSectionContainer.appendChild(sectionLB);
     mainSectionContainer.appendChild(sectionACH);
