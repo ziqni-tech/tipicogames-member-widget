@@ -2271,7 +2271,7 @@ export const LbWidget = function (options) {
       if (overlayWrapper) {
         overlayWrapper.remove();
       }
-    }, 500);
+    }, 300);
   };
 
   var restartReloadInterval;
