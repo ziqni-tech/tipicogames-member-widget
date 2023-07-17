@@ -1613,6 +1613,14 @@ export const MainWidget = function (options) {
     if (typeof callback === 'function') {
       callback();
     }
+
+    const mainContainer = document.querySelector('.cl-main-widget-section-container');
+
+    if (!mainContainer.classList.contains('active')) {
+      setTimeout(() => {
+        mainContainer.classList.add('active');
+      }, 30);
+    }
   };
 
   this.clearAll = function () {

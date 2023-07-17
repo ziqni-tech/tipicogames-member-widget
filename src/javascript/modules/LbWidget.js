@@ -1991,7 +1991,7 @@ export const LbWidget = function (options) {
         });
       });
       // load achievement details
-    } else if (hasClass(el, 'cl-ach-list-details-label')) {
+    } else if (el.closest('.cl-ach-list-item')) {
       const wrapper = el.closest('.cl-ach-list-item');
       const id = wrapper.dataset.id;
       _this.getAchievement(id, function (data) {
@@ -2258,14 +2258,20 @@ export const LbWidget = function (options) {
     }
     this.apiClientStomp = null;
 
+    const mainContainer = document.querySelector('.cl-main-widget-section-container');
+    mainContainer.classList.remove('active');
+
     const widgetWrapper = document.querySelector('.cl-main-widget-wrapper');
     const overlayWrapper = document.querySelector('.cl-widget-main-widget-overlay-wrapper');
-    if (widgetWrapper) {
-      widgetWrapper.remove();
-    }
-    if (overlayWrapper) {
-      overlayWrapper.remove();
-    }
+
+    setTimeout(() => {
+      if (widgetWrapper) {
+        widgetWrapper.remove();
+      }
+      if (overlayWrapper) {
+        overlayWrapper.remove();
+      }
+    }, 500);
   };
 
   var restartReloadInterval;
