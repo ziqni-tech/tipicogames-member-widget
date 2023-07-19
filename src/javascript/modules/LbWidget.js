@@ -2103,8 +2103,11 @@ export const LbWidget = function (options) {
 
       // load competition
     } else if (hasClass(el, 'cl-tour-list-item') || closest(el, '.cl-tour-list-item') !== null) {
-      var tournamentId = (hasClass(el, 'cl-tour-list-item')) ? el.dataset.id : closest(el, '.cl-tour-list-item').dataset.id;
-      var preLoader = _this.settings.mainWidget.preloader();
+      const tournamentId = (hasClass(el, 'cl-tour-list-item')) ? el.dataset.id : closest(el, '.cl-tour-list-item').dataset.id;
+      const preLoader = _this.settings.mainWidget.preloader();
+      const mainContainer = document.querySelector('.cl-main-widget-section-container');
+
+      mainContainer.classList.add('cl-main-active-embedded-description');
 
       preLoader.show(function () {
         _this.settings.mainWidget.populateLeaderboardResultsWithDefaultEntries(true);

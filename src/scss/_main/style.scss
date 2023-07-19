@@ -1032,7 +1032,6 @@
   left: 8px;
   top: 80px;
   opacity: 1;
-  transition: opacity 0.3s ease;
 }
 .cl-main-widget-wrapper .cl-hidden-navigation .cl-main-widget-navigation-container {
   display:none;
@@ -1948,6 +1947,12 @@
   height: calc(100% - 76px);
   top: 134px;
   padding: 0 16px;
+  transition: all 0.3s ease;
+  left: -100%;
+}
+
+.cl-main-widget-lb.cl-main-active-section .cl-main-widget-tournaments-list .cl-main-widget-tournaments-list-body {
+  left: 0;
 }
 
 .cl-main-widget-tournaments-list .cl-main-widget-tournaments-list-body .cl-main-widget-tournaments-list-body-res {
@@ -2252,6 +2257,12 @@
   z-index: 1;
   overflow: auto;
   height: 100%;
+  left: -100%;
+  transition: all .3s ease;
+}
+
+.cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-section-ach.cl-main-active-section .cl-main-widget-ach-list-body {
+  left: 0;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-ach-list-body-res {
@@ -3153,6 +3164,12 @@
   z-index: 1;
   overflow: auto;
   height: calc(100vh - 315px);
+  left: -100%;
+  transition: all .3s ease;
+}
+
+.cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-section-inbox.cl-main-active-section .cl-main-widget-inbox-list-body {
+  left: 0;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-inbox-list-body-res {
