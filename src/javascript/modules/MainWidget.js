@@ -1855,7 +1855,7 @@ export const MainWidget = function (options) {
     const listIcon = query(_this.settings.container, '.cl-main-widget-lb-header-list-icon');
 
     listIcon.style.opacity = '1';
-    _this.hideEmbeddedCompetitionDetailsContent();
+    // _this.hideEmbeddedCompetitionDetailsContent();
     _this.missingMemberReset();
 
     removeClass(_this.settings.tournamentListContainer, 'cl-show');
