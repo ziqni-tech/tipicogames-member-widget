@@ -6,6 +6,12 @@
         "minutes": "m",
         "seconds": "s"
     },
+    "menu": {
+        "tournaments": "Turniere",
+        "achievements": "Erfolge",
+        "rewards": "Prämien",
+        "inbox": "Mitteilungen"
+    },
     "achievements": {
         "label": "Erfolge",
         "more": "Mehr",
