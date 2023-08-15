@@ -1919,7 +1919,10 @@ export const LbWidget = function (options) {
       hasClass(el, 'cl-widget-main-widget-overlay-wrapper') ||
       hasClass(el, 'cl-main-widget-tournaments-close-btn')
     ) {
-      _this.closeEverything();
+      // _this.closeEverything();
+      _this.settings.mainWidget.hide(function () {
+        _this.activeDataRefresh();
+      });
 
       // load embedded competition details
     } else if (!_this.settings.leaderboard.layoutSettings.titleLinkToDetailsPage && (
@@ -2400,13 +2403,25 @@ export const LbWidget = function (options) {
   };
 
   this.generateUserToken = async function () {
-    const memberTokenRequest = {
-      member: this.settings.memberRefId,
-      apiKey: this.settings.apiKey,
-      isReferenceId: true,
-      expires: this.settings.expires,
-      resource: 'ziqni-gapi'
-    };
+    let memberTokenRequest;
+
+    if (this.settings.memberRefId) {
+      memberTokenRequest = {
+        member: this.settings.memberRefId,
+        apiKey: this.settings.apiKey,
+        isReferenceId: true,
+        expires: this.settings.expires,
+        resource: 'ziqni-gapi'
+      };
+    } else {
+      memberTokenRequest = {
+        member: 'PUBLIC',
+        apiKey: this.settings.apiKey,
+        isReferenceId: false,
+        expires: this.settings.expires,
+        resource: 'ziqni-gapi'
+      };
+    }
 
     const response = await fetch('https://api.ziqni.com/member-token', {
       method: 'post',
@@ -2433,41 +2448,45 @@ export const LbWidget = function (options) {
    * @return {undefined}
    */
   this.init = async function () {
-    await this.initApiClientStomp();
-
-    setInterval(async () => {
+    if (this.apiClientStomp) {
+      this.clickedMiniScoreBoard();
+    } else {
       await this.initApiClientStomp();
-    }, this.settings.expires);
 
-    this.loadStylesheet(() => {
-      this.applyAppearance();
+      setInterval(async () => {
+        await this.initApiClientStomp();
+      }, this.settings.expires);
 
-      this.loadMember((member) => {
-        this.loadWidgetTranslations(async () => {
-          this.settings.canvasAnimation = new CanvasAnimation();
-          this.settings.notifications = new Notifications({
-            canvasInstance: this.settings.canvasAnimation
+      this.loadStylesheet(() => {
+        this.applyAppearance();
+
+        this.loadMember((member) => {
+          this.loadWidgetTranslations(async () => {
+            this.settings.canvasAnimation = new CanvasAnimation();
+            this.settings.notifications = new Notifications({
+              canvasInstance: this.settings.canvasAnimation
+            });
+            this.settings.miniScoreBoard = new MiniScoreBoard({
+              active: false
+            });
+            this.settings.mainWidget = new MainWidget();
+
+            this.settings.notifications.settings.lbWidget = this;
+            this.settings.miniScoreBoard.settings.lbWidget = this;
+            this.settings.mainWidget.settings.lbWidget = this;
+            this.settings.canvasAnimation.settings.lbWidget = this;
+
+            await this.checkForAvailableCompetitions();
+
+            this.settings.mainWidget.loadLeaderboard();
+
+            this.startup();
+            this.eventListeners();
+            this.clickedMiniScoreBoard();
           });
-          this.settings.miniScoreBoard = new MiniScoreBoard({
-            active: false
-          });
-          this.settings.mainWidget = new MainWidget();
-
-          this.settings.notifications.settings.lbWidget = this;
-          this.settings.miniScoreBoard.settings.lbWidget = this;
-          this.settings.mainWidget.settings.lbWidget = this;
-          this.settings.canvasAnimation.settings.lbWidget = this;
-
-          await this.checkForAvailableCompetitions();
-
-          this.settings.mainWidget.loadLeaderboard();
-
-          this.startup();
-          this.eventListeners();
-          this.clickedMiniScoreBoard();
         });
       });
-    });
+    }
   };
 
   if (this.settings.autoStart) {
