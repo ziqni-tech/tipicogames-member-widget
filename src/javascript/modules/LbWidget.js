@@ -327,7 +327,8 @@ export const LbWidget = function (options) {
     },
     callbacks: {
       onContestStatusChanged: function (contestId, currentState, previousState) {},
-      onCompetitionStatusChanged: function (competitionId, currentState, previousState) {}
+      onCompetitionStatusChanged: function (competitionId, currentState, previousState) {},
+      onDisconnect: function () {}
     },
     callback: null
   };
@@ -2277,6 +2278,9 @@ export const LbWidget = function (options) {
       if (overlayWrapper) {
         overlayWrapper.remove();
       }
+      if (typeof _this.settings.callbacks.onDisconnect === 'function') {
+        _this.settings.callbacks.onDisconnect();
+      }
     }, 300);
   };
 
@@ -2482,7 +2486,7 @@ export const LbWidget = function (options) {
 
             this.startup();
             this.eventListeners();
-            this.clickedMiniScoreBoard();
+            // this.clickedMiniScoreBoard();
           });
         });
       });
