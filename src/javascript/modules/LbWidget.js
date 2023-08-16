@@ -328,7 +328,8 @@ export const LbWidget = function (options) {
     callbacks: {
       onContestStatusChanged: function (contestId, currentState, previousState) {},
       onCompetitionStatusChanged: function (competitionId, currentState, previousState) {},
-      onDisconnect: function () {}
+      onDisconnect: function () {},
+      onLoadComplete: function () {}
     },
     callback: null
   };
@@ -2486,6 +2487,10 @@ export const LbWidget = function (options) {
 
             this.startup();
             this.eventListeners();
+
+            if (typeof this.settings.callbacks.onLoadComplete === 'function') {
+              this.settings.callbacks.onLoadComplete();
+            }
             // this.clickedMiniScoreBoard();
           });
         });
