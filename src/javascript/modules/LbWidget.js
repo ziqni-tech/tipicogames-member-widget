@@ -2158,21 +2158,11 @@ export const LbWidget = function (options) {
       }
     });
 
-    if (_this.isMobile()) {
-      document.body.addEventListener('touchend', function (event) {
-        var el = event.target;
+    document.body.addEventListener('click', function (event) {
+      var el = event.target;
 
-        if (!_this.settings.miniScoreBoard.settings.dragging) {
-          _this.eventHandlers(el);
-        }
-      });
-    } else {
-      document.body.addEventListener('click', function (event) {
-        var el = event.target;
-
-        _this.eventHandlers(el);
-      });
-    }
+      _this.eventHandlers(el);
+    });
   };
 
   this.getCompetitionOptInStatus = async function (competitionIds) {
