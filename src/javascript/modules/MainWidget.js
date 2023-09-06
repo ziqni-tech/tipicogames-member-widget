@@ -1653,6 +1653,12 @@ export const MainWidget = function (options) {
         if (typeof callback === 'function') {
           callback();
         }
+
+        const body = document.body;
+        const scrollY = body.style.top;
+        body.style.position = '';
+        body.style.top = '';
+        window.scrollTo(0, parseInt(scrollY || '0') * -1);
       }, 30);
     } else if (typeof callback === 'function') {
       callback();
@@ -2925,6 +2931,10 @@ export const MainWidget = function (options) {
       }
 
       _this.resetNavigation(callback);
+      const scrollY = document.documentElement.style.getPropertyValue('--scroll-y');
+      const body = document.body;
+      body.style.position = 'fixed';
+      body.style.top = `-${scrollY}`;
     }, 30);
   };
 };
