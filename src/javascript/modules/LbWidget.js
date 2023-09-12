@@ -72,6 +72,7 @@ export const LbWidget = function (options) {
   this.settings = {
     debug: false,
     bindContainer: document.body,
+    isLoadComplete: false,
     autoStart: true,
     notifications: null,
     miniScoreBoard: null,
@@ -1678,6 +1679,8 @@ export const LbWidget = function (options) {
   };
 
   this.clickedMiniScoreBoard = function () {
+    if (!this.settings.isLoadComplete) return;
+
     var _this = this;
 
     if (!_this.settings.miniScoreBoard.settings.dragging) {
@@ -2269,6 +2272,7 @@ export const LbWidget = function (options) {
       if (overlayWrapper) {
         overlayWrapper.remove();
       }
+      this.settings.isLoadComplete = false;
       if (typeof _this.settings.callbacks.onDisconnect === 'function') {
         _this.settings.callbacks.onDisconnect();
       }
@@ -2478,6 +2482,7 @@ export const LbWidget = function (options) {
             this.startup();
             this.eventListeners();
 
+            this.settings.isLoadComplete = true;
             if (typeof this.settings.callbacks.onLoadComplete === 'function') {
               this.settings.callbacks.onLoadComplete();
             }
