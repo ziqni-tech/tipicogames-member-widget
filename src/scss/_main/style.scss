@@ -2275,7 +2275,7 @@
 
 .cl-main-widget-wrapper .cl-main-widget-ach-details-container {
   position: absolute;
-  height: calc(100% - 52px);
+  height: calc(100% - 72px);
   background: #ffffff;
   top: 72px;
   width: 100%;
@@ -2345,10 +2345,10 @@
   padding: 16px;
   border-radius: 8px;
   background: rgba(19,19,19,.04);
+  height: calc(100% - 20px);
 }
 
 .cl-main-widget-wrapper .cl-main-widget-ach-details-container .cl-main-widget-ach-details-body {
-  float: left;
   width: 100%;
   color: rgba(19,19,19,.72);
   font-size: 14px;
