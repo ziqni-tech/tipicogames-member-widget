@@ -49,7 +49,9 @@
         "label": "Prämien",
         "claim": "Jetzt beanspruchen",
         "claimed": "Beansprucht",
+        "claimedAwards": "Beansprucht",
         "availableRewards": "Verfügbare Prämien",
+        "availableAwards": "Verfügbare Prämien",
         "rewards": "Beanspruchte Prämien",
         "expiredRewards": "Abgelaufene Prämien"
     },

@@ -58,7 +58,9 @@
     "label": "Awards",
     "claim": "Claim Now",
     "claimed": "Claimed",
+    "claimedAwards": "Claimed",
     "availableRewards": "Available Awards",
+    "availableAwards": "Available Awards",
     "rewards": "Claimed Awards",
     "expiredRewards": "Expired Awards"
   },

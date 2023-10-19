@@ -2624,32 +2624,31 @@
   z-index: 1;
   left: 0;
   top: 0;
-  background: var(--lb3-rewards-header-bg-color);
-  border-radius: 5px;
-  box-shadow: 0px 3px 4px rgba(0, 0, 0, 0.6);
+  border-radius: 35px 35px 0 0;
   overflow: hidden;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-reward-header {
-  float: left;
+  display: flex;
+  align-items: center;
   width: 100%;
-  height: 30px;
-  background: var(--lb3-rewards-header-bg-color);
-  border-radius: 5px 5px 0 0;
+  border-radius: 32px 32px 0 0;
   position: relative;
   z-index: 2;
+  height: 72px;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-reward-header .cl-main-widget-reward-header-label {
-  float: left;
-  width: 60%;
+  width: 100%;
   text-align: center;
   line-height: 30px;
-  color: var(--light-font-color);
-  text-transform: uppercase;
-  font-size: 14px;
-  font-weight: 500;
-  margin: 0 0 0 20%;
+  color: #131313;
+  font-weight: 700;
+  font-size: 16px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0 70px;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-reward-header .cl-main-widget-reward-header-date {
@@ -2667,15 +2666,15 @@
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-reward-header .cl-main-widget-reward-header-close {
   position: absolute;
   display: block;
-  background-image: $lb3-rewards-header-close-image;
+  background-image: url(../../images/close-icon.svg);
   background-repeat: no-repeat;
   background-position: 50% 50%;
-  background-size: 70%;
-  width: 30px;
-  height: 30px;
-  right: 3px;
-  top: 0;
-  border-bottom: var(--lb3-rewards-header-border-bottom);
+  background-size: 100%;
+  width: 40px;
+  height: 40px;
+  right: 16px;
+  top: 16px;
+  cursor: pointer;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-reward-details {
@@ -2695,9 +2694,8 @@
   width: 100%;
   height: 100%;
   z-index: 1;
-  padding: 36px 0 22px 0;
-  background: var(--lb3-rewards-bg-color);
-  border-radius: 5px;
+  padding: 134px 0 22px 0;
+  background: #fff;
 }
 .cl-main-widget-wrapper .cl-main-widget-section-container.cl-hidden-copyright .cl-main-widget-reward-list {
   padding-bottom: 5px;
@@ -2710,11 +2708,19 @@
   z-index: 1;
   overflow: auto;
   height: 100%;
+  left: -100%;
+  transition: all .3s ease;
+}
+
+.cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-section-reward.cl-main-active-section .cl-main-widget-reward-list-body {
+  left: 0;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-reward-list-body-res {
-  float: left;
+  display: flex;
+  flex-direction: column;
   width: 100%;
+  padding: 0 16px;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-reward-footer {
@@ -2739,37 +2745,49 @@
   text-align: center;
 }
 
-.cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-reward-list-body-res .cl-rew-list-item {
-  float: left;
-  width: 100%;
-  padding: 10px 30px 15px 30px;
-  margin: 0;
-  border-bottom: 1px solid var(--lb3-rewards-divider-color);
-  transition: background-color 0.3s ease;
-  cursor: pointer;
-}
+.cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-reward-list-body-res .cl-rew-list-item {}
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-reward-list-body-res .cl-rew-list-item:hover {
   background-color: var(--lb3-rewards-item-bg-color-hover);
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-reward-list-body-res .cl-rew-list-details-cont {
-  float: left;
   width: 100%;
+  padding: 16px;
+  margin-bottom: 8px;
+  transition: background-color .3s ease;
+  cursor: pointer;
+  border-radius: 8px;
+  background: rgba(19,19,19,.04);
 }
 
-.cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-reward-list-body-res .cl-rew-list-details-wrap {
-  float: left;
-  width: 100%;
-}
+.cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-reward-list-body-res .cl-rew-list-details-wrap {}
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-reward-list-body-res .cl-rew-list-details-label {
-  float: left;
   width: 100%;
-  color: var(--lb3-rewards-item-label-color);
+  color: #000;
   text-transform: uppercase;
   font-size: 14px;
-  font-weight: 500;
+  line-height: 22px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 40px;
+  position: relative;
+}
+
+.cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-reward-list-body-res .cl-rew-list-details-label::after {
+  content: "";
+  display: block;
+  width: 6px;
+  height: 10px;
+  background-image: url(../../images/more.svg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  position: absolute;
+  right: 0;
+  top: 5px;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-reward-list-body-res .cl-rew-list-details-description {
@@ -2888,14 +2906,15 @@
 
 .cl-main-widget-wrapper .cl-main-widget-reward-details-container {
   position: absolute;
-  height: calc(100% - 52px);
-  background: var(--lb3-rewards-details-bg-color);
-  top: 30px;
+  height: calc(100% - 72px);
+  background: #fff;
+  top: 72px;
   width: 100%;
   z-index: 10;
   opacity: 0;
   display: none;
-  transition: all 0.3s ease;
+  transition: all .3s ease;
+  padding: 8px 16px 0;
 }
 .cl-main-widget-wrapper .cl-main-widget-section-container.cl-hidden-copyright .cl-main-widget-reward-details-container {
   height: calc(100% - 30px);
@@ -2941,24 +2960,23 @@
 
 .cl-main-widget-wrapper .cl-main-widget-reward-details-container .cl-main-widget-reward-details-back-btn {
   position: absolute;
-  left: 20px;
-  top: 16px;
-  width: 30px;
-  height: 26px;
-  background-image: $prev-btn-icon-bg;
+  left: 16px;
+  top: -56px;
+  background-image: url(../../images/back-btn.svg);
   background-repeat: no-repeat;
-  background-size: 100%;
+  background-position: 50% 50%;
+  width: 40px;
+  height: 40px;
   cursor: pointer;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-reward-details-container .cl-main-widget-reward-details-body-container {
-  float: left;
   width: 100%;
   overflow: auto;
-  padding: 5px 40px 25px 40px;
-  position: absolute;
-  top: 80px;
-  height: calc(100% - 130px);
+  padding: 16px;
+  border-radius: 8px;
+  background: rgba(19,19,19,.04);
+  height: calc(100% - 20px);
 }
 
 .cl-main-widget-wrapper .cl-main-widget-reward-details-container .cl-main-widget-reward-details-body {
@@ -2986,7 +3004,6 @@
 .cl-main-widget-wrapper .cl-main-widget-reward-details-container .cl-main-widget-reward-winnings-container {
   float: left;
   width: 100%;
-  background: var(--lb3-rewards-winnings-bg-color);
   position: relative;
   z-index: 1;
 }
@@ -3032,28 +3049,24 @@
 .cl-main-widget-wrapper .cl-main-widget-reward-details-container .cl-main-widget-reward-claim-container {
   float: left;
   width: 100%;
-  position: absolute;
-  bottom: 0;
-  height: 40px;
   text-align: center;
+  margin-top: 20px;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-reward-details-container .cl-main-widget-reward-claim-btn {
-  display: inline-block;
-  text-align: center;
-  color: var(--light-font-color);
-  right: 0;
-  line-height: 22px;
-  background: var(--lb3-rewards-btn-bg-color);
-  border: var(--lb3-rewards-btn-border);
-  text-decoration: none;
-  border-radius: var(--lb3-rewards-btn-border-radius);
-  box-shadow: var(--lb3-rewards-btn-box-shadow);
-  text-transform: uppercase;
-  padding: 4px 39px;
+  display: flex;
+  height: 40px;
+  padding: 4px 16px;
+  justify-content: center;
+  align-items: center;
   cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 14px;
+  border-radius: 8px;
+  background: #63b250;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  text-decoration: none;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-reward-details-container .cl-main-widget-reward-claim-btn:hover {

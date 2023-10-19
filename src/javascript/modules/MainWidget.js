@@ -102,7 +102,7 @@ export const MainWidget = function (options) {
         {
           label: 'Claimed Awards',
           type: 'claimedAwards',
-          show: false,
+          show: true,
           showTopResults: 1
         }
       ]
@@ -214,7 +214,11 @@ export const MainWidget = function (options) {
       navigationItemIcon.setAttribute('class', _this.settings.lbWidget.settings.navigation[val.key].navigationClassIcon + ' cl-main-navigation-item');
       navigationItemCount.setAttribute('class', 'cl-main-navigation-item-count');
 
-      navigationItemIcon.innerHTML = _this.settings.lbWidget.settings.translation.menu[val.key];
+      if (val.key === 'rewards') {
+        navigationItemIcon.innerHTML = _this.settings.lbWidget.settings.translation.menu.inbox;
+      } else {
+        navigationItemIcon.innerHTML = _this.settings.lbWidget.settings.translation.menu[val.key];
+      }
 
       navigationItemIcon.appendChild(navigationItemCount);
       navigationItem.appendChild(navigationItemIcon);
@@ -672,7 +676,7 @@ export const MainWidget = function (options) {
     sectionRewardsClaimContainer.setAttribute('class', 'cl-main-widget-reward-claim-container');
     sectionRewardsClaimBtn.setAttribute('class', 'cl-main-widget-reward-claim-btn');
 
-    sectionRewardsHeaderLabel.innerHTML = _this.settings.lbWidget.settings.translation.rewards.label;
+    // sectionRewardsHeaderLabel.innerHTML = _this.settings.lbWidget.settings.translation.rewards.label;
     sectionRewardsFooterContent.innerHTML = _this.settings.lbWidget.settings.translation.global.copy;
     sectionRewardsClaimBtn.innerHTML = _this.settings.lbWidget.settings.translation.rewards.claim;
 
@@ -682,13 +686,13 @@ export const MainWidget = function (options) {
 
     sectionRewardsDetailsHeader.appendChild(sectionRewardsDetailsHeaderLabel);
     sectionRewardsDetailsHeader.appendChild(sectionRewardsDetailsHeaderDate);
-    sectionRewardsDetailsContainer.appendChild(sectionRewardsDetailsHeader);
+    // sectionRewardsDetailsContainer.appendChild(sectionRewardsDetailsHeader);
     sectionRewardsDetailsContainer.appendChild(sectionRewardsDetailsBackBtn);
     sectionRewardsDetailsBodyContainer.appendChild(sectionRewardsDetailsBodyImageContainer);
     sectionRewardsDetailsBodyContainer.appendChild(sectionRewardsDetailsBody);
     sectionRewardsDetailsBodyContainer.appendChild(sectionRewardsWinningsContainer);
+    sectionRewardsDetailsBodyContainer.appendChild(sectionRewardsClaimContainer);
     sectionRewardsDetailsContainer.appendChild(sectionRewardsDetailsBodyContainer);
-    sectionRewardsDetailsContainer.appendChild(sectionRewardsClaimContainer);
 
     sectionRewardsHeader.appendChild(sectionRewardsHeaderLabel);
     sectionRewardsHeader.appendChild(sectionRewardsHeaderDate);
@@ -708,7 +712,7 @@ export const MainWidget = function (options) {
     sectionRewards.appendChild(sectionRewardsHeader);
     sectionRewards.appendChild(sectionRewardsDetails);
     sectionRewards.appendChild(sectionRewardsList);
-    sectionRewards.appendChild(sectionRewardsFooter);
+    // sectionRewards.appendChild(sectionRewardsFooter);
     sectionRewards.appendChild(sectionRewardsDetailsContainer);
 
     return sectionRewards;
@@ -2133,12 +2137,18 @@ export const MainWidget = function (options) {
 
   this.loadRewardDetails = function (data, callback) {
     var _this = this;
-    var label = query(_this.settings.reward.detailsContainer, '.cl-main-widget-reward-details-header-label');
+    const label = document.querySelector('.cl-main-widget-reward-header-label');
     var body = query(_this.settings.reward.detailsContainer, '.cl-main-widget-reward-details-body');
     var image = query(_this.settings.reward.detailsContainer, '.cl-main-widget-reward-details-body-image-cont');
     var claimBtn = query(_this.settings.reward.detailsContainer, '.cl-main-widget-reward-claim-btn');
     var icon = query(_this.settings.reward.detailsContainer, '.cl-main-widget-reward-winnings-icon');
     var value = query(_this.settings.reward.detailsContainer, '.cl-main-widget-reward-winnings-value');
+
+    const menu = document.querySelector('.cl-main-widget-navigation-container');
+
+    if (menu) {
+      menu.style.opacity = '0';
+    }
 
     label.innerHTML = data.name;
     body.innerHTML = data.description;
@@ -2306,6 +2316,13 @@ export const MainWidget = function (options) {
 
   this.hideRewardDetails = function (callback) {
     var _this = this;
+    const menu = document.querySelector('.cl-main-widget-navigation-container');
+    const label = document.querySelector('.cl-main-widget-reward-header-label');
+    label.innerHTML = '';
+
+    if (menu) {
+      menu.style.opacity = '1';
+    }
 
     removeClass(_this.settings.reward.detailsContainer, 'cl-show');
     setTimeout(function () {
@@ -2559,23 +2576,23 @@ export const MainWidget = function (options) {
       paginatorClaimed.innerHTML = page;
     }
 
-    if (claimedPageNumber > 1) {
-      _this.settings.rewardsSection.accordionLayout.map(t => {
-        if (t.type === 'claimedAwards') {
-          t.show = true;
-        } else {
-          t.show = false;
-        }
-      });
-    } else {
-      _this.settings.rewardsSection.accordionLayout.map(t => {
-        if (t.type === 'availableAwards') {
-          t.show = true;
-        } else {
-          t.show = false;
-        }
-      });
-    }
+    // if (claimedPageNumber > 1) {
+    //   _this.settings.rewardsSection.accordionLayout.map(t => {
+    //     if (t.type === 'claimedAwards') {
+    //       t.show = true;
+    //     } else {
+    //       t.show = false;
+    //     }
+    //   });
+    // } else {
+    //   _this.settings.rewardsSection.accordionLayout.map(t => {
+    //     if (t.type === 'availableAwards') {
+    //       t.show = true;
+    //     } else {
+    //       t.show = false;
+    //     }
+    //   });
+    // }
 
     const accordionObj = _this.accordionStyle(_this.settings.rewardsSection.accordionLayout, function (accordionSection, listContainer, topEntryContainer, layout, paginator) {
       const rewardData = _this.settings.lbWidget.settings.awards[layout.type];
