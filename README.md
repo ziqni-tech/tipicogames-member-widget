@@ -15,20 +15,6 @@ The widget is designed to work with the new ZIQNI platform APIs
 - [Docs](https://documentation.ziqni.com/member-api)
 - [NPM SDK](https://www.npmjs.com/package/@ziqni-tech/member-api-client)
 
-## Installation
-
-The Leaderboard Widget package lives in [npm](https://www.npmjs.com/get-npm). To install the latest stable version, run the following command:
-
-```sh
-npm install @ziqni-tech/member-widget
-```
-
-Or if you're using [yarn](https://classic.yarnpkg.com/en/docs/install/):
-
-```sh
-yarn add @ziqni-tech/member-widget
-```
-
 ## Build
 
 #### Prerequisites
@@ -223,83 +209,42 @@ Running the project in dev mode will initialise with an example page.
                 translationPath: ""
             },
             resources: [
-                "https://ziqni.cdn.ziqni.com/ziqni-tech/ziqni-member-widget/build/css/theme/cl-style-1-default-theme.css"
+                "< Path to your /build/css/theme/tipico-games-default-theme.css >"
             ]
         };
         var a=d.createElement(s), m=d.getElementsByTagName(s)[0];
         a.async=1;a.src=u;m.parentNode.insertBefore(a,m);
-    })(window,document,'script','https://ziqni.cdn.ziqni.com/ziqni-tech/ziqni-member-widget/build/javascript/ziqni-member-widget.js',"_CLLBV3Opt");
+    })(window,document,'script','< Path to your /build/javascript/ziqni-member-widget.js >',"_CLLBV3Opt");
 </script>
 ```
 ### Or
-```js
-import MemberWidget from '@ziqni-tech/member-widget';
-
-const instance = new MemberWidget({
-  autoStart: false,
-  debug: false,
-  apiKey: '<api_key>',
-  memberRefId: '<member_reference_id>',
-  loadTranslations: false,
-  enableNotifications: true,
-  navigation: {
-    tournaments: {enable: true},
-    achievements: {enable: true},
-    rewards: {enable: true},
-    inbox: {enable: true},
-    missions: {enable: true},
-  },
-  leaderboard: {
-    fullLeaderboardSize: 100,
-    miniScoreBoard: {
-      rankingsCount: 2
-    },
-    pointsFormatter: function(points) {
-      if (isNaN(points)) {
-        return points;
-      }
-      return Math.round(points)
-    }
-  },
-  resources: [
-    "https://ziqni.cdn.ziqni.com/ziqni-tech/ziqni-member-widget/build/css/theme/cl-style-1-default-theme.css"
-  ]
-});
-
-instance.init();
-```
-
-## Using the loader script
-You can use this loader script to centralise all your widget loading needs (custom scripts, styles and environmental parameters) into a single place.
-The "Loader" script requires the bear minimum of 2 things to be set to the global `window._CLLBV3Opt` parameter before the scripts loads:
-1) `gameId`
-2) `memberId`
 ```html
+<script type="text/javascript" src="<Path to your /build/javascript/ziqni-member-widget-selfinit.js>"></script>
+
 <script type="text/javascript">
-    window._CLLBV3Opt = {
-        gameId: "my_game_id",
-        memberId: "my_member_id"
-    };
+  const widgetInstance = new window._clLeaderBoardV3SelfInit({
+    autoStart: false,
+    apiKey: '<api_key>',
+    memberRefId: '<member_reference_id>',
+    language: "en",
+    leaderboard: {
+      fullLeaderboardSize: 50,
+      topResultSize: 3,
+      miniScoreBoard: {
+        rankingsCount: 2
+      },
+    },
+    uri: {
+      translationPath: ""
+    },
+    resources: [
+      "< Path to your /build/css/theme/tipico-games-default-theme.css >"
+    ]
+  });
+
+  widgetInstance.init();
 </script>
 ```
-#### Steps required to configure the loader script:
-1) update your default API key, space name (optional: `language` and `currency`), unless you are loading the API key and space name from your game/product
-2) define what products will load in the widget:
-```javascript
-products: {
-    "my_product_id": {
-        script: "https://my.custom.script.location",
-        resources: [
-            "https://my.custom.stylesheet.location"
-        ],
-        onBeforeLoad: function( instance, options, callback ){ // your custom logic before the widget gets initialised/rendered
-            if( typeof callback === "function" ) callback();
-        }
-    },
-    "my_product_id_2": {}
-}
-```
-3) add loader script to your website
 
 
 ## FAQ
