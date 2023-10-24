@@ -591,7 +591,6 @@ export const LbWidget = function (options) {
         _this.settings.competition.activeCompetition = activeCompetition;
         _this.settings.competition.activeCompetitionId = activeCompetitionId;
       }
-
       _this.loadActiveCompetition(async function (json) {
         await _this.setActiveCompetition(json, callback);
       });
@@ -618,24 +617,20 @@ export const LbWidget = function (options) {
 
   this.setActiveCompetition = async function (json, callback) {
     this.settings.competition.activeCompetition = json[0];
+    this.settings.tournaments.activeCompetitionId = json[0].id;
     this.settings.competition.activeContest = null;
+    this.settings.competition.contests = null;
     this.settings.competition.activeContestId = null;
 
     const contestRequest = ContestRequest.constructFromObject({
       languageKey: this.settings.language,
       contestFilter: {
-        productIds: [],
-        tags: [],
-        startDate: null,
-        endDate: null,
-        sortBy: [],
-        ids: [],
+        sortBy: [35, 45].includes(json[0].statusCode) ? [{ queryField: 'scheduledEndDate', order: 'Desc' }] : [],
         competitionIds: [json[0].id],
         statusCode: {
           moreThan: 0,
           lessThan: 100
         },
-        constraints: [],
         limit: 20,
         skip: 0
       }
@@ -644,8 +639,9 @@ export const LbWidget = function (options) {
     const contests = await this.getContests(contestRequest);
 
     if (contests.length) {
+      this.settings.competition.contests = contests;
       contests.forEach(contest => {
-        if (contest.statusCode < 30 && this.settings.competition.activeContest === null) {
+        if (contest.statusCode < 50 && contest.statusCode > 20 && this.settings.competition.activeContest === null) {
           this.settings.competition.activeContest = contest;
           this.settings.competition.activeContestId = contest.id;
 
@@ -1411,6 +1407,49 @@ export const LbWidget = function (options) {
     }, _this.settings.leaderboard.refreshIntervalMillis);
   };
 
+  this.activeDataRefreshSimple = async function (callback) {
+    const _this = this;
+    await _this.prepareActiveCompetition(function () {
+      // clear to not clash with LB refresh that could happen at same time
+      if (_this.settings.leaderboard.refreshInterval) {
+        clearTimeout(_this.settings.leaderboard.refreshInterval);
+      }
+
+      if (_this.settings.miniScoreBoard.settings.active || _this.settings.mainWidget.settings.active) {
+        if (
+          (_this.settings.competition.activeCompetition !== null && typeof _this.settings.competition.activeCompetition.optinRequired === 'boolean' && !_this.settings.competition.activeCompetition.optinRequired) ||
+          (_this.settings.competition.activeCompetition !== null && typeof _this.settings.competition.activeCompetition.optin === 'boolean' && _this.settings.competition.activeCompetition.optin)
+        ) {
+          _this.leaderboardDataRefresh();
+
+          if (typeof callback === 'function') {
+            callback();
+          }
+        } else {
+          if (_this.settings.miniScoreBoard.settings.active) {
+            _this.settings.miniScoreBoard.loadScoreBoard();
+          }
+          if (_this.settings.mainWidget.settings.active) {
+            _this.settings.mainWidget.loadLeaderboard();
+          }
+
+          // restart leaderboard refresh
+          _this.leaderboardDataRefresh();
+
+          if (typeof callback === 'function') {
+            callback();
+          }
+        }
+      } else {
+        if (_this.settings.miniScoreBoard.settings.active) _this.settings.miniScoreBoard.loadScoreBoard();
+
+        if (typeof callback === 'function') {
+          callback();
+        }
+      }
+    });
+  };
+
   this.activeDataRefresh = function (callback) {
     var _this = this;
 
@@ -2121,9 +2160,14 @@ export const LbWidget = function (options) {
         _this.settings.mainWidget.populateLeaderboardResultsWithDefaultEntries(true);
         _this.settings.mainWidget.settings.active = true;
         _this.settings.tournaments.activeCompetitionId = tournamentId;
-        _this.activeDataRefresh(function () {
-          _this.settings.mainWidget.hideCompetitionList(function () {
-            _this.settings.mainWidget.showEmbeddedCompetitionDetailsContent(function () {});
+        _this.activeDataRefreshSimple(function () {
+          _this.settings.mainWidget.hideCompetitionList(async function () {
+            if (!_this.settings.leaderboard.layoutSettings.titleLinkToDetailsPage) {
+              await _this.settings.mainWidget.showEmbeddedCompetitionDetailsContent(function () {});
+            } else if (_this.settings.competition.activeContest !== null) {
+              _this.settings.mainWidget.loadCompetitionDetails(function () {});
+            }
+
             preLoader.hide();
           });
         });
