@@ -197,14 +197,14 @@ export const LbWidget = function (options) {
         order: 2
       },
       rewards: {
-        enable: false,
+        enable: true,
         navigationClass: 'cl-main-widget-navigation-rewards',
         navigationClassIcon: 'cl-main-widget-navigation-rewards-icon',
         containerClass: 'cl-main-widget-section-reward',
         order: 3
       },
       inbox: {
-        enable: true,
+        enable: false,
         navigationClass: 'cl-main-widget-navigation-inbox',
         navigationClassIcon: 'cl-main-widget-navigation-inbox-icon',
         containerClass: 'cl-main-widget-section-inbox',
