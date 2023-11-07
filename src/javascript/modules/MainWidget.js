@@ -1494,7 +1494,10 @@ export const MainWidget = function (options) {
         [this.settings.lbWidget.settings.competition.activeCompetition.id]
       );
 
-      if (optInStatus.length && optInStatus[0].statusCode >= 15 && optInStatus[0].statusCode <= 35) {
+      if ([35, 45, 115].includes(this.settings.lbWidget.settings.competition.activeCompetition.statusCode)) {
+        optIn.parentNode.style.display = 'none';
+        optOut.style.display = 'none';
+      } else if (optInStatus.length && optInStatus[0].statusCode >= 15 && optInStatus[0].statusCode <= 35) {
         optIn.parentNode.style.display = 'none';
         optOut.style.display = 'flex';
       } else if (optInStatus.length && (optInStatus[0].statusCode === 10 || optInStatus[0].statusCode === 0)) {
