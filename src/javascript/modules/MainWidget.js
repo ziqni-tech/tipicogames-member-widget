@@ -9,8 +9,6 @@ import addClass from '../utils/addClass';
 import remove from '../utils/remove';
 import appendNext from '../utils/appendNext';
 import stripHtml from '../utils/stripHtml';
-import cytoscape from 'cytoscape';
-import dagre from 'cytoscape-dagre';
 import tournamentBrackets from './TournamentBrackets';
 
 /**
@@ -51,17 +49,6 @@ export const MainWidget = function (options) {
     reward: {
       container: null,
       detailsContainer: null
-    },
-    messages: {
-      container: null,
-      detailsContainer: null
-    },
-    missions: {
-      container: null,
-      detailsContainer: null,
-      mission: null,
-      timerInterval: null,
-      mapContainer: null
     },
     leaderboard: {
       defaultEmptyList: 20,
@@ -422,10 +409,6 @@ export const MainWidget = function (options) {
 
     const navigationContainer = document.createElement('div');
     const navigationItems = document.createElement('div');
-    const navigationLogo = document.createElement('div');
-    const navigationDarkModeToggle = document.createElement('div');
-    const navigationDarkModeToggleInput = document.createElement('input');
-    const navigationDarkModeToggleLabel = document.createElement('label');
 
     const mainSectionContainer = document.createElement('div');
 
@@ -438,14 +421,10 @@ export const MainWidget = function (options) {
     const sectionLB = _this.leaderboardAreaLayout();
     const sectionACH = _this.achievementsAreaLayout();
     const sectionRewards = _this.rewardsAreaLayout();
-    const sectionInbox = _this.inboxAreaLayout();
-    const sectionMissions = _this.missionsAreaLayout();
     const sectionDashboard = _this.dashboardAreaLayout();
 
-    const mobileThemeSwitcher = document.createElement('div');
     const landscapeClose = document.createElement('div');
 
-    mobileThemeSwitcher.setAttribute('class', 'cl-mobile-theme-switcher');
     landscapeClose.setAttribute('class', 'cl-landscape-close');
 
     const navigationItemList = [];
@@ -463,22 +442,6 @@ export const MainWidget = function (options) {
 
     navigationContainer.setAttribute('class', 'cl-main-widget-navigation-container');
     navigationItems.setAttribute('class', 'cl-main-widget-navigation-items');
-    navigationLogo.setAttribute('class', 'cl-main-widget-navigation-logo');
-    if (this.settings.lbWidget.settings.layout.logoUrl) {
-      navigationLogo.setAttribute('style', `background-image: url(${this.settings.lbWidget.settings.layout.logoUrl})`);
-    }
-
-    navigationDarkModeToggle.setAttribute('class', 'cl-main-widget-navigation-darkMode-toggle');
-    navigationDarkModeToggleInput.setAttribute('type', 'checkbox');
-    navigationDarkModeToggleInput.setAttribute('id', 'darkmode-toggle');
-    if (_this.settings.lbWidget.settings.defaultLightTheme) {
-      wrapper.classList.add('lightTheme');
-      navigationDarkModeToggleInput.checked = true;
-    }
-    navigationDarkModeToggleLabel.setAttribute('for', 'darkmode-toggle');
-
-    navigationDarkModeToggle.appendChild(navigationDarkModeToggleInput);
-    navigationDarkModeToggle.appendChild(navigationDarkModeToggleLabel);
 
     mainSectionContainer.setAttribute('class', 'cl-main-widget-section-container' + (_this.settings.lbWidget.settings.showCopyright ? '' : ' cl-hidden-copyright'));
 
@@ -493,19 +456,11 @@ export const MainWidget = function (options) {
     preLoaderContent.appendChild(preLoaderBar3);
     preLoaderContainer.appendChild(preLoaderContent);
 
-    navigationContainer.appendChild(navigationLogo);
     navigationContainer.appendChild(navigationItems);
-
-    if (this.settings.lbWidget.settings.layout.showThemeSwitcher) {
-      navigationContainer.appendChild(navigationDarkModeToggle);
-      mainSectionContainer.appendChild(mobileThemeSwitcher);
-    }
 
     mainSectionContainer.appendChild(sectionLB);
     mainSectionContainer.appendChild(sectionACH);
     mainSectionContainer.appendChild(sectionRewards);
-    mainSectionContainer.appendChild(sectionInbox);
-    mainSectionContainer.appendChild(sectionMissions);
     mainSectionContainer.appendChild(sectionDashboard);
     mainSectionContainer.appendChild(preLoaderContainer);
     mainSectionContainer.appendChild(landscapeClose);
@@ -589,36 +544,6 @@ export const MainWidget = function (options) {
     });
 
     return sectionRewards;
-  };
-
-  this.inboxAreaLayout = function () {
-    const sectionInbox = document.createElement('div');
-    sectionInbox.setAttribute('class', this.settings.lbWidget.settings.navigation.inbox.containerClass + ' cl-main-section-item');
-
-    const template = require('../templates/layouts/inboxAreaLayout.hbs');
-    sectionInbox.innerHTML = template({
-      headerLabel: this.settings.lbWidget.settings.translation.messages.label,
-      globalCopy: this.settings.lbWidget.settings.translation.global.copy
-    });
-
-    return sectionInbox;
-  };
-
-  this.missionsAreaLayout = function () {
-    const sectionMissions = document.createElement('div');
-    sectionMissions.setAttribute('class', this.settings.lbWidget.settings.navigation.missions.containerClass + ' cl-main-section-item');
-
-    const template = require('../templates/layouts/missionsAreaLayout.hbs');
-    sectionMissions.innerHTML = template({
-      headerLabel: this.settings.lbWidget.settings.translation.missions.label,
-      globalCopy: this.settings.lbWidget.settings.translation.global.copy,
-      descriptionLabel: this.settings.lbWidget.settings.translation.global.descriptionLabel,
-      tAndCLabel: this.settings.lbWidget.settings.translation.global.tAndCLabel,
-      prizeLabel: this.settings.lbWidget.settings.translation.missions.prizeLabel + ':',
-      mapHeaderLabel: this.settings.lbWidget.settings.translation.missions.mapLabel
-    });
-
-    return sectionMissions;
   };
 
   this.dashboardAreaLayout = function () {
@@ -1413,11 +1338,6 @@ export const MainWidget = function (options) {
       _this.settings.achievement.detailsContainer = query(_this.settings.container, '.cl-main-widget-ach-details-container');
       _this.settings.reward.container = query(_this.settings.container, '.' + _this.settings.lbWidget.settings.navigation.rewards.containerClass);
       _this.settings.reward.detailsContainer = query(_this.settings.container, '.cl-main-widget-reward-details-container');
-      _this.settings.messages.container = query(_this.settings.container, '.' + _this.settings.lbWidget.settings.navigation.inbox.containerClass);
-      _this.settings.messages.detailsContainer = query(_this.settings.container, '.cl-main-widget-inbox-details-container');
-      _this.settings.missions.container = query(_this.settings.container, '.' + _this.settings.lbWidget.settings.navigation.missions.containerClass);
-      _this.settings.missions.detailsContainer = query(_this.settings.container, '.cl-main-widget-missions-details-container');
-      _this.settings.missions.mapContainer = query(_this.settings.container, '.cl-main-widget-missions-map-container');
 
       _this.mainNavigationCheck();
       _this.leaderboardHeader();
@@ -2316,461 +2236,12 @@ export const MainWidget = function (options) {
     }, 50);
   };
 
-  this.loadMessageDetails = function (data, callback) {
-    const _this = this;
-    const label = query(_this.settings.messages.detailsContainer, '.cl-main-widget-inbox-details-header-label');
-    const body = query(_this.settings.messages.detailsContainer, '.cl-main-widget-inbox-details-body');
-    const date = query(_this.settings.messages.detailsContainer, '.cl-main-widget-inbox-details-header-date');
-
-    if (!data || !data.subject) {
-      return;
-    }
-
-    label.innerHTML = data.subject;
-    date.innerHTML = (new Date(data.created)).toLocaleString('en-GB', { timeZone: 'UTC', dateStyle: 'short', timeStyle: 'short' });
-    let bodyHtml = data.body;
-    bodyHtml = bodyHtml.replace(/&lt;/g, '<').replace(/&gt;/g, '>');
-    body.innerHTML = bodyHtml;
-
-    _this.settings.messages.detailsContainer.style.display = 'block';
-    setTimeout(function () {
-      addClass(_this.settings.messages.detailsContainer, 'cl-show');
-
-      if (typeof callback === 'function') callback();
-    }, 50);
-  };
-
-  this.loadMissionDetails = function (mission, callback) {
-    this.settings.missions.mission = mission;
-    const _this = this;
-    const label = query(_this.settings.missions.detailsContainer, '.cl-main-widget-missions-details-header-label');
-    const body = query(_this.settings.missions.detailsContainer, '.cl-main-widget-missions-details-description');
-    const tc = query(_this.settings.missions.detailsContainer, '.cl-main-widget-missions-details-tc');
-    const prizeValue = query(_this.settings.missions.detailsContainer, '.cl-main-widget-missions-details-prize-value');
-    const icon = query(_this.settings.missions.detailsContainer, '.cl-main-widget-missions-details-body-image');
-
-    if (!mission.data || !mission.data.name) {
-      if (typeof callback === 'function') callback();
-      return;
-    }
-
-    if (mission.data.iconLink) {
-      icon.setAttribute('style', `background-image: url(${mission.data.iconLink})`);
-      icon.classList.add('full-bg');
-    }
-
-    if (mission.data.reward && mission.data.reward.rewardValue) {
-      prizeValue.innerHTML = _this.settings.lbWidget.settings.partialFunctions.rewardFormatter(mission.data.reward);
-    }
-
-    label.innerHTML = mission.data.name;
-    body.innerHTML = mission.data.description
-      ? mission.data.description.replace(/&lt;/g, '<').replace(/&gt;/g, '>')
-      : this.settings.lbWidget.settings.translation.global.descriptionEmpty;
-    tc.innerHTML = mission.data.termsAndConditions
-      ? mission.data.termsAndConditions.replace(/&lt;/g, '<').replace(/&gt;/g, '>')
-      : this.settings.lbWidget.settings.translation.global.tAndCEmpty;
-
-    _this.settings.missions.detailsContainer.style.display = 'block';
-    setTimeout(function () {
-      addClass(_this.settings.missions.detailsContainer, 'cl-show');
-      _this.hideMissionMap();
-
-      if (typeof callback === 'function') callback();
-    }, 50);
-  };
-
-  this.showMissionTC = function () {
-    const body = query(this.settings.missions.detailsContainer, '.cl-main-widget-missions-details-description');
-    const label = query(this.settings.missions.detailsContainer, '.cl-main-widget-missions-details-description-label');
-    body.style.display = 'none';
-    label.style.display = 'none';
-
-    const tcBody = query(this.settings.missions.detailsContainer, '.cl-main-widget-missions-details-tc');
-    const tcLabel = query(this.settings.missions.detailsContainer, '.cl-main-widget-missions-details-tc-label');
-    tcBody.style.display = 'block';
-    tcLabel.style.display = 'block';
-  };
-
-  this.hideMissionTC = function () {
-    const body = query(this.settings.missions.detailsContainer, '.cl-main-widget-missions-details-description');
-    const label = query(this.settings.missions.detailsContainer, '.cl-main-widget-missions-details-description-label');
-    body.style.display = 'block';
-    label.style.display = 'block';
-
-    const tcBody = query(this.settings.missions.detailsContainer, '.cl-main-widget-missions-details-tc');
-    const tcLabel = query(this.settings.missions.detailsContainer, '.cl-main-widget-missions-details-tc-label');
-    tcBody.style.display = 'none';
-    tcLabel.style.display = 'none';
-  };
-
-  this.loadMissionDetailsCyGraph = function () {
-    const container = document.getElementById('cy');
-    const mainWrapper = document.querySelector('.cl-main-widget-wrapper');
-    const isLightTheme = mainWrapper.classList.contains('lightTheme');
-
-    const nodeColor = isLightTheme ? '#BEE9F3' : '#2F0426';
-    const nodeBorderColor = isLightTheme ? '#F7A1E4' : '#406A8C';
-    const nodeLabelColor = isLightTheme ? '#141E28' : '#ffffff';
-
-    const greenClassColor = isLightTheme ? '#219653' : '#6FCF97';
-    const redClassColor = isLightTheme ? '#EB5757' : '#EB5757';
-    const yellowClassColor = isLightTheme ? '#F2994A' : '#F2994A';
-
-    if (container.style.display === 'block') {
-      container.style.display = 'none';
-      this.hideMissionTC();
-
-      return;
-    }
-
-    this.showMissionTC();
-
-    container.style.display = 'block';
-    container.innerHTML = '';
-
-    cytoscape.use(dagre);
-
-    const nodes = [];
-    const edges = [];
-
-    this.settings.missions.mission.graph.nodes.forEach(n => {
-      nodes.push({ data: { id: n.entityId, label: n.name } });
-    });
-
-    this.settings.missions.mission.graph.graphs[0].edges.forEach(e => {
-      if (e.graphEdgeType === 'ROOT') return;
-      let classes = '';
-      switch (e.graphEdgeType) {
-        case 'MUST':
-          classes = 'green';
-          break;
-        case 'SHOULD':
-          classes = 'yellow';
-          break;
-        case 'MUSTNOT':
-          classes = 'red';
-          break;
-      }
-      edges.push({ data: { source: e.headEntityId, target: e.tailEntityId, label: e.graphEdgeType.toLowerCase() }, classes: classes });
-    });
-
-    // eslint-disable-next-line
-    const cy = cytoscape({
-      container: document.getElementById('cy'),
-
-      boxSelectionEnabled: false,
-      autounselectify: true,
-
-      style: [
-        {
-          selector: 'node',
-          style: {
-            height: '48px',
-            width: '48px',
-            'border-color': nodeBorderColor,
-            'background-color': nodeColor,
-            'border-width': 1,
-            label: 'data(label)',
-            color: nodeLabelColor,
-            'font-size': '12px'
-          }
-        },
-        {
-          selector: 'edge',
-          style: {
-            'curve-style': 'taxi',
-            width: 1,
-            'target-arrow-shape': 'triangle',
-            'line-color': greenClassColor,
-            'target-arrow-color': greenClassColor,
-            'line-style': 'dashed',
-            label: 'data(label)',
-            color: greenClassColor
-          }
-        },
-        {
-          selector: 'node[label]',
-          css: {
-            'text-margin-y': '-5px'
-          }
-        },
-        {
-          selector: 'edge[label]',
-          css: {
-            label: 'data(label)',
-            'text-rotation': 'autorotate',
-            'text-margin-x': '-10px',
-            'text-margin-y': '-10px',
-            'font-size': '12px'
-          }
-        },
-        {
-          selector: '.red',
-          css: {
-            'curve-style': 'taxi',
-            width: 1,
-            'target-arrow-shape': 'triangle',
-            'line-color': redClassColor,
-            'target-arrow-color': redClassColor,
-            'line-style': 'dashed'
-          }
-        },
-        {
-          selector: '.yellow',
-          css: {
-            'curve-style': 'taxi',
-            width: 1,
-            'target-arrow-shape': 'triangle',
-            'line-color': yellowClassColor,
-            'target-arrow-color': yellowClassColor,
-            'line-style': 'dashed'
-          }
-        },
-        {
-          selector: '.red[label]',
-          css: {
-            color: redClassColor
-          }
-        },
-        {
-          selector: '.yellow[label]',
-          css: {
-            color: yellowClassColor
-          }
-        }
-      ],
-
-      elements: {
-        nodes: nodes,
-        edges: edges
-      },
-
-      layout: {
-        name: 'dagre',
-        directed: true,
-        rankDir: 'LR',
-        padding: 30,
-        fit: true,
-        spacingFactor: 1.5
-      }
-    });
-
-    cy.on('tap', 'node', function (evt) {
-      const node = evt.target;
-      console.log('id: ' + node.id());
-    });
-  };
-
-  this.loadMissionMap = (mission, callback) => {
-    this.settings.missions.mission = mission;
-    const _this = this;
-    const backBtn = document.querySelector('.cl-main-widget-mission-header-back-icon');
-
-    backBtn.style.display = 'block';
-
-    _this.settings.missions.mapContainer.style.display = 'block';
-
-    setTimeout(function () {
-      addClass(_this.settings.missions.mapContainer, 'cl-show');
-      _this.loadMissionMapGraph();
-      if (typeof callback === 'function') callback();
-    }, 50);
-  };
-
-  this.loadMissionMapGraph = async () => {
-    const _this = this;
-    const container = document.getElementById('cy-map');
-    const mainWrapper = document.querySelector('.cl-main-widget-wrapper');
-    const isLightTheme = mainWrapper.classList.contains('lightTheme');
-    const isMobile = window.screen.availWidth < 768;
-
-    const itemBgEl = document.querySelector('.cl-main-widget-missions-map-graph-item-bg');
-    const style = window.getComputedStyle(itemBgEl, false);
-
-    const starEl3 = document.querySelector('.cl-main-widget-missions-map-graph-item-star-3');
-    const starEl2 = document.querySelector('.cl-main-widget-missions-map-graph-item-star-2');
-    const starEl1 = document.querySelector('.cl-main-widget-missions-map-graph-item-star-1');
-
-    let itemBgSrc = style.backgroundImage.slice(4, -1).replace(/"/g, '');
-    if (!itemBgSrc || itemBgSrc[0] === 'f') {
-      itemBgSrc = 'https://ziqni.cdn.ziqni.com/ziqni-tech/ziqni-member-widget/images/map-item-bg.png';
-    }
-
-    let starEl3Src = window.getComputedStyle(starEl3, false).backgroundImage.slice(4, -1).replace(/"/g, '');
-    let starEl2Src = window.getComputedStyle(starEl2, false).backgroundImage.slice(4, -1).replace(/"/g, '');
-    let starEl1Src = window.getComputedStyle(starEl1, false).backgroundImage.slice(4, -1).replace(/"/g, '');
-
-    if (starEl3Src[0] === 'f') {
-      starEl3Src = 'https://ziqni.cdn.ziqni.com/ziqni-tech/ziqni-member-widget/images/rate3.svg';
-      starEl2Src = 'https://ziqni.cdn.ziqni.com/ziqni-tech/ziqni-member-widget/images/rate2.svg';
-      starEl1Src = 'https://ziqni.cdn.ziqni.com/ziqni-tech/ziqni-member-widget/images/rate1.svg';
-    }
-
-    const achIds = this.settings.missions.mission.graph.nodes.map(n => n.entityId);
-    const achievements = await this.settings.lbWidget.getAchievementsByIds(achIds);
-    const statuses = await this.settings.lbWidget.getMemberAchievementsOptInStatuses(achIds);
-    // statuses[1].percentageComplete = 50;
-    // statuses[4].percentageComplete = 100;
-    // statuses[3].percentageComplete = 70;
-
-    container.innerHTML = '';
-
-    cytoscape.use(dagre);
-
-    const nodes = [];
-    const edges = [];
-
-    this.settings.missions.mission.graph.nodes.forEach((n) => {
-      let src = 'none';
-      const idx = achievements.findIndex(a => a.id === n.entityId);
-      if (idx !== -1) {
-        if (achievements[idx].iconLink) {
-          src = achievements[idx].iconLink;
-        }
-      }
-
-      let starSrc = 'none';
-      const statusIdx = statuses.findIndex(a => a.entityId === n.entityId);
-      if (statusIdx !== -1) {
-        if (statuses[statusIdx].percentageComplete >= 33 && statuses[statusIdx].percentageComplete < 66) starSrc = starEl1Src;
-        if (statuses[statusIdx].percentageComplete >= 66 && statuses[statusIdx].percentageComplete < 100) starSrc = starEl2Src;
-        if (statuses[statusIdx].percentageComplete === 100) starSrc = starEl3Src;
-      }
-
-      nodes.push({ data: { id: n.entityId, label: n.name, images: [itemBgSrc, src, starSrc, 'https://ziqni.cdn.ziqni.com/ziqni-tech/ziqni-member-widget/images/map-item-bottom.svg'] } });
-    });
-
-    this.settings.missions.mission.graph.graphs[0].edges.forEach(e => {
-      if (e.graphEdgeType === 'ROOT') return;
-      let classes = '';
-      switch (e.graphEdgeType) {
-        case 'MUST':
-          classes = 'green';
-          break;
-        case 'SHOULD':
-          classes = 'yellow';
-          break;
-        case 'MUSTNOT':
-          classes = 'red';
-          break;
-      }
-      edges.push({ data: { source: e.headEntityId, target: e.tailEntityId, label: e.graphEdgeType.toLowerCase() }, classes: classes });
-    });
-
-    const backgroundColor = isLightTheme ? '#EDF3F7' : '#0f1921';
-    const nodeLabelColor = isLightTheme ? '#223241' : '#ffffff';
-    const edgeLineColor = isLightTheme ? '#B9CEDF' : '#304F69';
-    const graphDir = isMobile ? 'TB' : 'LR';
-
-    const cy = cytoscape({
-      container: document.getElementById('cy-map'),
-
-      boxSelectionEnabled: false,
-      autounselectify: true,
-      zoom: 1,
-
-      style: [
-        {
-          selector: 'node',
-          style: {
-            height: '90px',
-            width: '90px',
-            'background-color': backgroundColor,
-            'background-image': 'data(images)',
-            'background-fit': 'none cover none none',
-            'background-clip': 'none node none none',
-            'bounds-expansion': 60,
-            'background-image-containment': 'over over over over',
-            'background-repeat': 'no-repeat',
-            label: 'data(label)',
-            color: nodeLabelColor,
-            'font-size': '12px',
-            'text-valign': 'bottom',
-            'text-halign': 'center'
-          }
-        },
-        {
-          selector: 'edge',
-          style: {
-            'curve-style': 'unbundled-bezier',
-            width: 5,
-            'line-color': edgeLineColor,
-            'line-style': 'dashed',
-            'line-dash-pattern': [0, 14],
-            'line-cap': 'round'
-          }
-        },
-        {
-          selector: 'node[label]',
-          css: {
-            'text-margin-y': '25px'
-          }
-        }
-      ],
-
-      elements: {
-        nodes: nodes,
-        edges: edges
-      },
-
-      layout: {
-        name: 'dagre',
-        directed: true,
-        rankDir: graphDir,
-        padding: 20,
-        fit: true,
-        spacingFactor: 1.3
-      }
-    });
-
-    cy.on('tap', 'node', function () {
-      _this.loadMissionDetails(_this.settings.missions.mission, null);
-    });
-  };
-
-  this.hideMissionMap = () => {
-    const backBtn = document.querySelector('.cl-main-widget-mission-header-back-icon');
-    const container = document.getElementById('cy-map');
-
-    backBtn.style.display = 'none';
-    container.innerHTML = '';
-
-    this.settings.missions.mapContainer.style.display = 'none';
-  };
-
   this.hideRewardDetails = function (callback) {
     const _this = this;
 
     removeClass(_this.settings.reward.detailsContainer, 'cl-show');
     setTimeout(function () {
       _this.settings.reward.detailsContainer.style.display = 'none';
-
-      if (typeof callback === 'function') callback();
-    }, 200);
-  };
-
-  this.hideMessageDetails = function (callback) {
-    const _this = this;
-
-    removeClass(_this.settings.messages.detailsContainer, 'cl-show');
-    setTimeout(function () {
-      _this.settings.messages.detailsContainer.style.display = 'none';
-
-      if (typeof callback === 'function') callback();
-    }, 200);
-  };
-
-  this.hideMissionDetails = function (callback) {
-    const _this = this;
-
-    const cyContainer = document.getElementById('cy');
-    cyContainer.style.display = 'none';
-    cyContainer.innerHTML = '';
-
-    removeClass(_this.settings.missions.detailsContainer, 'cl-show');
-    setTimeout(function () {
-      _this.settings.missions.detailsContainer.style.display = 'none';
 
       if (typeof callback === 'function') callback();
     }, 200);
@@ -3031,55 +2502,6 @@ export const MainWidget = function (options) {
       type: rew.rewardType.key,
       label: (labelText.length > 80) ? (labelText.substr(0, 80) + '...') : labelText,
       iconLink: iconLink
-    });
-
-    return listItem;
-  };
-
-  this.messageItem = function (inbox) {
-    const listItem = document.createElement('div');
-    listItem.setAttribute('class', 'cl-inbox-list-item cl-inbox-' + inbox.id);
-    listItem.dataset.id = inbox.id;
-
-    const content = stripHtml(inbox.body);
-
-    const subject = (inbox.subject.length > 36) ? inbox.subject.substr(0, 36) + '...' : inbox.subject;
-    const description = (content.length > 60) ? content.substr(0, 60) + '...' : content;
-    const date = (new Date(inbox.created)).toLocaleString('en-GB', { timeZone: 'UTC', dateStyle: 'short', timeStyle: 'short' });
-
-    const template = require('../templates/mainWidget/messageItem.hbs');
-    listItem.innerHTML = template({
-      id: inbox.id,
-      subject: subject,
-      description: description,
-      date: date
-    });
-
-    return listItem;
-  };
-
-  this.missionsItem = function (mission) {
-    const listItem = document.createElement('div');
-    listItem.setAttribute('class', 'cl-missions-list-item cl-mission-' + mission.id);
-    listItem.dataset.id = mission.id;
-
-    const name = (mission.name.length > 36) ? mission.name.substr(0, 36) + '...' : mission.name;
-    const reward = mission.reward ? this.settings.lbWidget.settings.partialFunctions.rewardFormatter(mission.reward) : '';
-    const actionsBtnLabel = this.settings.lbWidget.settings.translation.missions.btn;
-
-    let bgImage = '';
-    if (mission.bannerLowResolutionLink) {
-      bgImage = `background-image: url(${mission.bannerLowResolutionLink})`;
-    } else if (mission.bannerLink) {
-      bgImage = `background-image: url(${mission.bannerLink})`;
-    }
-
-    const template = require('../templates/mainWidget/missionItem.hbs');
-    listItem.innerHTML = template({
-      name: name,
-      reward: reward,
-      actionsBtnLabel: actionsBtnLabel,
-      bgImage: bgImage
     });
 
     return listItem;
@@ -3381,179 +2803,6 @@ export const MainWidget = function (options) {
     } else {
       claimedBtn.classList.remove('not-available');
     }
-  };
-
-  this.messagesListLayout = function (pageNumber, paginationArr) {
-    const _this = this;
-    const messageList = query(_this.settings.section, '.' + _this.settings.lbWidget.settings.navigation.inbox.containerClass + ' .cl-main-widget-inbox-list-body-res');
-    const totalCount = _this.settings.lbWidget.settings.messages.totalCount;
-    const itemsPerPage = 9;
-    let paginator = query(messageList, '.paginator');
-
-    const prev = document.createElement('span');
-    prev.setAttribute('class', 'paginator-item prev');
-    const next = document.createElement('span');
-    next.setAttribute('class', 'paginator-item next');
-
-    if (paginationArr && paginationArr.length) {
-      let page = '';
-      for (const i in paginationArr) {
-        page += '<span class="paginator-item" data-page=' + paginationArr[i] + '\>' + paginationArr[i] + '</span>';
-      }
-      paginator.innerHTML = page;
-
-      paginator.prepend(prev);
-      paginator.appendChild(next);
-    }
-
-    if (!paginator && totalCount > itemsPerPage) {
-      const pagesCount = Math.ceil(totalCount / itemsPerPage);
-      paginator = document.createElement('div');
-      paginator.setAttribute('class', 'paginator');
-
-      let page = '';
-      const isEllipsis = pagesCount > 7;
-
-      if (isEllipsis) {
-        for (let i = 0; i < 7; i++) {
-          if (i === 5) {
-            page += '<span class="paginator-item" data-page="..."\>...</span>';
-          } else if (i === 6) {
-            page += '<span class="paginator-item" data-page=' + pagesCount + '\>' + pagesCount + '</span>';
-          } else {
-            page += '<span class="paginator-item" data-page=' + (i + 1) + '\>' + (i + 1) + '</span>';
-          }
-        }
-      } else {
-        for (let i = 0; i < pagesCount; i++) {
-          page += '<span class="paginator-item" data-page=' + (i + 1) + '\>' + (i + 1) + '</span>';
-        }
-      }
-
-      paginator.innerHTML = page;
-
-      paginator.prepend(prev);
-      paginator.appendChild(next);
-    }
-
-    messageList.innerHTML = '';
-
-    mapObject(_this.settings.lbWidget.settings.messages.messages, function (inboxItem, key, count) {
-      const listItem = _this.messageItem(inboxItem);
-      messageList.appendChild(listItem);
-    });
-
-    if (paginator) {
-      const paginatorItems = query(paginator, '.paginator-item');
-      paginatorItems.forEach(item => {
-        removeClass(item, 'active');
-        if (Number(item.dataset.page) === Number(pageNumber)) {
-          addClass(item, 'active');
-        }
-      });
-
-      messageList.appendChild(paginator);
-    }
-  };
-
-  this.missionsListLayout = function (pageNumber, paginationArr = null) {
-    const _this = this;
-    const missionsList = query(_this.settings.section, '.' + _this.settings.lbWidget.settings.navigation.missions.containerClass + ' .cl-main-widget-missions-list-body-res');
-    const totalCount = _this.settings.lbWidget.settings.missions.totalCount;
-    const itemsPerPage = 6;
-    let paginator = query(missionsList, '.paginator');
-
-    const prev = document.createElement('span');
-    prev.setAttribute('class', 'paginator-item prev');
-    const next = document.createElement('span');
-    next.setAttribute('class', 'paginator-item next');
-
-    if (paginationArr && paginationArr.length) {
-      let page = '';
-      for (const i in paginationArr) {
-        page += '<span class="paginator-item" data-page=' + paginationArr[i] + '\>' + paginationArr[i] + '</span>';
-      }
-      paginator.innerHTML = page;
-
-      paginator.prepend(prev);
-      paginator.appendChild(next);
-    }
-
-    if (!paginator && totalCount > itemsPerPage) {
-      const pagesCount = Math.ceil(totalCount / itemsPerPage);
-      paginator = document.createElement('div');
-      paginator.setAttribute('class', 'paginator');
-
-      let page = '';
-      const isEllipsis = pagesCount > 7;
-
-      if (isEllipsis) {
-        for (let i = 0; i < 7; i++) {
-          if (i === 5) {
-            page += '<span class="paginator-item" data-page="..."\>...</span>';
-          } else if (i === 6) {
-            page += '<span class="paginator-item" data-page=' + pagesCount + '\>' + pagesCount + '</span>';
-          } else {
-            page += '<span class="paginator-item" data-page=' + (i + 1) + '\>' + (i + 1) + '</span>';
-          }
-        }
-      } else {
-        for (let i = 0; i < pagesCount; i++) {
-          page += '<span class="paginator-item" data-page=' + (i + 1) + '\>' + (i + 1) + '</span>';
-        }
-      }
-
-      paginator.innerHTML = page;
-
-      paginator.prepend(prev);
-      paginator.appendChild(next);
-    }
-
-    missionsList.innerHTML = '';
-
-    mapObject(_this.settings.lbWidget.settings.missions.missions, function (missionsItem, key, count) {
-      const listItem = _this.missionsItem(missionsItem);
-      missionsList.appendChild(listItem);
-    });
-
-    if (paginator) {
-      const paginatorItems = query(paginator, '.paginator-item');
-      paginatorItems.forEach(item => {
-        removeClass(item, 'active');
-        if (Number(item.dataset.page) === Number(pageNumber)) {
-          addClass(item, 'active');
-        }
-      });
-
-      missionsList.appendChild(paginator);
-    }
-    setTimeout(function () {
-      _this.updateMissionsTime();
-    }, 1000);
-  };
-
-  this.updateMissionsTime = function () {
-    const _this = this;
-
-    if (_this.settings.missions.timerInterval) {
-      clearTimeout(_this.settings.missions.timerInterval);
-    }
-
-    this.settings.lbWidget.settings.missions.missions.forEach(mission => {
-      if (mission.scheduling.endDate) {
-        const diff = moment(mission.scheduling.endDate).diff(moment());
-        const date = _this.settings.lbWidget.formatMissionDateTime(moment.duration(diff));
-        const el = document.querySelector(`.cl-missions-list-item[data-id="${mission.id}"]`);
-        if (!el) return;
-        const dateEl = el.querySelector('.cl-missions-list-details-date');
-        if (!dateEl) return;
-        dateEl.innerHTML = date;
-      }
-    });
-
-    this.settings.missions.timerInterval = setTimeout(function () {
-      _this.updateMissionsTime();
-    }, 1000);
   };
 
   this.loadAwards = function (callback, pageNumber, claimedPageNumber, expiredPageNumber, paginationArr = null, isClaimed = false, isExpired = false) {
@@ -4142,39 +3391,10 @@ export const MainWidget = function (options) {
     backBtn.style.display = 'none';
   };
 
-  this.loadMessages = function (pageNumber, callback, paginationArr = null) {
-    const _this = this;
-
-    _this.settings.lbWidget.checkForAvailableMessages(pageNumber, function () {
-      _this.messagesListLayout(pageNumber, paginationArr);
-      // _this.settings.lbWidget.updateMessagesNavigationCounts();
-
-      if (typeof callback === 'function') {
-        callback();
-      }
-    });
-  };
-
-  this.loadMissions = function (pageNumber, callback, paginationArr = null) {
-    const _this = this;
-
-    _this.settings.lbWidget.checkForAvailableMissions(pageNumber, function () {
-      _this.missionsListLayout(pageNumber, paginationArr);
-      // _this.settings.lbWidget.updateMissionsNavigationCounts();
-
-      if (typeof callback === 'function') {
-        callback();
-      }
-    });
-  };
-
   this.closeOpenedItems = function () {
     this.hideCompetitionList();
     this.hideAchievementDetails();
     this.hideRewardDetails();
-    this.hideMessageDetails();
-    this.hideMissionMap();
-    this.hideMissionDetails();
   };
 
   let changeInterval;
@@ -4298,32 +3518,6 @@ export const MainWidget = function (options) {
                 1,
                 1
               );
-            } else if (target.classList.contains('cl-main-widget-navigation-inbox') || target.closest('.cl-main-widget-navigation-inbox')) {
-              _this.loadMessages(1, function () {
-                const inboxContainer = query(_this.settings.container, '.cl-main-widget-section-container .' + _this.settings.lbWidget.settings.navigation.inbox.containerClass);
-
-                inboxContainer.style.display = 'flex';
-                changeInterval = setTimeout(function () {
-                  addClass(inboxContainer, 'cl-main-active-section');
-                }, 30);
-
-                preLoader.hide();
-
-                _this.settings.navigationSwitchInProgress = false;
-              });
-            } else if (target.classList.contains('cl-main-widget-navigation-missions') || target.closest('.cl-main-widget-navigation-missions')) {
-              _this.loadMissions(1, function () {
-                const missionsContainer = query(_this.settings.container, '.cl-main-widget-section-container .' + _this.settings.lbWidget.settings.navigation.missions.containerClass);
-
-                missionsContainer.style.display = 'flex';
-                changeInterval = setTimeout(function () {
-                  addClass(missionsContainer, 'cl-main-active-section');
-                }, 30);
-
-                preLoader.hide();
-
-                _this.settings.navigationSwitchInProgress = false;
-              });
             }
           }, 250);
 
@@ -4342,7 +3536,6 @@ export const MainWidget = function (options) {
     const _this = this;
     const listIcon = query(_this.settings.container, '.cl-main-widget-lb-header-list-icon');
     const backIcon = query(_this.settings.container, '.cl-main-widget-lb-header-back-icon');
-    const missionBackIcon = query(_this.settings.container, '.cl-main-widget-mission-header-back-icon');
 
     objectIterator(query(_this.settings.container, '.cl-main-widget-navigation-items .cl-active-nav'), function (obj) {
       removeClass(obj, 'cl-active-nav');
@@ -4363,7 +3556,6 @@ export const MainWidget = function (options) {
 
     listIcon.style.display = 'block';
     backIcon.style.display = 'none';
-    missionBackIcon.style.display = 'none';
     _this.hideEmbeddedCompetitionDetailsContent();
     _this.hideCompetitionList();
 
