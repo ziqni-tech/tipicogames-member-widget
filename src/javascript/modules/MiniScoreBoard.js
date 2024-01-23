@@ -6,6 +6,7 @@ import hasClass from '../utils/hasClass';
 import removeClass from '../utils/removeClass';
 import remove from '../utils/remove';
 import dragElement from './dragElement';
+import cloneDeep from 'lodash.clonedeep';
 
 /**
  * MiniScoreBoard
@@ -25,7 +26,7 @@ export const MiniScoreBoard = function (options) {
     overlayContainer: null,
     infoContainer: null,
     updateInterval: null,
-    updateIntervalTime: 3000,
+    updateIntervalTime: 1000,
     active: false,
     enableDragging: true,
     dragging: false,
@@ -41,35 +42,23 @@ export const MiniScoreBoard = function (options) {
   }
 
   this.layout = function () {
-    var wrapper = document.createElement('div');
-    var iconWrapper = document.createElement('div');
-    var icon = document.createElement('div');
-
-    var informationWrapper = document.createElement('div');
-    var informationTopWrapper = document.createElement('div');
-    var informationWrapperClose = document.createElement('div');
-    var informationClose = document.createElement('a');
-
+    const wrapper = document.createElement('div');
     wrapper.setAttribute('class', 'cl-widget-ms-wrapper');
-    iconWrapper.setAttribute('class', 'cl-widget-ms-icon-wrapper');
-    icon.setAttribute('class', 'cl-widget-ms-icon');
-    informationTopWrapper.setAttribute('class', 'cl-widget-ms-information-top-wrapper');
-    informationWrapper.setAttribute('class', 'cl-widget-ms-information-wrapper');
-    informationWrapperClose.setAttribute('class', 'cl-widget-ms-information-close-wrapper');
-    informationClose.setAttribute('class', 'cl-widget-ms-information-close');
+    if (this.settings.lbWidget.settings.defaultLightTheme) {
+      wrapper.classList.add('lightTheme');
+    }
 
-    informationClose.href = 'javascript:void(0);';
-    informationClose.innerHTML = 'x';
+    let logoUrl = '';
+    if (this.settings.lbWidget.settings.layout.logoUrl) {
+      logoUrl = `background-image: url(${this.settings.lbWidget.settings.layout.logoUrl})`;
+    }
+
+    const template = require('../templates/layouts/miniScoreBoardLayout.hbs');
+    wrapper.innerHTML = template({
+      logoUrl: logoUrl
+    });
 
     this.initialLayoutPosition(wrapper);
-
-    informationWrapperClose.appendChild(informationClose);
-    informationWrapper.appendChild(informationWrapperClose);
-    informationTopWrapper.appendChild(informationWrapper);
-    iconWrapper.appendChild(icon);
-    wrapper.appendChild(iconWrapper);
-    wrapper.appendChild(informationTopWrapper);
-
     return wrapper;
   };
 
@@ -111,12 +100,19 @@ export const MiniScoreBoard = function (options) {
     var dateObj = '';
     var inverse = false;
 
-    // readyCompetitions: [], // statusCode 3
-    //   activeCompetitions: [], // statusCode 5
-    //   finishedCompetitions: [] // statusCode 7
     // Unknown = 0; Draft = 5; Preparing = 10; Ready = 15; Starting = 20; Active = 25; Finishing = 30; Finished = 35; Template = 100; Cancelling = 110; Cancelled = 115; Deleting = 120; Deleted = 125
-    if (_this.settings.lbWidget.settings.competition.activeContest !== null) {
-      var startDate = _this.settings.lbWidget.settings.competition.activeContest.scheduledStart;
+    if (this.settings.lbWidget.settings.competition.activeCompetition.statusCode === 15) {
+      const startDate = this.settings.lbWidget.settings.competition.activeCompetition.scheduledStartDate;
+      diff = moment(startDate).diff(moment());
+
+      if (diff <= 0) _this.settings.lbWidget.activeDataRefresh(() => {});
+
+      label = _this.settings.lbWidget.settings.translation.miniLeaderboard.startsIn;
+      date = _this.settings.lbWidget.formatDateTime(moment.duration(diff));
+      dateObj = _this.settings.lbWidget.formatDateTime(moment.duration(diff));
+      inverse = false;
+    } else if (_this.settings.lbWidget.settings.competition.activeContest !== null) {
+      let startDate = _this.settings.lbWidget.settings.competition.activeContest.scheduledStart;
       if (typeof _this.settings.lbWidget.settings.competition.activeContest.actualStart !== 'undefined') {
         startDate = _this.settings.lbWidget.settings.competition.activeContest.actualStart;
       }
@@ -170,22 +166,22 @@ export const MiniScoreBoard = function (options) {
     var lbResultsMemEntry = document.createElement('div');
     var lbResultsMemLabel = document.createElement('div');
     var lbResultsMemRank = document.createElement('div');
-    var lbResultsMemIcon = document.createElement('div');
+    // var lbResultsMemIcon = document.createElement('div');
     var lbResultsMemImg = document.createElement('img');
     var lbResultsMemPoints = document.createElement('div');
 
     lbResultsMemEntry.setAttribute('class', 'cl-widget-ms-default-mem-entry');
     lbResultsMemLabel.setAttribute('class', 'cl-widget-ms-default-mem-label');
     lbResultsMemRank.setAttribute('class', 'cl-widget-ms-default-mem-rank');
-    lbResultsMemIcon.setAttribute('class', 'cl-widget-ms-default-mem-icon');
+    // lbResultsMemIcon.setAttribute('class', 'cl-widget-ms-default-mem-icon');
     lbResultsMemImg.setAttribute('class', 'cl-widget-ms-default-mem-img');
     lbResultsMemImg.style.display = 'none';
     lbResultsMemPoints.setAttribute('class', 'cl-widget-ms-default-mem-points');
 
-    lbResultsMemEntry.appendChild(lbResultsMemLabel);
     lbResultsMemEntry.appendChild(lbResultsMemRank);
-    lbResultsMemIcon.appendChild(lbResultsMemImg);
-    lbResultsMemEntry.appendChild(lbResultsMemIcon);
+    lbResultsMemEntry.appendChild(lbResultsMemLabel);
+    // lbResultsMemIcon.appendChild(lbResultsMemImg);
+    // lbResultsMemEntry.appendChild(lbResultsMemIcon);
     lbResultsMemEntry.appendChild(lbResultsMemPoints);
 
     return lbResultsMemEntry;
@@ -279,6 +275,9 @@ export const MiniScoreBoard = function (options) {
 
       defaultDomObj = wrapperDomObj.appendChild(lbWrapper);
 
+      const msContainer = document.querySelector('.cl-widget-ms-wrapper');
+      if (msContainer && hasClass(msContainer, 'cl-hide')) removeClass(msContainer, 'cl-hide');
+
       setTimeout(function () {
         addClass(wrapperDomObj, 'cl-show');
       }, 200);
@@ -286,6 +285,9 @@ export const MiniScoreBoard = function (options) {
       if (!hasClass(wrapperDomObj, 'cl-show')) {
         addClass(wrapperDomObj, 'cl-show');
       }
+
+      const msContainer = document.querySelector('.cl-widget-ms-wrapper');
+      if (msContainer && hasClass(msContainer, 'cl-hide')) removeClass(msContainer, 'cl-hide');
 
       query(_this.settings.container, '.cl-widget-ms-default-results-header-rank').innerHTML = _this.settings.lbWidget.settings.translation.leaderboard.rank;
       query(_this.settings.container, '.cl-widget-ms-default-results-header-points').innerHTML = _this.settings.lbWidget.settings.translation.leaderboard.points;
@@ -311,8 +313,30 @@ export const MiniScoreBoard = function (options) {
       }
     }
 
-    mapObject(_this.settings.lbWidget.settings.leaderboard.leaderboardData, function (lbEntry) {
-      if (lbEntry.members.findIndex(m => m.memberRefId === _this.settings.lbWidget.settings.memberRefId) !== -1) {
+    let leaderboardData = cloneDeep(_this.settings.lbWidget.settings.leaderboard.leaderboardData);
+
+    if (_this.settings.lbWidget.settings.leaderboard.miniScoreBoard.enableRankings) {
+      let isSelfMember = false;
+      let selfMemberIdx = -1;
+      _this.settings.lbWidget.settings.leaderboard.leaderboardData.forEach((entry, index) => {
+        if (entry.members && entry.members.findIndex(m => m.memberRefId === _this.settings.lbWidget.settings.member.memberRefId) !== -1) {
+          isSelfMember = true;
+          selfMemberIdx = index;
+        }
+      });
+
+      if (isSelfMember && selfMemberIdx !== -1) {
+        let firsIndex = selfMemberIdx - _this.settings.lbWidget.settings.leaderboard.miniScoreBoard.rankingsCount;
+        const lastIndex = selfMemberIdx + _this.settings.lbWidget.settings.leaderboard.miniScoreBoard.rankingsCount + 1;
+        if (firsIndex < 0) firsIndex = 0;
+        leaderboardData = leaderboardData.slice(firsIndex, lastIndex);
+      } else {
+        leaderboardData = [];
+      }
+    }
+
+    mapObject(leaderboardData, function (lbEntry) {
+      if (lbEntry.members.findIndex(m => m.memberRefId === _this.settings.lbWidget.settings.member.memberRefId) !== -1) {
         var scoreArea = query(defaultDomObj, '.cl-widget-ms-default-results-list');
         scoreArea.innerHTML = '';
 
@@ -320,19 +344,12 @@ export const MiniScoreBoard = function (options) {
         query(_this.settings.container, '.cl-widget-ms-default-date').innerHTML = date;
 
         if (_this.settings.lbWidget.settings.leaderboard.miniScoreBoard.enableRankings) {
-          mapObject(_this.settings.lbWidget.settings.leaderboard.leaderboardData, function (lbRankingEntry) {
+          mapObject(leaderboardData, function (lbRankingEntry) {
             scoreArea.appendChild(_this.layoutDefaultOrEmptySingleRow(lbRankingEntry));
           });
         } else {
           scoreArea.appendChild(_this.layoutDefaultOrEmptySingleRow(lbEntry));
         }
-        // if (_this.settings.lbWidget.settings.leaderboard.miniScoreBoard.enableRankings && typeof lbEntry.rankings !== 'undefined') {
-        //   mapObject(lbEntry.rankings, function (lbRankingEntry) {
-        //     scoreArea.appendChild(_this.layoutDefaultOrEmptySingleRow(lbRankingEntry));
-        //   });
-        // } else {
-        //   scoreArea.appendChild(_this.layoutDefaultOrEmptySingleRow(lbEntry));
-        // }
       }
     });
 
@@ -343,26 +360,21 @@ export const MiniScoreBoard = function (options) {
 
   this.layoutDefaultOrEmptySingleRow = function (lbEntry) {
     var _this = this;
-    let memberId = '';
-    if (lbEntry.members.length) {
-      memberId = lbEntry.members[0].memberId;
-    }
-    var icon = _this.settings.lbWidget.populateIdenticonBase64Image(memberId);
     var lbWrapper = _this.layoutDefaultOrEmptyEntry();
-    var img = query(lbWrapper, '.cl-widget-ms-default-mem-img');
-    const selfMember = lbEntry.members && lbEntry.members.findIndex(m => m.memberRefId === _this.settings.lbWidget.settings.memberRefId) !== -1;
+    // var img = query(lbWrapper, '.cl-widget-ms-default-mem-img');
+    const selfMember = lbEntry.members && lbEntry.members.findIndex(m => m.memberRefId === _this.settings.lbWidget.settings.member.memberRefId) !== -1;
     var formattedPoints = _this.settings.lbWidget.settings.leaderboard.pointsFormatter(lbEntry.score);
 
-    img.src = icon;
-    img.alt = '';
-    img.style.display = 'block';
+    // img.src = icon;
+    // img.alt = '';
+    // img.style.display = 'block';
 
     if (selfMember) {
       addClass(lbWrapper, 'cl-widget-ms-default-mem-self');
     }
 
-    query(lbWrapper, '.cl-widget-ms-default-mem-label').innerHTML = selfMember ? _this.settings.lbWidget.settings.translation.leaderboard.you : '';
-    query(lbWrapper, '.cl-widget-ms-default-mem-rank').innerHTML = "<span class='cl-mem-rank-label'>" + _this.settings.lbWidget.settings.translation.leaderboard.rank + "</span><span class='cl-mem-rank'>" + lbEntry.rank + '</span>';
+    query(lbWrapper, '.cl-widget-ms-default-mem-label').innerHTML = selfMember ? '(' + _this.settings.lbWidget.settings.translation.leaderboard.you + ')' : '';
+    query(lbWrapper, '.cl-widget-ms-default-mem-rank').innerHTML = "<span class='cl-mem-rank-label'>" + _this.settings.lbWidget.settings.translation.leaderboard.rank + "</span><span class='cl-mem-rank cl-mem-rank-" + lbEntry.rank + "'>" + lbEntry.rank + '</span>';
     query(lbWrapper, '.cl-widget-ms-default-mem-points').innerHTML = "<span class='cl-mem-points-label'>" + _this.settings.lbWidget.settings.translation.leaderboard.points + "</span><span class='cl-mem-points'>" + formattedPoints + '</span>';
 
     return lbWrapper;
@@ -434,6 +446,9 @@ export const MiniScoreBoard = function (options) {
 
       defaultDomObj = wrapperDomObj.appendChild(lbWrapper);
 
+      const msContainer = document.querySelector('.cl-widget-ms-wrapper');
+      if (msContainer && hasClass(msContainer, 'cl-hide')) removeClass(msContainer, 'cl-hide');
+
       setTimeout(function () {
         addClass(wrapperDomObj, 'cl-show');
       }, 200);
@@ -441,6 +456,9 @@ export const MiniScoreBoard = function (options) {
       if (!hasClass(wrapperDomObj, 'cl-show')) {
         addClass(wrapperDomObj, 'cl-show');
       }
+
+      const msContainer = document.querySelector('.cl-widget-ms-wrapper');
+      if (msContainer && hasClass(msContainer, 'cl-hide')) removeClass(msContainer, 'cl-hide');
 
       query(_this.settings.container, '.cl-widget-ms-first-to-results-header-rank').innerHTML = _this.settings.lbWidget.settings.translation.leaderboard.rank;
       query(_this.settings.container, '.cl-widget-ms-first-to-results-header-points').innerHTML = _this.settings.lbWidget.settings.translation.leaderboard.points;
@@ -451,7 +469,7 @@ export const MiniScoreBoard = function (options) {
     addClass(query(_this.settings.container, '.cl-widget-ms-first-to-date-wrapper'), 'cl-widget-ms-first-to-date-only');
 
     mapObject(_this.settings.lbWidget.settings.leaderboard.leaderboardData, function (lbEntry) {
-      if (lbEntry.members.findIndex(m => m.memberRefId === _this.settings.lbWidget.settings.memberRefId) !== -1) {
+      if (lbEntry.members.findIndex(m => m.memberRefId === _this.settings.lbWidget.settings.member.memberRefId) !== -1) {
         var scoreArea = query(defaultDomObj, '.cl-widget-ms-first-to-results-list');
         scoreArea.innerHTML = '';
         if (_this.settings.lbWidget.settings.leaderboard.miniScoreBoard.enableRankings) {
@@ -471,23 +489,22 @@ export const MiniScoreBoard = function (options) {
 
   this.layoutFirstToOrEmptySingleRow = function (lbEntry, strategy) {
     const _this = this;
-    const icon = _this.settings.lbWidget.populateIdenticonBase64Image(lbEntry.members[0].memberId);
     const lbWrapper = _this.layoutFirstToOrEmptyEntry();
-    const img = query(lbWrapper, '.cl-widget-ms-first-to-mem-img');
-    const selfMember = lbEntry.members && lbEntry.members.findIndex(m => m.memberRefId === _this.settings.lbWidget.settings.memberRefId) !== -1;
+    // const img = query(lbWrapper, '.cl-widget-ms-first-to-mem-img');
+    const selfMember = lbEntry.members && lbEntry.members.findIndex(m => m.memberRefId === _this.settings.lbWidget.settings.member.memberRefId) !== -1;
     const formattedPoints = _this.settings.lbWidget.settings.leaderboard.pointsFormatter(lbEntry.score);
 
     if (selfMember) {
       addClass(lbWrapper, 'cl-widget-ms-first-to-mem-self');
     }
 
-    img.src = icon;
-    img.alt = '';
-    img.style.display = 'block';
+    // img.src = icon;
+    // img.alt = '';
+    // img.style.display = 'block';
 
     query(lbWrapper, '.cl-widget-ms-first-to-mem-label').innerHTML = selfMember ? _this.settings.lbWidget.settings.translation.leaderboard.you : '';
     query(lbWrapper, '.cl-widget-ms-first-to-mem-rank').innerHTML = "<span class='cl-mem-rank-label'>" + _this.settings.lbWidget.settings.translation.leaderboard.rank + "</span><span class='cl-mem-rank'>" + lbEntry.rank + '</span>';
-    query(lbWrapper, '.cl-widget-ms-first-to-mem-points').innerHTML = "<span class='cl-mem-points-label'>" + _this.settings.lbWidget.settings.translation.leaderboard.points + "</span><span class='cl-mem-points'>" + formattedPoints + '/' + strategy.scoringStrategy.lastUpdateTimeStamp + '</span>';
+    query(lbWrapper, '.cl-widget-ms-first-to-mem-points').innerHTML = "<span class='cl-mem-points-label'>" + _this.settings.lbWidget.settings.translation.leaderboard.points + "</span><span class='cl-mem-points'>" + formattedPoints + '/' + strategy.scoringStrategy.recordTimeWhenSumReaches + '</span>';
 
     return lbWrapper;
   };
@@ -567,6 +584,9 @@ export const MiniScoreBoard = function (options) {
 
       sumBestDomObj = wrapperDomObj.appendChild(lbWrapper);
 
+      const msContainer = document.querySelector('.cl-widget-ms-wrapper');
+      if (msContainer && hasClass(msContainer, 'cl-hide')) removeClass(msContainer, 'cl-hide');
+
       setTimeout(function () {
         addClass(wrapperDomObj, 'cl-show');
       }, 200);
@@ -574,6 +594,8 @@ export const MiniScoreBoard = function (options) {
       if (!hasClass(wrapperDomObj, 'cl-show')) {
         addClass(wrapperDomObj, 'cl-show');
       }
+      const msContainer = document.querySelector('.cl-widget-ms-wrapper');
+      if (msContainer && hasClass(msContainer, 'cl-hide')) removeClass(msContainer, 'cl-hide');
       query(_this.settings.container, '.cl-widget-ms-sum-best-high-label').innerHTML = _this.settings.lbWidget.settings.translation.miniLeaderboard.highScore;
       query(_this.settings.container, '.cl-widget-ms-sum-best-last-label').innerHTML = _this.settings.lbWidget.settings.translation.miniLeaderboard.lastScore;
       query(_this.settings.container, '.cl-widget-ms-sum-best-date-label').innerHTML = (date.length > 0) ? date : label;
@@ -581,7 +603,7 @@ export const MiniScoreBoard = function (options) {
     }
 
     mapObject(_this.settings.lbWidget.settings.leaderboard.leaderboardData, function (lbEntry) {
-      if (lbEntry.members.findIndex(m => m.memberRefId === _this.settings.lbWidget.settings.memberRefId) !== -1) {
+      if (lbEntry.members.findIndex(m => m.memberRefId === _this.settings.lbWidget.settings.member.memberRefId) !== -1) {
         var lastScore = query(_this.settings.container, '.cl-widget-ms-sum-best-last-score').innerHTML;
         var highScore = query(_this.settings.container, '.cl-widget-ms-sum-best-high-score').innerHTML;
         var rank = query(_this.settings.container, '.cl-widget-ms-sum-best-rank-value');
@@ -682,6 +704,9 @@ export const MiniScoreBoard = function (options) {
 
       wrapperDomObj.appendChild(optInWrapper);
 
+      const msContainer = document.querySelector('.cl-widget-ms-wrapper');
+      if (msContainer && hasClass(msContainer, 'cl-hide')) removeClass(msContainer, 'cl-hide');
+
       setTimeout(function () {
         addClass(wrapperDomObj, 'cl-show');
       }, 200);
@@ -689,6 +714,8 @@ export const MiniScoreBoard = function (options) {
       if (!hasClass(wrapperDomObj, 'cl-show')) {
         addClass(wrapperDomObj, 'cl-show');
       }
+      const msContainer = document.querySelector('.cl-widget-ms-wrapper');
+      if (msContainer && hasClass(msContainer, 'cl-hide')) removeClass(msContainer, 'cl-hide');
       const optinActionBtn = query(_this.settings.container, '.cl-widget-ms-optin-action');
       if (isProcessing) {
         optinActionBtn.innerHTML = _this.settings.lbWidget.settings.translation.tournaments.processing;
@@ -748,8 +775,10 @@ export const MiniScoreBoard = function (options) {
     var _this = this;
     var wrapperDomObj = query(_this.settings.container, '.cl-show');
     var layout = query(_this.settings.container, '.cl-widget-ms-default-wrapper');
+    const msContainer = document.querySelector('.cl-widget-ms-wrapper');
 
     if (wrapperDomObj !== null) removeClass(wrapperDomObj, 'cl-show');
+    if (msContainer !== null) addClass(msContainer, 'cl-hide');
 
     if (layout !== null) {
       if (removeInfoAreaInterval) {
@@ -762,7 +791,7 @@ export const MiniScoreBoard = function (options) {
   };
 
   this.updateScoreBoard = function () {
-    var _this = this;
+    const _this = this;
 
     if (_this.settings.updateInterval) {
       clearTimeout(_this.settings.updateInterval);
@@ -785,7 +814,7 @@ export const MiniScoreBoard = function (options) {
         this.settings.lbWidget.settings.competition.activeCompetition.constraints.includes('optinRequiredForEntrants')
       ) {
         const optInStatus = await this.settings.lbWidget.getCompetitionOptInStatus(
-          [_this.settings.lbWidget.settings.competition.activeCompetition.id]
+          _this.settings.lbWidget.settings.competition.activeCompetition.id
         );
         if (optInStatus.length && optInStatus[0].status === 'Entrant') {
           _this.layoutDefaultOrEmpty();
@@ -820,25 +849,32 @@ export const MiniScoreBoard = function (options) {
     var _this = this;
 
     if (_this.settings.lbWidget.settings.layout.enableMiniScoreBoardDragging) {
-      dragElement(_this.settings.container, query(_this.settings.container, '.cl-widget-ms-icon'), _this.settings.overlayContainer, _this.settings.lbWidget.settings.bindContainer, function (newTop, newLeft) {
-        _this.settings.lbWidget.stopActivity();
+      dragElement(
+        _this.settings.container,
+        query(_this.settings.container, '.cl-widget-ms-icon'),
+        _this.settings.overlayContainer,
+        _this.settings.lbWidget.settings.bindContainer,
+        function (newTop, newLeft) {
+          _this.settings.lbWidget.stopActivity();
 
-        if (_this.settings.lbWidget.settings.layout.allowOrientationChange) {
-          if (newTop <= 5) {
-            addClass(_this.settings.container, _this.settings.verticalClass);
-          } else if (newLeft <= 5) {
-            removeClass(_this.settings.container, _this.settings.verticalClass);
+          if (_this.settings.lbWidget.settings.layout.allowOrientationChange) {
+            if (newTop <= 5) {
+              addClass(_this.settings.container, _this.settings.verticalClass);
+            } else if (newLeft <= 15) {
+              removeClass(_this.settings.container, _this.settings.verticalClass);
+            }
           }
-        }
-        _this.settings.dragging = true;
-      }, function () {
-        _this.settings.lbWidget.restartActivity();
-        setTimeout(function () {
-          _this.settings.dragging = false;
-        }, 200);
-      }, function () {
-        _this.settings.lbWidget.clickedMiniScoreBoard();
-      });
+          _this.settings.dragging = true;
+        },
+        function () {
+          _this.settings.lbWidget.restartActivity();
+          setTimeout(function () {
+            _this.settings.dragging = false;
+          }, 200);
+        },
+        function () {
+          _this.settings.lbWidget.clickedMiniScoreBoard();
+        });
     }
   };
 
@@ -861,14 +897,15 @@ export const MiniScoreBoard = function (options) {
 
   this.loadScoreBoard = function () {
     var _this = this;
+
     _this.initLayout(function () {
       _this.loadInfoArea(function () {
         _this.updateScoreBoard();
       });
-
-      setTimeout(function () {
-        _this.updateScoreBoard();
-      }, 1000);
+      //
+      // setTimeout(function () {
+      //   _this.updateScoreBoard();
+      // }, 1000);
     });
   };
 };

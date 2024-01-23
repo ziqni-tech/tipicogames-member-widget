@@ -1,0 +1,158 @@
+@import "./default-refresh-config";
+@import "../_main/style";
+
+.cl-main-widget-wrapper {
+  a {
+    color: var(--primary-button-color);
+  }
+  .cl-main-widget-inner-wrapper {
+    background: #0F1921;
+    border-radius: 30px;
+  }
+  .cl-main-widget-section-container {
+    .cl-main-widget-lb-details-image-container {
+      .cl-main-widget-lb-details-image {
+        float: unset;
+        padding: unset;
+        margin: unset;
+        border: unset;
+        max-height: unset;
+        object-fit: cover;
+        height: 100%;
+        width: 100%;
+        object-position: center center;
+      }
+    }
+    .cl-main-section-image-banner-active {
+      .cl-main-widget-lb-leaderboard {
+        top: 200px;
+        height: calc(100% - 200px);
+        padding-top: 84px;
+        padding-bottom: 3px;
+        @media (max-width: 812px) {
+          padding-top: 96px;
+        }
+      }
+    }
+    .cl-main-widget-lb-leaderboard-body {
+      &::-webkit-scrollbar {
+        height: 7px;
+        width: 7px;
+        background-color: #f0f0f0;
+      }
+      &::-webkit-scrollbar-thumb {
+        border-radius: 3px;
+        background-color: #8a8a8a;
+      }
+    }
+  }
+  .cl-main-widget-navigation-container {
+    .cl-main-widget-navigation-items {
+      .cl-main-widget-navigation-item {
+        transition: transform 0.3s, opacity  0.3s;
+        opacity: 0.8;
+        &.cl-active-nav {
+          opacity: 1;
+        }
+        &.grow {
+          opacity: 1;
+          transform: scale(1.1, 1.1);
+        }
+        &.decrease {
+          opacity: 0.8;
+          transform: scale(0.9, 0.9);
+        }
+        &:hover {
+          opacity: 0.9;
+        }
+        .cl-main-navigation-item-count {
+          font-weight: bold;
+          box-shadow: -1px 2px 5px #000000;
+        }
+      }
+      .cl-main-widget-navigation-lb-icon {
+        opacity: 1;
+      }
+      .cl-main-widget-navigation-ach-icon {
+        opacity: 1;
+      }
+      .cl-main-widget-navigation-rewards-icon {
+        opacity: 1;
+      }
+      .cl-main-widget-navigation-inbox-icon {
+        opacity: 1;
+      }
+      .cl-main-widget-navigation-missions-icon {
+        opacity: 1;
+      }
+    }
+  }
+  //.cl-main-widget-ach-details-container,
+  //.cl-main-widget-reward-details-container,
+  //.cl-main-widget-inbox-details-container {
+  //  @media (max-width: 812px) {
+  //    top: 42px;
+  //  }
+  //}
+}
+
+.cl-main-widget-wrapper .cl-main-section-image-banner-active .cl-main-widget-lb-details-image-container {
+  height: 200px;
+}
+
+.cl-widget-ms-wrapper.cl-vertical-mini .cl-widget-ms-information-top-wrapper .cl-widget-ms-information-wrapper {
+  padding: 27px 5px 0 5px;
+  .cl-widget-ms-first-to-mem-entry.cl-widget-ms-first-to-mem-self {
+    background: none !important;
+    padding: 0 !important;
+  }
+  .cl-widget-ms-default-date-only {
+    padding: 0;
+  }
+}
+
+.cl-widget-ms-wrapper {
+  .cl-widget-ms-information-top-wrapper {
+    .cl-widget-ms-information-wrapper {
+      .cl-widget-ms-first-to-wrapper {
+        .cl-widget-ms-first-to-date-wrapper {
+          padding: 2px 0 2px 12px;
+        }
+        .cl-widget-ms-first-to-results-wrapper {
+          .cl-widget-ms-first-to-results-list {
+            .cl-widget-ms-first-to-mem-entry {
+              float: left;
+              width: 100%;
+              padding: 3px 0 3px 10px;
+              &:last-of-type {
+                padding-bottom: 6px;
+              }
+              &.cl-widget-ms-first-to-mem-self {
+                background-color: #2F0426;
+                border: 1px solid #406A8C;
+                box-shadow: 0 2px 6px rgba(64, 106, 140, 0.5);
+              }
+            }
+          }
+        }
+      }
+      .cl-widget-ms-default-wrapper {
+        .cl-widget-ms-default-date-wrapper {
+          padding: 4px 0 2px 0;
+        }
+        .cl-widget-ms-default-results-wrapper {
+          .cl-widget-ms-default-results-list {
+            .cl-widget-ms-default-mem-entry {
+              width: 100%;
+              &.cl-widget-ms-default-mem-self {
+                background-color: #2F0426;
+                border: 1px solid #406A8C;
+                box-shadow: 0 2px 6px rgba(64, 106, 140, 0.5);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

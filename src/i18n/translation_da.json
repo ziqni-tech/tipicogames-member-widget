@@ -4,23 +4,39 @@
         "hours": "h",
         "minutesShortHand": "min",
         "minutes": "m",
-        "seconds": "s"
+        "seconds": "s",
+        "daysFull": "Dage",
+        "hoursFull": "Timer",
+        "minutesFull": "Referater",
+        "secondsFull": "Sekunder"
     },
     "achievements": {
         "label": "Resultater",
         "more": "Mere",
-        "complete": "færdiggør 100%"
+        "complete": "færdiggør 100%",
+        "enter": "Indtast præstation",
+        "leave": "Forlad præstation",
+        "listEnterBtn": "Tilslutte",
+        "listLeaveBtn": "Forlade",
+        "listProgressionBtn": "Forarbejdning...",
+        "leavePopupTitle": "Forlad præstationen",
+        "leavePopupDescription": "Er du sikker på, at du vil forlade denne præstation?",
+        "leavePopupClose": "Tæt",
+        "leavePopupConfirm": "Forlade",
+        "progress": "Fremskridt"
     },
     "tournaments": {
         "label": "Turneringer",
         "enter": "Gå ind i turnering",
+        "processing": "Forarbejdning...",
         "readyCompetitions": "Kommende turneringer",
         "activeCompetitions": "Aktive turneringer",
         "finishedCompetitions": "Afsluttede turneringer",
         "finishing": "Afslutter",
         "finished": "Afsluttet",
         "registered": "Registreret",
-        "noAvailableCompetitions": "Ingen tilgængelig konkurrence"
+        "noAvailableCompetitions": "Ingen tilgængelig konkurrence",
+        "date": "Dato"
     },
     "leaderboard": {
         "rank": "Rang",
@@ -28,6 +44,12 @@
         "points": "Point",
         "prize": "Præmie",
         "you": "Du"
+    },
+    "brackets": {
+        "title": "Turneringsbracket",
+        "starts": "Starter",
+        "ends": "Slutter",
+        "ended": "Afsluttet"
     },
     "miniLeaderboard": {
         "highScore": "Højeste score",
@@ -45,12 +67,48 @@
         "claimed": "Krævet",
         "availableRewards": "Tilgængelige belønninger",
         "rewards": "Krævede belønninger",
-        "expiredRewards": "Udløbne belønninger"
+        "expiredRewards": "Udløbne belønninger",
+        "instantWins": "Vinder med det samme",
+        "wheelLabel": "Enkelthjulet",
+        "scratchcardsLabel": "Skrabelodder",
+        "wheelButton": "Spil",
+        "scratchcardsButton": "Spil",
+        "singleWheelWinLabel": "Tillykke!",
+        "singleWheelWinDescription": "Du vandt",
+        "singleWheelWinButton": "Påstand",
+        "prizeLabel": "Afdække din præmie ved at skrabe væk!",
+        "prizeButton": "Rids det hele"
     },
     "messages": {
         "label": "Beskeder"
     },
+    "dashboard": {
+        "label": "Dashboard",
+        "instantWinsTitle": "Vinder med det samme",
+        "achievementsTitle": "Præstationer",
+        "tournamentsTitle": "Aktuelle turneringer",
+        "upcomingTournamentsTitle": "Kommende turneringer",
+        "tournamentBtn": "Se mere",
+        "endsTitle": "Slutter",
+        "startsTitle": "Starter",
+        "prizeTitle": "Præmie",
+        "singleWheelTitle": "Enkelthjulet",
+        "singleWheelButton": "Spil",
+        "scratchcardsTitle": "Skrabelodder",
+        "scratchcardsButton": "Spil",
+        "seeAll": "Se alt"
+    },
+    "missions": {
+        "label": "Missioner",
+        "btn": "Gå",
+        "prizeLabel": "Præmie",
+        "mapLabel": "Mission kort"
+    },
     "global": {
-        "copy": "Drives af Ziqni"
+        "copy": "Drives af Ziqni",
+        "descriptionLabel": "Beskrivelse",
+        "tAndCLabel": "Vilkår og Betingelser",
+        "tAndCEmpty": "Ingen vilkår og betingelser angivet",
+        "descriptionEmpty": "Ingen beskrivelser angivet"
     }
 }

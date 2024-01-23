@@ -4,12 +4,26 @@
         "hours": "h",
         "minutesShortHand": "min",
         "minutes": "min",
-        "seconds": "sek"
+        "seconds": "sek",
+        "daysFull": "Dienas",
+        "hoursFull": "Stundas",
+        "minutesFull": "Minūtes",
+        "secondsFull": "Sekundes"
     },
     "achievements": {
         "label": "Sasniegumi",
         "more": "Vairāk",
-        "complete": "100% pabeigts"
+        "complete": "100% pabeigts",
+        "enter": "Ievadiet sasniegumu",
+        "leave": "Atstāt sasniegumu",
+        "listEnterBtn": "Pievienojieties",
+        "listLeaveBtn": "Aiziet",
+        "listProgressionBtn": "Notiek apstrāde...",
+        "leavePopupTitle": "Atstājiet sasniegumu",
+        "leavePopupDescription": "Vai tiešām vēlaties atstāt šo sasniegumu?",
+        "leavePopupClose": "Aizvērt",
+        "leavePopupConfirm": "Aiziet",
+        "progress": "Progress"
     },
     "tournaments": {
         "label": "Turnīri",
@@ -20,7 +34,9 @@
         "finishing": "Beidzas",
         "finished": "Pabeigti",
         "registered": "Reģistrēti",
-        "noAvailableCompetitions": "Nav pieejama konkurence"
+        "noAvailableCompetitions": "Nav pieejama konkurence",
+        "processing": "Notiek apstrāde...",
+        "date": "Datums"
     },
     "leaderboard": {
         "rank": "Pozīcija",
@@ -28,6 +44,12 @@
         "points": "Punkti",
         "prize": "Balva",
         "you": "Jūs"
+    },
+    "brackets": {
+        "title": "Turnīru kronšteins",
+        "starts": "Sākas",
+        "ends": "Beidzas",
+        "ended": "Beigās"
     },
     "miniLeaderboard": {
         "highScore": "Labākais rezultāts",
@@ -45,12 +67,48 @@
         "claimed": "Pieprasītas",
         "availableRewards": "Pieejamās atlīdzības",
         "rewards": "Pieprasītās atlīdzības",
-        "expiredRewards": "Nesaņemtās atlīdzības"
+        "expiredRewards": "Nesaņemtās atlīdzības",
+        "instantWins": "Tūlītēji uzvaras",
+        "wheelLabel": "Viens ritenis",
+        "scratchcardsLabel": "Momentloterijas",
+        "wheelButton": "Spēlēt",
+        "scratchcardsButton": "Spēlēt",
+        "singleWheelWinLabel": "Apsveicam!",
+        "singleWheelWinDescription": "Tu uzvarēji",
+        "singleWheelWinButton": "Pretenzija",
+        "prizeLabel": "Atklājiet savu balvu, nokasot!",
+        "prizeButton": "Saskrāpēt visu"
     },
     "messages": {
         "label": "Ziņojumi"
     },
+    "dashboard": {
+        "label": "Mērinstrumentu panelis",
+        "instantWinsTitle": "Tūlītēja uzvara",
+        "achievementsTitle": "Sasniegumi",
+        "tournamentsTitle": "Pašreizējie turnīri",
+        "upcomingTournamentsTitle": "Gaidāmie turnīri",
+        "tournamentBtn": "Redzēt vairāk",
+        "endsTitle": "Beidzas",
+        "startsTitle": "Sākas",
+        "prizeTitle": "Balva",
+        "singleWheelTitle": "Viens ritenis",
+        "singleWheelButton": "Spēlēt",
+        "scratchcardsTitle": "Momentloterijas",
+        "scratchcardsButton": "Spēlēt",
+        "seeAll": "Redzēt visu"
+    },
+    "missions": {
+        "label": "Misijas",
+        "btn": "Aiziet",
+        "prizeLabel": "Balva",
+        "mapLabel": "Misijas karte"
+    },
     "global": {
-        "copy": "Darbojas ar Ziqni atbalstu"
+        "copy": "Darbojas ar Ziqni atbalstu",
+        "descriptionLabel": "Apraksts",
+        "tAndCLabel": "Noteikumi",
+        "tAndCEmpty": "Noteikumi un nosacījumi nav sniegti",
+        "descriptionEmpty": "Nav sniegti apraksti"
     }
 }

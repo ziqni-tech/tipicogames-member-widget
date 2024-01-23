@@ -4,23 +4,39 @@
         "hours": "giờ",
         "minutesShortHand": "phút",
         "minutes": "phút",
-        "seconds": "giây"
+        "seconds": "giây",
+        "daysFull": "Ngày",
+        "hoursFull": "Giờ",
+        "minutesFull": "Phút",
+        "secondsFull": "Giây"
     },
     "achievements": {
-        "label": "Thành tích",
+        "label": "Thành tựu",
         "more": "Thêm",
-        "complete": "hoàn thành 100%"
+        "complete": "hoàn thành 100%",
+        "enter": "Tham gia thành tựu",
+        "leave": "Rời khỏi thành tựu",
+        "listEnterBtn": "Tham gia",
+        "listLeaveBtn": "Rời khỏi",
+        "listProgressionBtn": "Đang xử lý...",
+        "leavePopupTitle": "Rời khỏi thành tựu",
+        "leavePopupDescription": "Bạn chắc chắn muốn rời khỏi thành tựu này chứ?",
+        "leavePopupClose": "Đóng",
+        "leavePopupConfirm": "Rời khỏi",
+        "progress": "Tiến trình"
     },
     "tournaments": {
         "label": "Giải đấu",
         "enter": "Tham gia giải đấu",
-        "readyCompetitions": "Các giải đấu sắp tới",
-        "activeCompetitions": "Các giải đấu đang diễn ra",
-        "finishedCompetitions": "Các giải đấu đã hoàn thành",
+        "processing": "Đang xử lý...",
+        "readyCompetitions": "Sắp tới",
+        "activeCompetitions": "Đang diễn ra",
+        "finishedCompetitions": "Hoàn thành",
         "finishing": "Đang hoàn thành",
-        "finished": "Đã hoàn thành",
+        "finished": "Hoàn thành",
         "registered": "Đã đăng ký",
-        "noAvailableCompetitions": "Không có cạnh tranh"
+        "noAvailableCompetitions": "Không có giải đấu nào có sẵn",
+        "date": "Ngày"
     },
     "leaderboard": {
         "rank": "Xếp hạng",
@@ -29,11 +45,17 @@
         "prize": "Giải thưởng",
         "you": "Bạn"
     },
+    "brackets": {
+        "title": "Lịch thi đấu giải đấu",
+        "starts": "Bắt đầu",
+        "ends": "Kết thúc",
+        "ended": "Kết thúc"
+    },
     "miniLeaderboard": {
-        "highScore": "Điểm cao",
-        "lastScore": "Điểm gần nhất",
+        "highScore": "Điểm cao nhất",
+        "lastScore": "Điểm cuối cùng",
         "rank": "Xếp hạng",
-        "startsIn": "Bắt đầu sau",
+        "startsIn": "Bắt đầu trong",
         "started": "đã bắt đầu",
         "starting": "đang bắt đầu",
         "finishing": "đang hoàn thành",
@@ -41,16 +63,52 @@
     },
     "rewards": {
         "label": "Phần thưởng",
-        "claim": "Nhận ngay",
+        "claim": "Nhận",
         "claimed": "Đã nhận",
         "availableRewards": "Phần thưởng có sẵn",
-        "rewards": "Phần thưởng đã được nhận",
-        "expiredRewards": "Phần thưởng đã hết hạn"
+        "instantWins": "Thắng ngay",
+        "rewards": "Phần thưởng đã nhận",
+        "expiredRewards": "Phần thưởng đã hết hạn",
+        "wheelLabel": "Vòng quay đơn",
+        "scratchcardsLabel": "Thẻ gạch",
+        "wheelButton": "Chơi",
+        "scratchcardsButton": "Chơi",
+        "singleWheelWinLabel": "Chúc mừng!",
+        "singleWheelWinDescription": "Bạn đã thắng",
+        "singleWheelWinButton": "Nhận",
+        "prizeLabel": "Khám phá giải thưởng bằng cách cào!",
+        "prizeButton": "Cào hết"
     },
     "messages": {
         "label": "Tin nhắn"
     },
+    "dashboard": {
+        "label": "Bảng điều khiển",
+        "instantWinsTitle": "Thắng ngay",
+        "achievementsTitle": "Thành tựu",
+        "tournamentsTitle": "Giải đấu hiện tại",
+        "upcomingTournamentsTitle": "Giải đấu sắp tới",
+        "tournamentBtn": "Xem thêm",
+        "endsTitle": "Kết thúc",
+        "startsTitle": "Bắt đầu",
+        "prizeTitle": "Giải thưởng",
+        "singleWheelTitle": "Vòng quay đơn",
+        "singleWheelButton": "Chơi",
+        "scratchcardsTitle": "Thẻ gạch",
+        "scratchcardsButton": "Chơi",
+        "seeAll": "Xem tất cả"
+    },
+    "missions": {
+        "label": "Nhiệm vụ",
+        "btn": "Đi",
+        "prizeLabel": "Giải thưởng",
+        "mapLabel": "Bản đồ nhiệm vụ"
+    },
     "global": {
-        "copy": "Được cung cấp bởi Ziqni"
+        "copy": "Được hỗ trợ bởi Ziqni",
+        "descriptionLabel": "Mô tả",
+        "tAndCLabel": "Điều khoản và Điều kiện",
+        "tAndCEmpty": "Không có Điều khoản và Điều kiện được cung cấp",
+        "descriptionEmpty": "Không có Mô tả được cung cấp"
     }
 }

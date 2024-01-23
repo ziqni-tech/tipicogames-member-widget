@@ -4,53 +4,111 @@
         "hours": "saat",
         "minutesShortHand": "dk",
         "minutes": "dakika",
-        "seconds": "saniye"
+        "seconds": "saniye",
+        "daysFull": "Günler",
+        "hoursFull": "Saatler",
+        "minutesFull": "Dakikalar",
+        "secondsFull": "Saniyeler"
     },
     "achievements": {
-        "label": "başarılar",
-        "more": "daha fazla",
-        "complete": "%100 tamamla"
+        "label": "Başarılar",
+        "more": "Daha Fazla",
+        "complete": "tamamla 100%",
+        "enter": "Başarıya Katıl",
+        "leave": "Başarıdan Ayrıl",
+        "listEnterBtn": "Katıl",
+        "listLeaveBtn": "Ayrıl",
+        "listProgressionBtn": "İşleniyor...",
+        "leavePopupTitle": "Başarıdan Ayrıl",
+        "leavePopupDescription": "Bu başarıdan ayrılmak istediğinizden emin misiniz?",
+        "leavePopupClose": "Kapat",
+        "leavePopupConfirm": "Ayrıl",
+        "progress": "İlerleme"
     },
     "tournaments": {
-		"label":"turnuvalar",
-        "enter": "Turnuvaya gir",
-        "readyCompetitions": "Yaklaşan Turnuvalar",
-        "activeCompetitions": "Aktif Turnuvalar",
-        "finishedCompetitions": "Bitmiş Turnuvalar",
-        "finishing": "Bitiyor",
-        "finished": "Bitti",
+        "label": "Turnuvalar",
+        "enter": "Turnuvaya Katıl",
+        "processing": "İşleniyor...",
+        "readyCompetitions": "Yaklaşan",
+        "activeCompetitions": "Aktif",
+        "finishedCompetitions": "Tamamlanan",
+        "finishing": "Bitiriliyor",
+        "finished": "Tamamlandı",
         "registered": "Kayıtlı",
-        "noAvailableCompetitions": "Mevcut yarışma yok"
+        "noAvailableCompetitions": "Uygun yarışma yok",
+        "date": "Tarih"
     },
     "leaderboard": {
-        "rank": "sıralama",
-        "name": "adı",
-        "points": "puan",
-        "prize": "ödül",
-        "you": "Sen"
+        "rank": "Sıra",
+        "name": "Ad",
+        "points": "Puanlar",
+        "prize": "Ödül",
+        "you": "Siz"
+    },
+    "brackets": {
+        "title": "Turnuva Tablosu",
+        "starts": "Başlama",
+        "ends": "Bitiş",
+        "ended": "Bitti"
     },
     "miniLeaderboard": {
-        "highScore": "En Yüksek Skor",
-        "lastScore": "Son Skor",
-        "rank": "Sıralama",
-        "startsIn": "Başlamasına kalan süre:",
+        "highScore": "En Yüksek Puan",
+        "lastScore": "Son Puan",
+        "rank": "Sıra",
+        "startsIn": "Başlama Zamanı",
         "started": "başladı",
-        "starting": "Başlıyor ",
+        "starting": "başlıyor",
         "finishing": "bitiyor",
         "finished": "bitti"
     },
     "rewards": {
         "label": "Ödüller",
-        "claim": "Şimdi Al",
-        "claimed": "Alındı",
-        "availableRewards": "Kullanılabilir Ödüller",
-        "rewards": "Alınan Ödüller",
-        "expiredRewards": "Süresi Dolan Ödüller"
+        "claim": "Talep Et",
+        "claimed": "Talep Edildi",
+        "availableRewards": "Mevcut Ödüller",
+        "instantWins": "Anlık Kazançlar",
+        "rewards": "Talep Edilen Ödüller",
+        "expiredRewards": "Süresi Geçen Ödüller",
+        "wheelLabel": "Tek Tekerlek",
+        "scratchcardsLabel": "Kazı Kazan",
+        "wheelButton": "Oyna",
+        "scratchcardsButton": "Oyna",
+        "singleWheelWinLabel": "Tebrikler!",
+        "singleWheelWinDescription": "Kazandınız",
+        "singleWheelWinButton": "Talep Et",
+        "prizeLabel": "Ödülünüzü kazıyarak açın!",
+        "prizeButton": "Hepsini Kazı"
     },
     "messages": {
         "label": "Mesajlar"
     },
+    "dashboard": {
+        "label": "Kontrol Paneli",
+        "instantWinsTitle": "Anlık Kazançlar",
+        "achievementsTitle": "Başarılar",
+        "tournamentsTitle": "Mevcut Turnuvalar",
+        "upcomingTournamentsTitle": "Yaklaşan Turnuvalar",
+        "tournamentBtn": "Daha Fazlasını Gör",
+        "endsTitle": "Bitiş",
+        "startsTitle": "Başlama",
+        "prizeTitle": "Ödül",
+        "singleWheelTitle": "Tek Tekerlek",
+        "singleWheelButton": "Oyna",
+        "scratchcardsTitle": "Kazı Kazan",
+        "scratchcardsButton": "Oyna",
+        "seeAll": "Tümünü Gör"
+    },
+    "missions": {
+        "label": "Görevler",
+        "btn": "Git",
+        "prizeLabel": "Ödül",
+        "mapLabel": "Görev Haritası"
+    },
     "global": {
-        "copy": "Ziqni tarafından destekleniyor"
+        "copy": "Ziqni tarafından desteklenmektedir",
+        "descriptionLabel": "Açıklama",
+        "tAndCLabel": "Koşullar ve Şartlar",
+        "tAndCEmpty": "Koşullar ve Şartlar sağlanmamıştır",
+        "descriptionEmpty": "Açıklama yok"
     }
 }

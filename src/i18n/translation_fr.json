@@ -4,23 +4,39 @@
         "hours": "h",
         "minutesShortHand": "min",
         "minutes": "m",
-        "seconds": "s"
+        "seconds": "s",
+        "daysFull": "Jours",
+        "hoursFull": "Heures",
+        "minutesFull": "Minutes",
+        "secondsFull": "Secondes"
     },
     "achievements": {
         "label": "Succès",
         "more": "Plus",
-        "complete": "terminé à 100 %"
+        "complete": "terminé à 100 %",
+        "enter": "Entrez la réussite",
+        "leave": "Quitter le succès",
+        "listEnterBtn": "Rejoindre",
+        "listLeaveBtn": "Partir",
+        "listProgressionBtn": "Traitement...",
+        "leavePopupTitle": "Quittez le succès",
+        "leavePopupDescription": "Etes-vous sûr de vouloir quitter cette réalisation ?",
+        "leavePopupClose": "Fermer",
+        "leavePopupConfirm": "Partir",
+        "progress": "Progrès"
     },
     "tournaments": {
         "label": "Tournois",
         "enter": "Participer au tournoi",
+        "processing": "Traitement...",
         "readyCompetitions": "Tournois à venir",
         "activeCompetitions": "Tournois actifs",
         "finishedCompetitions": "Tournois terminés",
         "finishing": "Se termine",
         "finished": "Terminé",
         "registered": "Inscrit",
-        "noAvailableCompetitions": "Aucun concours disponible"
+        "noAvailableCompetitions": "Aucun concours disponible",
+        "date": "Date"
     },
     "leaderboard": {
         "rank": "Rang",
@@ -28,6 +44,12 @@
         "points": "Points",
         "prize": "Prix",
         "you": "Tu"
+    },
+    "brackets": {
+        "title": "Tableau des tournois",
+        "starts": "Départs",
+        "ends": "Prend fin",
+        "ended": "Terminé"
     },
     "miniLeaderboard": {
         "highScore": "Meilleur score",
@@ -45,12 +67,48 @@
         "claimed": "Échangées",
         "availableRewards": "Récompenses disponibles",
         "rewards": "Récompenses échangées",
-        "expiredRewards": "Récompenses expirées"
+        "expiredRewards": "Récompenses expirées",
+        "instantWins": "Gains instantanés",
+        "wheelLabel": "La roue unique",
+        "scratchcardsLabel": "Cartes à gratter",
+        "wheelButton": "Jouer",
+        "scratchcardsButton": "Jouer",
+        "singleWheelWinLabel": "Toutes nos félicitations!",
+        "singleWheelWinDescription": "Tu as gagné",
+        "singleWheelWinButton": "Réclamer",
+        "prizeLabel": "Découvrez votre prix en grattant !",
+        "prizeButton": "Grattez tout"
     },
     "messages": {
         "label": "Messages"
     },
+    "dashboard": {
+        "label": "Tableau de bord",
+        "instantWinsTitle": "Gains instantanés",
+        "achievementsTitle": "Réalisations",
+        "tournamentsTitle": "Tournois en cours",
+        "upcomingTournamentsTitle": "Tournois à venir",
+        "tournamentBtn": "Voir plus",
+        "endsTitle": "Prend fin",
+        "startsTitle": "Départs",
+        "prizeTitle": "Prix",
+        "singleWheelTitle": "La roue unique",
+        "singleWheelButton": "Jouer",
+        "scratchcardsTitle": "Cartes à gratter",
+        "scratchcardsButton": "Jouer",
+        "seeAll": "Voir tout"
+    },
+    "missions": {
+        "label": "Missions",
+        "btn": "Aller",
+        "prizeLabel": "Prix",
+        "mapLabel": "Carte des missions"
+    },
     "global": {
-        "copy": "Optimisé par Ziqni"
+        "copy": "Optimisé par Ziqni",
+        "descriptionLabel": "Description",
+        "tAndCLabel": "Termes et conditions",
+        "tAndCEmpty": "Aucun terme et conditions fournis",
+        "descriptionEmpty": "Aucune description fournie"
     }
 }

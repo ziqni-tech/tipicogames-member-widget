@@ -55,40 +55,13 @@ export const Notifications = function (options) {
 
   this.layoutWrapper = function () {
     const wrapper = document.createElement('div');
-    const iconWrapper = document.createElement('div');
-    const icon = document.createElement('div');
-    const informationWrapper = document.createElement('div');
-    const informationTopWrapper = document.createElement('div');
-    const informationDetailsContainer = document.createElement('div');
-    const informationDetailsLabel = document.createElement('div');
-    const informationDetailsDescription = document.createElement('div');
-    const informationWrapperClose = document.createElement('div');
-    const informationClose = document.createElement('a');
-
     wrapper.setAttribute('class', 'cl-widget-notif-wrapper');
-    iconWrapper.setAttribute('class', 'cl-widget-notif-icon-wrapper');
-    icon.setAttribute('class', 'cl-widget-notif-icon');
-    informationTopWrapper.setAttribute('class', 'cl-widget-notif-information-top-wrapper');
-    informationWrapper.setAttribute('class', 'cl-widget-notif-information-wrapper');
-    informationDetailsContainer.setAttribute('class', 'cl-widget-notif-information-details-wrapper');
-    informationDetailsLabel.setAttribute('class', 'cl-widget-notif-information-details-label');
-    informationDetailsDescription.setAttribute('class', 'cl-widget-notif-information-details-description');
-    informationWrapperClose.setAttribute('class', 'cl-widget-notif-information-close-wrapper');
-    informationClose.setAttribute('class', 'cl-widget-notif-information-close');
+    if (this.settings.lbWidget && this.settings.lbWidget.settings.defaultLightTheme) {
+      wrapper.classList.add('lightTheme');
+    }
 
-    informationClose.href = 'javascript:void(0);';
-    informationClose.innerHTML = 'x';
-
-    informationDetailsContainer.appendChild(informationDetailsLabel);
-    informationDetailsContainer.appendChild(informationDetailsDescription);
-
-    informationWrapperClose.appendChild(informationClose);
-    informationWrapper.appendChild(informationWrapperClose);
-    informationWrapper.appendChild(informationDetailsContainer);
-    informationTopWrapper.appendChild(informationWrapper);
-    iconWrapper.appendChild(icon);
-    wrapper.appendChild(iconWrapper);
-    wrapper.appendChild(informationTopWrapper);
+    const template = require('../templates/layouts/notificationsLayout.hbs');
+    wrapper.innerHTML = template({});
 
     return wrapper;
   };

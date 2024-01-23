@@ -4,12 +4,26 @@
     "hours": "uur",
     "minutesShortHand": "min.",
     "minutes": "min.",
-    "seconds": "sec."
+    "seconds": "sec.",
+    "daysFull": "Dagen",
+    "hoursFull": "Uur",
+    "minutesFull": "Minuten",
+    "secondsFull": "Seconden"
   },
   "achievements": {
     "label": "Prestaties",
     "more": "Meer",
-    "complete": "100% afgerond"
+    "complete": "100% afgerond",
+    "enter": "Voer Prestatie in",
+    "leave": "Verlaat prestatie",
+    "listEnterBtn": "Meedoen",
+    "listLeaveBtn": "Vertrekken",
+    "listProgressionBtn": "Verwerken...",
+    "leavePopupTitle": "Verlaat de prestatie",
+    "leavePopupDescription": "Weet je zeker dat je deze prestatie wilt verlaten?",
+    "leavePopupClose": "Dichtbij",
+    "leavePopupConfirm": "Vertrekken",
+    "progress": "Voortgang"
   },
   "tournaments": {
     "label": "Toernooien",
@@ -20,7 +34,9 @@
     "finishing": "Wordt afgerond",
     "finished": "Afgelopen",
     "registered": "Geregistreerd",
-    "noAvailableCompetitions": "Geen wedstrijd beschikbaar"
+    "noAvailableCompetitions": "Geen wedstrijd beschikbaar",
+    "processing": "Verwerken...",
+    "date": "Datum"
   },
   "leaderboard": {
     "rank": "Rang",
@@ -28,6 +44,12 @@
     "points": "Punten",
     "prize": "Prijs",
     "you": "U"
+  },
+  "brackets": {
+    "title": "Toernooien beugel",
+    "starts": "Begint",
+    "ends": "Loopt af",
+    "ended": "Beëindigd"
   },
   "miniLeaderboard": {
     "highScore": "Hoogste score",
@@ -45,12 +67,48 @@
     "claimed": "Geclaimd",
     "availableRewards": "Beschikbare beloningen",
     "rewards": "Geclaimde beloningen",
-    "expiredRewards": "Verlopen beloningen"
+    "expiredRewards": "Verlopen beloningen",
+    "instantWins": "Directe overwinningen",
+    "wheelLabel": "Het enkele wiel",
+    "scratchcardsLabel": "Krasloten",
+    "wheelButton": "Toneelstuk",
+    "scratchcardsButton": "Toneelstuk",
+    "singleWheelWinLabel": "Gefeliciteerd!",
+    "singleWheelWinDescription": "Jij hebt gewonnen",
+    "singleWheelWinButton": "Claim",
+    "prizeLabel": "Ontdek jouw prijs door weg te krabben!",
+    "prizeButton": "Kras alles"
   },
   "messages": {
     "label": "Berichten"
   },
+  "dashboard": {
+    "label": "Dashboard",
+    "instantWinsTitle": "Directe overwinningen",
+    "achievementsTitle": "Prestaties",
+    "tournamentsTitle": "Huidige toernooien",
+    "upcomingTournamentsTitle": "Aankomende toernooien",
+    "tournamentBtn": "Bekijk meer",
+    "endsTitle": "Loopt af",
+    "startsTitle": "Begint",
+    "prizeTitle": "Prijs",
+    "singleWheelTitle": "Het enkele wiel",
+    "singleWheelButton": "Toneelstuk",
+    "scratchcardsTitle": "Krasloten",
+    "scratchcardsButton": "Toneelstuk",
+    "seeAll": "Alles zien"
+  },
+  "missions": {
+    "label": "Missies",
+    "btn": "Gaan",
+    "prizeLabel": "Prijs",
+    "mapLabel": "Missie kaart"
+  },
   "global": {
-    "copy": "Mogelijk gemaakt door Ziqni"
+    "copy": "Mogelijk gemaakt door Ziqni",
+    "descriptionLabel": "Beschrijving",
+    "tAndCLabel": "Algemene voorwaarden",
+    "tAndCEmpty": "Er zijn geen algemene voorwaarden verstrekt",
+    "descriptionEmpty": "Geen beschrijvingen verstrekt"
   }
 }

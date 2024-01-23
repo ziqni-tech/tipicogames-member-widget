@@ -4,12 +4,26 @@
         "hours": "時間",
         "minutesShortHand": "分",
         "minutes": "分",
-        "seconds": "秒"
+        "seconds": "秒",
+        "daysFull": "日々",
+        "hoursFull": "時間",
+        "minutesFull": "分",
+        "secondsFull": "秒"
     },
     "achievements": {
         "label": "実績",
         "more": "その他",
-        "complete": "100％完了"
+        "complete": "100％完了",
+        "enter": "実績を入力してください",
+        "leave": "実績を残す",
+        "listEnterBtn": "参加する",
+        "listLeaveBtn": "離れる",
+        "listProgressionBtn": "処理...",
+        "leavePopupTitle": "実績を残す",
+        "leavePopupDescription": "この実績を残してもよろしいですか?",
+        "leavePopupClose": "近い",
+        "leavePopupConfirm": "離れる",
+        "progress": "進捗"
     },
     "tournaments": {
         "label": "トーナメント",
@@ -20,7 +34,9 @@
         "finishing": "もうすぐ終了",
         "finished": "終了",
         "registered": "登録済み",
-        "noAvailableCompetitions": "利用可能な競争はありません"
+        "noAvailableCompetitions": "利用可能な競争はありません",
+        "processing": "処理...",
+        "date": "日付"
     },
     "leaderboard": {
         "rank": "ランク",
@@ -28,6 +44,12 @@
         "points": "ポイント",
         "prize": "賞",
         "you": "君は"
+    },
+    "brackets": {
+        "title": "トーナメントブラケット",
+        "starts": "始まります",
+        "ends": "終わり",
+        "ended": "終了しました"
     },
     "miniLeaderboard": {
         "highScore": "ハイスコア",
@@ -45,12 +67,48 @@
         "claimed": "獲得済み",
         "availableRewards": "獲得できる特典",
         "rewards": "獲得した特典",
-        "expiredRewards": "期限切れの特典"
+        "expiredRewards": "期限切れの特典",
+        "instantWins": "即時勝利",
+        "wheelLabel": "シングルホイール",
+        "scratchcardsLabel": "スクラッチカード",
+        "wheelButton": "遊ぶ",
+        "scratchcardsButton": "遊ぶ",
+        "singleWheelWinLabel": "おめでとう！",
+        "singleWheelWinDescription": "あなたは勝ちました",
+        "singleWheelWinButton": "請求",
+        "prizeLabel": "スクラッチして賞品を見つけてください!",
+        "prizeButton": "オールスクラッチ"
     },
     "messages": {
         "label": "メッセージ"
     },
+    "dashboard": {
+        "label": "ダッシュボード",
+        "instantWinsTitle": "即時勝利",
+        "achievementsTitle": "業績",
+        "tournamentsTitle": "現在のトーナメント",
+        "upcomingTournamentsTitle": "今後のトーナメント",
+        "tournamentBtn": "続きを見る",
+        "endsTitle": "終わり",
+        "startsTitle": "始まります",
+        "prizeTitle": "賞",
+        "singleWheelTitle": "シングルホイール",
+        "singleWheelButton": "遊ぶ",
+        "scratchcardsTitle": "スクラッチカード",
+        "scratchcardsButton": "遊ぶ",
+        "seeAll": "すべてを見る"
+    },
+    "missions": {
+        "label": "ミッション",
+        "btn": "行く",
+        "prizeLabel": "賞",
+        "mapLabel": "ミッションマップ"
+    },
     "global": {
-        "copy": "提供元：Ziqni"
+        "copy": "提供元：Ziqni",
+        "descriptionLabel": "説明",
+        "tAndCLabel": "利用規約",
+        "tAndCEmpty": "利用規約は提供されていません",
+        "descriptionEmpty": "説明がありません"
     }
 }

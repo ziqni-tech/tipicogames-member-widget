@@ -4,12 +4,26 @@
         "hours": "t",
         "minutesShortHand": "min",
         "minutes": "m",
-        "seconds": "s"
+        "seconds": "s",
+        "daysFull": "Dager",
+        "hoursFull": "Timer",
+        "minutesFull": "Minutter",
+        "secondsFull": "Sekunder"
     },
     "achievements": {
         "label": "Prestasjoner",
         "more": "Mer",
-        "complete": "fullført 100%"
+        "complete": "fullført 100%",
+        "enter": "Skriv inn prestasjon",
+        "leave": "Forlat prestasjon",
+        "listEnterBtn": "Bli med",
+        "listLeaveBtn": "Permisjon",
+        "listProgressionBtn": "Behandling...",
+        "leavePopupTitle": "Forlat prestasjonen",
+        "leavePopupDescription": "Er du sikker på at du vil forlate denne prestasjonen?",
+        "leavePopupClose": "Lukk",
+        "leavePopupConfirm": "Permisjon",
+        "progress": "Framgang"
     },
     "tournaments": {
         "label": "Turneringer",
@@ -20,7 +34,9 @@
         "finishing": "Avslutter",
         "finished": "Ferdig",
         "registered": "Registrert",
-        "noAvailableCompetitions": "Ingen tilgjengelig konkurranse"
+        "noAvailableCompetitions": "Ingen tilgjengelig konkurranse",
+        "processing": "Behandling...",
+        "date": "Dato"
     },
     "leaderboard": {
         "rank": "Rang",
@@ -28,6 +44,12 @@
         "points": "Poeng",
         "prize": "Premie",
         "you": "Du"
+    },
+    "brackets": {
+        "title": "Turneringsbrakett",
+        "starts": "Starter",
+        "ends": "Slutter",
+        "ended": "Endte"
     },
     "miniLeaderboard": {
         "highScore": "Høy poengsum",
@@ -45,12 +67,48 @@
         "claimed": "Krevde",
         "availableRewards": "Tilgjengelige bonuser",
         "rewards": "Krevde bonuser",
-        "expiredRewards": "Utløpte bonuser"
+        "expiredRewards": "Utløpte bonuser",
+        "instantWins": "Øyeblikkelige vinner",
+        "wheelLabel": "Enkelthjulet",
+        "scratchcardsLabel": "Skrapelodd",
+        "wheelButton": "Spille",
+        "scratchcardsButton": "Spille",
+        "singleWheelWinLabel": "Gratulerer!",
+        "singleWheelWinDescription": "Du vant",
+        "singleWheelWinButton": "Krav",
+        "prizeLabel": "Avdekk premien din ved å skrape bort!",
+        "prizeButton": "Skrap alt"
     },
     "messages": {
         "label": "Meldinger"
     },
+    "dashboard": {
+        "label": "Dashbord",
+        "instantWinsTitle": "Øyeblikkelig vinner",
+        "achievementsTitle": "Prestasjoner",
+        "tournamentsTitle": "Gjeldende turneringer",
+        "upcomingTournamentsTitle": "Kommende turneringer",
+        "tournamentBtn": "Se mer",
+        "endsTitle": "Slutter",
+        "startsTitle": "Starter",
+        "prizeTitle": "Premie",
+        "singleWheelTitle": "Enkelthjulet",
+        "singleWheelButton": "Spille",
+        "scratchcardsTitle": "Skrapelodd",
+        "scratchcardsButton": "Spille",
+        "seeAll": "Se alt"
+    },
+    "missions": {
+        "label": "Oppdrag",
+        "btn": "Gå",
+        "prizeLabel": "Premie",
+        "mapLabel": "Misjonskart"
+    },
     "global": {
-        "copy": "Drevet av Ziqni"
+        "copy": "Drevet av Ziqni",
+        "descriptionLabel": "Beskrivelse",
+        "tAndCLabel": "Betingelser og vilkår",
+        "tAndCEmpty": "Ingen vilkår og betingelser oppgitt",
+        "descriptionEmpty": "Ingen beskrivelser gitt"
     }
 }

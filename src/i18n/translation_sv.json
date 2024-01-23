@@ -1,0 +1,114 @@
+{
+    "time": {
+        "days": "dagar",
+        "hours": "timmar",
+        "minutesShortHand": "min",
+        "minutes": "minuter",
+        "seconds": "sekunder",
+        "daysFull": "Dagar",
+        "hoursFull": "Timmar",
+        "minutesFull": "Minuter",
+        "secondsFull": "Sekunder"
+    },
+    "achievements": {
+        "label": "bedrifter",
+        "more": "mer",
+        "complete": "komplett 100 %",
+        "enter": "Ange Achievement",
+        "leave": "Lämna Achievement",
+        "listEnterBtn": "Ansluta sig",
+        "listLeaveBtn": "Lämna",
+        "listProgressionBtn": "Bearbetar...",
+        "leavePopupTitle": "Lämna prestationen",
+        "leavePopupDescription": "Är du säker på att du vill lämna denna prestation?",
+        "leavePopupClose": "Stänga",
+        "leavePopupConfirm": "Lämna",
+        "progress": "Framsteg"
+    },
+    "tournaments": {
+		"label":"turneringar",
+        "enter": "Delta i turneringen",
+        "readyCompetitions": "Kommande turneringar",
+        "activeCompetitions": "Aktiva turneringar",
+        "finishedCompetitions": "Avslutade turneringar",
+        "finishing": "Avslutande",
+        "finished": "Avslutad",
+        "registered": "Registrerad",
+        "noAvailableCompetitions": "Ingen tillgänglig tävling",
+        "processing": "Bearbetar...",
+        "date": "Datum"
+    },
+    "leaderboard": {
+        "rank": "rangordna",
+        "name": "namn",
+        "points": "poäng",
+        "prize": "pris",
+        "you": "Du"
+    },
+    "brackets": {
+        "title": "Turneringsfäste",
+        "starts": "Startar",
+        "ends": "Slutar",
+        "ended": "Avslutade"
+    },
+    "miniLeaderboard": {
+        "highScore": "Högt resultat",
+        "lastScore": "Senaste resultat",
+        "rank": "Rangordna",
+        "startsIn": "Startar om",
+        "started": "startade",
+        "starting": "Startar",
+        "finishing": "avslutande",
+        "finished": "avslutad"
+    },
+    "rewards": {
+        "label": "Belöningar",
+        "claim": "Gör anspråk på nu",
+        "claimed": "Belöningar",
+        "availableRewards": "Tillgängliga belöningar",
+        "rewards": "I anspråktagna belöningar",
+        "expiredRewards": "Utgångna belöningar",
+        "instantWins": "Omedelbara vinster",
+        "wheelLabel": "Enkelhjulet",
+        "scratchcardsLabel": "Skrap lotter",
+        "wheelButton": "Spela",
+        "scratchcardsButton": "Spela",
+        "singleWheelWinLabel": "Grattis!",
+        "singleWheelWinDescription": "Du vann",
+        "singleWheelWinButton": "Krav",
+        "prizeLabel": "Upptäck ditt pris genom att skrapa bort!",
+        "prizeButton": "Skrapa allt"
+    },
+    "messages": {
+        "label": "Meddelanden"
+    },
+    "dashboard": {
+        "label": "Instrumentbräda",
+        "instantWinsTitle": "Vinner direkt",
+        "achievementsTitle": "Prestationer",
+        "tournamentsTitle": "Aktuella turneringar",
+        "upcomingTournamentsTitle": "Kommande turneringar",
+        "tournamentBtn": "Se mer",
+        "endsTitle": "Slutar",
+        "startsTitle": "Startar",
+        "prizeTitle": "Pris",
+        "singleWheelTitle": "Enkelhjulet",
+        "singleWheelButton": "Spela",
+        "scratchcardsTitle": "Skrap lotter",
+        "scratchcardsButton": "Spela",
+        "seeAll": "Se allt"
+    },
+    "missions": {
+        "label": "Uppdrag",
+        "btn": "Gå",
+        "prizeLabel": "Pris",
+        "mapLabel": "Uppdragskarta"
+    },
+    "global": {
+        "copy": "Drivs av Ziqni",
+        "descriptionLabel": "Beskrivning",
+        "tAndCLabel": "Allmänna Villkor",
+        "tAndCEmpty": "Inga villkor anges",
+        "descriptionEmpty": "Inga beskrivningar tillhandahålls"
+    }
+}

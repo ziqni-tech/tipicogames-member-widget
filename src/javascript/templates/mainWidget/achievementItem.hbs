@@ -1,0 +1,27 @@
+<div class="cl-ach-list-details-cont">
+  <div class="cl-ach-list-icon" style="{{ bgImage }}"></div>
+  <div class="cl-ach-list-details-wrap">
+    <div class="cl-ach-list-details-label">{{ title }}</div>
+    <div class="cl-ach-list-progression">
+      <div class="cl-ach-list-progression-cont">
+        <div class="cl-ach-list-progression-bar" style="width: 0;"></div>
+      </div>
+      <div class="cl-ach-list-progression-label">0/100</div>
+    </div>
+  </div>
+</div>
+<div class="cl-ach-list-actions">
+  <div class="cl-ach-list-actions-reward">{{ rewardValue }}</div>
+  {{#if isMore}}
+    <a class="cl-ach-list-more" data-id="{{ id }}" href="javascript:void(0);">{{ moreLabel }}</a>
+  {{/if}}
+  {{#if isEnter}}
+    <a class="cl-ach-list-enter" data-id="{{ id }}" href="javascript:void(0);">{{ enterLabel }}</a>
+  {{/if}}
+  {{#if isLeave}}
+    <a class="cl-ach-list-leave" data-id="{{ id }}" href="javascript:void(0);">{{ leaveLabel }}</a>
+  {{/if}}
+  {{#if isProgress}}
+    <a class="cl-ach-list-in-progress" data-id="{{ id }}" href="javascript:void(0);">{{ progressLabel }}</a>
+  {{/if}}
+</div>

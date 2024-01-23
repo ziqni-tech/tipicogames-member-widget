@@ -97,6 +97,15 @@ module.exports = {
           limit: 8192
         }
       },
+      {
+        test: /\.hbs$/,
+        loader: 'handlebars-loader',
+        options: {
+          precompileOptions: {
+            knownHelpersOnly: false
+          }
+        }
+      }
     ]
   },
   plugins: [
@@ -106,6 +115,7 @@ module.exports = {
       'process.env.INLINE_CSS': INLINE_CSS,
       'process.env.THEME': JSON.stringify(_THEME)
     }),
+    // new BundleAnalyzerPlugin(),
     new webpack.IgnorePlugin({
       resourceRegExp: /^\.\/locale$/,
       contextRegExp: /moment$/
@@ -113,7 +123,8 @@ module.exports = {
     new CopyPlugin({
       patterns: [
         { from: 'src/i18n', to: '../i18n' },
-        { from: 'src/images', to: '../images' }
+        { from: 'src/images', to: '../images' },
+        { from: 'src/cl-black-theme/images', to: '../cl-black-theme/images' }
       ]
     })
   ]

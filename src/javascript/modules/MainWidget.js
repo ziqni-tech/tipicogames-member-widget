@@ -9,11 +9,9 @@ import addClass from '../utils/addClass';
 import remove from '../utils/remove';
 import appendNext from '../utils/appendNext';
 import stripHtml from '../utils/stripHtml';
-import Graph from 'graphology';
-import Sigma from 'sigma';
-import circular from 'graphology-layout/circular';
-import rotation from 'graphology-layout/rotation';
-import forceAtlas2 from 'graphology-layout-forceatlas2';
+import cytoscape from 'cytoscape';
+import dagre from 'cytoscape-dagre';
+import tournamentBrackets from './TournamentBrackets';
 
 /**
  * MainWidget
@@ -37,6 +35,9 @@ export const MainWidget = function (options) {
     tournamentListContainer: null,
     headerDate: null,
     labelDate: null,
+    labelDateHeaders: null,
+    detailsDateHeaders: null,
+    descriptionDate: null,
     preLoader: {
       preLoaderActive: false,
       preLoaderlastAttempt: null,
@@ -57,7 +58,10 @@ export const MainWidget = function (options) {
     },
     missions: {
       container: null,
-      detailsContainer: null
+      detailsContainer: null,
+      mission: null,
+      timerInterval: null,
+      mapContainer: null
     },
     leaderboard: {
       defaultEmptyList: 20,
@@ -72,22 +76,22 @@ export const MainWidget = function (options) {
     tournamentsSection: {
       accordionLayout: [
         {
+          label: 'Upcoming Tournaments',
+          type: 'readyCompetitions',
+          show: false,
+          showTopResults: 0
+        },
+        {
           label: 'Active Tournaments',
           type: 'activeCompetitions',
           show: true,
-          showTopResults: 1
-        },
-        {
-          label: 'Upcoming Tournaments',
-          type: 'readyCompetitions',
-          show: true,
-          showTopResults: 1
+          showTopResults: 0
         },
         {
           label: 'Finished Tournaments',
           type: 'finishedCompetitions',
-          show: true,
-          showTopResults: 1
+          show: false,
+          showTopResults: 0
         }
       ]
     },
@@ -102,6 +106,18 @@ export const MainWidget = function (options) {
         {
           label: 'Claimed Awards',
           type: 'claimedAwards',
+          show: false,
+          showTopResults: 1
+        },
+        {
+          label: 'Expired Awards',
+          type: 'expiredAwards',
+          show: false,
+          showTopResults: 1
+        },
+        {
+          label: 'Instant Wins',
+          type: 'instantWins',
           show: false,
           showTopResults: 1
         }
@@ -131,37 +147,165 @@ export const MainWidget = function (options) {
    * @param data { Array }
    * @param onLayout { Function }
    */
-  this.accordionStyle = function (data, onLayout) {
-    var _this = this;
-    var accordionWrapper = document.createElement('div');
+  this.awardsList = function (data, onLayout) {
+    const _this = this;
+    const accordionWrapper = document.createElement('div');
 
     accordionWrapper.setAttribute('class', 'cl-main-accordion-container');
 
+    const statusMenu = document.createElement('div');
+    statusMenu.setAttribute('class', 'cl-main-accordion-container-menu');
+
+    const availableTitle = document.createElement('div');
+    const claimedTitle = document.createElement('div');
+    const expiredTitle = document.createElement('div');
+    const instantWinsTitle = document.createElement('div');
+
+    availableTitle.setAttribute('class', 'cl-main-accordion-container-menu-item availableAwards');
+    claimedTitle.setAttribute('class', 'cl-main-accordion-container-menu-item claimedAwards');
+    expiredTitle.setAttribute('class', 'cl-main-accordion-container-menu-item expiredAwards');
+    instantWinsTitle.setAttribute('class', 'cl-main-accordion-container-menu-item instantWins');
+
+    const idx = data.findIndex(d => d.show === true);
+    if (idx !== -1) {
+      switch (data[idx].type) {
+        case 'availableAwards':
+          availableTitle.classList.add('active');
+          break;
+        case 'claimedAwards':
+          claimedTitle.classList.add('active');
+          break;
+        case 'expiredAwards':
+          expiredTitle.classList.add('active');
+          break;
+        case 'instantWins':
+          if (this.settings.lbWidget.settings.instantWins.enable) {
+            instantWinsTitle.classList.add('active');
+          } else {
+            claimedTitle.classList.add('active');
+          }
+          break;
+      }
+    }
+
+    availableTitle.innerHTML = _this.settings.lbWidget.settings.translation.rewards.availableRewards;
+    claimedTitle.innerHTML = _this.settings.lbWidget.settings.translation.rewards.claimed;
+    expiredTitle.innerHTML = _this.settings.lbWidget.settings.translation.rewards.expired;
+    instantWinsTitle.innerHTML = _this.settings.lbWidget.settings.translation.rewards.instantWins;
+
+    statusMenu.appendChild(availableTitle);
+    statusMenu.appendChild(claimedTitle);
+    if (this.settings.lbWidget.settings.awards.showExpiredAwards) {
+      statusMenu.appendChild(expiredTitle);
+    }
+    if (this.settings.lbWidget.settings.instantWins.enable) {
+      statusMenu.appendChild(instantWinsTitle);
+    }
+
+    accordionWrapper.appendChild(statusMenu);
+
     mapObject(data, function (entry) {
-      var accordionSection = document.createElement('div');
-      var accordionLabel = document.createElement('div');
-      var topShownEntry = document.createElement('div');
-      var accordionListContainer = document.createElement('div');
-      var accordionList = document.createElement('div');
+      const accordionSection = document.createElement('div');
+      const topShownEntry = document.createElement('div');
+      const accordionListContainer = document.createElement('div');
+      const accordionList = document.createElement('div');
 
       accordionSection.setAttribute('class', 'cl-accordion ' + entry.type + ((typeof entry.show === 'boolean' && entry.show) ? ' cl-shown' : ''));
-      accordionLabel.setAttribute('class', 'cl-accordion-label');
       topShownEntry.setAttribute('class', 'cl-accordion-entry');
       accordionListContainer.setAttribute('class', 'cl-accordion-list-container');
       accordionList.setAttribute('class', 'cl-accordion-list');
-
-      if (typeof _this.settings.lbWidget.settings.translation.rewards[entry.type] !== 'undefined') {
-        accordionLabel.innerHTML = _this.settings.lbWidget.settings.translation.rewards[entry.type];
-      } else if (typeof _this.settings.lbWidget.settings.translation.tournaments[entry.type] !== 'undefined') {
-        accordionLabel.innerHTML = _this.settings.lbWidget.settings.translation.tournaments[entry.type];
-      } else {
-        accordionLabel.innerHTML = entry.label;
-      }
 
       if (typeof onLayout === 'function') {
         onLayout(accordionSection, accordionList, topShownEntry, entry);
       }
 
+      accordionListContainer.appendChild(accordionList);
+
+      accordionSection.appendChild(accordionListContainer);
+
+      accordionWrapper.appendChild(accordionSection);
+    });
+
+    return accordionWrapper;
+  };
+
+  this.tournamentsList = function (data, onLayout) {
+    const _this = this;
+    const accordionWrapper = document.createElement('div');
+
+    accordionWrapper.setAttribute('class', 'cl-main-accordion-container');
+
+    const statusMenu = document.createElement('div');
+    statusMenu.setAttribute('class', 'cl-main-accordion-container-menu');
+
+    const finishedTitle = document.createElement('div');
+    const activeTitle = document.createElement('div');
+    const readyTitle = document.createElement('div');
+
+    finishedTitle.setAttribute('class', 'cl-main-accordion-container-menu-item finishedTournaments');
+    activeTitle.setAttribute('class', 'cl-main-accordion-container-menu-item activeTournaments');
+    readyTitle.setAttribute('class', 'cl-main-accordion-container-menu-item readyTournaments');
+
+    const idx = data.findIndex(d => d.show === true);
+    if (idx !== -1) {
+      switch (data[idx].type) {
+        case 'activeCompetitions':
+          activeTitle.classList.add('active');
+          break;
+        case 'finishedCompetitions':
+          finishedTitle.classList.add('active');
+          break;
+        case 'readyCompetitions':
+          readyTitle.classList.add('active');
+          break;
+      }
+    }
+
+    finishedTitle.innerHTML = _this.settings.lbWidget.settings.translation.tournaments.finishedCompetitions;
+    activeTitle.innerHTML = _this.settings.lbWidget.settings.translation.tournaments.activeCompetitions;
+    readyTitle.innerHTML = _this.settings.lbWidget.settings.translation.tournaments.readyCompetitions;
+
+    statusMenu.appendChild(finishedTitle);
+    statusMenu.appendChild(activeTitle);
+    statusMenu.appendChild(readyTitle);
+
+    accordionWrapper.appendChild(statusMenu);
+
+    mapObject(data, function (entry) {
+      const accordionSection = document.createElement('div');
+      const accordionLabel = document.createElement('div');
+      const topShownEntry = document.createElement('div');
+      const accordionListContainer = document.createElement('div');
+      const header = document.createElement('div');
+      const headerLabel = document.createElement('div');
+      const headerDate = document.createElement('div');
+      const headerPrize = document.createElement('div');
+      const accordionList = document.createElement('div');
+
+      accordionSection.setAttribute('class', 'cl-accordion ' + entry.type + ((typeof entry.show === 'boolean' && entry.show) ? ' cl-shown' : ''));
+      topShownEntry.setAttribute('class', 'cl-accordion-entry');
+      accordionListContainer.setAttribute('class', 'cl-accordion-list-container');
+      header.setAttribute('class', 'cl-accordion-list-container-header');
+      headerLabel.setAttribute('class', 'cl-accordion-list-container-header-label');
+      headerDate.setAttribute('class', 'cl-accordion-list-container-header-date');
+      headerPrize.setAttribute('class', 'cl-accordion-list-container-header-prize');
+      accordionList.setAttribute('class', 'cl-accordion-list');
+
+      headerLabel.innerHTML = _this.settings.lbWidget.settings.translation.tournaments.label;
+      headerDate.innerHTML = _this.settings.lbWidget.settings.translation.tournaments.date;
+      headerPrize.innerHTML = _this.settings.lbWidget.settings.translation.leaderboard.prize;
+
+      if (typeof onLayout === 'function') {
+        onLayout(accordionSection, accordionList, topShownEntry, entry);
+      }
+
+      header.appendChild(headerLabel);
+      header.appendChild(headerDate);
+      if (_this.settings.lbWidget.settings.tournaments.showTournamentsMenuPrizeColumn) {
+        header.appendChild(headerPrize);
+      }
+
+      accordionListContainer.appendChild(header);
       accordionListContainer.appendChild(accordionList);
 
       accordionSection.appendChild(accordionLabel);
@@ -174,9 +318,48 @@ export const MainWidget = function (options) {
     return accordionWrapper;
   };
 
+  this.listsNavigation = function (element) {
+    const menuItems = element.parentNode.querySelectorAll('.cl-main-accordion-container-menu-item');
+    const container = element.closest('.cl-main-accordion-container');
+    const sections = container.querySelectorAll('.cl-accordion');
+
+    menuItems.forEach(i => i.classList.remove('active'));
+    element.classList.add('active');
+
+    sections.forEach(s => s.classList.remove('cl-shown'));
+
+    if (element.classList.contains('finishedTournaments')) {
+      const finishedContainer = container.querySelector('.finishedCompetitions');
+      finishedContainer.classList.add('cl-shown');
+    }
+    if (element.classList.contains('activeTournaments')) {
+      const activeContainer = container.querySelector('.activeCompetitions');
+      activeContainer.classList.add('cl-shown');
+    }
+    if (element.classList.contains('readyTournaments')) {
+      const readyContainer = container.querySelector('.readyCompetitions');
+      readyContainer.classList.add('cl-shown');
+    }
+    if (element.classList.contains('availableAwards')) {
+      const availableContainer = container.querySelector('.cl-accordion.availableAwards');
+      availableContainer.classList.add('cl-shown');
+    }
+    if (element.classList.contains('claimedAwards')) {
+      const claimedContainer = container.querySelector('.cl-accordion.claimedAwards');
+      claimedContainer.classList.add('cl-shown');
+    }
+    if (element.classList.contains('expiredAwards')) {
+      const expiredContainer = container.querySelector('.cl-accordion.expiredAwards');
+      expiredContainer.classList.add('cl-shown');
+    }
+    if (element.classList.contains('instantWins')) {
+      const instantWinsContainer = container.querySelector('.cl-accordion.instantWins');
+      instantWinsContainer.classList.add('cl-shown');
+    }
+  };
+
   this.accordionNavigation = function (element) {
-    // var _this = this;
-    var parentEl = element.parentNode;
+    const parentEl = element.parentNode;
 
     if (hasClass(parentEl, 'cl-shown')) {
       removeClass(parentEl, 'cl-shown');
@@ -208,23 +391,25 @@ export const MainWidget = function (options) {
     mapObject(navigationList, function (val, key) {
       const navigationItem = document.createElement('div');
       const navigationItemIcon = document.createElement('div');
-      const navigationItemCount = document.createElement('div');
+      const navigationItemTitle = document.createElement('div');
+      if (val.key === 'inbox') {
+        navigationItemTitle.innerHTML = _this.settings.lbWidget.settings.translation.messages.label;
+      } else {
+        navigationItemTitle.innerHTML = _this.settings.lbWidget.settings.translation[val.key].label;
+      }
 
       navigationItem.setAttribute('class', _this.settings.lbWidget.settings.navigation[val.key].navigationClass + ' cl-main-widget-navigation-item' + (_this.settings.lbWidget.settings.navigation[val.key].enable ? '' : ' cl-hidden-navigation-item'));
       navigationItemIcon.setAttribute('class', _this.settings.lbWidget.settings.navigation[val.key].navigationClassIcon + ' cl-main-navigation-item');
-      navigationItemCount.setAttribute('class', 'cl-main-navigation-item-count');
+      navigationItemTitle.setAttribute('class', 'cl-main-navigation-item-title');
 
-      navigationItemIcon.innerHTML = _this.settings.lbWidget.settings.translation.menu[val.key];
-
-      navigationItemIcon.appendChild(navigationItemCount);
       navigationItem.appendChild(navigationItemIcon);
+      navigationItem.appendChild(navigationItemTitle);
       container.appendChild(navigationItem);
     });
   };
 
   this.overlayLayout = function () {
-    var wrapper = document.createElement('div');
-
+    const wrapper = document.createElement('div');
     wrapper.setAttribute('class', 'cl-widget-main-widget-overlay-wrapper');
 
     return wrapper;
@@ -237,9 +422,12 @@ export const MainWidget = function (options) {
 
     const navigationContainer = document.createElement('div');
     const navigationItems = document.createElement('div');
+    const navigationLogo = document.createElement('div');
+    const navigationDarkModeToggle = document.createElement('div');
+    const navigationDarkModeToggleInput = document.createElement('input');
+    const navigationDarkModeToggleLabel = document.createElement('label');
 
     const mainSectionContainer = document.createElement('div');
-    const mainSectionContainerClose = document.createElement('div');
 
     const preLoaderContainer = document.createElement('div');
     const preLoaderContent = document.createElement('div');
@@ -252,6 +440,13 @@ export const MainWidget = function (options) {
     const sectionRewards = _this.rewardsAreaLayout();
     const sectionInbox = _this.inboxAreaLayout();
     const sectionMissions = _this.missionsAreaLayout();
+    const sectionDashboard = _this.dashboardAreaLayout();
+
+    const mobileThemeSwitcher = document.createElement('div');
+    const landscapeClose = document.createElement('div');
+
+    mobileThemeSwitcher.setAttribute('class', 'cl-mobile-theme-switcher');
+    landscapeClose.setAttribute('class', 'cl-landscape-close');
 
     const navigationItemList = [];
     mapObject(_this.settings.lbWidget.settings.navigation, function (val, key) {
@@ -268,9 +463,24 @@ export const MainWidget = function (options) {
 
     navigationContainer.setAttribute('class', 'cl-main-widget-navigation-container');
     navigationItems.setAttribute('class', 'cl-main-widget-navigation-items');
+    navigationLogo.setAttribute('class', 'cl-main-widget-navigation-logo');
+    if (this.settings.lbWidget.settings.layout.logoUrl) {
+      navigationLogo.setAttribute('style', `background-image: url(${this.settings.lbWidget.settings.layout.logoUrl})`);
+    }
+
+    navigationDarkModeToggle.setAttribute('class', 'cl-main-widget-navigation-darkMode-toggle');
+    navigationDarkModeToggleInput.setAttribute('type', 'checkbox');
+    navigationDarkModeToggleInput.setAttribute('id', 'darkmode-toggle');
+    if (_this.settings.lbWidget.settings.defaultLightTheme) {
+      wrapper.classList.add('lightTheme');
+      navigationDarkModeToggleInput.checked = true;
+    }
+    navigationDarkModeToggleLabel.setAttribute('for', 'darkmode-toggle');
+
+    navigationDarkModeToggle.appendChild(navigationDarkModeToggleInput);
+    navigationDarkModeToggle.appendChild(navigationDarkModeToggleLabel);
 
     mainSectionContainer.setAttribute('class', 'cl-main-widget-section-container' + (_this.settings.lbWidget.settings.showCopyright ? '' : ' cl-hidden-copyright'));
-    mainSectionContainerClose.setAttribute('class', 'cl-main-widget-section-container-close');
 
     preLoaderContainer.setAttribute('class', 'cl-main-widget-pre-loader');
     preLoaderContent.setAttribute('class', 'cl-main-widget-pre-loader-content');
@@ -283,18 +493,24 @@ export const MainWidget = function (options) {
     preLoaderContent.appendChild(preLoaderBar3);
     preLoaderContainer.appendChild(preLoaderContent);
 
+    navigationContainer.appendChild(navigationLogo);
     navigationContainer.appendChild(navigationItems);
 
-    mainSectionContainer.appendChild(mainSectionContainerClose);
-    mainSectionContainer.appendChild(navigationContainer);
+    if (this.settings.lbWidget.settings.layout.showThemeSwitcher) {
+      navigationContainer.appendChild(navigationDarkModeToggle);
+      mainSectionContainer.appendChild(mobileThemeSwitcher);
+    }
+
     mainSectionContainer.appendChild(sectionLB);
     mainSectionContainer.appendChild(sectionACH);
     mainSectionContainer.appendChild(sectionRewards);
     mainSectionContainer.appendChild(sectionInbox);
     mainSectionContainer.appendChild(sectionMissions);
+    mainSectionContainer.appendChild(sectionDashboard);
     mainSectionContainer.appendChild(preLoaderContainer);
+    mainSectionContainer.appendChild(landscapeClose);
 
-    // innerWrapper.appendChild(navigationContainer);
+    innerWrapper.appendChild(navigationContainer);
     innerWrapper.appendChild(mainSectionContainer);
     wrapper.appendChild(innerWrapper);
 
@@ -302,9 +518,9 @@ export const MainWidget = function (options) {
   };
 
   this.mainNavigationCheck = function () {
-    var _this = this;
-    var navItems = query(_this.settings.container, '.cl-main-widget-navigation-item');
-    var checkEnabled = 0;
+    const _this = this;
+    const navItems = query(_this.settings.container, '.cl-main-widget-navigation-item');
+    let checkEnabled = 0;
 
     objectIterator(navItems, function (navItem) {
       if (!hasClass(navItem, 'cl-hidden-navigation-item')) {
@@ -320,696 +536,180 @@ export const MainWidget = function (options) {
   };
 
   this.leaderboardAreaLayout = function () {
-    var _this = this;
-    var sectionLB = document.createElement('div');
+    const sectionLB = document.createElement('div');
+    sectionLB.setAttribute('class', this.settings.lbWidget.settings.navigation.tournaments.containerClass + ' cl-main-section-item cl-main-active-section');
 
-    var sectionLBHeader = document.createElement('div');
-    var sectionLBHeaderList = document.createElement('div');
-    var sectionLBHeaderListIcon = document.createElement('div');
-    var sectionLBHeaderLabel = document.createElement('div');
-    var sectionLBHeaderDate = document.createElement('div');
-    var sectionLBHeaderClose = document.createElement('div');
-
-    var sectionLBDetails = document.createElement('div');
-    var sectionLBDetailsInfo = document.createElement('div');
-    var sectionLBDetailsInfoIcon = document.createElement('div');
-    var sectionLBDetailsImageContainer = document.createElement('div');
-    var sectionLBDetailsContentContainer = document.createElement('div');
-    var sectionLBDetailsContentContainerLabel = document.createElement('div');
-    var sectionLBDetailsContentContainerLabelText = document.createElement('span');
-    var sectionLBDetailsContentContainerDate = document.createElement('span');
-    var sectionLBDetailsDescriptionContainer = document.createElement('div');
-    var sectionLBDetailsDescription = document.createElement('div');
-    var sectionLBDetailsDescriptionClose = document.createElement('span');
-
-    var sectionLBLeaderboard = document.createElement('div');
-    var sectionLBLeaderboardHeader = document.createElement('div');
-    var sectionLBLeaderboardHeaderLabels = document.createElement('div');
-    var sectionLBLeaderboardResultsContainer = document.createElement('div');
-    var sectionLBLeaderboardHeaderTopResults = document.createElement('div');
-    var sectionLBLeaderboardBody = document.createElement('div');
-    var sectionLBLeaderboardBodyResults = document.createElement('div');
-
-    var sectionLBMissingMember = document.createElement('div');
-
-    var sectionLBOptInContainer = document.createElement('div');
-    var sectionLBOptInAction = document.createElement('a');
-
-    const sectionLBOptOutAction = document.createElement('div');
-    const sectionLBOptOutActionWrapper = document.createElement('div');
-
-    var sectionLBFooter = document.createElement('div');
-    var sectionLBFooterContent = document.createElement('div');
-
-    var sectionTournamentDetailsContainer = document.createElement('div');
-    var sectionTournamentDetailsHeader = document.createElement('div');
-    var sectionTournamentDetailsHeaderLabel = document.createElement('div');
-    var sectionTournamentDetailsHeaderDate = document.createElement('div');
-    var sectionTournamentDetailsBackBtn = document.createElement('a');
-    var sectionTournamentDetailsBodyContainer = document.createElement('div');
-    var sectionTournamentDetailsBodyImageContainer = document.createElement('div');
-    var sectionTournamentDetailsBody = document.createElement('div');
-    var sectionTournamentDetailsOptInContainer = document.createElement('div');
-    var sectionTournamentDetailsOptInAction = document.createElement('a');
-
-    var sectionTournamentList = document.createElement('div');
-    var sectionTournamentListBody = document.createElement('div');
-    var sectionTournamentListBodyResults = document.createElement('div');
-    var sectionTournamentBackAction = document.createElement('a');
-    const sectionTournamentCloseAction = document.createElement('div');
-
-    sectionLB.setAttribute('class', _this.settings.lbWidget.settings.navigation.tournaments.containerClass + ' cl-main-section-item cl-main-active-section' + (_this.settings.lbWidget.settings.leaderboard.layoutSettings.imageBanner ? ' cl-main-section-image-banner-active' : ''));
-    sectionLBHeader.setAttribute('class', 'cl-main-widget-lb-header');
-    sectionLBHeaderList.setAttribute('class', 'cl-main-widget-lb-header-list');
-    sectionLBHeaderListIcon.setAttribute('class', 'cl-main-widget-lb-header-list-icon');
-    sectionLBHeaderLabel.setAttribute('class', 'cl-main-widget-lb-header-label');
-    sectionLBHeaderDate.setAttribute('class', 'cl-main-widget-lb-header-date');
-    sectionLBHeaderClose.setAttribute('class', 'cl-main-widget-lb-header-close');
-
-    sectionLBDetails.setAttribute('class', 'cl-main-widget-lb-details');
-    sectionLBDetailsInfo.setAttribute('class', 'cl-main-widget-lb-details-info');
-    sectionLBDetailsInfoIcon.setAttribute('class', 'cl-main-widget-lb-details-info-icon');
-    sectionLBDetailsImageContainer.setAttribute('class', 'cl-main-widget-lb-details-image-container');
-    sectionLBDetailsContentContainer.setAttribute('class', 'cl-main-widget-lb-details-content');
-    sectionLBDetailsContentContainerLabel.setAttribute('class', 'cl-main-widget-lb-details-content-label');
-    sectionLBDetailsContentContainerLabelText.setAttribute('class', 'cl-main-widget-lb-details-content-label-text');
-    sectionLBDetailsContentContainerDate.setAttribute('class', 'cl-main-widget-lb-details-content-date');
-    sectionLBDetailsDescriptionContainer.setAttribute('class', 'cl-main-widget-lb-details-description-container');
-    sectionLBDetailsDescription.setAttribute('class', 'cl-main-widget-lb-details-description');
-    sectionLBDetailsDescriptionClose.setAttribute('class', 'cl-main-widget-lb-details-description-close');
-
-    // Leaderboard result container
-    sectionLBLeaderboard.setAttribute('class', 'cl-main-widget-lb-leaderboard');
-    sectionLBLeaderboardHeader.setAttribute('class', 'cl-main-widget-lb-leaderboard-header');
-    sectionLBLeaderboardHeaderLabels.setAttribute('class', 'cl-main-widget-lb-leaderboard-header-labels');
-    sectionLBLeaderboardResultsContainer.setAttribute('class', 'cl-main-widget-lb-leaderboard-res-container');
-    sectionLBLeaderboardHeaderTopResults.setAttribute('class', 'cl-main-widget-lb-leaderboard-header-top-res');
-    sectionLBLeaderboardBody.setAttribute('class', 'cl-main-widget-lb-leaderboard-body');
-    sectionLBLeaderboardBodyResults.setAttribute('class', 'cl-main-widget-lb-leaderboard-body-res');
-
-    sectionLBMissingMember.setAttribute('class', 'cl-main-widget-lb-missing-member');
-
-    // details section
-    sectionTournamentDetailsContainer.setAttribute('class', 'cl-main-widget-lb-details-container');
-    sectionTournamentDetailsHeader.setAttribute('class', 'cl-main-widget-lb-details-header');
-    sectionTournamentDetailsHeaderLabel.setAttribute('class', 'cl-main-widget-lb-details-header-label');
-    sectionTournamentDetailsHeaderDate.setAttribute('class', 'cl-main-widget-lb-details-header-date');
-    sectionTournamentDetailsBackBtn.setAttribute('class', 'cl-main-widget-lb-details-back-btn');
-    sectionTournamentDetailsBodyContainer.setAttribute('class', 'cl-main-widget-lb-details-body-container');
-    sectionTournamentDetailsBodyImageContainer.setAttribute('class', 'cl-main-widget-lb-details-body-image-cont');
-    sectionTournamentDetailsBody.setAttribute('class', 'cl-main-widget-lb-details-body');
-    sectionTournamentDetailsOptInContainer.setAttribute('class', 'cl-main-widget-lb-details-optin-container');
-    sectionTournamentDetailsOptInAction.setAttribute('class', 'cl-main-widget-lb-details-optin-action');
-
-    sectionTournamentList.setAttribute('class', 'cl-main-widget-tournaments-list');
-    sectionTournamentBackAction.setAttribute('class', 'cl-main-widget-tournaments-back-btn');
-    sectionTournamentCloseAction.setAttribute('class', 'cl-main-widget-tournaments-close-btn');
-    sectionTournamentListBody.setAttribute('class', 'cl-main-widget-tournaments-list-body');
-    sectionTournamentListBodyResults.setAttribute('class', 'cl-main-widget-tournaments-list-body-res');
-
-    sectionLBOptInContainer.setAttribute('class', 'cl-main-widget-lb-optin-container');
-    sectionLBOptInAction.setAttribute('class', 'cl-main-widget-lb-optin-action');
-    sectionLBOptOutAction.setAttribute('class', 'cl-main-widget-lb-optout-action');
-    sectionLBOptOutActionWrapper.setAttribute('class', 'cl-main-widget-lb-optout-action-wrapper');
-
-    // sectionLBHeaderLabel.innerHTML = _this.settings.lbWidget.settings.translation.tournaments.label;
-    sectionLBFooterContent.innerHTML = _this.settings.lbWidget.settings.translation.global.copy;
-    sectionTournamentDetailsOptInAction.innerHTML = _this.settings.lbWidget.settings.translation.tournaments.enter;
-    sectionTournamentDetailsOptInAction.href = 'javascript:void(0);';
-    sectionLBOptOutAction.innerHTML = _this.settings.lbWidget.settings.translation.tournaments.leave;
-    sectionLBOptInAction.innerHTML = _this.settings.lbWidget.settings.translation.tournaments.enter;
-    sectionLBOptInAction.href = 'javascript:void(0);';
-    sectionLBDetailsDescriptionClose.innerHTML = _this.settings.lbWidget.settings.translation.tournaments.leaderboard;
-
-    sectionLBHeaderList.appendChild(sectionLBHeaderListIcon);
-    sectionLBHeader.appendChild(sectionLBHeaderList);
-    sectionLBHeader.appendChild(sectionLBHeaderLabel);
-    sectionLBHeader.appendChild(sectionLBHeaderDate);
-    sectionLBHeader.appendChild(sectionLBHeaderClose);
-
-    sectionLBDetailsInfo.appendChild(sectionLBDetailsInfoIcon);
-    sectionLBDetailsContentContainerLabel.appendChild(sectionLBDetailsContentContainerLabelText);
-    sectionLBDetailsContentContainerLabel.appendChild(sectionLBDetailsContentContainerDate);
-    sectionLBDetailsContentContainer.appendChild(sectionLBDetailsContentContainerLabel);
-    sectionLBDetails.appendChild(sectionLBDetailsInfo);
-
-    if (_this.settings.lbWidget.settings.leaderboard.layoutSettings.imageBanner) {
-      sectionLBDetails.appendChild(sectionLBDetailsImageContainer);
-    }
-
-    sectionLBDetails.appendChild(sectionLBDetailsContentContainer);
-
-    if (!_this.settings.lbWidget.settings.leaderboard.layoutSettings.titleLinkToDetailsPage) {
-      sectionLBDetailsDescriptionContainer.appendChild(sectionLBDetailsDescription);
-      sectionLBOptOutActionWrapper.appendChild(sectionLBDetailsDescriptionClose);
-      sectionLBOptOutActionWrapper.appendChild(sectionLBOptOutAction);
-      sectionLBDetailsDescriptionContainer.appendChild(sectionLBOptOutActionWrapper);
-      sectionLBDetails.appendChild(sectionLBDetailsDescriptionContainer);
-    }
-
-    sectionLBLeaderboardHeader.appendChild(sectionLBLeaderboardHeaderLabels);
-    sectionLBLeaderboard.appendChild(sectionLBLeaderboardHeader);
-    // sectionLBLeaderboard.appendChild(sectionLBLeaderboardHeaderTopResults);
-    // sectionLBLeaderboardBody.appendChild(sectionLBLeaderboardBodyResults);
-    // sectionLBLeaderboard.appendChild(sectionLBLeaderboardBody);
-
-    sectionLBLeaderboardResultsContainer.appendChild(sectionLBLeaderboardHeaderTopResults);
-    sectionLBLeaderboardBody.appendChild(sectionLBLeaderboardBodyResults);
-    sectionLBLeaderboardResultsContainer.appendChild(sectionLBLeaderboardBody);
-    sectionLBLeaderboard.appendChild(sectionLBLeaderboardResultsContainer);
-
-    sectionLBFooter.appendChild(sectionLBFooterContent);
-
-    sectionTournamentListBody.appendChild(sectionTournamentListBodyResults);
-    sectionTournamentList.appendChild(sectionTournamentListBody);
-    sectionTournamentList.appendChild(sectionTournamentBackAction);
-    sectionTournamentList.appendChild(sectionTournamentCloseAction);
-
-    sectionTournamentDetailsHeader.appendChild(sectionTournamentDetailsHeaderLabel);
-    sectionTournamentDetailsHeader.appendChild(sectionTournamentDetailsHeaderDate);
-    sectionTournamentDetailsContainer.appendChild(sectionTournamentDetailsHeader);
-    sectionTournamentDetailsContainer.appendChild(sectionTournamentDetailsBackBtn);
-    sectionTournamentDetailsBodyContainer.appendChild(sectionTournamentDetailsBodyImageContainer);
-    sectionTournamentDetailsBodyContainer.appendChild(sectionTournamentDetailsBody);
-    sectionTournamentDetailsContainer.appendChild(sectionTournamentDetailsBodyContainer);
-    sectionTournamentDetailsOptInContainer.appendChild(sectionTournamentDetailsOptInAction);
-    sectionTournamentDetailsContainer.appendChild(sectionTournamentDetailsOptInContainer);
-
-    sectionLBOptInContainer.appendChild(sectionLBOptInAction);
-
-    sectionLB.appendChild(sectionLBHeader);
-    sectionLB.appendChild(sectionLBDetails);
-    sectionLB.appendChild(sectionLBLeaderboard);
-    sectionLB.appendChild(sectionLBMissingMember);
-    sectionLB.appendChild(sectionLBOptInContainer);
-    sectionLB.appendChild(sectionLBFooter);
-    sectionLB.appendChild(sectionTournamentDetailsContainer);
-    sectionLB.appendChild(sectionTournamentList);
+    const template = require('../templates/mainWidget/leaderboard.hbs');
+    sectionLB.innerHTML = template({
+      tournamentsLabel: this.settings.lbWidget.settings.translation.tournaments.label,
+      descriptionLabel: this.settings.lbWidget.settings.translation.global.descriptionLabel,
+      tAndCLabel: this.settings.lbWidget.settings.translation.global.tAndCLabel,
+      enterLabel: this.settings.lbWidget.settings.translation.tournaments.enter,
+      globalCopy: this.settings.lbWidget.settings.translation.global.copy,
+      monthsFull: this.settings.lbWidget.settings.translation.time.monthsFull,
+      daysFull: this.settings.lbWidget.settings.translation.time.daysFull,
+      hoursFull: this.settings.lbWidget.settings.translation.time.hoursFull,
+      minutesFull: this.settings.lbWidget.settings.translation.time.minutesFull,
+      secondsFull: this.settings.lbWidget.settings.translation.time.secondsFull
+    });
 
     return sectionLB;
   };
 
   this.achievementsAreaLayout = function () {
-    const _this = this;
     const sectionACH = document.createElement('div');
+    sectionACH.setAttribute('class', this.settings.lbWidget.settings.navigation.achievements.containerClass + ' cl-main-section-item');
 
-    const sectionACHHeader = document.createElement('div');
-    const sectionACHHeaderLabel = document.createElement('div');
-    const sectionACHHeaderDate = document.createElement('div');
-    const sectionACHHeaderClose = document.createElement('div');
-
-    const sectionACHDetails = document.createElement('div');
-    const sectionACHDetailsInfo = document.createElement('div');
-    const sectionACHDetailsInfoIcon = document.createElement('div');
-    const sectionACHDetailsContentContainer = document.createElement('div');
-    const sectionACHDetailsContentContainerLabel = document.createElement('div');
-    const sectionACHDetailsContentContainerDate = document.createElement('div');
-
-    const sectionACHList = document.createElement('div');
-    const sectionACHListBody = document.createElement('div');
-    const sectionACHListBodyResults = document.createElement('div');
-
-    const sectionAchievementDetailsContainer = document.createElement('div');
-
-    const sectionAchievementDetailsBackBtn = document.createElement('a');
-    const sectionAchievementDetailsBodyContainer = document.createElement('div');
-    const sectionAchievementDetailsBodyImageContainer = document.createElement('div');
-    const sectionAchievementDetailsBody = document.createElement('div');
-
-    const sectionAchievementDetailsOptInContainer = document.createElement('div');
-    const sectionAchievementDetailsOptInAction = document.createElement('a');
-
-    sectionACH.setAttribute('class', _this.settings.lbWidget.settings.navigation.achievements.containerClass + ' cl-main-section-item');
-    sectionACHHeader.setAttribute('class', 'cl-main-widget-ach-header');
-    sectionACHHeaderLabel.setAttribute('class', 'cl-main-widget-ach-header-label');
-    sectionACHHeaderDate.setAttribute('class', 'cl-main-widget-ach-header-date');
-    sectionACHHeaderClose.setAttribute('class', 'cl-main-widget-ach-header-close');
-
-    sectionACHDetails.setAttribute('class', 'cl-main-widget-ach-details');
-    sectionACHDetailsInfo.setAttribute('class', 'cl-main-widget-ach-details-info');
-    sectionACHDetailsInfoIcon.setAttribute('class', 'cl-main-widget-ach-details-info-icon');
-    sectionACHDetailsContentContainer.setAttribute('class', 'cl-main-widget-ach-details-content');
-    sectionACHDetailsContentContainerLabel.setAttribute('class', 'cl-main-widget-ach-details-content-label');
-    sectionACHDetailsContentContainerDate.setAttribute('class', 'cl-main-widget-ach-details-content-date');
-
-    // Leaderboard result container
-    sectionACHList.setAttribute('class', 'cl-main-widget-ach-list');
-    sectionACHListBody.setAttribute('class', 'cl-main-widget-ach-list-body');
-    sectionACHListBodyResults.setAttribute('class', 'cl-main-widget-ach-list-body-res');
-
-    // details section
-    sectionAchievementDetailsContainer.setAttribute('class', 'cl-main-widget-ach-details-container');
-    sectionAchievementDetailsBackBtn.setAttribute('class', 'cl-main-widget-ach-details-back-btn');
-    sectionAchievementDetailsBodyContainer.setAttribute('class', 'cl-main-widget-ach-details-body-container');
-    sectionAchievementDetailsBodyImageContainer.setAttribute('class', 'cl-main-widget-ach-details-body-image-cont');
-    sectionAchievementDetailsBody.setAttribute('class', 'cl-main-widget-ach-details-body');
-    sectionAchievementDetailsOptInContainer.setAttribute('class', 'cl-main-widget-ach-details-optin-container');
-    sectionAchievementDetailsOptInAction.setAttribute('class', 'cl-main-widget-ach-details-optin-action');
-
-    sectionAchievementDetailsOptInAction.innerHTML = _this.settings.lbWidget.settings.translation.tournaments.enter;
-    sectionAchievementDetailsOptInAction.href = 'javascript:void(0);';
-
-    sectionAchievementDetailsContainer.appendChild(sectionAchievementDetailsBackBtn);
-    sectionAchievementDetailsBodyContainer.appendChild(sectionAchievementDetailsBodyImageContainer);
-    sectionAchievementDetailsBodyContainer.appendChild(sectionAchievementDetailsBody);
-    sectionAchievementDetailsContainer.appendChild(sectionAchievementDetailsBodyContainer);
-
-    sectionACHHeader.appendChild(sectionACHHeaderLabel);
-    sectionACHHeader.appendChild(sectionACHHeaderDate);
-    sectionACHHeader.appendChild(sectionACHHeaderClose);
-
-    sectionACHDetailsInfo.appendChild(sectionACHDetailsInfoIcon);
-    sectionACHDetailsContentContainer.appendChild(sectionACHDetailsContentContainerLabel);
-    sectionACHDetailsContentContainer.appendChild(sectionACHDetailsContentContainerDate);
-    sectionACHDetails.appendChild(sectionACHDetailsInfo);
-    sectionACHDetails.appendChild(sectionACHDetailsContentContainer);
-
-    sectionAchievementDetailsOptInContainer.appendChild(sectionAchievementDetailsOptInAction);
-    sectionAchievementDetailsContainer.appendChild(sectionAchievementDetailsOptInContainer);
-
-    sectionACHListBody.appendChild(sectionACHListBodyResults);
-    sectionACHList.appendChild(sectionACHListBody);
-
-    sectionACH.appendChild(sectionACHHeader);
-    sectionACH.appendChild(sectionACHDetails);
-    sectionACH.appendChild(sectionACHList);
-    sectionACH.appendChild(sectionAchievementDetailsContainer);
+    const template = require('../templates/layouts/achievementsAreaLayout.hbs');
+    sectionACH.innerHTML = template({
+      leavePopupTitle: this.settings.lbWidget.settings.translation.achievements.leavePopupTitle,
+      leavePopupDescription: this.settings.lbWidget.settings.translation.achievements.leavePopupDescription,
+      leavePopupActionConfirm: this.settings.lbWidget.settings.translation.achievements.leavePopupConfirm,
+      leavePopupActionCancel: this.settings.lbWidget.settings.translation.achievements.leavePopupClose,
+      descriptionLabel: this.settings.lbWidget.settings.translation.global.descriptionLabel,
+      tAndCLabel: this.settings.lbWidget.settings.translation.global.tAndCLabel,
+      progressLabel: this.settings.lbWidget.settings.translation.achievements.progress,
+      headerLabel: this.settings.lbWidget.settings.translation.achievements.label,
+      globalCopy: this.settings.lbWidget.settings.translation.global.copy,
+      enterLabel: this.settings.lbWidget.settings.translation.achievements.enter
+    });
 
     return sectionACH;
   };
 
   this.rewardsAreaLayout = function () {
-    var _this = this;
-    var sectionRewards = document.createElement('div');
+    const sectionRewards = document.createElement('div');
+    sectionRewards.setAttribute('class', this.settings.lbWidget.settings.navigation.rewards.containerClass + ' cl-main-section-item');
 
-    var sectionRewardsHeader = document.createElement('div');
-    var sectionRewardsHeaderLabel = document.createElement('div');
-    var sectionRewardsHeaderDate = document.createElement('div');
-    var sectionRewardsHeaderClose = document.createElement('div');
-
-    var sectionRewardsDetails = document.createElement('div');
-    var sectionRewardsDetailsInfo = document.createElement('div');
-    var sectionRewardsDetailsInfoIcon = document.createElement('div');
-    var sectionRewardsDetailsContentContainer = document.createElement('div');
-    var sectionRewardsDetailsContentContainerLabel = document.createElement('div');
-    var sectionRewardsDetailsContentContainerDate = document.createElement('div');
-
-    var sectionRewardsList = document.createElement('div');
-    var sectionRewardsListBody = document.createElement('div');
-    var sectionRewardsListBodyResults = document.createElement('div');
-
-    var sectionRewardsFooter = document.createElement('div');
-    var sectionRewardsFooterContent = document.createElement('div');
-
-    var sectionRewardsDetailsContainer = document.createElement('div');
-    var sectionRewardsDetailsHeader = document.createElement('div');
-    var sectionRewardsDetailsHeaderLabel = document.createElement('div');
-    var sectionRewardsDetailsHeaderDate = document.createElement('div');
-    var sectionRewardsDetailsBackBtn = document.createElement('a');
-    var sectionRewardsDetailsBodyContainer = document.createElement('div');
-    var sectionRewardsDetailsBodyImageContainer = document.createElement('div');
-    var sectionRewardsDetailsBody = document.createElement('div');
-    var sectionRewardsWinningsContainer = document.createElement('div');
-    var sectionRewardsWinningsIcon = document.createElement('div');
-    var sectionRewardsWinningsValue = document.createElement('div');
-    var sectionRewardsClaimContainer = document.createElement('div');
-    var sectionRewardsClaimBtn = document.createElement('a');
-
-    sectionRewards.setAttribute('class', _this.settings.lbWidget.settings.navigation.rewards.containerClass + ' cl-main-section-item');
-    sectionRewardsHeader.setAttribute('class', 'cl-main-widget-reward-header');
-    sectionRewardsHeaderLabel.setAttribute('class', 'cl-main-widget-reward-header-label');
-    sectionRewardsHeaderDate.setAttribute('class', 'cl-main-widget-reward-header-date');
-    sectionRewardsHeaderClose.setAttribute('class', 'cl-main-widget-reward-header-close');
-
-    sectionRewardsDetails.setAttribute('class', 'cl-main-widget-reward-details');
-    sectionRewardsDetailsInfo.setAttribute('class', 'cl-main-widget-reward-details-info');
-    sectionRewardsDetailsInfoIcon.setAttribute('class', 'cl-main-widget-reward-details-info-icon');
-    sectionRewardsDetailsContentContainer.setAttribute('class', 'cl-main-widget-reward-details-content');
-    sectionRewardsDetailsContentContainerLabel.setAttribute('class', 'cl-main-widget-reward-details-content-label');
-    sectionRewardsDetailsContentContainerDate.setAttribute('class', 'cl-main-widget-reward-details-content-date');
-
-    // Leaderboard result container
-    sectionRewardsList.setAttribute('class', 'cl-main-widget-reward-list');
-    sectionRewardsListBody.setAttribute('class', 'cl-main-widget-reward-list-body');
-    sectionRewardsListBodyResults.setAttribute('class', 'cl-main-widget-reward-list-body-res');
-
-    // footer
-    sectionRewardsFooter.setAttribute('class', 'cl-main-widget-reward-footer');
-    sectionRewardsFooterContent.setAttribute('class', 'cl-main-widget-reward-footer-content');
-
-    // details section
-    sectionRewardsDetailsContainer.setAttribute('class', 'cl-main-widget-reward-details-container');
-    sectionRewardsDetailsHeader.setAttribute('class', 'cl-main-widget-reward-details-header');
-    sectionRewardsDetailsHeaderLabel.setAttribute('class', 'cl-main-widget-reward-details-header-label');
-    sectionRewardsDetailsHeaderDate.setAttribute('class', 'cl-main-widget-reward-details-header-date');
-    sectionRewardsDetailsBackBtn.setAttribute('class', 'cl-main-widget-reward-details-back-btn');
-    sectionRewardsDetailsBodyContainer.setAttribute('class', 'cl-main-widget-reward-details-body-container');
-    sectionRewardsDetailsBodyImageContainer.setAttribute('class', 'cl-main-widget-reward-details-body-image-cont');
-    sectionRewardsDetailsBody.setAttribute('class', 'cl-main-widget-reward-details-body');
-    sectionRewardsWinningsContainer.setAttribute('class', 'cl-main-widget-reward-winnings-container');
-    sectionRewardsWinningsIcon.setAttribute('class', 'cl-main-widget-reward-winnings-icon');
-    sectionRewardsWinningsValue.setAttribute('class', 'cl-main-widget-reward-winnings-value');
-    sectionRewardsClaimContainer.setAttribute('class', 'cl-main-widget-reward-claim-container');
-    sectionRewardsClaimBtn.setAttribute('class', 'cl-main-widget-reward-claim-btn');
-
-    sectionRewardsHeaderLabel.innerHTML = _this.settings.lbWidget.settings.translation.rewards.label;
-    sectionRewardsFooterContent.innerHTML = _this.settings.lbWidget.settings.translation.global.copy;
-    sectionRewardsClaimBtn.innerHTML = _this.settings.lbWidget.settings.translation.rewards.claim;
-
-    sectionRewardsWinningsContainer.appendChild(sectionRewardsWinningsIcon);
-    sectionRewardsWinningsContainer.appendChild(sectionRewardsWinningsValue);
-    sectionRewardsClaimContainer.appendChild(sectionRewardsClaimBtn);
-
-    sectionRewardsDetailsHeader.appendChild(sectionRewardsDetailsHeaderLabel);
-    sectionRewardsDetailsHeader.appendChild(sectionRewardsDetailsHeaderDate);
-    sectionRewardsDetailsContainer.appendChild(sectionRewardsDetailsHeader);
-    sectionRewardsDetailsContainer.appendChild(sectionRewardsDetailsBackBtn);
-    sectionRewardsDetailsBodyContainer.appendChild(sectionRewardsDetailsBodyImageContainer);
-    sectionRewardsDetailsBodyContainer.appendChild(sectionRewardsDetailsBody);
-    sectionRewardsDetailsBodyContainer.appendChild(sectionRewardsWinningsContainer);
-    sectionRewardsDetailsContainer.appendChild(sectionRewardsDetailsBodyContainer);
-    sectionRewardsDetailsContainer.appendChild(sectionRewardsClaimContainer);
-
-    sectionRewardsHeader.appendChild(sectionRewardsHeaderLabel);
-    sectionRewardsHeader.appendChild(sectionRewardsHeaderDate);
-    sectionRewardsHeader.appendChild(sectionRewardsHeaderClose);
-
-    sectionRewardsDetailsInfo.appendChild(sectionRewardsDetailsInfoIcon);
-    sectionRewardsDetailsContentContainer.appendChild(sectionRewardsDetailsContentContainerLabel);
-    sectionRewardsDetailsContentContainer.appendChild(sectionRewardsDetailsContentContainerDate);
-    sectionRewardsDetails.appendChild(sectionRewardsDetailsInfo);
-    sectionRewardsDetails.appendChild(sectionRewardsDetailsContentContainer);
-
-    sectionRewardsListBody.appendChild(sectionRewardsListBodyResults);
-    sectionRewardsList.appendChild(sectionRewardsListBody);
-
-    sectionRewardsFooter.appendChild(sectionRewardsFooterContent);
-
-    sectionRewards.appendChild(sectionRewardsHeader);
-    sectionRewards.appendChild(sectionRewardsDetails);
-    sectionRewards.appendChild(sectionRewardsList);
-    sectionRewards.appendChild(sectionRewardsFooter);
-    sectionRewards.appendChild(sectionRewardsDetailsContainer);
+    const template = require('../templates/layouts/awardsAreaLayout.hbs');
+    sectionRewards.innerHTML = template({
+      headerLabel: this.settings.lbWidget.settings.translation.rewards.label,
+      globalCopy: this.settings.lbWidget.settings.translation.global.copy,
+      claimBtn: this.settings.lbWidget.settings.translation.rewards.claim
+    });
 
     return sectionRewards;
   };
 
   this.inboxAreaLayout = function () {
-    var _this = this;
-    var sectionInbox = document.createElement('div');
+    const sectionInbox = document.createElement('div');
+    sectionInbox.setAttribute('class', this.settings.lbWidget.settings.navigation.inbox.containerClass + ' cl-main-section-item');
 
-    var sectionInboxHeader = document.createElement('div');
-    var sectionInboxHeaderLabel = document.createElement('div');
-    var sectionInboxHeaderDate = document.createElement('div');
-    var sectionInboxHeaderClose = document.createElement('div');
-
-    var sectionInboxDetails = document.createElement('div');
-    var sectionInboxDetailsInfo = document.createElement('div');
-    var sectionInboxDetailsInfoIcon = document.createElement('div');
-    var sectionInboxDetailsContentContainer = document.createElement('div');
-    var sectionInboxDetailsContentContainerLabel = document.createElement('div');
-    var sectionInboxDetailsContentContainerDate = document.createElement('div');
-
-    var sectionInboxList = document.createElement('div');
-    var sectionInboxListBody = document.createElement('div');
-    var sectionInboxListBodyResults = document.createElement('div');
-
-    var sectionInboxDetailsContainer = document.createElement('div');
-    // var sectionInboxDetailsHeader = document.createElement('div');
-    // var sectionInboxDetailsHeaderLabel = document.createElement('div');
-    // var sectionInboxDetailsHeaderDate = document.createElement('div');
-    var sectionInboxDetailsBackBtn = document.createElement('a');
-    var sectionInboxDetailsBodyContainer = document.createElement('div');
-    var sectionInboxDetailsBody = document.createElement('div');
-
-    sectionInbox.setAttribute('class', _this.settings.lbWidget.settings.navigation.inbox.containerClass + ' cl-main-section-item');
-    sectionInboxHeader.setAttribute('class', 'cl-main-widget-inbox-header');
-    sectionInboxHeaderLabel.setAttribute('class', 'cl-main-widget-inbox-header-label');
-    sectionInboxHeaderDate.setAttribute('class', 'cl-main-widget-inbox-header-date');
-    sectionInboxHeaderClose.setAttribute('class', 'cl-main-widget-inbox-header-close');
-
-    sectionInboxDetails.setAttribute('class', 'cl-main-widget-inbox-details');
-    sectionInboxDetailsInfo.setAttribute('class', 'cl-main-widget-inbox-details-info');
-    sectionInboxDetailsInfoIcon.setAttribute('class', 'cl-main-widget-inbox-details-info-icon');
-    sectionInboxDetailsContentContainer.setAttribute('class', 'cl-main-widget-inbox-details-content');
-    sectionInboxDetailsContentContainerLabel.setAttribute('class', 'cl-main-widget-inbox-details-content-label');
-    sectionInboxDetailsContentContainerDate.setAttribute('class', 'cl-main-widget-inbox-details-content-date');
-
-    // Leaderboard result container
-    sectionInboxList.setAttribute('class', 'cl-main-widget-inbox-list');
-    sectionInboxListBody.setAttribute('class', 'cl-main-widget-inbox-list-body');
-    sectionInboxListBodyResults.setAttribute('class', 'cl-main-widget-inbox-list-body-res');
-
-    // details section
-    sectionInboxDetailsContainer.setAttribute('class', 'cl-main-widget-inbox-details-container');
-    // sectionInboxDetailsHeader.setAttribute('class', 'cl-main-widget-inbox-details-header');
-    // sectionInboxDetailsHeaderLabel.setAttribute('class', 'cl-main-widget-inbox-details-header-label');
-    // sectionInboxDetailsHeaderDate.setAttribute('class', 'cl-main-widget-inbox-details-header-date');
-    sectionInboxDetailsBackBtn.setAttribute('class', 'cl-main-widget-inbox-details-back-btn');
-    sectionInboxDetailsBodyContainer.setAttribute('class', 'cl-main-widget-inbox-details-body-container');
-    sectionInboxDetailsBody.setAttribute('class', 'cl-main-widget-inbox-details-body');
-
-    sectionInboxHeader.appendChild(sectionInboxHeaderLabel);
-    sectionInboxHeader.appendChild(sectionInboxHeaderDate);
-    sectionInboxHeader.appendChild(sectionInboxHeaderClose);
-
-    sectionInboxDetailsInfo.appendChild(sectionInboxDetailsInfoIcon);
-    sectionInboxDetailsContentContainer.appendChild(sectionInboxDetailsContentContainerLabel);
-    sectionInboxDetailsContentContainer.appendChild(sectionInboxDetailsContentContainerDate);
-    sectionInboxDetails.appendChild(sectionInboxDetailsInfo);
-    sectionInboxDetails.appendChild(sectionInboxDetailsContentContainer);
-
-    sectionInboxListBody.appendChild(sectionInboxListBodyResults);
-    sectionInboxList.appendChild(sectionInboxListBody);
-
-    // sectionInboxDetailsHeader.appendChild(sectionInboxDetailsHeaderLabel);
-    // sectionInboxDetailsHeader.appendChild(sectionInboxDetailsHeaderDate);
-    // sectionInboxDetailsContainer.appendChild(sectionInboxDetailsHeader);
-    sectionInboxDetailsContainer.appendChild(sectionInboxDetailsBackBtn);
-    sectionInboxDetailsBodyContainer.appendChild(sectionInboxDetailsBody);
-    sectionInboxDetailsContainer.appendChild(sectionInboxDetailsBodyContainer);
-
-    sectionInbox.appendChild(sectionInboxHeader);
-    sectionInbox.appendChild(sectionInboxDetails);
-    sectionInbox.appendChild(sectionInboxList);
-    sectionInbox.appendChild(sectionInboxDetailsContainer);
+    const template = require('../templates/layouts/inboxAreaLayout.hbs');
+    sectionInbox.innerHTML = template({
+      headerLabel: this.settings.lbWidget.settings.translation.messages.label,
+      globalCopy: this.settings.lbWidget.settings.translation.global.copy
+    });
 
     return sectionInbox;
   };
 
   this.missionsAreaLayout = function () {
-    const _this = this;
     const sectionMissions = document.createElement('div');
+    sectionMissions.setAttribute('class', this.settings.lbWidget.settings.navigation.missions.containerClass + ' cl-main-section-item');
 
-    const sectionMissionsHeader = document.createElement('div');
-    const sectionMissionsHeaderLabel = document.createElement('div');
-    const sectionMissionsHeaderDate = document.createElement('div');
-    const sectionMissionsHeaderClose = document.createElement('div');
-
-    const sectionMissionsDetails = document.createElement('div');
-    const sectionMissionsDetailsInfo = document.createElement('div');
-    const sectionMissionsDetailsInfoIcon = document.createElement('div');
-    const sectionMissionsDetailsContentContainer = document.createElement('div');
-    const sectionMissionsDetailsContentContainerLabel = document.createElement('div');
-    const sectionMissionsDetailsContentContainerDate = document.createElement('div');
-
-    const sectionMissionsList = document.createElement('div');
-    const sectionMissionsListBody = document.createElement('div');
-    const sectionMissionsListBodyResults = document.createElement('div');
-
-    const sectionMissionsFooter = document.createElement('div');
-    const sectionMissionsFooterContent = document.createElement('div');
-
-    const sectionMissionsDetailsContainer = document.createElement('div');
-    const sectionMissionsDetailsHeader = document.createElement('div');
-    const sectionMissionsDetailsHeaderLabel = document.createElement('div');
-    const sectionMissionsDetailsHeaderDate = document.createElement('div');
-    const sectionMissionsDetailsBackBtn = document.createElement('a');
-    const sectionMissionsDetailsBodyContainer = document.createElement('div');
-    const sectionMissionsDetailsBody = document.createElement('div');
-
-    const sectionMissionsGraph = document.createElement('div');
-    const graphImage = document.createElement('div');
-
-    graphImage.setAttribute('class', 'cl-main-widget-missions-graph-image');
-
-    sectionMissionsGraph.setAttribute('id', 'graph-container');
-    sectionMissionsGraph.setAttribute('class', 'cl-main-widget-missions-graph-container');
-
-    sectionMissions.setAttribute('class', _this.settings.lbWidget.settings.navigation.missions.containerClass + ' cl-main-section-item');
-    sectionMissionsHeader.setAttribute('class', 'cl-main-widget-missions-header');
-    sectionMissionsHeaderLabel.setAttribute('class', 'cl-main-widget-missions-header-label');
-    sectionMissionsHeaderDate.setAttribute('class', 'cl-main-widget-missions-header-date');
-    sectionMissionsHeaderClose.setAttribute('class', 'cl-main-widget-missions-header-close');
-
-    sectionMissionsDetails.setAttribute('class', 'cl-main-widget-missions-details');
-    sectionMissionsDetailsInfo.setAttribute('class', 'cl-main-widget-missions-details-info');
-    sectionMissionsDetailsInfoIcon.setAttribute('class', 'cl-main-widget-missions-details-info-icon');
-    sectionMissionsDetailsContentContainer.setAttribute('class', 'cl-main-widget-missions-details-content');
-    sectionMissionsDetailsContentContainerLabel.setAttribute('class', 'cl-main-widget-missions-details-content-label');
-    sectionMissionsDetailsContentContainerDate.setAttribute('class', 'cl-main-widget-missions-details-content-date');
-
-    // Leaderboard result container
-    sectionMissionsList.setAttribute('class', 'cl-main-widget-missions-list');
-    sectionMissionsListBody.setAttribute('class', 'cl-main-widget-missions-list-body');
-    sectionMissionsListBodyResults.setAttribute('class', 'cl-main-widget-missions-list-body-res');
-
-    // footer
-    sectionMissionsFooter.setAttribute('class', 'cl-main-widget-missions-footer');
-    sectionMissionsFooterContent.setAttribute('class', 'cl-main-widget-missions-footer-content');
-
-    // details section
-    sectionMissionsDetailsContainer.setAttribute('class', 'cl-main-widget-missions-details-container');
-    sectionMissionsDetailsHeader.setAttribute('class', 'cl-main-widget-missions-details-header');
-    sectionMissionsDetailsHeaderLabel.setAttribute('class', 'cl-main-widget-missions-details-header-label');
-    sectionMissionsDetailsHeaderDate.setAttribute('class', 'cl-main-widget-missions-details-header-date');
-    sectionMissionsDetailsBackBtn.setAttribute('class', 'cl-main-widget-missions-details-back-btn');
-    sectionMissionsDetailsBodyContainer.setAttribute('class', 'cl-main-widget-missions-details-body-container');
-    sectionMissionsDetailsBody.setAttribute('class', 'cl-main-widget-missions-details-body');
-
-    sectionMissionsHeaderLabel.innerHTML = _this.settings.lbWidget.settings.translation.missions.label;
-    sectionMissionsFooterContent.innerHTML = _this.settings.lbWidget.settings.translation.global.copy;
-
-    sectionMissionsHeader.appendChild(sectionMissionsHeaderLabel);
-    sectionMissionsHeader.appendChild(sectionMissionsHeaderDate);
-    sectionMissionsHeader.appendChild(sectionMissionsHeaderClose);
-
-    sectionMissionsDetailsInfo.appendChild(sectionMissionsDetailsInfoIcon);
-    sectionMissionsDetailsContentContainer.appendChild(sectionMissionsDetailsContentContainerLabel);
-    sectionMissionsDetailsContentContainer.appendChild(sectionMissionsDetailsContentContainerDate);
-    sectionMissionsDetails.appendChild(sectionMissionsDetailsInfo);
-    sectionMissionsDetails.appendChild(sectionMissionsDetailsContentContainer);
-
-    sectionMissionsListBody.appendChild(sectionMissionsListBodyResults);
-    sectionMissionsList.appendChild(sectionMissionsListBody);
-
-    sectionMissionsDetailsHeader.appendChild(sectionMissionsDetailsHeaderLabel);
-    sectionMissionsDetailsHeader.appendChild(sectionMissionsDetailsHeaderDate);
-    sectionMissionsDetailsContainer.appendChild(sectionMissionsDetailsHeader);
-    sectionMissionsDetailsContainer.appendChild(sectionMissionsDetailsBackBtn);
-    sectionMissionsDetailsBodyContainer.appendChild(sectionMissionsDetailsBody);
-    sectionMissionsDetailsBodyContainer.appendChild(graphImage);
-    sectionMissionsDetailsBodyContainer.appendChild(sectionMissionsGraph);
-    sectionMissionsDetailsContainer.appendChild(sectionMissionsDetailsBodyContainer);
-
-    sectionMissionsFooter.appendChild(sectionMissionsFooterContent);
-
-    sectionMissions.appendChild(sectionMissionsHeader);
-    sectionMissions.appendChild(sectionMissionsDetails);
-    sectionMissions.appendChild(sectionMissionsList);
-    sectionMissions.appendChild(sectionMissionsFooter);
-    sectionMissions.appendChild(sectionMissionsDetailsContainer);
+    const template = require('../templates/layouts/missionsAreaLayout.hbs');
+    sectionMissions.innerHTML = template({
+      headerLabel: this.settings.lbWidget.settings.translation.missions.label,
+      globalCopy: this.settings.lbWidget.settings.translation.global.copy,
+      descriptionLabel: this.settings.lbWidget.settings.translation.global.descriptionLabel,
+      tAndCLabel: this.settings.lbWidget.settings.translation.global.tAndCLabel,
+      prizeLabel: this.settings.lbWidget.settings.translation.missions.prizeLabel + ':',
+      mapHeaderLabel: this.settings.lbWidget.settings.translation.missions.mapLabel
+    });
 
     return sectionMissions;
   };
 
+  this.dashboardAreaLayout = function () {
+    const sectionDashboard = document.createElement('div');
+    sectionDashboard.setAttribute('class', this.settings.lbWidget.settings.navigation.dashboard.containerClass + ' cl-main-section-item');
+
+    const template = require('../templates/layouts/dashboardAreaLayout.hbs');
+    sectionDashboard.innerHTML = template({
+      isInstantWins: this.settings.lbWidget.settings.instantWins.enable,
+      isAchievements: this.settings.lbWidget.settings.navigation.achievements.enable,
+      isTournaments: this.settings.lbWidget.settings.navigation.tournaments.enable,
+      seeAllLabel: this.settings.lbWidget.settings.translation.dashboard.seeAll,
+      headerLabel: this.settings.lbWidget.settings.translation.dashboard.label,
+      tournamentsTitle: this.settings.lbWidget.settings.translation.dashboard.tournamentsTitle,
+      achievementsTitle: this.settings.lbWidget.settings.translation.dashboard.achievementsTitle,
+      instantWinsTitle: this.settings.lbWidget.settings.translation.dashboard.instantWinsTitle,
+      leavePopupTitle: this.settings.lbWidget.settings.translation.achievements.leavePopupTitle,
+      leavePopupDescription: this.settings.lbWidget.settings.translation.achievements.leavePopupDescription,
+      leavePopupActionConfirm: this.settings.lbWidget.settings.translation.achievements.leavePopupConfirm,
+      leavePopupActionCancel: this.settings.lbWidget.settings.translation.achievements.leavePopupClose,
+      instantWinsWheelTitle: this.settings.lbWidget.settings.translation.dashboard.singleWheelTitle,
+      instantWinsWheelButton: this.settings.lbWidget.settings.translation.dashboard.singleWheelButton,
+      instantWinsCardsTitle: this.settings.lbWidget.settings.translation.dashboard.scratchcardsTitle,
+      instantWinsCardsButton: this.settings.lbWidget.settings.translation.dashboard.scratchcardsButton
+    });
+
+    return sectionDashboard;
+  };
+
   this.leaderboardHeader = function () {
-    var _this = this;
-    var rankCol = document.createElement('div');
-    var iconCol = document.createElement('div');
-    var nameCol = document.createElement('div');
-    var growthCol = document.createElement('div');
-    var pointsCol = document.createElement('div');
+    addClass(this.settings.leaderboard.header, 'cl-reward-enabled');
 
-    rankCol.setAttribute('class', 'cl-rank-col cl-col');
-    iconCol.setAttribute('class', 'cl-icon-col cl-col');
-    nameCol.setAttribute('class', 'cl-name-col cl-col');
-    growthCol.setAttribute('class', 'cl-growth-col cl-col');
-    pointsCol.setAttribute('class', 'cl-points-col cl-col');
+    const rewardEnabled = typeof this.settings.lbWidget.settings.competition.activeContest !== 'undefined' &&
+      this.settings.lbWidget.settings.competition.activeContest !== null &&
+      typeof this.settings.lbWidget.settings.competition.activeContest.rewards !== 'undefined' &&
+      this.settings.lbWidget.settings.competition.activeContest.rewards.length > 0;
 
-    rankCol.innerHTML = _this.settings.lbWidget.settings.translation.leaderboard.rank;
-    iconCol.innerHTML = '';
-    nameCol.innerHTML = _this.settings.lbWidget.settings.translation.leaderboard.name;
-    growthCol.innerHTML = '';
-    pointsCol.innerHTML = _this.settings.lbWidget.settings.translation.leaderboard.points;
-
-    _this.settings.leaderboard.header.appendChild(rankCol);
-    _this.settings.leaderboard.header.appendChild(iconCol);
-    _this.settings.leaderboard.header.appendChild(nameCol);
-    _this.settings.leaderboard.header.appendChild(growthCol);
-    _this.settings.leaderboard.header.appendChild(pointsCol);
-
-    var rewardCol = document.createElement('div');
-    var rewardEnabled = (typeof _this.settings.lbWidget.settings.competition.activeContest !== 'undefined' && _this.settings.lbWidget.settings.competition.activeContest !== null && typeof _this.settings.lbWidget.settings.competition.activeContest.rewards !== 'undefined' && _this.settings.lbWidget.settings.competition.activeContest.rewards.length > 0);
-    rewardCol.setAttribute('class', 'cl-reward-col cl-col' + (rewardEnabled ? ' cl-col-reward-enabled' : ''));
-    rewardCol.innerHTML = _this.settings.lbWidget.settings.translation.leaderboard.prize;
-
-    addClass(_this.settings.leaderboard.header, 'cl-reward-enabled');
-
-    _this.settings.leaderboard.header.appendChild(rewardCol);
+    const template = require('../templates/mainWidget/leaderboardHeader.hbs');
+    this.settings.leaderboard.header.innerHTML = template({
+      rewardEnabled: rewardEnabled,
+      rankColLabel: this.settings.lbWidget.settings.translation.leaderboard.rank,
+      nameColLabel: this.settings.lbWidget.settings.translation.leaderboard.name,
+      pointsColLabel: this.settings.lbWidget.settings.translation.leaderboard.points,
+      rewardColLabel: this.settings.lbWidget.settings.translation.leaderboard.prize
+    });
   };
 
   this.leaderboardRow = function (rank, icon, name, change, growth, points, reward, count, memberFound) {
-    var _this = this;
-    var cellWrapper = document.createElement('div');
-    var rankCel = document.createElement('div');
-    var rankCelValue = document.createElement('div');
-    var iconCel = document.createElement('div');
-    var iconCelImg = new Image();
-    var nameCel = document.createElement('div');
-    var growthCel = document.createElement('div');
-    var pointsCel = document.createElement('div');
-    var memberFoundClass = (memberFound) ? ' cl-lb-member-row' : '';
-
+    const cellWrapper = document.createElement('div');
+    const memberFoundClass = (memberFound) ? ' cl-lb-member-row' : '';
     cellWrapper.setAttribute('class', 'cl-lb-row cl-lb-rank-' + rank + ' cl-lb-count-' + count + memberFoundClass);
-    rankCel.setAttribute('class', 'cl-rank-col cl-col cl-rank-' + rank);
-    rankCelValue.setAttribute('class', 'cl-rank-col-value');
-    iconCel.setAttribute('class', 'cl-icon-col cl-col');
-    iconCelImg.setAttribute('class', 'cl-icon-col-img');
-    nameCel.setAttribute('class', 'cl-name-col cl-col');
-    growthCel.setAttribute('class', 'cl-growth-col cl-col');
-    pointsCel.setAttribute('class', 'cl-points-col cl-col');
-
     cellWrapper.dataset.rank = rank;
 
-    rankCelValue.innerHTML = rank;
-    nameCel.innerHTML = name;
-    growthCel.dataset.growth = (change < 0) ? 'down' : (change > 0 ? 'up' : 'same');
-    growthCel.dataset.change = change;
-    growthCel.innerHTML = growth;
-    pointsCel.innerHTML = points;
+    const datasetGrowth = (change < 0) ? 'down' : (change > 0 ? 'up' : 'same');
+    const datasetChange = change;
 
-    if (icon.length > 0) {
-      iconCelImg.src = icon;
-      iconCelImg.alt = name;
-    } else {
-      iconCelImg.style.display = 'none';
-    }
+    const rewardEnabled = (typeof this.settings.lbWidget.settings.competition.activeContest !== 'undefined' && this.settings.lbWidget.settings.competition.activeContest !== null && typeof this.settings.lbWidget.settings.competition.activeContest.rewards !== 'undefined' && this.settings.lbWidget.settings.competition.activeContest.rewards.length > 0);
 
-    rankCel.appendChild(rankCelValue);
-    cellWrapper.appendChild(rankCel);
-    iconCel.appendChild(iconCelImg);
-    cellWrapper.appendChild(iconCel);
-    cellWrapper.appendChild(nameCel);
-    cellWrapper.appendChild(growthCel);
-    cellWrapper.appendChild(pointsCel);
+    const rewardValue = (typeof reward !== 'undefined' && reward !== null) ? reward : '';
 
-    var rewardCel = document.createElement('div');
-    var rewardEnabled = (typeof _this.settings.lbWidget.settings.competition.activeContest !== 'undefined' && _this.settings.lbWidget.settings.competition.activeContest !== null && typeof _this.settings.lbWidget.settings.competition.activeContest.rewards !== 'undefined' && _this.settings.lbWidget.settings.competition.activeContest.rewards.length > 0);
-    rewardCel.setAttribute('class', 'cl-reward-col cl-col' + (rewardEnabled ? ' cl-col-reward-enabled' : ''));
-    rewardCel.innerHTML = (typeof reward !== 'undefined' && reward !== null && reward !== '') ? reward : 0;
-
-    addClass(cellWrapper, 'cl-reward-enabled');
-
-    cellWrapper.appendChild(rewardCel);
+    const template = require('../templates/mainWidget/leaderboardRow.hbs');
+    cellWrapper.innerHTML = template({
+      rank: rank,
+      name: name,
+      icon: icon,
+      datasetGrowth: datasetGrowth,
+      datasetChange: datasetChange,
+      growth: growth,
+      points: points,
+      rewardEnabled: rewardEnabled,
+      rewardEnabledClass: 'cl-col-reward-enabled',
+      rewardValue: rewardValue
+    });
 
     return cellWrapper;
   };
 
   this.leaderboardRowUpdate = function (rank, icon, name, change, growth, points, reward, count, memberFound, onMissing) {
-    var _this = this;
-    var cellRow = query(_this.settings.leaderboard.container, '.cl-lb-rank-' + rank + '.cl-lb-count-' + count);
+    const _this = this;
+    const cellRow = query(_this.settings.leaderboard.container, '.cl-lb-rank-' + rank + '.cl-lb-count-' + count);
 
     if (cellRow === null) {
-      onMissing(rank, icon, name, change, growth, points, reward, count, memberFound);
+      onMissing(rank, name ? name[0] : '', name, change, growth, points, reward, count, memberFound);
     } else {
-      var rankCel = query(cellRow, '.cl-rank-col-value');
-      var iconCel = query(cellRow, '.cl-icon-col-img');
-      var nameCel = query(cellRow, '.cl-name-col');
-      var growthCel = query(cellRow, '.cl-growth-col');
-      var pointsCel = query(cellRow, '.cl-points-col');
-      var memberFoundClass = 'cl-lb-member-row';
-      var rowHasClass = hasClass(cellRow, memberFoundClass);
+      const rankCel = query(cellRow, '.cl-rank-col-value');
+      const iconCel = query(cellRow, '.cl-icon-col-img');
+      const nameCel = query(cellRow, '.cl-name-col');
+      const growthCel = query(cellRow, '.cl-growth-col');
+      const pointsCel = query(cellRow, '.cl-points-col');
+      const memberFoundClass = 'cl-lb-member-row';
+      const rowHasClass = hasClass(cellRow, memberFoundClass);
 
       if (count > 0 && !hasClass(cellRow, 'cl-shared-rank')) {
         addClass(cellRow, 'cl-shared-rank');
@@ -1032,29 +732,27 @@ export const MainWidget = function (options) {
 
       pointsCel.innerHTML = points;
 
-      if (icon.length > 0) {
-        iconCel.src = icon;
-        iconCel.alt = name;
-        iconCel.style.display = 'block';
-      } else {
-        iconCel.style.display = 'none';
-      }
+      iconCel.innerText = name ? name[0] : '';
 
       if (typeof _this.settings.lbWidget.settings.competition.activeContest !== 'undefined' && _this.settings.lbWidget.settings.competition.activeContest !== null && typeof _this.settings.lbWidget.settings.competition.activeContest.rewards !== 'undefined' && _this.settings.lbWidget.settings.competition.activeContest.rewards.length > 0) {
-        var rewardCel = query(cellRow, '.cl-reward-col');
+        const rewardCel = query(cellRow, '.cl-reward-col');
         if (rewardCel !== null) {
           rewardCel.innerHTML = (typeof reward !== 'undefined' && reward !== null) ? reward : '';
+        }
+      } else {
+        const rewardCel = query(cellRow, '.cl-reward-col');
+        if (rewardCel !== null) {
+          rewardCel.innerHTML = '';
         }
       }
     }
   };
 
   this.populateLeaderboardResultsWithDefaultEntries = function (clearPrize = false) {
-    var _this = this;
-    var topResults = [];
-    var remainingResults = [];
+    const topResults = [];
+    const remainingResults = [];
 
-    for (let i = 0; i < _this.settings.leaderboard.topResultSize; i++) {
+    for (let i = 0; i < this.settings.leaderboard.topResultSize; i++) {
       const rank = i + 1;
 
       topResults.push({
@@ -1067,12 +765,12 @@ export const MainWidget = function (options) {
     }
 
     const emptyListLength = (
-      _this.settings.lbWidget.settings.leaderboard.fullLeaderboardSize < _this.settings.leaderboard.defaultEmptyList
+      this.settings.lbWidget.settings.leaderboard.fullLeaderboardSize < this.settings.leaderboard.defaultEmptyList
     )
-      ? _this.settings.lbWidget.settings.leaderboard.fullLeaderboardSize + 1
-      : _this.settings.leaderboard.defaultEmptyList;
+      ? this.settings.lbWidget.settings.leaderboard.fullLeaderboardSize + 1
+      : this.settings.leaderboard.defaultEmptyList;
 
-    for (let s = _this.settings.leaderboard.topResultSize; s < emptyListLength; s++) {
+    for (let s = this.settings.leaderboard.topResultSize; s < emptyListLength; s++) {
       const rank = s + 1;
 
       remainingResults.push({
@@ -1084,14 +782,14 @@ export const MainWidget = function (options) {
       });
     }
 
-    _this.updateLeaderboardTopResults(topResults, clearPrize);
-    _this.updateLeaderboardResults(remainingResults, clearPrize);
+    this.updateLeaderboardTopResults(topResults, clearPrize);
+    this.updateLeaderboardResults(remainingResults, clearPrize);
   };
 
   this.updateLeaderboardTopResults = function (topResults, clearPrize = false) {
-    var _this = this;
-    var rankCheck = [];
-    var cleanupRankCheck = [];
+    const _this = this;
+    const rankCheck = [];
+    const cleanupRankCheck = [];
 
     // cleanup
     mapObject(topResults, function (lb) {
@@ -1102,38 +800,34 @@ export const MainWidget = function (options) {
     });
 
     objectIterator(query(_this.settings.leaderboard.topResults, '.cl-lb-row'), function (obj) {
-      var rank = parseInt(obj.dataset.rank);
+      const rank = parseInt(obj.dataset.rank);
       if (cleanupRankCheck.indexOf(rank) === -1 && rank > _this.settings.leaderboard.defaultEmptyList) {
         remove(obj);
       }
     });
 
     mapObject(topResults, function (lb) {
-      let memberId = '';
       let memberNames = '';
       let memberLbName = '';
       if (lb.members && lb.members.length) {
-        memberId = lb.members[0].memberId;
         memberNames = lb.members.map((m) => m.name);
         memberLbName = memberNames.join();
       } else {
-        memberId = lb.memberId;
         memberLbName = lb.name;
       }
-      var count = 0;
-      var icon = _this.settings.lbWidget.populateIdenticonBase64Image(memberId);
-      const memberFound = lb.members && lb.members.findIndex(m => m.memberRefId === _this.settings.lbWidget.settings.memberRefId) !== -1;
+      let count = 0;
+      const memberFound = lb.members && lb.members.findIndex(m => m.memberRefId === _this.settings.lbWidget.settings.member.memberRefId) !== -1;
 
-      var memberName = (memberFound) ? _this.settings.lbWidget.settings.translation.leaderboard.you : memberLbName;
-      var memberNameLength = _this.settings.lbWidget.settings.memberNameLength;
-      var reward = clearPrize ? '' : _this.getReward(lb.rank);
-      var change = (typeof lb.change === 'undefined') ? 0 : lb.change;
-      var growthType = (change < 0) ? 'down' : (change > 0 ? 'up' : 'same');
-      var growthIcon = "<span class='cl-growth-icon cl-growth-" + growthType + "'></span>";
-      var formattedPoints = _this.settings.lbWidget.settings.leaderboard.pointsFormatter(lb.score);
+      let memberName = (memberFound) ? _this.settings.lbWidget.settings.translation.leaderboard.you : memberLbName;
+      const memberNameLength = _this.settings.lbWidget.settings.memberNameLength;
+      const reward = clearPrize ? '' : _this.getReward(lb.rank);
+      const change = (typeof lb.change === 'undefined') ? 0 : lb.change;
+      const growthType = (change < 0) ? 'down' : (change > 0 ? 'up' : 'same');
+      const growthIcon = "<span class='cl-growth-icon cl-growth-" + growthType + "'></span>";
+      const formattedPoints = _this.settings.lbWidget.settings.leaderboard.pointsFormatter(lb.score);
 
       if (rankCheck.indexOf(lb.rank) !== -1) {
-        for (var rc = 0; rc < rankCheck.length; rc++) {
+        for (let rc = 0; rc < rankCheck.length; rc++) {
           if (lb.rank === rankCheck[rc]) {
             count++;
           }
@@ -1146,7 +840,7 @@ export const MainWidget = function (options) {
 
       _this.leaderboardRowUpdate(
         lb.rank,
-        icon, // icon
+        memberName ? memberName[0] : '', // icon
         memberName,
         change,
         growthIcon, // growth
@@ -1155,8 +849,8 @@ export const MainWidget = function (options) {
         count,
         memberFound,
         function (rank, icon, name, change, growth, points, reward, count, memberFound) {
-          var newRow = _this.leaderboardRow(rank, icon, name, change, growth, points, reward, count, memberFound);
-          var prevCellRow = query(_this.settings.leaderboard.container, '.cl-lb-rank-' + rank + '.cl-lb-count-' + (count - 1));
+          const newRow = _this.leaderboardRow(rank, name ? name[0] : '', name, change, growth, points, reward, count, memberFound);
+          const prevCellRow = query(_this.settings.leaderboard.container, '.cl-lb-rank-' + rank + '.cl-lb-count-' + (count - 1));
 
           if (prevCellRow !== null && typeof prevCellRow.length === 'undefined') {
             appendNext(prevCellRow, newRow);
@@ -1171,8 +865,8 @@ export const MainWidget = function (options) {
   };
 
   this.getReward = function (rank) {
-    var _this = this;
-    var rewardResponse = [];
+    const _this = this;
+    const rewardResponse = [];
 
     if (typeof _this.settings.lbWidget.settings.competition.activeContest !== 'undefined' && _this.settings.lbWidget.settings.competition.activeContest !== null) {
       mapObject(_this.settings.lbWidget.settings.competition.activeContest.rewards, function (reward) {
@@ -1193,22 +887,6 @@ export const MainWidget = function (options) {
         } else if (rank !== 0 && parseInt(reward.rewardRank) === rank) {
           rewardResponse.push(_this.settings.lbWidget.settings.partialFunctions.rewardFormatter(reward));
         }
-
-        // if (rank !== 0 && reward.rewardRank.indexOf(rank) !== -1) {
-        //   rewardResponse.push(_this.settings.lbWidget.settings.partialFunctions.rewardFormatter(reward));
-        // } else if (reward.rewardRank.indexOf('-') !== -1) {
-        //   const rewardRankArr = reward.rewardRank.split(',');
-        //   rewardRankArr.forEach(r => {
-        //     const idx = r.indexOf('-');
-        //     if (idx !== -1) {
-        //       const start = parseInt(r);
-        //       const end = parseInt(r.substring(idx + 1));
-        //       if (rank > start && rank < end) {
-        //         rewardResponse.push(_this.settings.lbWidget.settings.partialFunctions.rewardFormatter(reward));
-        //       }
-        //     }
-        //   });
-        // }
       });
     }
 
@@ -1216,9 +894,9 @@ export const MainWidget = function (options) {
   };
 
   this.updateLeaderboardResults = function (remainingResults, clearPrize = false) {
-    var _this = this;
-    var rankCheck = [];
-    var cleanupRankCheck = [];
+    const _this = this;
+    const rankCheck = [];
+    const cleanupRankCheck = [];
 
     // cleanup
     mapObject(remainingResults, function (lb) {
@@ -1229,37 +907,34 @@ export const MainWidget = function (options) {
     });
 
     objectIterator(query(_this.settings.leaderboard.container, '.cl-lb-row'), function (obj) {
-      var rank = parseInt(obj.dataset.rank);
+      const rank = parseInt(obj.dataset.rank);
       if (cleanupRankCheck.indexOf(rank) === -1 && (rank > _this.settings.leaderboard.defaultEmptyList || rank === 0)) {
         remove(obj);
       }
     });
 
     mapObject(remainingResults, function (lb) {
-      let memberId = '';
       let memberNames = '';
       let memberLbName = '';
       if (lb.members && lb.members.length) {
-        memberId = lb.members[0].memberId;
         memberNames = lb.members.map((m) => m.name);
         memberLbName = memberNames.join();
       } else {
-        memberId = lb.memberId;
         memberLbName = lb.name;
       }
-      var count = 0;
-      var icon = _this.settings.lbWidget.populateIdenticonBase64Image(memberId);
-      const memberFound = lb.members && lb.members.findIndex(m => m.memberRefId === _this.settings.lbWidget.settings.memberRefId) !== -1;
-      var memberName = (memberFound) ? _this.settings.lbWidget.settings.translation.leaderboard.you : memberLbName;
-      var memberNameLength = _this.settings.lbWidget.settings.memberNameLength;
-      var reward = clearPrize ? '' : _this.getReward(lb.rank);
-      var change = (typeof lb.change === 'undefined') ? 0 : lb.change;
-      var growthType = (change < 0) ? 'down' : (change > 0 ? 'up' : 'same');
-      var growthIcon = "<span class='cl-growth-icon cl-growth-" + growthType + "'></span>";
-      var formattedPoints = _this.settings.lbWidget.settings.leaderboard.pointsFormatter(lb.score);
+      let count = 0;
+      const icon = memberLbName && memberLbName.length ? memberLbName[0] : '';
+      const memberFound = lb.members && lb.members.findIndex(m => m.memberRefId === _this.settings.lbWidget.settings.member.memberRefId) !== -1;
+      let memberName = (memberFound) ? _this.settings.lbWidget.settings.translation.leaderboard.you : memberLbName;
+      const memberNameLength = _this.settings.lbWidget.settings.memberNameLength;
+      const reward = clearPrize ? '' : _this.getReward(lb.rank);
+      const change = (typeof lb.change === 'undefined') ? 0 : lb.change;
+      const growthType = (change < 0) ? 'down' : (change > 0 ? 'up' : 'same');
+      const growthIcon = "<span class='cl-growth-icon cl-growth-" + growthType + "'></span>";
+      const formattedPoints = _this.settings.lbWidget.settings.leaderboard.pointsFormatter(lb.score);
 
       if (rankCheck.indexOf(lb.rank) !== -1) {
-        for (var rc = 0; rc < rankCheck.length; rc++) {
+        for (let rc = 0; rc < rankCheck.length; rc++) {
           if (lb.rank === rankCheck[rc]) {
             count++;
           }
@@ -1272,17 +947,17 @@ export const MainWidget = function (options) {
 
       _this.leaderboardRowUpdate(
         lb.rank,
-        icon, // icon
+        icon,
         memberName,
         change,
-        growthIcon, // growth
+        growthIcon,
         formattedPoints,
         reward,
         count,
         memberFound,
         function (rank, icon, name, change, growth, points, reward, count, memberFound) {
-          var newRow = _this.leaderboardRow(rank, icon, name, name, growth, points, reward, count, memberFound);
-          var prevCellRow = query(_this.settings.leaderboard.container, '.cl-lb-rank-' + rank + '.cl-lb-count-' + (count - 1));
+          const newRow = _this.leaderboardRow(rank, icon, name, name, growth, points, reward, count, memberFound);
+          const prevCellRow = query(_this.settings.leaderboard.container, '.cl-lb-rank-' + rank + '.cl-lb-count-' + (count - 1));
 
           if (prevCellRow !== null && typeof prevCellRow.length === 'undefined') {
             appendNext(prevCellRow, newRow);
@@ -1297,9 +972,9 @@ export const MainWidget = function (options) {
   };
 
   this.updateLeaderboard = function () {
-    var _this = this;
-    var topResults = [];
-    var remainingResults = [];
+    const _this = this;
+    const topResults = [];
+    const remainingResults = [];
 
     _this.populateLeaderboardResultsWithDefaultEntries();
 
@@ -1314,61 +989,189 @@ export const MainWidget = function (options) {
     _this.updateLeaderboardTopResults(topResults);
     _this.updateLeaderboardResults(remainingResults);
 
-    var member = query(_this.settings.leaderboard.list, '.cl-lb-member-row');
-    var memberInTop = query(_this.settings.leaderboard.topResults, '.cl-lb-member-row');
+    const member = query(_this.settings.leaderboard.resultContainer, '.cl-lb-member-row');
 
     if (member !== null) {
-      _this.missingMember(_this.isElementVisibleInView(member, _this.settings.leaderboard.list.parentNode));
       _this.missingMember(_this.isElementVisibleInView(member, _this.settings.leaderboard.resultContainer));
-    } else if (memberInTop !== null) {
-      _this.missingMember(true);
     } else {
       _this.missingMemberReset();
     }
   };
 
   this.updateLeaderboardTime = function () {
-    var _this = this;
-    if (!_this.settings.lbWidget.settings.competition.activeContest) {
-      _this.settings.headerDate.innerHTML = '';
-      _this.settings.labelDate.innerHTML = '';
-      _this.settings.detailsContainerDate.innerHTML = '';
-    } else {
-      var diff = moment(_this.settings.lbWidget.settings.competition.activeContest.scheduledStartDate).diff(moment());
-      var date = _this.settings.lbWidget.settings.translation.miniLeaderboard.startsIn + ': ' + _this.settings.lbWidget.formatDateTime(moment.duration(diff));
+    const _this = this;
+    const descriptionDateEl = document.querySelector('.cl-main-widget-lb-details-description-date');
+    const descriptionDateHeadersEl = document.querySelector('.cl-main-widget-lb-details-description-date-headers');
+    const lbDateEl = document.querySelector('.cl-main-widget-lb-details-content-date');
+    const lbDateHeaderEl = document.querySelector('.cl-main-widget-lb-details-content-date-headers');
+    const descriptionMonthsLabel = document.querySelector('.cl-main-widget-lb-details-description-date-headers-item.months');
+    const lbMonthsLabel = document.querySelector('.cl-main-widget-lb-details-content-date-headers-item.months');
 
+    if (!_this.settings.lbWidget.settings.competition.activeContest && this.settings.lbWidget.settings.competition.activeCompetition.statusCode !== 15) {
+      descriptionDateEl.style.display = 'none';
+      lbDateEl.style.display = 'none';
+      descriptionDateHeadersEl.style.display = 'none';
+      lbDateHeaderEl.style.display = 'none';
+    } else if (this.settings.lbWidget.settings.competition.activeCompetition && this.settings.lbWidget.settings.competition.activeCompetition.statusCode === 15) {
+      descriptionDateEl.style.display = 'block';
+      lbDateEl.style.display = 'block';
+      descriptionDateHeadersEl.style.display = 'flex';
+      lbDateHeaderEl.style.display = 'flex';
+
+      const diff = moment(this.settings.lbWidget.settings.competition.activeCompetition.scheduledStartDate).diff(moment());
+      const date = _this.settings.lbWidget.settings.translation.miniLeaderboard.startsIn + ': ' + _this.settings.lbWidget.formatDateTime(moment.duration(diff));
+      const months = moment.duration(diff).months();
+      if (months) {
+        descriptionMonthsLabel.classList.remove('hidden');
+        lbMonthsLabel.classList.remove('hidden');
+      } else {
+        descriptionMonthsLabel.classList.add('hidden');
+        lbMonthsLabel.classList.add('hidden');
+      }
+
+      const labelDate = '<div class="cl-main-widget-lb-details-content-date-label">' +
+        _this.settings.lbWidget.settings.translation.miniLeaderboard.startsIn +
+        ':</div>' +
+        _this.settings.lbWidget.formatBannerDateTime(moment.duration(diff));
+      const descriptionDate = '<div class="cl-main-widget-lb-details-description-date-label">' +
+        _this.settings.lbWidget.settings.translation.miniLeaderboard.startsIn +
+        ':</div>' +
+        _this.settings.lbWidget.formatBannerDateTime(moment.duration(diff));
+
+      if (_this.settings.leaderboard.timerInterval) {
+        clearTimeout(_this.settings.leaderboard.timerInterval);
+      }
+
+      _this.settings.headerDate.innerHTML = date;
+      _this.settings.labelDate.innerHTML = labelDate;
+      _this.settings.descriptionDate.innerHTML = descriptionDate;
+      _this.settings.detailsContainerDate.innerHTML = date;
+    } else {
+      descriptionDateEl.style.display = 'block';
+      lbDateEl.style.display = 'block';
+      descriptionDateHeadersEl.style.display = 'flex';
+      lbDateHeaderEl.style.display = 'flex';
+
+      let diff = moment(_this.settings.lbWidget.settings.competition.activeContest.scheduledStartDate).diff(moment());
+      let date = _this.settings.lbWidget.settings.translation.miniLeaderboard.startsIn + ': ' + _this.settings.lbWidget.formatDateTime(moment.duration(diff));
+      let labelDate = '<div class="cl-main-widget-lb-details-content-date-label">' +
+        _this.settings.lbWidget.settings.translation.miniLeaderboard.startsIn +
+        ':</div>' +
+        _this.settings.lbWidget.formatBannerDateTime(moment.duration(diff));
+      let descriptionDate = '<div class="cl-main-widget-lb-details-description-date-label">' +
+        _this.settings.lbWidget.settings.translation.miniLeaderboard.startsIn +
+        ':</div>' +
+        _this.settings.lbWidget.formatBannerDateTime(moment.duration(diff));
+      const months = moment.duration(diff).months();
+      if (months) {
+        descriptionMonthsLabel.classList.remove('hidden');
+        lbMonthsLabel.classList.remove('hidden');
+      } else {
+        descriptionMonthsLabel.classList.add('hidden');
+        lbMonthsLabel.classList.add('hidden');
+      }
       if (_this.settings.leaderboard.timerInterval) {
         clearTimeout(_this.settings.leaderboard.timerInterval);
       }
 
       if (diff <= 0 && _this.settings.lbWidget.settings.competition.activeContest.statusCode === 15) {
         date = _this.settings.lbWidget.settings.translation.miniLeaderboard.starting;
+        labelDate = _this.settings.lbWidget.settings.translation.miniLeaderboard.starting;
+        descriptionDate = _this.settings.lbWidget.settings.translation.miniLeaderboard.starting;
+        _this.settings.labelDateHeaders.innerHTML = '';
+        _this.settings.detailsDateHeaders.innerHTML = '';
       } else if (_this.settings.lbWidget.settings.competition.activeContest.statusCode === 20) {
         date = _this.settings.lbWidget.settings.translation.tournaments.starting;
+        labelDate = _this.settings.lbWidget.settings.translation.tournaments.starting;
+        descriptionDate = _this.settings.lbWidget.settings.translation.tournaments.starting;
+        _this.settings.labelDateHeaders.innerHTML = '';
+        _this.settings.detailsDateHeaders.innerHTML = '';
       } else if (_this.settings.lbWidget.settings.competition.activeContest.statusCode === 25) {
         diff = moment(_this.settings.lbWidget.settings.competition.activeContest.scheduledEndDate).diff(moment());
         date = _this.settings.lbWidget.formatDateTime(moment.duration(diff));
+        labelDate = _this.settings.lbWidget.formatBannerDateTime(moment.duration(diff));
+        descriptionDate = _this.settings.lbWidget.formatBannerDateTime(moment.duration(diff));
+
+        const months = moment.duration(diff).months();
+        if (months) {
+          descriptionMonthsLabel.classList.remove('hidden');
+          lbMonthsLabel.classList.remove('hidden');
+        } else {
+          descriptionMonthsLabel.classList.add('hidden');
+          lbMonthsLabel.classList.add('hidden');
+        }
 
         if (diff <= 0) {
           date = _this.settings.lbWidget.settings.translation.tournaments.finishing;
+          labelDate = _this.settings.lbWidget.settings.translation.tournaments.finishing;
+          descriptionDate = _this.settings.lbWidget.settings.translation.tournaments.finishing;
+          descriptionDateHeadersEl.style.display = 'none';
+          lbDateHeaderEl.style.display = 'none';
         }
       } else if (_this.settings.lbWidget.settings.competition.activeContest.statusCode === 30) {
         date = _this.settings.lbWidget.settings.translation.tournaments.finishing;
+        labelDate = _this.settings.lbWidget.settings.translation.tournaments.finishing;
+        descriptionDate = _this.settings.lbWidget.settings.translation.tournaments.finishing;
+        descriptionDateHeadersEl.style.display = 'none';
+        lbDateHeaderEl.style.display = 'none';
       } else if (_this.settings.lbWidget.settings.competition.activeContest.statusCode >= 35) {
         date = _this.settings.lbWidget.settings.translation.tournaments.finished;
+        labelDate = _this.settings.lbWidget.settings.translation.tournaments.finished;
+        descriptionDate = _this.settings.lbWidget.settings.translation.tournaments.finished;
+        descriptionDateHeadersEl.style.display = 'none';
+        lbDateHeaderEl.style.display = 'none';
       }
 
-      // _this.settings.headerDate.innerHTML = date;
-      _this.settings.labelDate.innerHTML = date;
+      _this.settings.headerDate.innerHTML = date;
+      _this.settings.labelDate.innerHTML = labelDate;
+      _this.settings.descriptionDate.innerHTML = descriptionDate;
       _this.settings.detailsContainerDate.innerHTML = date;
     }
+
     _this.settings.leaderboard.timerInterval = setTimeout(function () {
       _this.updateLeaderboardTime();
     }, 1000);
   };
 
+  this.getActiveContestTitle = function () {
+    let name = '';
+
+    if (this.settings.lbWidget.settings.competition.activeCompetition && this.settings.lbWidget.settings.competition.activeCompetition.statusCode === 15) {
+      name = this.settings.lbWidget.settings.competition.activeCompetition.name;
+    } else {
+      name = (
+        this.settings.lbWidget.settings.competition.activeContest !== null &&
+        this.settings.lbWidget.settings.competition.activeContest.name
+      )
+        ? this.settings.lbWidget.settings.competition.activeContest.name
+        : this.settings.lbWidget.settings.translation.tournaments.noAvailableCompetitions;
+    }
+
+    return name;
+  };
+
+  this.getActiveCompetitionBanner = function () {
+    let bannerImage = '';
+
+    if (this.settings.lbWidget.settings.competition.activeContest) {
+      if (this.settings.lbWidget.settings.competition.activeContest.bannerHighResolutionLink) {
+        bannerImage = this.settings.lbWidget.settings.competition.activeContest.bannerHighResolutionLink;
+      } else if (this.settings.lbWidget.settings.competition.activeContest.bannerLink) {
+        bannerImage = this.settings.lbWidget.settings.competition.activeContest.bannerLink;
+      }
+    } else if (this.settings.lbWidget.settings.competition.activeCompetition) {
+      if (this.settings.lbWidget.settings.competition.activeCompetition.bannerHighResolutionLink) {
+        bannerImage = this.settings.lbWidget.settings.competition.activeCompetition.bannerHighResolutionLink;
+      } else if (this.settings.lbWidget.settings.competition.activeCompetition.bannerLink) {
+        bannerImage = this.settings.lbWidget.settings.competition.activeCompetition.bannerLink;
+      }
+    }
+
+    return bannerImage;
+  };
+
   this.getActiveCompetitionDescription = function () {
-    return (this.settings.lbWidget.settings.competition.activeContest !== null &&
+    const description = (this.settings.lbWidget.settings.competition.activeContest !== null &&
         this.settings.lbWidget.settings.competition.activeContest.description &&
         this.settings.lbWidget.settings.competition.activeContest.description.length > 0)
       ? this.settings.lbWidget.settings.competition.activeContest.description
@@ -1376,109 +1179,133 @@ export const MainWidget = function (options) {
             this.settings.lbWidget.settings.competition.activeCompetition.description &&
             this.settings.lbWidget.settings.competition.activeCompetition.description.length > 0)
         ? this.settings.lbWidget.settings.competition.activeCompetition.description : '');
+
+    return description
+      ? description.replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+      : '<p>' + this.settings.lbWidget.settings.translation.global.descriptionEmpty + '</p>';
   };
 
-  this.extractImage = function (body, imageContainer, isBodyVirtualOpt) {
-    const _this = this;
-    const activeImageContainer = closest(body, '.cl-main-section-image-banner-active');
-    let imageFound = false;
-    const isBodyVirtual = (typeof isBodyVirtualOpt === 'boolean') ? isBodyVirtualOpt : false;
+  this.getActiveCompetitionTAndC = function () {
+    const tc = (this.settings.lbWidget.settings.competition.activeContest !== null &&
+      this.settings.lbWidget.settings.competition.activeContest.termsAndConditions &&
+      this.settings.lbWidget.settings.competition.activeContest.termsAndConditions.length > 0)
+      ? this.settings.lbWidget.settings.competition.activeContest.termsAndConditions
+      : ((this.settings.lbWidget.settings.competition.activeCompetition !== null &&
+        this.settings.lbWidget.settings.competition.activeCompetition.termsAndConditions &&
+        this.settings.lbWidget.settings.competition.activeCompetition.termsAndConditions.length > 0)
+        ? this.settings.lbWidget.settings.competition.activeCompetition.termsAndConditions : '');
 
-    if (_this.settings.lbWidget.settings.competition.extractImageHeader) {
-      objectIterator(query(body, 'img'), function (img, key, count) {
-        if (count === 0) {
-          imageFound = true;
-          var newImg = img.cloneNode(true);
-          addClass(newImg, 'cl-main-widget-lb-details-image');
-          imageContainer.innerHTML = '';
-          imageContainer.appendChild(newImg);
-
-          remove(img);
-        }
-      });
-      if (!imageFound) {
-        const urlRegex = (/(https?:\/\/[^ ]*\.(?:gif|png|jpg|jpeg))/i);
-        if (body.innerText) {
-          const url = body.innerText.match(urlRegex);
-          if (url && url.length) {
-            const currentImg = imageContainer.getElementsByTagName('img');
-            let currentImgSrc = '';
-
-            if (currentImg.length) {
-              currentImgSrc = currentImg[0].src;
-            }
-
-            if (url[0] !== currentImgSrc) {
-              const newImg = document.createElement('img');
-              newImg.setAttribute('src', url[0]);
-              addClass(newImg, 'cl-main-widget-lb-details-image');
-              imageContainer.appendChild(newImg);
-            }
-
-            body.innerHTML = body.innerHTML.replace(url[0], '');
-            imageFound = true;
-          }
-        }
-      }
-    }
-
-    if (!imageFound && activeImageContainer !== null) {
-      removeClass(activeImageContainer, 'cl-main-section-image-banner-active');
-      const detailsImageContainer = query(activeImageContainer, '.cl-main-widget-lb-details-image-container');
-      detailsImageContainer.innerHTML = '';
-    } else if (imageFound && activeImageContainer === null && _this.settings.lbWidget.settings.leaderboard.layoutSettings.imageBanner && !isBodyVirtual) {
-      addClass(closest(body, '.cl-main-section-item'), 'cl-main-section-image-banner-active');
-    }
+    return tc
+      ? tc.replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+      : '<p>' + this.settings.lbWidget.settings.translation.global.tAndCEmpty + '</p>';
   };
 
   this.leaderboardDetailsUpdate = function () {
-    var _this = this;
-    // var mainLabel = query(_this.settings.section, '.cl-main-widget-lb-details-content-label-text');
-    var mainLabel = query(_this.settings.section, '.cl-main-widget-lb-header-label');
-    var body = null;
+    const _this = this;
+    const mainLabel = query(_this.settings.section, '.cl-main-widget-lb-details-content-label-text');
+    let body = null;
+    let tc = null;
+    let title = null;
+    let bannerTitle = null;
+    let bannerImage = null;
+    let lbBannerImage = null;
+
+    _this.settings.descriptionDate = query(_this.settings.container, '.cl-main-widget-lb-details-description-date');
 
     if (!_this.settings.lbWidget.settings.leaderboard.layoutSettings.titleLinkToDetailsPage) {
       body = query(_this.settings.section, '.cl-main-widget-lb-details-description');
+      tc = query(_this.settings.section, '.cl-main-widget-lb-details-tc');
+      title = query(_this.settings.section, '.cl-main-widget-lb-details-description-header-title');
+      bannerTitle = query(_this.settings.section, '.cl-main-widget-lb-details-description-label-text');
+      bannerImage = query(_this.settings.section, '.cl-main-widget-lb-details-description-banner');
+      lbBannerImage = query(_this.settings.section, '.cl-main-widget-lb-details');
       if (!body) return;
+
+      const bodyInnerHTML = body.innerHTML;
+      if (!bodyInnerHTML || bodyInnerHTML !== _this.getActiveCompetitionDescription()) {
+        body.innerHTML = _this.getActiveCompetitionDescription();
+      }
+
+      if (!bannerImage.style || !bannerImage.style.backgroundImage || bannerImage.style.backgroundImage !== this.getActiveCompetitionBanner()) {
+        const link = this.getActiveCompetitionBanner();
+        if (link) {
+          bannerImage.setAttribute('style', `background-image: url(${link})`);
+        } else {
+          bannerImage.setAttribute('style', '');
+        }
+      }
+
+      if (!lbBannerImage.style || !lbBannerImage.style.backgroundImage || lbBannerImage.style.backgroundImage !== this.getActiveCompetitionBanner()) {
+        const link = this.getActiveCompetitionBanner();
+        const lbBannerContent = query(_this.settings.section, '.cl-main-widget-lb-details-content');
+        if (link) {
+          lbBannerImage.setAttribute('style', `background-image: url(${link})`);
+          lbBannerContent.classList.add('no-gradient');
+        } else {
+          lbBannerImage.setAttribute('style', '');
+          lbBannerContent.classList.remove('no-gradient');
+        }
+      }
+
+      tc.innerHTML = _this.getActiveCompetitionTAndC();
+      title.innerHTML = _this.getActiveContestTitle();
+      bannerTitle.innerHTML = _this.getActiveContestTitle();
+    }
+
+    if (body === null) {
+      body = document.createElement('div');
       body.innerHTML = _this.getActiveCompetitionDescription();
     }
 
-    if (_this.settings.lbWidget.settings.leaderboard.layoutSettings.imageBanner) {
-      var imageContainer = query(_this.settings.section, '.cl-main-widget-lb-details-image-container');
-      // imageContainer.innerHTML = '';
-
-      if (body === null) {
-        body = document.createElement('div');
-        body.innerHTML = _this.getActiveCompetitionDescription();
-
-        _this.extractImage(body, imageContainer, true);
-      } else {
-        _this.extractImage(body, imageContainer, false);
-      }
+    if (this.settings.lbWidget.settings.competition.activeCompetition && this.settings.lbWidget.settings.competition.activeCompetition.statusCode === 15) {
+      mainLabel.innerHTML = this.settings.lbWidget.settings.competition.activeCompetition.name;
+    } else {
+      mainLabel.innerHTML = (_this.settings.lbWidget.settings.competition.activeContest !== null)
+        ? _this.settings.lbWidget.settings.competition.activeContest.name
+        : _this.settings.lbWidget.settings.translation.tournaments.noAvailableCompetitions;
     }
-
-    mainLabel.innerHTML = (_this.settings.lbWidget.settings.competition.activeContest !== null)
-      ? _this.settings.lbWidget.settings.competition.activeContest.name
-      : _this.settings.lbWidget.settings.translation.tournaments.noAvailableCompetitions;
   };
 
-  this.showEmbeddedCompetitionDetailsContent = function (callback) {
-    const menu = document.querySelector('.cl-main-widget-navigation-container');
-    menu.style.opacity = '0';
+  this.showEmbeddedCompetitionDetailsContent = async function (callback) {
+    const listIcon = query(this.settings.container, '.cl-main-widget-lb-header-list-icon');
+    const backIcon = query(this.settings.container, '.cl-main-widget-lb-header-back-icon');
 
-    this.settings.section.classList.add('cl-main-active-embedded-description');
+    listIcon.style.display = 'none';
+    backIcon.style.display = 'block';
+
+    if (!hasClass(this.settings.section, 'cl-main-active-embedded-description')) {
+      addClass(this.settings.section, 'cl-main-active-embedded-description');
+    }
+
+    await tournamentBrackets(
+      this.settings.lbWidget.apiClientStomp,
+      this.settings.lbWidget.settings.tournaments.activeCompetitionId,
+      this.settings.lbWidget.settings.language,
+      this.settings.lbWidget.settings.translation,
+      this.settings.lbWidget.settings.competition.activeContestId
+    );
 
     if (typeof callback === 'function') callback();
   };
 
   this.hideEmbeddedCompetitionDetailsContent = function (callback) {
+    const listIcon = query(this.settings.container, '.cl-main-widget-lb-header-list-icon');
+    const backIcon = query(this.settings.container, '.cl-main-widget-lb-header-back-icon');
+    const missingMember = document.querySelector('.cl-main-widget-lb-missing-member-details');
+
+    if (missingMember) {
+      missingMember.style.display = 'none';
+    }
+
+    listIcon.style.display = 'block';
+    backIcon.style.display = 'none';
+
     removeClass(this.settings.section, 'cl-main-active-embedded-description');
     if (typeof callback === 'function') callback();
   };
 
   this.leaderboardOptInCheck = async function () {
     const optIn = query(this.settings.section, '.cl-main-widget-lb-optin-action');
-    const optOut = query(this.settings.section, '.cl-main-widget-lb-optout-action');
 
     if (
       typeof this.settings.lbWidget.settings.competition.activeCompetition !== 'undefined' &&
@@ -1487,32 +1314,28 @@ export const MainWidget = function (options) {
       this.settings.lbWidget.settings.competition.activeCompetition.constraints.includes('optinRequiredForEntrants')
     ) {
       const optInStatus = await this.settings.lbWidget.getCompetitionOptInStatus(
-        [this.settings.lbWidget.settings.competition.activeCompetition.id]
+        this.settings.lbWidget.settings.competition.activeCompetition.id
       );
 
       if (optInStatus.length && optInStatus[0].statusCode >= 15 && optInStatus[0].statusCode <= 35) {
         optIn.parentNode.style.display = 'none';
-        optOut.style.display = 'flex';
       } else if (optInStatus.length && (optInStatus[0].statusCode === 10 || optInStatus[0].statusCode === 0)) {
         optIn.innerHTML = this.settings.lbWidget.settings.translation.tournaments.processing;
         addClass(optIn, 'checking');
-        optIn.parentNode.style.display = 'block';
-        optOut.style.display = 'none';
+        optIn.parentNode.style.display = 'flex';
       } else {
         optIn.innerHTML = this.settings.lbWidget.settings.translation.tournaments.enter;
-        optIn.parentNode.style.display = 'block';
-        optOut.style.display = 'none';
+        optIn.parentNode.style.display = 'flex';
         removeClass(optIn, 'checking');
       }
     } else {
       optIn.parentNode.style.display = 'none';
-      optOut.style.display = 'none';
     }
   };
 
   // cleanup/recover activity
   this.preLoaderRerun = function () {
-    var _this = this;
+    const _this = this;
 
     if (_this.settings.preLoader.preLoaderActive && _this.settings.preLoader.preloaderCallbackRecovery !== null &&
       _this.settings.preLoader.preLoaderlastAttempt !== null && typeof _this.settings.preLoader.preLoaderlastAttempt === 'number' &&
@@ -1522,9 +1345,8 @@ export const MainWidget = function (options) {
   };
 
   this.preloader = function () {
-    var _this = this;
-    var preLoader = query(_this.settings.section, '.cl-main-widget-pre-loader');
-    // var content = query(_this.settings.section, '.cl-main-widget-pre-loader-content');
+    const _this = this;
+    const preLoader = query(_this.settings.section, '.cl-main-widget-pre-loader');
 
     return {
       show: function (callback) {
@@ -1558,19 +1380,17 @@ export const MainWidget = function (options) {
   };
 
   this.destroyLayout = function () {
-    var _this = this;
-
-    if (_this.settings.container !== null) {
-      remove(_this.settings.container);
-      remove(_this.settings.overlayContainer);
+    if (this.settings.container !== null) {
+      remove(this.settings.container);
+      remove(this.settings.overlayContainer);
     }
 
-    _this.settings.container = null;
-    _this.settings.overlayContainer = null;
+    this.settings.container = null;
+    this.settings.overlayContainer = null;
   };
 
-  this.loadLeaderboard = function (callback) {
-    var _this = this;
+  this.loadLeaderboard = function (callback, isTimeReload = false) {
+    const _this = this;
 
     if (_this.settings.container === null) {
       _this.settings.container = _this.settings.lbWidget.settings.bindContainer.appendChild(_this.layout());
@@ -1587,6 +1407,8 @@ export const MainWidget = function (options) {
       _this.settings.detailsContainerDate = query(_this.settings.container, '.cl-main-widget-lb-details-header-date');
       _this.settings.headerDate = query(_this.settings.container, '.cl-main-widget-lb-header-date');
       _this.settings.labelDate = query(_this.settings.container, '.cl-main-widget-lb-details-content-date');
+      _this.settings.labelDateHeaders = query(_this.settings.container, '.cl-main-widget-lb-details-content-date-headers');
+      _this.settings.detailsDateHeaders = query(_this.settings.container, '.cl-main-widget-lb-details-description-date-headers');
       _this.settings.achievement.container = query(_this.settings.container, '.' + _this.settings.lbWidget.settings.navigation.achievements.containerClass);
       _this.settings.achievement.detailsContainer = query(_this.settings.container, '.cl-main-widget-ach-details-container');
       _this.settings.reward.container = query(_this.settings.container, '.' + _this.settings.lbWidget.settings.navigation.rewards.containerClass);
@@ -1595,6 +1417,7 @@ export const MainWidget = function (options) {
       _this.settings.messages.detailsContainer = query(_this.settings.container, '.cl-main-widget-inbox-details-container');
       _this.settings.missions.container = query(_this.settings.container, '.' + _this.settings.lbWidget.settings.navigation.missions.containerClass);
       _this.settings.missions.detailsContainer = query(_this.settings.container, '.cl-main-widget-missions-details-container');
+      _this.settings.missions.mapContainer = query(_this.settings.container, '.cl-main-widget-missions-map-container');
 
       _this.mainNavigationCheck();
       _this.leaderboardHeader();
@@ -1606,37 +1429,35 @@ export const MainWidget = function (options) {
     _this.leaderboardDetailsUpdate();
     _this.updateLeaderboard();
 
-    if (_this.settings.lbWidget.settings.competition.activeContest !== null) {
-      _this.updateLeaderboardTime();
+    if (
+      _this.settings.lbWidget.settings.competition.activeContest !== null ||
+      (this.settings.lbWidget.settings.competition.activeCompetition && this.settings.lbWidget.settings.competition.activeCompetition.statusCode === 15)
+    ) {
+      if (isTimeReload) {
+        _this.updateLeaderboardTime();
+      }
+    } else {
+      _this.settings.labelDateHeaders.display = 'none';
+      _this.settings.detailsDateHeaders.display = 'none';
     }
 
     if (typeof callback === 'function') {
       callback();
     }
-
-    const mainContainer = document.querySelector('.cl-main-widget-section-container');
-
-    if (!mainContainer.classList.contains('active')) {
-      setTimeout(() => {
-        mainContainer.classList.add('active');
-      }, 30);
-    }
   };
 
   this.clearAll = function () {
-    var _this = this;
+    this.settings.active = false;
 
-    _this.settings.active = false;
-
-    if (_this.settings.leaderboard.timerInterval) {
-      clearTimeout(_this.settings.leaderboard.timerInterval);
+    if (this.settings.leaderboard.timerInterval) {
+      clearTimeout(this.settings.leaderboard.timerInterval);
     }
 
-    _this.settings.preLoader.preLoaderActive = false;
+    this.settings.preLoader.preLoaderActive = false;
   };
 
   this.hide = function (callback) {
-    var _this = this;
+    const _this = this;
 
     _this.clearAll();
 
@@ -1653,12 +1474,6 @@ export const MainWidget = function (options) {
         if (typeof callback === 'function') {
           callback();
         }
-
-        const body = document.body;
-        const scrollY = body.style.top;
-        body.style.position = '';
-        body.style.top = '';
-        window.scrollTo(0, parseInt(scrollY || '0') * -1);
       }, 30);
     } else if (typeof callback === 'function') {
       callback();
@@ -1666,9 +1481,11 @@ export const MainWidget = function (options) {
   };
 
   this.missingMember = function (isVisible) {
-    var _this = this;
-    var area = query(_this.settings.container, '.cl-main-widget-lb-missing-member');
-    var member = query(_this.settings.leaderboard.list, '.cl-lb-member-row');
+    const _this = this;
+    const area = query(_this.settings.container, '.cl-main-widget-lb-missing-member');
+    const areaDetails = query(_this.settings.container, '.cl-main-widget-lb-missing-member-details');
+    let member = query(_this.settings.leaderboard.list, '.cl-lb-member-row');
+    const sectionContainer = query(_this.settings.container, '.cl-main-widget-section-container');
 
     if (!member) {
       member = query(_this.settings.leaderboard.topResults, '.cl-lb-member-row');
@@ -1682,46 +1499,76 @@ export const MainWidget = function (options) {
       area.innerHTML = member.innerHTML;
     }
 
+    if (areaDetails !== null && member !== null) {
+      areaDetails.innerHTML = member.innerHTML;
+    }
+
     if (!isVisible) {
-      if (area !== null && member !== null && !area.closest('.cl-main-active-embedded-description')) {
-        area.style.display = 'block';
+      if (area !== null && member !== null) {
+        area.style.display = 'flex';
       } else {
         area.style.display = 'none';
       }
+
+      if (areaDetails !== null && member !== null && sectionContainer.classList.contains('cl-main-active-embedded-description')) {
+        areaDetails.style.display = 'flex';
+      } else {
+        areaDetails.style.display = 'none';
+      }
+    } else if (sectionContainer.classList.contains('cl-main-active-embedded-description')) {
+      if (areaDetails !== null && member !== null) {
+        areaDetails.style.display = 'flex';
+      } else {
+        areaDetails.style.display = 'none';
+      }
     } else {
       area.style.display = 'none';
+      areaDetails.style.display = 'none';
     }
   };
 
   this.missingMemberReset = function () {
-    var _this = this;
-    var area = query(_this.settings.container, '.cl-main-widget-lb-missing-member');
+    const _this = this;
+    const area = query(_this.settings.container, '.cl-main-widget-lb-missing-member');
+    const areaDetails = query(_this.settings.container, '.cl-main-widget-lb-missing-member-details');
     area.innerHTML = '';
+    areaDetails.innerHTML = '';
   };
 
   this.isElementVisibleInView = function (el, container) {
     if (Array.isArray(el)) {
       el = el[0];
     }
-    var position = el.getBoundingClientRect();
-    var elemContainer = container.getBoundingClientRect();
-    var elemTop = position.top;
-    var elemBottom = position.bottom;
-    var elemHeight = position.height;
+    const position = el.getBoundingClientRect();
+    const elemContainer = container.getBoundingClientRect();
+    const elemTop = position.top;
+    const elemBottom = position.bottom;
+    const elemHeight = position.height;
+    const topThree = document.querySelector('.cl-main-widget-lb-leaderboard-header-top-res');
+    let indentation = 110;
 
-    return elemTop <= elemContainer.top
-      ? elemContainer.top - elemTop <= elemHeight : elemBottom - elemContainer.bottom <= elemHeight;
+    if (topThree) {
+      const topThreeStyle = window.getComputedStyle(topThree);
+      if (topThreeStyle.position && topThreeStyle.position === 'relative') {
+        indentation = 0;
+      } else if (topThree.querySelector('.cl-lb-member-row')) {
+        return true;
+      }
+    }
+
+    return (elemTop - indentation) <= elemContainer.top
+      ? elemContainer.top - (elemTop - indentation) <= elemHeight : elemBottom - elemContainer.bottom <= elemHeight;
   };
 
-  var onresizeInitialised = false;
+  let onresizeInitialised = false;
   this.eventListeners = function () {
-    var _this = this;
+    const _this = this;
 
     // unique solution to support horizontal mobile orientation
     if (_this.settings.leaderboard.resultContainer !== null && _this.settings.leaderboard.resultContainer.onscroll === null) {
       _this.settings.leaderboard.resultContainer.onscroll = function (evt) {
         evt.preventDefault();
-        var member = query(_this.settings.leaderboard.list, '.cl-lb-member-row');
+        const member = query(_this.settings.leaderboard.resultContainer, '.cl-lb-member-row');
 
         if (member !== null) {
           _this.missingMember(_this.isElementVisibleInView(member, evt.target));
@@ -1732,7 +1579,7 @@ export const MainWidget = function (options) {
     if (_this.settings.leaderboard.list !== null && _this.settings.leaderboard.list.parentNode.onscroll === null) {
       _this.settings.leaderboard.list.parentNode.onscroll = function (evt) {
         evt.preventDefault();
-        var member = query(_this.settings.leaderboard.list, '.cl-lb-member-row');
+        const member = query(_this.settings.leaderboard.resultContainer, '.cl-lb-member-row');
 
         if (member !== null) {
           _this.missingMember(_this.isElementVisibleInView(member, evt.target));
@@ -1743,30 +1590,38 @@ export const MainWidget = function (options) {
     if (!onresizeInitialised) {
       onresizeInitialised = true;
       window.onresize = function (evt) {
-        var member = query(_this.settings.leaderboard.list, '.cl-lb-member-row');
+        const member = query(_this.settings.leaderboard.resultContainer, '.cl-lb-member-row');
 
         if (member !== null) {
-          _this.missingMember(_this.isElementVisibleInView(member, _this.settings.leaderboard.list.parentNode));
+          // _this.missingMember(_this.isElementVisibleInView(member, _this.settings.leaderboard.list.parentNode));
           _this.missingMember(_this.isElementVisibleInView(member, _this.settings.leaderboard.resultContainer));
         }
       };
     }
+
+    const darkModeToggle = document.querySelector('input[id=darkmode-toggle]');
+    const mainContainer = document.querySelector('.cl-main-widget-wrapper');
+    const msContainer = document.querySelector('.cl-widget-ms-wrapper');
+    const notificationContainer = document.querySelector('.cl-widget-notif-wrapper');
+
+    if (darkModeToggle) {
+      darkModeToggle.addEventListener('change', function () {
+        if (this.checked) {
+          mainContainer.classList.add('lightTheme');
+          msContainer.classList.add('lightTheme');
+          if (notificationContainer) notificationContainer.classList.add('lightTheme');
+        } else {
+          mainContainer.classList.remove('lightTheme');
+          msContainer.classList.remove('lightTheme');
+          if (notificationContainer) notificationContainer.classList.remove('lightTheme');
+        }
+      });
+    }
   };
 
-  // this.checkLeaderboardScrollContainer = function(){
-  //  var _this = this,
-  //    lbScrollContainer = query(_this.settings.leaderboard.container, ".cl-main-widget-lb-leaderboard-body");
-  //
-  //  if( scrollEnabled(lbScrollContainer) ){
-  //    addClass(lbScrollContainer, "cl-element-scrollable");
-  //  }else{
-  //    removeClass(lbScrollContainer, "cl-element-scrollable");
-  //  }
-  // };
-
   this.competitionDetailsOptInButtonState = function () {
-    var _this = this;
-    var optIn = query(_this.settings.detailsContainer, '.cl-main-widget-lb-details-optin-action');
+    const _this = this;
+    const optIn = query(_this.settings.detailsContainer, '.cl-main-widget-lb-details-optin-action');
 
     if (typeof _this.settings.lbWidget.settings.competition.activeCompetition.optinRequired === 'boolean' && _this.settings.lbWidget.settings.competition.activeCompetition.optinRequired) {
       if (typeof _this.settings.lbWidget.settings.competition.activeCompetition.optin === 'boolean' && !_this.settings.lbWidget.settings.competition.activeCompetition.optin) {
@@ -1783,11 +1638,15 @@ export const MainWidget = function (options) {
   };
 
   this.loadCompetitionDetails = function (callback) {
-    var _this = this;
-    var label = query(_this.settings.detailsContainer, '.cl-main-widget-lb-details-header-label');
-    // var date = query(_this.settings.detailsContainer, '.cl-main-widget-lb-details-header-date');
-    var body = query(_this.settings.detailsContainer, '.cl-main-widget-lb-details-body');
-    var image = query(_this.settings.detailsContainer, '.cl-main-widget-lb-details-body-image-cont');
+    const _this = this;
+    const label = query(_this.settings.detailsContainer, '.cl-main-widget-lb-details-header-label');
+    const body = query(_this.settings.detailsContainer, '.cl-main-widget-lb-details-body');
+    const image = query(_this.settings.detailsContainer, '.cl-main-widget-lb-details-body-image-cont');
+    const listIcon = query(this.settings.container, '.cl-main-widget-lb-header-list-icon');
+    const backIcon = query(this.settings.container, '.cl-main-widget-lb-header-back-icon');
+
+    listIcon.style.display = 'none';
+    backIcon.style.display = 'block';
 
     image.innerHTML = '';
     label.innerHTML = (_this.settings.lbWidget.settings.competition.activeContest.label.length > 0) ? _this.settings.lbWidget.settings.competition.activeContest.label : _this.settings.lbWidget.settings.competition.activeCompetition.label;
@@ -1797,8 +1656,6 @@ export const MainWidget = function (options) {
     _this.settings.detailsContainer.style.display = 'block';
     _this.settings.headerDate.style.display = 'none';
 
-    _this.extractImage(body, image);
-
     setTimeout(function () {
       addClass(_this.settings.detailsContainer, 'cl-show');
 
@@ -1806,24 +1663,196 @@ export const MainWidget = function (options) {
     }, 50);
   };
 
-  this.loadCompetitionList = function (callback) {
+  this.loadCompetitionList = function (
+    callback,
+    readyPageNumber = 1,
+    activePageNumber = 1,
+    finishedPageNumber = 1,
+    paginationArr = null,
+    isReady = false,
+    isActive = true,
+    isFinished = false
+  ) {
     const _this = this;
     const listResContainer = query(_this.settings.tournamentListContainer, '.cl-main-widget-tournaments-list-body-res');
+    const listIcon = query(_this.settings.container, '.cl-main-widget-lb-header-list-icon');
+    const backIcon = query(_this.settings.container, '.cl-main-widget-lb-header-back-icon');
     const preLoader = _this.preloader();
-    const menu = document.querySelector('.cl-main-widget-navigation-container');
-    const optInContainer = document.querySelector('.cl-main-widget-lb-optin-container');
 
-    if (optInContainer) {
-      optInContainer.style.display = 'none';
+    const totalCount = _this.settings.lbWidget.settings.tournaments.totalCount;
+    const readyTotalCount = _this.settings.lbWidget.settings.tournaments.readyTotalCount;
+    const finishedTotalCount = _this.settings.lbWidget.settings.tournaments.finishedTotalCount;
+    const itemsPerPage = 12;
+
+    const prev = document.createElement('span');
+    prev.setAttribute('class', 'paginator-item prev');
+    const next = document.createElement('span');
+    next.setAttribute('class', 'paginator-item next');
+
+    let paginator = query(listResContainer, '.paginator-active');
+    if (!paginator && totalCount > itemsPerPage) {
+      const pagesCount = Math.ceil(totalCount / itemsPerPage);
+      paginator = document.createElement('div');
+      paginator.setAttribute('class', 'paginator-active');
+      addClass(paginator, 'paginator');
+      addClass(paginator, 'accordion');
+
+      let page = '';
+      const isEllipsis = pagesCount > 7;
+
+      if (isEllipsis) {
+        for (let i = 0; i < 7; i++) {
+          if (i === 5) {
+            page += '<span class="paginator-item" data-page="..."\>...</span>';
+          } else if (i === 6) {
+            page += '<span class="paginator-item" data-page=' + pagesCount + '\>' + pagesCount + '</span>';
+          } else {
+            page += '<span class="paginator-item" data-page=' + (i + 1) + '\>' + (i + 1) + '</span>';
+          }
+        }
+      } else {
+        for (let i = 0; i < pagesCount; i++) {
+          page += '<span class="paginator-item" data-page=' + (i + 1) + '\>' + (i + 1) + '</span>';
+        }
+      }
+
+      paginator.innerHTML = page;
+
+      const prev = document.createElement('span');
+      prev.setAttribute('class', 'paginator-item prev');
+      const next = document.createElement('span');
+      next.setAttribute('class', 'paginator-item next');
+
+      paginator.prepend(prev);
+      paginator.appendChild(next);
     }
 
-    if (menu) {
-      menu.style.opacity = '1';
+    let readyPaginator = query(listResContainer, '.paginator-ready');
+    if (!readyPaginator && readyTotalCount > itemsPerPage) {
+      const pagesCount = Math.ceil(readyTotalCount / itemsPerPage);
+      readyPaginator = document.createElement('div');
+      readyPaginator.setAttribute('class', 'paginator-ready');
+      addClass(readyPaginator, 'paginator');
+      addClass(readyPaginator, 'accordion');
+
+      let page = '';
+      const isEllipsis = pagesCount > 7;
+
+      if (isEllipsis) {
+        for (let i = 0; i < 7; i++) {
+          if (i === 5) {
+            page += '<span class="paginator-item" data-page="..."\>...</span>';
+          } else if (i === 6) {
+            page += '<span class="paginator-item" data-page=' + pagesCount + '\>' + pagesCount + '</span>';
+          } else {
+            page += '<span class="paginator-item" data-page=' + (i + 1) + '\>' + (i + 1) + '</span>';
+          }
+        }
+      } else {
+        for (let i = 0; i < pagesCount; i++) {
+          page += '<span class="paginator-item" data-page=' + (i + 1) + '\>' + (i + 1) + '</span>';
+        }
+      }
+
+      readyPaginator.innerHTML = page;
+
+      const prev = document.createElement('span');
+      prev.setAttribute('class', 'paginator-item prev');
+      const next = document.createElement('span');
+      next.setAttribute('class', 'paginator-item next');
+
+      readyPaginator.prepend(prev);
+      readyPaginator.appendChild(next);
+    }
+
+    let finishedPaginator = query(listResContainer, '.paginator-finished');
+    if (!finishedPaginator && finishedTotalCount > itemsPerPage) {
+      const pagesCount = Math.ceil(finishedTotalCount / itemsPerPage);
+      finishedPaginator = document.createElement('div');
+      finishedPaginator.setAttribute('class', 'paginator-finished');
+      addClass(finishedPaginator, 'paginator');
+      addClass(finishedPaginator, 'accordion');
+
+      let page = '';
+      const isEllipsis = pagesCount > 7;
+
+      if (isEllipsis) {
+        for (let i = 0; i < 7; i++) {
+          if (i === 5) {
+            page += '<span class="paginator-item" data-page="..."\>...</span>';
+          } else if (i === 6) {
+            page += '<span class="paginator-item" data-page=' + pagesCount + '\>' + pagesCount + '</span>';
+          } else {
+            page += '<span class="paginator-item" data-page=' + (i + 1) + '\>' + (i + 1) + '</span>';
+          }
+        }
+      } else {
+        for (let i = 0; i < pagesCount; i++) {
+          page += '<span class="paginator-item" data-page=' + (i + 1) + '\>' + (i + 1) + '</span>';
+        }
+      }
+
+      finishedPaginator.innerHTML = page;
+
+      const prev = document.createElement('span');
+      prev.setAttribute('class', 'paginator-item prev');
+      const next = document.createElement('span');
+      next.setAttribute('class', 'paginator-item next');
+
+      finishedPaginator.prepend(prev);
+      finishedPaginator.appendChild(next);
+    }
+
+    if (isReady) {
+      _this.settings.tournamentsSection.accordionLayout.map(t => {
+        t.show = t.type === 'readyCompetitions';
+      });
+      if (paginationArr && paginationArr.length) {
+        let page = '';
+        for (const i in paginationArr) {
+          page += '<span class="paginator-item" data-page=' + paginationArr[i] + '\>' + paginationArr[i] + '</span>';
+        }
+        readyPaginator.innerHTML = page;
+
+        readyPaginator.prepend(prev);
+        readyPaginator.appendChild(next);
+      }
+    } else if (isFinished) {
+      _this.settings.tournamentsSection.accordionLayout.map(t => {
+        t.show = t.type === 'finishedCompetitions';
+      });
+      if (paginationArr && paginationArr.length) {
+        let page = '';
+        for (const i in paginationArr) {
+          page += '<span class="paginator-item" data-page=' + paginationArr[i] + '\>' + paginationArr[i] + '</span>';
+        }
+        finishedPaginator.innerHTML = page;
+
+        finishedPaginator.prepend(prev);
+        finishedPaginator.appendChild(next);
+      }
+    } else {
+      _this.settings.tournamentsSection.accordionLayout.map(t => {
+        t.show = t.type === 'activeCompetitions';
+      });
+      if (paginationArr && paginationArr.length) {
+        let page = '';
+        for (const i in paginationArr) {
+          page += '<span class="paginator-item" data-page=' + paginationArr[i] + '\>' + paginationArr[i] + '</span>';
+        }
+        paginator.innerHTML = page;
+
+        paginator.prepend(prev);
+        paginator.appendChild(next);
+      }
     }
 
     preLoader.show(function () {
-      const accordionObj = _this.accordionStyle(_this.settings.tournamentsSection.accordionLayout, function (accordionSection, listContainer, topEntryContainer, layout) {
+      listIcon.style.display = 'none';
+      backIcon.style.display = 'block';
+      const accordionObj = _this.tournamentsList(_this.settings.tournamentsSection.accordionLayout, function (accordionSection, listContainer, topEntryContainer, layout) {
         const tournamentData = _this.settings.lbWidget.settings.tournaments[layout.type];
+
         if (typeof tournamentData !== 'undefined') {
           if (tournamentData.length === 0) {
             accordionSection.style.display = 'none';
@@ -1845,6 +1874,54 @@ export const MainWidget = function (options) {
       listResContainer.innerHTML = '';
       listResContainer.appendChild(accordionObj);
 
+      if (finishedPaginator) {
+        const finishedContainer = query(listResContainer, '.finishedCompetitions');
+        if (finishedContainer) {
+          const listContainer = query(finishedContainer, '.cl-accordion-list-container');
+          const paginatorItems = query(finishedPaginator, '.paginator-item');
+          paginatorItems.forEach(item => {
+            removeClass(item, 'active');
+            if (Number(item.dataset.page) === Number(finishedPageNumber)) {
+              addClass(item, 'active');
+            }
+          });
+
+          listContainer.appendChild(finishedPaginator);
+        }
+      }
+
+      if (readyPaginator) {
+        const readyContainer = query(listResContainer, '.readyCompetitions');
+        if (readyContainer) {
+          const listContainer = query(readyContainer, '.cl-accordion-list-container');
+          const paginatorItems = query(readyPaginator, '.paginator-item');
+          paginatorItems.forEach(item => {
+            removeClass(item, 'active');
+            if (Number(item.dataset.page) === Number(readyPageNumber)) {
+              addClass(item, 'active');
+            }
+          });
+
+          listContainer.appendChild(readyPaginator);
+        }
+      }
+
+      if (paginator) {
+        const activeContainer = query(listResContainer, '.activeCompetitions');
+        if (activeContainer) {
+          const listContainer = query(activeContainer, '.cl-accordion-list-container');
+          const paginatorItems = query(paginator, '.paginator-item');
+          paginatorItems.forEach(item => {
+            removeClass(item, 'active');
+            if (Number(item.dataset.page) === Number(activePageNumber)) {
+              addClass(item, 'active');
+            }
+          });
+
+          listContainer.appendChild(paginator);
+        }
+      }
+
       _this.settings.tournamentListContainer.style.display = 'block';
       setTimeout(function () {
         addClass(_this.settings.tournamentListContainer, 'cl-show');
@@ -1856,130 +1933,122 @@ export const MainWidget = function (options) {
     });
   };
 
+  this.toggleCompetitionDescription = function () {
+    const descriptionLabel = query(this.settings.section, '.cl-main-widget-lb-details-description-title');
+    const description = query(this.settings.section, '.cl-main-widget-lb-details-description');
+    const tcLabel = query(this.settings.section, '.cl-main-widget-lb-details-tc-title');
+    const tc = query(this.settings.section, '.cl-main-widget-lb-details-tc');
+
+    if (tc.style.display === 'block') {
+      tcLabel.style.display = 'none';
+      tc.style.display = 'none';
+      descriptionLabel.style.display = 'block';
+      description.style.display = 'block';
+    } else {
+      tcLabel.style.display = 'block';
+      tc.style.display = 'block';
+      descriptionLabel.style.display = 'none';
+      description.style.display = 'none';
+    }
+  };
+
+  this.toggleAchievementDescription = function () {
+    const descriptionLabel = query(this.settings.section, '.cl-main-widget-ach-details-body-description-title');
+    const description = query(this.settings.section, '.cl-main-widget-ach-details-body');
+    const tcLabel = query(this.settings.section, '.cl-main-widget-ach-details-body-description-tc-title');
+    const tc = query(this.settings.section, '.cl-main-widget-ach-details-tc');
+
+    if (tc.style.display === 'block') {
+      tcLabel.style.display = 'none';
+      tc.style.display = 'none';
+      descriptionLabel.style.display = 'block';
+      description.style.display = 'block';
+    } else {
+      tcLabel.style.display = 'block';
+      tc.style.display = 'block';
+      descriptionLabel.style.display = 'none';
+      description.style.display = 'none';
+    }
+  };
+
   this.hideCompetitionList = function (callback) {
     const _this = this;
     const listIcon = query(_this.settings.container, '.cl-main-widget-lb-header-list-icon');
+    const backIcon = query(_this.settings.container, '.cl-main-widget-lb-header-back-icon');
 
-    listIcon.style.opacity = '1';
-    // _this.hideEmbeddedCompetitionDetailsContent();
+    listIcon.style.display = 'block';
+    backIcon.style.display = 'none';
+    _this.hideEmbeddedCompetitionDetailsContent();
     _this.missingMemberReset();
 
     removeClass(_this.settings.tournamentListContainer, 'cl-show');
-    _this.settings.tournamentListContainer.style.display = 'none';
 
     setTimeout(function () {
+      _this.settings.tournamentListContainer.style.display = 'none';
+
       if (typeof callback === 'function') callback();
     }, 200);
   };
 
   this.hideCompetitionDetails = function (callback) {
-    var _this = this;
+    const _this = this;
 
     removeClass(_this.settings.detailsContainer, 'cl-show');
     setTimeout(function () {
       _this.settings.detailsContainer.style.display = 'none';
-      // _this.settings.headerDate.style.display = 'block';
+      _this.settings.headerDate.style.display = 'block';
 
       if (typeof callback === 'function') callback();
     }, 200);
   };
 
-  this.achievementItem = function (ach, achieved, perc) {
-    const _this = this;
+  this.achievementItem = function (ach) {
     const listItem = document.createElement('div');
-    const detailsContainer = document.createElement('div');
-    const detailsWrapper = document.createElement('div');
-    const descriptionWrapper = document.createElement('div');
-    const icon = document.createElement('div');
-    const label = document.createElement('div');
-    const description = document.createElement('div');
-    const progressionWrapper = document.createElement('div');
-    const progressionCont = document.createElement('div');
-    const progressionBar = document.createElement('div');
-    const moreButton = document.createElement('a');
-    const enterButton = document.createElement('a');
-    const leaveButton = document.createElement('a');
-    const progressionButton = document.createElement('a');
-    const cpomntainsImage = (typeof ach.icon !== 'undefined' && ach.icon.length > 0);
-
-    listItem.setAttribute('class', 'cl-ach-list-item cl-ach-' + ach.id + (cpomntainsImage ? ' cl-ach-with-image' : ''));
-    detailsContainer.setAttribute('class', 'cl-ach-list-details-cont');
-    detailsWrapper.setAttribute('class', 'cl-ach-list-details-wrap');
-    descriptionWrapper.setAttribute('class', 'cl-ach-list-details-description-wrap');
-    icon.setAttribute('class', 'cl-ach-list-details-icon');
-    label.setAttribute('class', 'cl-ach-list-details-label');
-    description.setAttribute('class', 'cl-ach-list-details-description');
-    progressionWrapper.setAttribute('class', 'cl-ach-list-progression');
-    progressionCont.setAttribute('class', 'cl-ach-list-progression-cont');
-    progressionBar.setAttribute('class', 'cl-ach-list-progression-bar');
-    moreButton.setAttribute('class', 'cl-ach-list-more');
-    enterButton.setAttribute('class', 'cl-ach-list-enter');
-    leaveButton.setAttribute('class', 'cl-ach-list-leave');
-    progressionButton.setAttribute('class', 'cl-ach-list-in-progress');
-
-    if (ach.iconLink) {
-      icon.setAttribute('style', 'background-image: url(' + ach.iconLink + ')');
-    }
-
-    moreButton.dataset.id = ach.id;
-    moreButton.href = 'javascript:void(0);';
-
-    enterButton.dataset.id = ach.id;
-    enterButton.innerHTML = _this.settings.lbWidget.settings.translation.achievements.listEnterBtn;
-    enterButton.href = 'javascript:void(0);';
-
-    leaveButton.dataset.id = ach.id;
-    leaveButton.innerHTML = _this.settings.lbWidget.settings.translation.achievements.listLeaveBtn;
-    leaveButton.href = 'javascript:void(0);';
-
-    progressionButton.dataset.id = ach.id;
-    progressionButton.innerHTML = _this.settings.lbWidget.settings.translation.achievements.listProgressionBtn;
-    progressionButton.href = 'javascript:void(0);';
-
+    listItem.setAttribute('class', 'cl-ach-list-item cl-ach-' + ach.id);
     listItem.dataset.id = ach.id;
 
-    label.innerHTML = ach.name;
-    description.innerHTML = ach.description ? ach.description.replace(/(<([^>]+)>)/gi, '') : '';
-
-    descriptionWrapper.appendChild(label);
-    descriptionWrapper.appendChild(description);
-
-    detailsWrapper.appendChild(icon);
-    detailsWrapper.appendChild(descriptionWrapper);
-    detailsWrapper.appendChild(moreButton);
-
-    if (cpomntainsImage) {
-      var image = new Image();
-      var imageIconWrapper = document.createElement('div');
-      imageIconWrapper.setAttribute('class', 'cl-ach-list-item-img-wrapper');
-      image.setAttribute('class', 'cl-ach-list-item-img');
-
-      image.src = _this.settings.lbWidget.settings.uri.gatewayDomain + _this.settings.lbWidget.settings.uri.assets.replace(':attachmentId', ach.icon);
-      image.alt = ach.name;
-
-      imageIconWrapper.appendChild(image);
-      detailsContainer.appendChild(imageIconWrapper);
-    }
-
-    detailsContainer.appendChild(detailsWrapper);
-
-    progressionCont.appendChild(progressionBar);
-    progressionWrapper.appendChild(progressionCont);
-
-    listItem.appendChild(detailsContainer);
+    let isMore = false;
+    let isEnter = false;
+    let isLeave = false;
+    let isProgress = false;
 
     if (Array.isArray(ach.constraints) && ach.constraints.includes('optinRequiredForEntrants')) {
       if (ach.optInStatus && ach.optInStatus >= 15 && ach.optInStatus <= 35) {
-        listItem.appendChild(progressionWrapper);
-        // listItem.appendChild(leaveButton);
+        isLeave = true;
       } else if (!isNaN(ach.optInStatus) && (ach.optInStatus === 10 || ach.optInStatus === 0)) {
-        listItem.appendChild(progressionButton);
+        isProgress = true;
       } else {
-        listItem.appendChild(enterButton);
+        isEnter = true;
       }
     } else {
-      listItem.appendChild(progressionWrapper);
+      isMore = true;
     }
+
+    let bgImage = '';
+    if (ach.iconLink) {
+      bgImage = 'background-image: url(' + ach.iconLink + ')';
+    }
+
+    let rewardValue = '';
+    if (ach.reward) {
+      rewardValue = this.settings.lbWidget.settings.partialFunctions.rewardFormatter(ach.reward);
+    }
+
+    const template = require('../templates/mainWidget/achievementItem.hbs');
+    listItem.innerHTML = template({
+      id: ach.id,
+      title: ach.name,
+      bgImage: bgImage,
+      rewardValue: rewardValue,
+      moreLabel: this.settings.lbWidget.settings.translation.achievements.more,
+      enterLabel: this.settings.lbWidget.settings.translation.achievements.listEnterBtn,
+      leaveLabel: this.settings.lbWidget.settings.translation.achievements.listLeaveBtn,
+      progressLabel: this.settings.lbWidget.settings.translation.achievements.listProgressionBtn,
+      isMore: isMore,
+      isEnter: isEnter,
+      isLeave: isLeave,
+      isProgress: isProgress
+    });
 
     return listItem;
   };
@@ -1995,29 +2064,77 @@ export const MainWidget = function (options) {
     if (!ach) return;
 
     const bar = query(ach, '.cl-ach-list-progression-bar');
+    const barLabel = query(ach, '.cl-ach-list-progression-label');
     bar.style.width = ((percentageComplete > 1 || percentageComplete === 0) ? percentageComplete : 1) + '%';
+    barLabel.innerHTML = percentageComplete + '/100';
   };
 
-  this.achievementListLayout = function (pageNumber, achievementData) {
+  this.achievementDashboardItemUpdateProgression = function (id, percentageComplete) {
+    const achList = document.querySelector('.cl-main-widget-dashboard-achievements-list');
+    if (!achList) return;
+
+    const ach = achList.querySelector('[data-id="' + id + '"]');
+    if (!ach) return;
+
+    const bar = query(ach, '.cl-ach-list-progression-bar');
+    const barLabel = query(ach, '.cl-ach-list-progression-label');
+    bar.style.width = ((percentageComplete > 1 || percentageComplete === 0) ? percentageComplete : 1) + '%';
+    barLabel.innerHTML = percentageComplete + '/100';
+  };
+
+  this.achievementListLayout = function (pageNumber, achievementData, paginationArr = null) {
     const _this = this;
     const achList = query(_this.settings.section, '.' + _this.settings.lbWidget.settings.navigation.achievements.containerClass + ' .cl-main-widget-ach-list-body-res');
     const totalCount = _this.settings.lbWidget.settings.achievements.totalCount;
     const itemsPerPage = _this.settings.lbWidget.settings.itemsPerPage;
     let paginator = query(achList, '.paginator');
 
+    const prev = document.createElement('span');
+    prev.setAttribute('class', 'paginator-item prev');
+    const next = document.createElement('span');
+    next.setAttribute('class', 'paginator-item next');
+
     achList.innerHTML = '';
 
+    if (paginationArr && paginationArr.length) {
+      let page = '';
+      for (const i in paginationArr) {
+        page += '<span class="paginator-item" data-page=' + paginationArr[i] + '\>' + paginationArr[i] + '</span>';
+      }
+      paginator.innerHTML = page;
+
+      paginator.prepend(prev);
+      paginator.appendChild(next);
+    }
+
     if (!paginator && totalCount > itemsPerPage) {
-      const pagesCount = Math.ceil(totalCount / itemsPerPage);
+      const pagesCount = Math.ceil(totalCount / 6);
       paginator = document.createElement('div');
       paginator.setAttribute('class', 'paginator');
 
       let page = '';
+      const isEllipsis = pagesCount > 7;
 
-      for (let i = 0; i < pagesCount; i++) {
-        page += '<span class="paginator-item" data-page=' + (i + 1) + '\>' + (i + 1) + '</span>';
+      if (isEllipsis) {
+        for (let i = 0; i < 7; i++) {
+          if (i === 5) {
+            page += '<span class="paginator-item" data-page="..."\>...</span>';
+          } else if (i === 6) {
+            page += '<span class="paginator-item" data-page=' + pagesCount + '\>' + pagesCount + '</span>';
+          } else {
+            page += '<span class="paginator-item" data-page=' + (i + 1) + '\>' + (i + 1) + '</span>';
+          }
+        }
+      } else {
+        for (let i = 0; i < pagesCount; i++) {
+          page += '<span class="paginator-item" data-page=' + (i + 1) + '\>' + (i + 1) + '</span>';
+        }
       }
+
       paginator.innerHTML = page;
+
+      paginator.prepend(prev);
+      paginator.appendChild(next);
     }
 
     mapObject(achievementData, function (ach) {
@@ -2042,13 +2159,25 @@ export const MainWidget = function (options) {
 
   this.loadAchievementDetails = async function (data, callback) {
     const _this = this;
-    const label = document.querySelector('.cl-main-widget-ach-header-label');
+    const label = query(_this.settings.achievement.detailsContainer, '.cl-main-widget-ach-details-header-label');
     const body = query(_this.settings.achievement.detailsContainer, '.cl-main-widget-ach-details-body');
+    const descriptionLabel = query(_this.settings.achievement.detailsContainer, '.cl-main-widget-ach-details-body-description-title');
+    const tc = query(_this.settings.achievement.detailsContainer, '.cl-main-widget-ach-details-tc');
+    const tcLabel = query(_this.settings.achievement.detailsContainer, '.cl-main-widget-ach-details-body-description-tc-title');
     const image = query(_this.settings.achievement.detailsContainer, '.cl-main-widget-ach-details-body-image-cont');
-    const menu = document.querySelector('.cl-main-widget-navigation-container');
+    const pregressBar = query(_this.settings.achievement.detailsContainer, '.cl-main-widget-ach-details-body-progress-bar');
+    const pregressLabel = query(_this.settings.achievement.detailsContainer, '.cl-main-widget-ach-details-body-progress-label');
+    const reward = query(_this.settings.achievement.detailsContainer, '.cl-main-widget-ach-details-reward');
 
-    if (menu) {
-      menu.style.opacity = '0';
+    tcLabel.style.display = 'none';
+    tc.style.display = 'none';
+    descriptionLabel.style.display = 'block';
+    body.style.display = 'block';
+
+    if (data.reward) {
+      reward.innerHTML = this.settings.lbWidget.settings.partialFunctions.rewardFormatter(data.reward);
+    } else {
+      reward.innerHTML = '';
     }
 
     let optinRequiredForEntrants = false;
@@ -2070,7 +2199,7 @@ export const MainWidget = function (options) {
         optIn.innerHTML = _this.settings.lbWidget.settings.translation.achievements.leave;
         removeClass(optIn, 'cl-disabled');
         addClass(optIn, 'leave-achievement');
-        optIn.parentNode.style.display = 'block';
+        optIn.style.display = 'block';
       } else if (
         memberAchievementOptInStatus.length &&
         (memberAchievementOptInStatus[0].statusCode === 10 || memberAchievementOptInStatus[0].statusCode === 0)
@@ -2078,31 +2207,38 @@ export const MainWidget = function (options) {
         optIn.innerHTML = _this.settings.lbWidget.settings.translation.achievements.listProgressionBtn;
         removeClass(optIn, 'cl-disabled');
         addClass(optIn, 'leave-achievement');
-        optIn.parentNode.style.display = 'block';
+        optIn.style.display = 'block';
       } else {
         optIn.innerHTML = _this.settings.lbWidget.settings.translation.achievements.enter;
         removeClass(optIn, 'cl-disabled');
-        optIn.parentNode.style.display = 'block';
+        optIn.style.display = 'block';
       }
     } else {
       addClass(optIn, 'cl-disabled');
-      optIn.parentNode.style.display = 'none';
+      optIn.style.display = 'none';
     }
 
     label.innerHTML = data.name;
-    body.innerHTML = data.description;
+    body.innerHTML = data.description ? data.description.replace(/&lt;/g, '<').replace(/&gt;/g, '>') : _this.settings.lbWidget.settings.translation.global.descriptionEmpty;
+    tc.innerHTML = data.termsAndConditions
+      ? data.termsAndConditions.replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+      : this.settings.lbWidget.settings.translation.global.tAndCEmpty;
 
-    if (_this.settings.lbWidget.settings.achievements.extractImageHeader) {
-      var imageLookup = query(body, 'img');
-      objectIterator(imageLookup, function (img, key, count) {
-        if (count === 0) {
-          var newImg = img.cloneNode(true);
-          image.appendChild(newImg);
-
-          remove(img);
-        }
-      });
+    if (data && data.iconLink) {
+      image.setAttribute('style', `background-image: url(${data.iconLink})`);
     }
+
+    this.settings.lbWidget.checkForMemberAchievementsProgression([data.id], function (issued, progression) {
+      if (issued && issued.length && issued[0].status === 'Completed') {
+        pregressLabel.innerHTML = '100/100';
+        pregressBar.style.width = '100%';
+      } else if (progression && progression.length) {
+        const perc = progression[0].percentageComplete ? parseInt(progression[0].percentageComplete) : 0;
+        const percValue = ((perc > 1 || perc === 0) ? perc : 1) + '%';
+        pregressLabel.innerHTML = perc + '/100';
+        pregressBar.style.width = percValue;
+      }
+    });
 
     _this.settings.achievement.detailsContainer.style.display = 'block';
     setTimeout(function () {
@@ -2114,14 +2250,6 @@ export const MainWidget = function (options) {
 
   this.hideAchievementDetails = function (callback) {
     const _this = this;
-    const label = document.querySelector('.cl-main-widget-ach-header-label');
-    const menu = document.querySelector('.cl-main-widget-navigation-container');
-
-    if (menu) {
-      menu.style.opacity = '1';
-    }
-
-    label.innerHTML = '';
 
     removeClass(_this.settings.achievement.detailsContainer, 'cl-show');
     setTimeout(function () {
@@ -2132,17 +2260,18 @@ export const MainWidget = function (options) {
   };
 
   this.loadRewardDetails = function (data, callback) {
-    var _this = this;
-    var label = query(_this.settings.reward.detailsContainer, '.cl-main-widget-reward-details-header-label');
-    var body = query(_this.settings.reward.detailsContainer, '.cl-main-widget-reward-details-body');
-    var image = query(_this.settings.reward.detailsContainer, '.cl-main-widget-reward-details-body-image-cont');
-    var claimBtn = query(_this.settings.reward.detailsContainer, '.cl-main-widget-reward-claim-btn');
-    var icon = query(_this.settings.reward.detailsContainer, '.cl-main-widget-reward-winnings-icon');
-    var value = query(_this.settings.reward.detailsContainer, '.cl-main-widget-reward-winnings-value');
+    const _this = this;
+    const label = query(_this.settings.reward.detailsContainer, '.cl-main-widget-reward-details-header-label');
+    const body = query(_this.settings.reward.detailsContainer, '.cl-main-widget-reward-details-description');
+    const image = query(_this.settings.reward.detailsContainer, '.cl-main-widget-reward-details-body-image-cont');
+    const iconWrapp = query(_this.settings.reward.detailsContainer, '.cl-main-widget-reward-winnings-icon');
+    const claimBtn = query(_this.settings.reward.detailsContainer, '.cl-main-widget-reward-claim-btn');
+    const icon = query(_this.settings.reward.detailsContainer, '.cl-main-widget-reward-winnings-icon');
+    const value = query(_this.settings.reward.detailsContainer, '.cl-main-widget-reward-winnings-value');
 
     label.innerHTML = data.name;
-    body.innerHTML = data.description;
-    value.innerHTML = _this.settings.lbWidget.settings.partialFunctions.awardFormatter(data);
+    body.innerHTML = data.description ? data.description.replace(/&lt;/g, '<').replace(/&gt;/g, '>') : '';
+    value.innerHTML = _this.settings.lbWidget.settings.partialFunctions.rewardFormatter(data);
     claimBtn.dataset.id = data.id;
 
     if (data.claimed) {
@@ -2156,9 +2285,8 @@ export const MainWidget = function (options) {
     if (data.icon && typeof data.icon !== 'undefined') {
       icon.innerHTML = '';
 
-      var _image = new Image();
-      var imageIconWrapper = document.createElement('div');
-      imageIconWrapper.setAttribute('class', 'cl-reward-list-item-img-wrapper');
+      const _image = new Image();
+      iconWrapp.style.background = 'none';
       _image.setAttribute('class', 'cl-reward-list-item-img');
 
       _image.src = data.icon;
@@ -2166,12 +2294,13 @@ export const MainWidget = function (options) {
 
       icon.appendChild(_image);
     } else {
-      icon.innerHTML = "<span class='cl-place-holder-reward-image'></span>";
+      icon.innerHTML = '';
+      iconWrapp.style.background = null;
     }
 
     objectIterator(query(body, 'img'), function (img, key, count) {
       if (count === 0) {
-        var newImg = img.cloneNode(true);
+        const newImg = img.cloneNode(true);
         image.innerHTML = '';
         image.appendChild(newImg);
 
@@ -2189,20 +2318,16 @@ export const MainWidget = function (options) {
 
   this.loadMessageDetails = function (data, callback) {
     const _this = this;
-    const label = document.querySelector('.cl-main-widget-inbox-header-label');
+    const label = query(_this.settings.messages.detailsContainer, '.cl-main-widget-inbox-details-header-label');
     const body = query(_this.settings.messages.detailsContainer, '.cl-main-widget-inbox-details-body');
-    const created = new Date(data.created).toLocaleDateString();
-    const menu = document.querySelector('.cl-main-widget-navigation-container');
-
-    if (menu) {
-      menu.style.opacity = '0';
-    }
+    const date = query(_this.settings.messages.detailsContainer, '.cl-main-widget-inbox-details-header-date');
 
     if (!data || !data.subject) {
       return;
     }
 
-    label.innerHTML = data.subject + ' - ' + created;
+    label.innerHTML = data.subject;
+    date.innerHTML = (new Date(data.created)).toLocaleString('en-GB', { timeZone: 'UTC', dateStyle: 'short', timeStyle: 'short' });
     let bodyHtml = data.body;
     bodyHtml = bodyHtml.replace(/&lt;/g, '<').replace(/&gt;/g, '>');
     body.innerHTML = bodyHtml;
@@ -2215,97 +2340,407 @@ export const MainWidget = function (options) {
     }, 50);
   };
 
-  this.loadMissonDetails = function (mission, callback) {
+  this.loadMissionDetails = function (mission, callback) {
+    this.settings.missions.mission = mission;
     const _this = this;
     const label = query(_this.settings.missions.detailsContainer, '.cl-main-widget-missions-details-header-label');
-    const body = query(_this.settings.missions.detailsContainer, '.cl-main-widget-missions-details-body');
+    const body = query(_this.settings.missions.detailsContainer, '.cl-main-widget-missions-details-description');
+    const tc = query(_this.settings.missions.detailsContainer, '.cl-main-widget-missions-details-tc');
+    const prizeValue = query(_this.settings.missions.detailsContainer, '.cl-main-widget-missions-details-prize-value');
+    const icon = query(_this.settings.missions.detailsContainer, '.cl-main-widget-missions-details-body-image');
 
     if (!mission.data || !mission.data.name) {
+      if (typeof callback === 'function') callback();
       return;
     }
 
+    if (mission.data.iconLink) {
+      icon.setAttribute('style', `background-image: url(${mission.data.iconLink})`);
+      icon.classList.add('full-bg');
+    }
+
+    if (mission.data.reward && mission.data.reward.rewardValue) {
+      prizeValue.innerHTML = _this.settings.lbWidget.settings.partialFunctions.rewardFormatter(mission.data.reward);
+    }
+
     label.innerHTML = mission.data.name;
-    body.innerHTML = mission.data.description;
+    body.innerHTML = mission.data.description
+      ? mission.data.description.replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+      : this.settings.lbWidget.settings.translation.global.descriptionEmpty;
+    tc.innerHTML = mission.data.termsAndConditions
+      ? mission.data.termsAndConditions.replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+      : this.settings.lbWidget.settings.translation.global.tAndCEmpty;
 
     _this.settings.missions.detailsContainer.style.display = 'block';
     setTimeout(function () {
       addClass(_this.settings.missions.detailsContainer, 'cl-show');
+      _this.hideMissionMap();
 
       if (typeof callback === 'function') callback();
     }, 50);
+  };
 
-    const container = document.getElementById('graph-container');
+  this.showMissionTC = function () {
+    const body = query(this.settings.missions.detailsContainer, '.cl-main-widget-missions-details-description');
+    const label = query(this.settings.missions.detailsContainer, '.cl-main-widget-missions-details-description-label');
+    body.style.display = 'none';
+    label.style.display = 'none';
+
+    const tcBody = query(this.settings.missions.detailsContainer, '.cl-main-widget-missions-details-tc');
+    const tcLabel = query(this.settings.missions.detailsContainer, '.cl-main-widget-missions-details-tc-label');
+    tcBody.style.display = 'block';
+    tcLabel.style.display = 'block';
+  };
+
+  this.hideMissionTC = function () {
+    const body = query(this.settings.missions.detailsContainer, '.cl-main-widget-missions-details-description');
+    const label = query(this.settings.missions.detailsContainer, '.cl-main-widget-missions-details-description-label');
+    body.style.display = 'block';
+    label.style.display = 'block';
+
+    const tcBody = query(this.settings.missions.detailsContainer, '.cl-main-widget-missions-details-tc');
+    const tcLabel = query(this.settings.missions.detailsContainer, '.cl-main-widget-missions-details-tc-label');
+    tcBody.style.display = 'none';
+    tcLabel.style.display = 'none';
+  };
+
+  this.loadMissionDetailsCyGraph = function () {
+    const container = document.getElementById('cy');
+    const mainWrapper = document.querySelector('.cl-main-widget-wrapper');
+    const isLightTheme = mainWrapper.classList.contains('lightTheme');
+
+    const nodeColor = isLightTheme ? '#BEE9F3' : '#2F0426';
+    const nodeBorderColor = isLightTheme ? '#F7A1E4' : '#406A8C';
+    const nodeLabelColor = isLightTheme ? '#141E28' : '#ffffff';
+
+    const greenClassColor = isLightTheme ? '#219653' : '#6FCF97';
+    const redClassColor = isLightTheme ? '#EB5757' : '#EB5757';
+    const yellowClassColor = isLightTheme ? '#F2994A' : '#F2994A';
+
+    if (container.style.display === 'block') {
+      container.style.display = 'none';
+      this.hideMissionTC();
+
+      return;
+    }
+
+    this.showMissionTC();
+
+    container.style.display = 'block';
     container.innerHTML = '';
 
-    const graph = new Graph();
-    mission.graph.nodes.forEach((n) => {
-      let color = '#017dfb';
-      if (n.entityId === mission.data.id) {
-        color = '#ff7400';
-      }
-      graph.addNode(n.entityId, { size: 20, label: n.name, color: color });
+    cytoscape.use(dagre);
+
+    const nodes = [];
+    const edges = [];
+
+    this.settings.missions.mission.graph.nodes.forEach(n => {
+      nodes.push({ data: { id: n.entityId, label: n.name } });
     });
 
-    const MUST_NOT_COLOR = '#e74a39';
-    const SHOULD_COLOR = '#f48f3b';
-    const MUST_COLOR = '#3bb54c';
-
-    mission.graph.graphs[0].edges.forEach(e => {
-      if (e.graphEdgeType !== 'ROOT') {
-        let color = 'black';
-        switch (e.graphEdgeType) {
-          case 'MUST NOT':
-            color = MUST_NOT_COLOR;
-            break;
-          case 'SHOULD':
-            color = SHOULD_COLOR;
-            break;
-          case 'MUST':
-            color = MUST_COLOR;
-            break;
-        }
-        graph.addEdge(
-          e.headEntityId,
-          e.tailEntityId,
-          { weight: 1, type: 'arrow', label: e.graphEdgeType, size: 5, color: color, labelColor: 'red' }
-        );
+    this.settings.missions.mission.graph.graphs[0].edges.forEach(e => {
+      if (e.graphEdgeType === 'ROOT') return;
+      let classes = '';
+      switch (e.graphEdgeType) {
+        case 'MUST':
+          classes = 'green';
+          break;
+        case 'SHOULD':
+          classes = 'yellow';
+          break;
+        case 'MUSTNOT':
+          classes = 'red';
+          break;
       }
+      edges.push({ data: { source: e.headEntityId, target: e.tailEntityId, label: e.graphEdgeType.toLowerCase() }, classes: classes });
     });
-
-    circular.assign(graph);
-    rotation.assign(graph, 10);
-
-    const settings = {
-      linLogMode: false,
-      outboundAttractionDistribution: false,
-      adjustSizes: false,
-      edgeWeightInfluence: 1,
-      scalingRatio: 10,
-      strongGravityMode: true,
-      gravity: 1,
-      slowDown: 3.7,
-      barnesHutOptimize: false,
-      barnesHutTheta: 0.5
-    };
-
-    forceAtlas2.assign(graph, { settings, iterations: 600 });
 
     // eslint-disable-next-line
-    const renderer = new Sigma(graph, container, {
-      renderLabels: true,
-      renderEdgeLabels: true,
-      enableEdgeWheelEvents: false,
-      allowInvalidContainer: true,
-      minCameraRatio: null, // 1.3
-      maxCameraRatio: null, // 1.3
-      labelFont: 'Gotham',
-      edgeLabelFont: 'Gotham',
-      edgeLabelWeight: 'bold'
+    const cy = cytoscape({
+      container: document.getElementById('cy'),
+
+      boxSelectionEnabled: false,
+      autounselectify: true,
+
+      style: [
+        {
+          selector: 'node',
+          style: {
+            height: '48px',
+            width: '48px',
+            'border-color': nodeBorderColor,
+            'background-color': nodeColor,
+            'border-width': 1,
+            label: 'data(label)',
+            color: nodeLabelColor,
+            'font-size': '12px'
+          }
+        },
+        {
+          selector: 'edge',
+          style: {
+            'curve-style': 'taxi',
+            width: 1,
+            'target-arrow-shape': 'triangle',
+            'line-color': greenClassColor,
+            'target-arrow-color': greenClassColor,
+            'line-style': 'dashed',
+            label: 'data(label)',
+            color: greenClassColor
+          }
+        },
+        {
+          selector: 'node[label]',
+          css: {
+            'text-margin-y': '-5px'
+          }
+        },
+        {
+          selector: 'edge[label]',
+          css: {
+            label: 'data(label)',
+            'text-rotation': 'autorotate',
+            'text-margin-x': '-10px',
+            'text-margin-y': '-10px',
+            'font-size': '12px'
+          }
+        },
+        {
+          selector: '.red',
+          css: {
+            'curve-style': 'taxi',
+            width: 1,
+            'target-arrow-shape': 'triangle',
+            'line-color': redClassColor,
+            'target-arrow-color': redClassColor,
+            'line-style': 'dashed'
+          }
+        },
+        {
+          selector: '.yellow',
+          css: {
+            'curve-style': 'taxi',
+            width: 1,
+            'target-arrow-shape': 'triangle',
+            'line-color': yellowClassColor,
+            'target-arrow-color': yellowClassColor,
+            'line-style': 'dashed'
+          }
+        },
+        {
+          selector: '.red[label]',
+          css: {
+            color: redClassColor
+          }
+        },
+        {
+          selector: '.yellow[label]',
+          css: {
+            color: yellowClassColor
+          }
+        }
+      ],
+
+      elements: {
+        nodes: nodes,
+        edges: edges
+      },
+
+      layout: {
+        name: 'dagre',
+        directed: true,
+        rankDir: 'LR',
+        padding: 30,
+        fit: true,
+        spacingFactor: 1.5
+      }
+    });
+
+    cy.on('tap', 'node', function (evt) {
+      const node = evt.target;
+      console.log('id: ' + node.id());
     });
   };
 
+  this.loadMissionMap = (mission, callback) => {
+    this.settings.missions.mission = mission;
+    const _this = this;
+    const backBtn = document.querySelector('.cl-main-widget-mission-header-back-icon');
+
+    backBtn.style.display = 'block';
+
+    _this.settings.missions.mapContainer.style.display = 'block';
+
+    setTimeout(function () {
+      addClass(_this.settings.missions.mapContainer, 'cl-show');
+      _this.loadMissionMapGraph();
+      if (typeof callback === 'function') callback();
+    }, 50);
+  };
+
+  this.loadMissionMapGraph = async () => {
+    const _this = this;
+    const container = document.getElementById('cy-map');
+    const mainWrapper = document.querySelector('.cl-main-widget-wrapper');
+    const isLightTheme = mainWrapper.classList.contains('lightTheme');
+    const isMobile = window.screen.availWidth < 768;
+
+    const itemBgEl = document.querySelector('.cl-main-widget-missions-map-graph-item-bg');
+    const style = window.getComputedStyle(itemBgEl, false);
+
+    const starEl3 = document.querySelector('.cl-main-widget-missions-map-graph-item-star-3');
+    const starEl2 = document.querySelector('.cl-main-widget-missions-map-graph-item-star-2');
+    const starEl1 = document.querySelector('.cl-main-widget-missions-map-graph-item-star-1');
+
+    let itemBgSrc = style.backgroundImage.slice(4, -1).replace(/"/g, '');
+    if (!itemBgSrc || itemBgSrc[0] === 'f') {
+      itemBgSrc = 'https://ziqni.cdn.ziqni.com/ziqni-tech/ziqni-member-widget/images/map-item-bg.png';
+    }
+
+    let starEl3Src = window.getComputedStyle(starEl3, false).backgroundImage.slice(4, -1).replace(/"/g, '');
+    let starEl2Src = window.getComputedStyle(starEl2, false).backgroundImage.slice(4, -1).replace(/"/g, '');
+    let starEl1Src = window.getComputedStyle(starEl1, false).backgroundImage.slice(4, -1).replace(/"/g, '');
+
+    if (starEl3Src[0] === 'f') {
+      starEl3Src = 'https://ziqni.cdn.ziqni.com/ziqni-tech/ziqni-member-widget/images/rate3.svg';
+      starEl2Src = 'https://ziqni.cdn.ziqni.com/ziqni-tech/ziqni-member-widget/images/rate2.svg';
+      starEl1Src = 'https://ziqni.cdn.ziqni.com/ziqni-tech/ziqni-member-widget/images/rate1.svg';
+    }
+
+    const achIds = this.settings.missions.mission.graph.nodes.map(n => n.entityId);
+    const achievements = await this.settings.lbWidget.getAchievementsByIds(achIds);
+    const statuses = await this.settings.lbWidget.getMemberAchievementsOptInStatuses(achIds);
+    // statuses[1].percentageComplete = 50;
+    // statuses[4].percentageComplete = 100;
+    // statuses[3].percentageComplete = 70;
+
+    container.innerHTML = '';
+
+    cytoscape.use(dagre);
+
+    const nodes = [];
+    const edges = [];
+
+    this.settings.missions.mission.graph.nodes.forEach((n) => {
+      let src = 'none';
+      const idx = achievements.findIndex(a => a.id === n.entityId);
+      if (idx !== -1) {
+        if (achievements[idx].iconLink) {
+          src = achievements[idx].iconLink;
+        }
+      }
+
+      let starSrc = 'none';
+      const statusIdx = statuses.findIndex(a => a.entityId === n.entityId);
+      if (statusIdx !== -1) {
+        if (statuses[statusIdx].percentageComplete >= 33 && statuses[statusIdx].percentageComplete < 66) starSrc = starEl1Src;
+        if (statuses[statusIdx].percentageComplete >= 66 && statuses[statusIdx].percentageComplete < 100) starSrc = starEl2Src;
+        if (statuses[statusIdx].percentageComplete === 100) starSrc = starEl3Src;
+      }
+
+      nodes.push({ data: { id: n.entityId, label: n.name, images: [itemBgSrc, src, starSrc, 'https://ziqni.cdn.ziqni.com/ziqni-tech/ziqni-member-widget/images/map-item-bottom.svg'] } });
+    });
+
+    this.settings.missions.mission.graph.graphs[0].edges.forEach(e => {
+      if (e.graphEdgeType === 'ROOT') return;
+      let classes = '';
+      switch (e.graphEdgeType) {
+        case 'MUST':
+          classes = 'green';
+          break;
+        case 'SHOULD':
+          classes = 'yellow';
+          break;
+        case 'MUSTNOT':
+          classes = 'red';
+          break;
+      }
+      edges.push({ data: { source: e.headEntityId, target: e.tailEntityId, label: e.graphEdgeType.toLowerCase() }, classes: classes });
+    });
+
+    const backgroundColor = isLightTheme ? '#EDF3F7' : '#0f1921';
+    const nodeLabelColor = isLightTheme ? '#223241' : '#ffffff';
+    const edgeLineColor = isLightTheme ? '#B9CEDF' : '#304F69';
+    const graphDir = isMobile ? 'TB' : 'LR';
+
+    const cy = cytoscape({
+      container: document.getElementById('cy-map'),
+
+      boxSelectionEnabled: false,
+      autounselectify: true,
+      zoom: 1,
+
+      style: [
+        {
+          selector: 'node',
+          style: {
+            height: '90px',
+            width: '90px',
+            'background-color': backgroundColor,
+            'background-image': 'data(images)',
+            'background-fit': 'none cover none none',
+            'background-clip': 'none node none none',
+            'bounds-expansion': 60,
+            'background-image-containment': 'over over over over',
+            'background-repeat': 'no-repeat',
+            label: 'data(label)',
+            color: nodeLabelColor,
+            'font-size': '12px',
+            'text-valign': 'bottom',
+            'text-halign': 'center'
+          }
+        },
+        {
+          selector: 'edge',
+          style: {
+            'curve-style': 'unbundled-bezier',
+            width: 5,
+            'line-color': edgeLineColor,
+            'line-style': 'dashed',
+            'line-dash-pattern': [0, 14],
+            'line-cap': 'round'
+          }
+        },
+        {
+          selector: 'node[label]',
+          css: {
+            'text-margin-y': '25px'
+          }
+        }
+      ],
+
+      elements: {
+        nodes: nodes,
+        edges: edges
+      },
+
+      layout: {
+        name: 'dagre',
+        directed: true,
+        rankDir: graphDir,
+        padding: 20,
+        fit: true,
+        spacingFactor: 1.3
+      }
+    });
+
+    cy.on('tap', 'node', function () {
+      _this.loadMissionDetails(_this.settings.missions.mission, null);
+    });
+  };
+
+  this.hideMissionMap = () => {
+    const backBtn = document.querySelector('.cl-main-widget-mission-header-back-icon');
+    const container = document.getElementById('cy-map');
+
+    backBtn.style.display = 'none';
+    container.innerHTML = '';
+
+    this.settings.missions.mapContainer.style.display = 'none';
+  };
+
   this.hideRewardDetails = function (callback) {
-    var _this = this;
+    const _this = this;
 
     removeClass(_this.settings.reward.detailsContainer, 'cl-show');
     setTimeout(function () {
@@ -2317,14 +2752,6 @@ export const MainWidget = function (options) {
 
   this.hideMessageDetails = function (callback) {
     const _this = this;
-    const label = document.querySelector('.cl-main-widget-inbox-header-label');
-    const menu = document.querySelector('.cl-main-widget-navigation-container');
-
-    if (menu) {
-      menu.style.opacity = '1';
-    }
-
-    label.innerHTML = '';
 
     removeClass(_this.settings.messages.detailsContainer, 'cl-show');
     setTimeout(function () {
@@ -2337,6 +2764,10 @@ export const MainWidget = function (options) {
   this.hideMissionDetails = function (callback) {
     const _this = this;
 
+    const cyContainer = document.getElementById('cy');
+    cyContainer.style.display = 'none';
+    cyContainer.innerHTML = '';
+
     removeClass(_this.settings.missions.detailsContainer, 'cl-show');
     setTimeout(function () {
       _this.settings.missions.detailsContainer.style.display = 'none';
@@ -2348,6 +2779,7 @@ export const MainWidget = function (options) {
   this.updateAchievementProgressionAndIssued = function (issued, progression) {
     const _this = this;
     const achList = query(_this.settings.section, '.' + _this.settings.lbWidget.settings.navigation.achievements.containerClass + ' .cl-main-widget-ach-list-body-res');
+    const dashboardAchList = document.querySelector('.cl-main-widget-dashboard-achievements-list');
 
     objectIterator(query(achList, '.cl-ach-list-item'), function (ach) {
       const id = ach.dataset.id;
@@ -2356,29 +2788,60 @@ export const MainWidget = function (options) {
       let perc = 0;
       mapObject(progression, function (pr) {
         if (pr.entityId === id) {
-          perc = parseInt(pr.percentageComplete);
+          perc = pr.percentageComplete ? parseInt(pr.percentageComplete) : 0;
         }
       });
 
-      const bar = query(ach, '.cl-ach-list-progression-bar');
+      if (ach !== null) {
+        const bar = query(ach, '.cl-ach-list-progression-bar');
+        const barLabel = query(ach, '.cl-ach-list-progression-label');
 
-      if (bar) {
         if (issuedStatus) {
           addClass(bar, 'cl-ach-complete');
+          barLabel.innerHTML = '100/100';
           bar.style.width = '100%';
         } else {
-          bar.style.width = ((perc > 1 || perc === 0) ? perc : 1) + '%';
+          const percValue = ((perc > 1 || perc === 0) ? perc : 1) + '%';
+          barLabel.innerHTML = perc + '/100';
+          bar.style.width = percValue;
+        }
+      }
+    });
+
+    objectIterator(query(dashboardAchList, '.cl-ach-list-item'), function (ach) {
+      const id = ach.dataset.id;
+      const issuedStatus = (issued.findIndex(i => i.entityId === id) !== -1);
+
+      let perc = 0;
+      mapObject(progression, function (pr) {
+        if (pr.entityId === id) {
+          perc = pr.percentageComplete ? parseInt(pr.percentageComplete) : 0;
+        }
+      });
+
+      if (ach !== null) {
+        const bar = query(ach, '.cl-ach-list-progression-bar');
+        const barLabel = query(ach, '.cl-ach-list-progression-label');
+
+        if (issuedStatus) {
+          addClass(bar, 'cl-ach-complete');
+          barLabel.innerHTML = '100/100';
+          bar.style.width = '100%';
+        } else {
+          const percValue = ((perc > 1 || perc === 0) ? perc : 1) + '%';
+          barLabel.innerHTML = perc + '/100';
+          bar.style.width = percValue;
         }
       }
     });
   };
 
-  this.loadAchievements = function (pageNumber, callback) {
+  this.loadAchievements = function (pageNumber, callback, paginationArr = null) {
     const _this = this;
 
     _this.settings.lbWidget.checkForAvailableAchievements(pageNumber, function (achievementData) {
       // _this.settings.lbWidget.updateAchievementNavigationCounts();
-      _this.achievementListLayout(pageNumber, achievementData);
+      _this.achievementListLayout(pageNumber, achievementData, paginationArr);
 
       const idList = _this.settings.lbWidget.settings.achievements.list.map(a => a.id);
 
@@ -2392,93 +2855,232 @@ export const MainWidget = function (options) {
     });
   };
 
-  this.rewardItem = function (rew) {
-    const _this = this;
+  this.showLeaveAchievementPopup = function (activeAchievementId, isDashboard = false) {
+    let container = null;
+    if (isDashboard) {
+      container = document.querySelector('.cl-main-widget-section-dashboard');
+    } else {
+      container = document.querySelector('.cl-main-widget-section-ach');
+    }
+    const popup = container.querySelector('.cl-main-widget-ach-list-popup-wrapp');
+    const closeBtn = popup.querySelector('.cl-main-widget-ach-list-popup-close');
+    const confirm = popup.querySelector('.cl-main-widget-ach-list-popup-confirm');
+    const close = popup.querySelector('.cl-main-widget-ach-list-popup-cancel');
+
+    const closePopup = () => {
+      popup.style.display = 'none';
+    };
+    const leaveAchievement = () => {
+      closePopup();
+      this.settings.lbWidget.leaveAchievement(activeAchievementId, isDashboard);
+    };
+
+    popup.style.display = 'flex';
+
+    closeBtn.removeEventListener('click', closePopup);
+    close.removeEventListener('click', closePopup);
+    confirm.removeEventListener('click', leaveAchievement);
+
+    closeBtn.addEventListener('click', closePopup);
+    close.addEventListener('click', closePopup);
+    confirm.addEventListener('click', leaveAchievement);
+  };
+
+  this.dashboardTournamentItem = function (tournament, isReadyStatus = false) {
     const listItem = document.createElement('div');
-    const detailsContainer = document.createElement('div');
-    const detailsWrapper = document.createElement('div');
-    const label = document.createElement('div');
-    const description = document.createElement('div');
+    listItem.setAttribute('class', 'dashboard-tournament-item');
+    listItem.setAttribute('data-id', tournament.id);
 
-    listItem.setAttribute('class', 'cl-rew-list-item cl-rew-' + rew.id);
-    detailsContainer.setAttribute('class', 'cl-rew-list-details-cont');
-    detailsWrapper.setAttribute('class', 'cl-rew-list-details-wrap');
-    label.setAttribute('class', 'cl-rew-list-details-label');
-    description.setAttribute('class', 'cl-rew-list-details-description');
+    let rewardValue = '';
 
-    listItem.dataset.id = rew.id;
+    if (tournament.rewards && tournament.rewards.length) {
+      const idx = tournament.rewards.findIndex(reward => {
+        if (reward.rewardRank.indexOf('-') !== -1 || reward.rewardRank.indexOf(',') !== -1) {
+          const rewardRankArr = reward.rewardRank.split(',');
+          rewardRankArr.forEach(r => {
+            const idx = r.indexOf('-');
+            if (idx !== -1) {
+              const start = parseInt(r);
+              if (start === 1) {
+                return true;
+              }
+            } else if (parseInt(r) === 1) {
+              return true;
+            }
+            return false;
+          });
+        } else if (parseInt(reward.rewardRank) === 1) {
+          return true;
+        }
+        return false;
+      });
 
-    let labelText = stripHtml(rew.name);
-    let descriptionText = stripHtml(rew.description);
-
-    if (typeof rew.prize !== 'undefined') {
-      listItem.dataset.rewardId = rew.prize.id;
-      labelText = stripHtml(rew.subject + ' - ' + rew.prize.reward.rewardName + ' (' + _this.settings.lbWidget.settings.partialFunctions.rewardFormatter(rew.prize.reward) + ')');
-      descriptionText = stripHtml((typeof rew.prize.reward.description !== 'undefined' && rew.prize.reward.description.length > 0) ? rew.prize.reward.description : rew.body);
+      if (idx !== -1) {
+        rewardValue = this.settings.lbWidget.settings.partialFunctions.rewardFormatter(tournament.rewards[idx]);
+      }
     }
 
-    label.innerHTML = (labelText.length > 80) ? (labelText.substr(0, 80) + '...') : labelText;
-    description.innerHTML = (descriptionText.length > 200) ? (descriptionText.substr(0, 200) + '...') : descriptionText;
+    let itemBg = '';
+    if (tournament.bannerLowResolutionLink) {
+      itemBg = `background-image: url(${tournament.bannerLowResolutionLink})`;
+    } else if (tournament.bannerLink) {
+      itemBg = `background-image: url(${tournament.bannerLink})`;
+    }
 
-    detailsWrapper.appendChild(label);
-    detailsWrapper.appendChild(description);
-    detailsContainer.appendChild(detailsWrapper);
-    listItem.appendChild(detailsContainer);
+    const endsLabel = isReadyStatus
+      ? this.settings.lbWidget.settings.translation.dashboard.startsTitle
+      : this.settings.lbWidget.settings.translation.dashboard.endsTitle;
+
+    const date = isReadyStatus ? new Date(tournament.scheduledStartDate) : new Date(tournament.scheduledEndDate);
+
+    const template = require('../templates/dashboard/tournamentItem.hbs');
+    listItem.innerHTML = template({
+      title: tournament.name,
+      itemBg: itemBg,
+      endsLabel: endsLabel,
+      endsValue: date.toLocaleString('en-GB', { timeZone: 'UTC', dateStyle: 'short', timeStyle: 'short' }),
+      prizeLabel: this.settings.lbWidget.settings.translation.dashboard.prizeTitle,
+      prizeValue: rewardValue,
+      seeMoreLabel: this.settings.lbWidget.settings.translation.dashboard.tournamentBtn
+    });
+
+    return listItem;
+  };
+
+  this.loadDashboardTournaments = async function () {
+    const tournamentsList = query(this.settings.section, '.cl-main-widget-dashboard-tournaments-list');
+    const tournamentsContainer = query(this.settings.section, '.cl-main-widget-dashboard-tournaments');
+    const { activeCompetitions, readyCompetitions } = await this.settings.lbWidget.getDashboardCompetitions();
+
+    tournamentsList.innerHTML = '';
+
+    if (activeCompetitions && activeCompetitions.length) {
+      tournamentsContainer.classList.remove('hidden');
+      const title = document.querySelector('.cl-main-widget-dashboard-tournaments-title');
+      title.innerHTML = this.settings.lbWidget.settings.translation.dashboard.tournamentsTitle;
+      activeCompetitions.forEach(t => {
+        const listItem = this.dashboardTournamentItem(t);
+        tournamentsList.appendChild(listItem);
+      });
+    } else if (readyCompetitions && readyCompetitions.length) {
+      tournamentsContainer.classList.remove('hidden');
+      const title = document.querySelector('.cl-main-widget-dashboard-tournaments-title');
+      title.innerHTML = this.settings.lbWidget.settings.translation.dashboard.upcomingTournamentsTitle;
+      readyCompetitions.forEach(t => {
+        const listItem = this.dashboardTournamentItem(t, true);
+        tournamentsList.appendChild(listItem);
+      });
+    } else {
+      tournamentsContainer.classList.add('hidden');
+    }
+  };
+
+  this.loadDashboardAchievements = function (achievementData, callback) {
+    const _this = this;
+    const achList = query(this.settings.section, '.cl-main-widget-dashboard-achievements-list');
+    const achContainer = query(this.settings.section, '.cl-main-widget-dashboard-achievements');
+    achList.innerHTML = '';
+
+    if (!achievementData.length) {
+      achContainer.classList.add('hidden');
+      return;
+    }
+
+    achContainer.classList.remove('hidden');
+
+    if (achievementData.length > 2) {
+      achievementData = achievementData.slice(0, 2);
+    }
+
+    mapObject(achievementData, function (ach) {
+      if (query(achList, '.cl-ach-' + ach.id) === null) {
+        const listItem = _this.achievementItem(ach);
+        achList.appendChild(listItem);
+      }
+    });
+
+    const idList = achievementData.map(a => a.id);
+
+    _this.settings.lbWidget.checkForMemberAchievementsProgression(idList, function (issued, progression) {
+      _this.updateAchievementProgressionAndIssued(issued, progression);
+    });
+
+    if (typeof callback === 'function') {
+      callback();
+    }
+  };
+
+  this.rewardItem = function (rew) {
+    const listItem = document.createElement('div');
+    listItem.setAttribute('class', 'cl-rew-list-item cl-rew-' + rew.id);
+    listItem.dataset.id = rew.id;
+
+    let iconLink = '';
+    if (rew.rewardData && rew.rewardData.iconLink) {
+      iconLink = `background-image: url(${rew.rewardData.iconLink})`;
+    }
+
+    const labelText = stripHtml(rew.name);
+    const isClimeBtn = !rew.claimed && rew.statusCode !== 115;
+
+    const template = require('../templates/mainWidget/rewardItem.hbs');
+    listItem.innerHTML = template({
+      isClimeBtn: isClimeBtn,
+      claimBtnLabel: this.settings.lbWidget.settings.translation.rewards.claim,
+      prize: this.settings.lbWidget.settings.partialFunctions.rewardFormatter(rew.rewardData),
+      type: rew.rewardType.key,
+      label: (labelText.length > 80) ? (labelText.substr(0, 80) + '...') : labelText,
+      iconLink: iconLink
+    });
 
     return listItem;
   };
 
   this.messageItem = function (inbox) {
-    // var _this = this;
-    var listItem = document.createElement('div');
-    var detailsContainer = document.createElement('div');
-    var detailsWrapper = document.createElement('div');
-    var label = document.createElement('div');
-    var description = document.createElement('div');
-    var content = stripHtml(inbox.body);
-    const created = new Date(inbox.created).toLocaleDateString();
-    const subject = inbox.subject + ' - ' + created;
-
+    const listItem = document.createElement('div');
     listItem.setAttribute('class', 'cl-inbox-list-item cl-inbox-' + inbox.id);
-    detailsContainer.setAttribute('class', 'cl-inbox-list-details-cont');
-    detailsWrapper.setAttribute('class', 'cl-inbox-list-details-wrap');
-    label.setAttribute('class', 'cl-inbox-list-details-label');
-    description.setAttribute('class', 'cl-inbox-list-details-description');
-
     listItem.dataset.id = inbox.id;
-    label.innerHTML = (subject > 36) ? subject.substr(0, 36) + '...' : subject;
-    description.innerHTML = (content.length > 60) ? content.substr(0, 60) + '...' : content;
 
-    detailsWrapper.appendChild(label);
-    detailsWrapper.appendChild(description);
-    detailsContainer.appendChild(detailsWrapper);
-    listItem.appendChild(detailsContainer);
+    const content = stripHtml(inbox.body);
+
+    const subject = (inbox.subject.length > 36) ? inbox.subject.substr(0, 36) + '...' : inbox.subject;
+    const description = (content.length > 60) ? content.substr(0, 60) + '...' : content;
+    const date = (new Date(inbox.created)).toLocaleString('en-GB', { timeZone: 'UTC', dateStyle: 'short', timeStyle: 'short' });
+
+    const template = require('../templates/mainWidget/messageItem.hbs');
+    listItem.innerHTML = template({
+      id: inbox.id,
+      subject: subject,
+      description: description,
+      date: date
+    });
 
     return listItem;
   };
 
   this.missionsItem = function (mission) {
     const listItem = document.createElement('div');
-    const detailsContainer = document.createElement('div');
-    const detailsWrapper = document.createElement('div');
-    const label = document.createElement('div');
-    const description = document.createElement('div');
-    const content = stripHtml(mission.description);
-
     listItem.setAttribute('class', 'cl-missions-list-item cl-mission-' + mission.id);
-    detailsContainer.setAttribute('class', 'cl-missions-list-details-cont');
-    detailsWrapper.setAttribute('class', 'cl-missions-list-details-wrap');
-    label.setAttribute('class', 'cl-missions-list-details-label');
-    description.setAttribute('class', 'cl-missions-list-details-description');
-
     listItem.dataset.id = mission.id;
-    label.innerHTML = (mission.name.length > 36) ? mission.name.substr(0, 36) + '...' : mission.name;
-    description.innerHTML = (content.length > 60) ? content.substr(0, 60) + '...' : content;
 
-    detailsWrapper.appendChild(label);
-    detailsWrapper.appendChild(description);
-    detailsContainer.appendChild(detailsWrapper);
-    listItem.appendChild(detailsContainer);
+    const name = (mission.name.length > 36) ? mission.name.substr(0, 36) + '...' : mission.name;
+    const reward = mission.reward ? this.settings.lbWidget.settings.partialFunctions.rewardFormatter(mission.reward) : '';
+    const actionsBtnLabel = this.settings.lbWidget.settings.translation.missions.btn;
+
+    let bgImage = '';
+    if (mission.bannerLowResolutionLink) {
+      bgImage = `background-image: url(${mission.bannerLowResolutionLink})`;
+    } else if (mission.bannerLink) {
+      bgImage = `background-image: url(${mission.bannerLink})`;
+    }
+
+    const template = require('../templates/mainWidget/missionItem.hbs');
+    listItem.innerHTML = template({
+      name: name,
+      reward: reward,
+      actionsBtnLabel: actionsBtnLabel,
+      bgImage: bgImage
+    });
 
     return listItem;
   };
@@ -2486,47 +3088,87 @@ export const MainWidget = function (options) {
   this.tournamentItem = function (tournament) {
     const listItem = document.createElement('div');
     const detailsContainer = document.createElement('div');
-    const detailsWrapper = document.createElement('div');
     const label = document.createElement('div');
-    const description = document.createElement('div');
-    const descriptionContent = stripHtml(tournament.description);
-    const enterButton = document.createElement('div');
+    const labelIcon = document.createElement('div');
+    const period = document.createElement('div');
+    const prize = document.createElement('div');
+
+    let startDate = new Date(tournament.actualStartDate ?? tournament.scheduledStartDate);
+    let endDate = new Date(tournament.actualEndDate ?? tournament.scheduledEndDate);
+    startDate = startDate.toLocaleString('en-GB', { timeZone: 'UTC', dateStyle: 'short', timeStyle: 'short' });
+    endDate = endDate.toLocaleString('en-GB', { timeZone: 'UTC', dateStyle: 'short', timeStyle: 'short' });
 
     listItem.setAttribute('class', 'cl-tour-list-item cl-tour-' + tournament.id);
     detailsContainer.setAttribute('class', 'cl-tour-list-details-cont');
-    detailsWrapper.setAttribute('class', 'cl-tour-list-details-wrap');
     label.setAttribute('class', 'cl-tour-list-details-label');
-    description.setAttribute('class', 'cl-tour-list-details-description');
-    enterButton.setAttribute('class', 'cl-tour-list-enter');
+    labelIcon.setAttribute('class', 'cl-tour-list-details-label-icon');
+    period.setAttribute('class', 'cl-tour-list-details-period');
+    prize.setAttribute('class', 'cl-tour-list-details-prize');
 
     listItem.dataset.id = tournament.id;
-    enterButton.dataset.id = tournament.id;
     label.innerHTML = tournament.name ?? '';
-    description.innerHTML = (descriptionContent.length > 100) ? descriptionContent.substr(0, 100) + '...' : descriptionContent;
-    enterButton.innerHTML = this.settings.lbWidget.settings.translation.tournaments.enter;
+    period.innerHTML = startDate + ' - ' + endDate;
 
-    detailsWrapper.appendChild(label);
-    detailsWrapper.appendChild(description);
-    detailsContainer.appendChild(detailsWrapper);
+    if (this.settings.lbWidget.settings.tournaments.showTournamentsMenuPrizeColumn && tournament.rewards && tournament.rewards.length) {
+      const idx = tournament.rewards.findIndex(reward => {
+        if (reward.rewardRank.indexOf('-') !== -1 || reward.rewardRank.indexOf(',') !== -1) {
+          const rewardRankArr = reward.rewardRank.split(',');
+          rewardRankArr.forEach(r => {
+            const idx = r.indexOf('-');
+            if (idx !== -1) {
+              const start = parseInt(r);
+              if (start === 1) {
+                return true;
+              }
+            } else if (parseInt(r) === 1) {
+              return true;
+            }
+            return false;
+          });
+        } else if (parseInt(reward.rewardRank) === 1) {
+          return true;
+        }
+        return false;
+      });
 
-    if (tournament.statusCode !== 45 && Array.isArray(tournament.constraints) && tournament.constraints.includes('optinRequiredForEntrants')) {
-      if ((tournament.optInStatusCode && tournament.optInStatusCode === 5) || !tournament.optInStatusCode) {
-        detailsContainer.appendChild(enterButton);
+      if (idx !== -1) {
+        prize.innerHTML = this.settings.lbWidget.settings.partialFunctions.rewardFormatter(tournament.rewards[idx]);
       }
     }
 
+    detailsContainer.appendChild(labelIcon);
+    detailsContainer.appendChild(label);
+    detailsContainer.appendChild(period);
+    if (this.settings.lbWidget.settings.tournaments.showTournamentsMenuPrizeColumn) {
+      detailsContainer.appendChild(prize);
+    }
     listItem.appendChild(detailsContainer);
 
     return listItem;
   };
 
-  this.rewardsListLayout = function (pageNumber = 1, claimedPageNumber = 1, rewards, availableRewards, expiredRewards) {
+  this.rewardsListLayout = function (
+    pageNumber = 1,
+    claimedPageNumber = 1,
+    expiredPageNumber = 1,
+    rewards,
+    availableRewards,
+    expiredRewards,
+    paginationArr = null,
+    isClaimed = false,
+    isExpired = false
+  ) {
     const _this = this;
     const rewardList = query(_this.settings.section, '.' + _this.settings.lbWidget.settings.navigation.rewards.containerClass + ' .cl-main-widget-reward-list-body-res');
     const totalCount = _this.settings.lbWidget.settings.awards.totalCount;
     const claimedTotalCount = _this.settings.lbWidget.settings.awards.claimedTotalCount;
-    const itemsPerPage = 20;
+    const itemsPerPage = 6;
     let paginator = query(rewardList, '.paginator-available');
+
+    const prev = document.createElement('span');
+    prev.setAttribute('class', 'paginator-item prev');
+    const next = document.createElement('span');
+    next.setAttribute('class', 'paginator-item next');
 
     if (!paginator && totalCount > itemsPerPage) {
       const pagesCount = Math.ceil(totalCount / itemsPerPage);
@@ -2536,11 +3178,33 @@ export const MainWidget = function (options) {
       addClass(paginator, 'accordion');
 
       let page = '';
+      const isEllipsis = pagesCount > 7;
 
-      for (let i = 0; i < pagesCount; i++) {
-        page += '<span class="paginator-item" data-page=' + (i + 1) + '\>' + (i + 1) + '</span>';
+      if (isEllipsis) {
+        for (let i = 0; i < 7; i++) {
+          if (i === 5) {
+            page += '<span class="paginator-item" data-page="..."\>...</span>';
+          } else if (i === 6) {
+            page += '<span class="paginator-item" data-page=' + pagesCount + '\>' + pagesCount + '</span>';
+          } else {
+            page += '<span class="paginator-item" data-page=' + (i + 1) + '\>' + (i + 1) + '</span>';
+          }
+        }
+      } else {
+        for (let i = 0; i < pagesCount; i++) {
+          page += '<span class="paginator-item" data-page=' + (i + 1) + '\>' + (i + 1) + '</span>';
+        }
       }
+
       paginator.innerHTML = page;
+
+      const prev = document.createElement('span');
+      prev.setAttribute('class', 'paginator-item prev');
+      const next = document.createElement('span');
+      next.setAttribute('class', 'paginator-item next');
+
+      paginator.prepend(prev);
+      paginator.appendChild(next);
     }
 
     let paginatorClaimed = query(rewardList, '.paginator-claimed');
@@ -2552,17 +3216,44 @@ export const MainWidget = function (options) {
       addClass(paginatorClaimed, 'accordion');
 
       let page = '';
+      const isEllipsis = pagesCount > 7;
 
-      for (let i = 0; i < pagesCount; i++) {
-        page += '<span class="paginator-item" data-page=' + (i + 1) + '\>' + (i + 1) + '</span>';
+      if (isEllipsis) {
+        for (let i = 0; i < 7; i++) {
+          if (i === 5) {
+            page += '<span class="paginator-item" data-page="..."\>...</span>';
+          } else if (i === 6) {
+            page += '<span class="paginator-item" data-page=' + pagesCount + '\>' + pagesCount + '</span>';
+          } else {
+            page += '<span class="paginator-item" data-page=' + (i + 1) + '\>' + (i + 1) + '</span>';
+          }
+        }
+      } else {
+        for (let i = 0; i < pagesCount; i++) {
+          page += '<span class="paginator-item" data-page=' + (i + 1) + '\>' + (i + 1) + '</span>';
+        }
       }
+
       paginatorClaimed.innerHTML = page;
+
+      paginatorClaimed.prepend(prev);
+      paginatorClaimed.appendChild(next);
     }
 
-    if (claimedPageNumber > 1) {
+    if (isClaimed) {
       _this.settings.rewardsSection.accordionLayout.map(t => {
         if (t.type === 'claimedAwards') {
           t.show = true;
+          if (paginationArr && paginationArr.length) {
+            let page = '';
+            for (const i in paginationArr) {
+              page += '<span class="paginator-item" data-page=' + paginationArr[i] + '\>' + paginationArr[i] + '</span>';
+            }
+            paginatorClaimed.innerHTML = page;
+
+            paginatorClaimed.prepend(prev);
+            paginatorClaimed.appendChild(next);
+          }
         } else {
           t.show = false;
         }
@@ -2571,15 +3262,59 @@ export const MainWidget = function (options) {
       _this.settings.rewardsSection.accordionLayout.map(t => {
         if (t.type === 'availableAwards') {
           t.show = true;
+          if (paginationArr && paginationArr.length) {
+            let page = '';
+            for (const i in paginationArr) {
+              page += '<span class="paginator-item" data-page=' + paginationArr[i] + '\>' + paginationArr[i] + '</span>';
+            }
+            paginator.innerHTML = page;
+
+            paginator.prepend(prev);
+            paginator.appendChild(next);
+          }
         } else {
           t.show = false;
         }
       });
     }
 
-    const accordionObj = _this.accordionStyle(_this.settings.rewardsSection.accordionLayout, function (accordionSection, listContainer, topEntryContainer, layout, paginator) {
-      const rewardData = _this.settings.lbWidget.settings.awards[layout.type];
+    if (!totalCount) {
+      if (claimedTotalCount) {
+        _this.settings.rewardsSection.accordionLayout.map(t => {
+          switch (t.type) {
+            case 'availableAwards':
+              t.show = false;
+              break;
+            case 'claimedAwards':
+              t.show = true;
+              break;
+          }
+        });
+      } else {
+        _this.settings.rewardsSection.accordionLayout.map(t => {
+          switch (t.type) {
+            case 'availableAwards':
+              t.show = false;
+              break;
+            case 'claimedAwards':
+              if (this.settings.lbWidget.settings.instantWins.enable) {
+                t.show = false;
+              } else {
+                t.show = true;
+              }
+              break;
+            case 'instantWins':
+              if (this.settings.lbWidget.settings.instantWins.enable) {
+                t.show = true;
+              }
+              break;
+          }
+        });
+      }
+    }
 
+    const accordionObj = _this.awardsList(_this.settings.rewardsSection.accordionLayout, function (accordionSection, listContainer, topEntryContainer, layout, paginator) {
+      const rewardData = _this.settings.lbWidget.settings.awards[layout.type];
       if (typeof rewardData !== 'undefined') {
         if (rewardData.length === 0) {
           accordionSection.style.display = 'none';
@@ -2612,7 +3347,8 @@ export const MainWidget = function (options) {
 
       const availableRewards = query(rewardList, '.cl-accordion.availableAwards');
       if (availableRewards) {
-        availableRewards.appendChild(paginator);
+        const container = query(availableRewards, '.cl-accordion-list-container');
+        container.appendChild(paginator);
       }
     }
 
@@ -2626,17 +3362,49 @@ export const MainWidget = function (options) {
       });
       const claimedRewards = query(rewardList, '.cl-accordion.claimedAwards');
       if (claimedRewards) {
-        claimedRewards.appendChild(paginatorClaimed);
+        const container = query(claimedRewards, '.cl-accordion-list-container');
+        container.appendChild(paginatorClaimed);
       }
+    }
+
+    const availableBtn = document.querySelector('.cl-main-accordion-container-menu-item.availableAwards');
+    const claimedBtn = document.querySelector('.cl-main-accordion-container-menu-item.claimedAwards');
+
+    if (!totalCount) {
+      availableBtn.classList.add('not-available');
+    } else {
+      availableBtn.classList.remove('not-available');
+    }
+
+    if (!claimedTotalCount) {
+      claimedBtn.classList.add('not-available');
+    } else {
+      claimedBtn.classList.remove('not-available');
     }
   };
 
-  this.messagesListLayout = function (pageNumber) {
+  this.messagesListLayout = function (pageNumber, paginationArr) {
     const _this = this;
     const messageList = query(_this.settings.section, '.' + _this.settings.lbWidget.settings.navigation.inbox.containerClass + ' .cl-main-widget-inbox-list-body-res');
     const totalCount = _this.settings.lbWidget.settings.messages.totalCount;
-    const itemsPerPage = 15;
+    const itemsPerPage = 9;
     let paginator = query(messageList, '.paginator');
+
+    const prev = document.createElement('span');
+    prev.setAttribute('class', 'paginator-item prev');
+    const next = document.createElement('span');
+    next.setAttribute('class', 'paginator-item next');
+
+    if (paginationArr && paginationArr.length) {
+      let page = '';
+      for (const i in paginationArr) {
+        page += '<span class="paginator-item" data-page=' + paginationArr[i] + '\>' + paginationArr[i] + '</span>';
+      }
+      paginator.innerHTML = page;
+
+      paginator.prepend(prev);
+      paginator.appendChild(next);
+    }
 
     if (!paginator && totalCount > itemsPerPage) {
       const pagesCount = Math.ceil(totalCount / itemsPerPage);
@@ -2644,17 +3412,34 @@ export const MainWidget = function (options) {
       paginator.setAttribute('class', 'paginator');
 
       let page = '';
+      const isEllipsis = pagesCount > 7;
 
-      for (let i = 0; i < pagesCount; i++) {
-        page += '<span class="paginator-item" data-page=' + (i + 1) + '\>' + (i + 1) + '</span>';
+      if (isEllipsis) {
+        for (let i = 0; i < 7; i++) {
+          if (i === 5) {
+            page += '<span class="paginator-item" data-page="..."\>...</span>';
+          } else if (i === 6) {
+            page += '<span class="paginator-item" data-page=' + pagesCount + '\>' + pagesCount + '</span>';
+          } else {
+            page += '<span class="paginator-item" data-page=' + (i + 1) + '\>' + (i + 1) + '</span>';
+          }
+        }
+      } else {
+        for (let i = 0; i < pagesCount; i++) {
+          page += '<span class="paginator-item" data-page=' + (i + 1) + '\>' + (i + 1) + '</span>';
+        }
       }
+
       paginator.innerHTML = page;
+
+      paginator.prepend(prev);
+      paginator.appendChild(next);
     }
 
     messageList.innerHTML = '';
 
     mapObject(_this.settings.lbWidget.settings.messages.messages, function (inboxItem, key, count) {
-      var listItem = _this.messageItem(inboxItem);
+      const listItem = _this.messageItem(inboxItem);
       messageList.appendChild(listItem);
     });
 
@@ -2671,12 +3456,28 @@ export const MainWidget = function (options) {
     }
   };
 
-  this.missionsListLayout = function (pageNumber) {
+  this.missionsListLayout = function (pageNumber, paginationArr = null) {
     const _this = this;
     const missionsList = query(_this.settings.section, '.' + _this.settings.lbWidget.settings.navigation.missions.containerClass + ' .cl-main-widget-missions-list-body-res');
     const totalCount = _this.settings.lbWidget.settings.missions.totalCount;
-    const itemsPerPage = 15;
+    const itemsPerPage = 6;
     let paginator = query(missionsList, '.paginator');
+
+    const prev = document.createElement('span');
+    prev.setAttribute('class', 'paginator-item prev');
+    const next = document.createElement('span');
+    next.setAttribute('class', 'paginator-item next');
+
+    if (paginationArr && paginationArr.length) {
+      let page = '';
+      for (const i in paginationArr) {
+        page += '<span class="paginator-item" data-page=' + paginationArr[i] + '\>' + paginationArr[i] + '</span>';
+      }
+      paginator.innerHTML = page;
+
+      paginator.prepend(prev);
+      paginator.appendChild(next);
+    }
 
     if (!paginator && totalCount > itemsPerPage) {
       const pagesCount = Math.ceil(totalCount / itemsPerPage);
@@ -2684,11 +3485,28 @@ export const MainWidget = function (options) {
       paginator.setAttribute('class', 'paginator');
 
       let page = '';
+      const isEllipsis = pagesCount > 7;
 
-      for (let i = 0; i < pagesCount; i++) {
-        page += '<span class="paginator-item" data-page=' + (i + 1) + '\>' + (i + 1) + '</span>';
+      if (isEllipsis) {
+        for (let i = 0; i < 7; i++) {
+          if (i === 5) {
+            page += '<span class="paginator-item" data-page="..."\>...</span>';
+          } else if (i === 6) {
+            page += '<span class="paginator-item" data-page=' + pagesCount + '\>' + pagesCount + '</span>';
+          } else {
+            page += '<span class="paginator-item" data-page=' + (i + 1) + '\>' + (i + 1) + '</span>';
+          }
+        }
+      } else {
+        for (let i = 0; i < pagesCount; i++) {
+          page += '<span class="paginator-item" data-page=' + (i + 1) + '\>' + (i + 1) + '</span>';
+        }
       }
+
       paginator.innerHTML = page;
+
+      paginator.prepend(prev);
+      paginator.appendChild(next);
     }
 
     missionsList.innerHTML = '';
@@ -2709,30 +3527,627 @@ export const MainWidget = function (options) {
 
       missionsList.appendChild(paginator);
     }
+    setTimeout(function () {
+      _this.updateMissionsTime();
+    }, 1000);
   };
 
-  this.loadAwards = function (callback, pageNumber, claimedPageNumber) {
+  this.updateMissionsTime = function () {
+    const _this = this;
+
+    if (_this.settings.missions.timerInterval) {
+      clearTimeout(_this.settings.missions.timerInterval);
+    }
+
+    this.settings.lbWidget.settings.missions.missions.forEach(mission => {
+      if (mission.scheduling.endDate) {
+        const diff = moment(mission.scheduling.endDate).diff(moment());
+        const date = _this.settings.lbWidget.formatMissionDateTime(moment.duration(diff));
+        const el = document.querySelector(`.cl-missions-list-item[data-id="${mission.id}"]`);
+        if (!el) return;
+        const dateEl = el.querySelector('.cl-missions-list-details-date');
+        if (!dateEl) return;
+        dateEl.innerHTML = date;
+      }
+    });
+
+    this.settings.missions.timerInterval = setTimeout(function () {
+      _this.updateMissionsTime();
+    }, 1000);
+  };
+
+  this.loadAwards = function (callback, pageNumber, claimedPageNumber, expiredPageNumber, paginationArr = null, isClaimed = false, isExpired = false) {
     const _this = this;
     _this.settings.lbWidget.checkForAvailableAwards(
       function (rewards, availableRewards, expiredRewards) {
-        _this.settings.lbWidget.updateRewardsNavigationCounts();
-        _this.rewardsListLayout(pageNumber, claimedPageNumber, rewards, availableRewards, expiredRewards);
+        // _this.settings.lbWidget.updateRewardsNavigationCounts();
+        _this.rewardsListLayout(pageNumber, claimedPageNumber, expiredPageNumber, rewards, availableRewards, expiredRewards, paginationArr, isClaimed, isExpired);
 
         if (typeof callback === 'function') {
           callback();
         }
+
+        _this.loadInstantWins();
       },
       pageNumber,
       claimedPageNumber
     );
   };
 
-  this.loadMessages = function (pageNumber, callback) {
-    var _this = this;
+  this.loadInstantWins = function () {
+    const isMobile = window.screen.availWidth <= 768;
+
+    const instantWinsContainer = document.querySelector('.cl-accordion.instantWins');
+    const list = instantWinsContainer.querySelector('.cl-accordion-list');
+
+    const wheel = document.createElement('div');
+    const wheelLabel = document.createElement('div');
+    const wheelImage = document.createElement('div');
+    const wheelButton = document.createElement('div');
+
+    const scratchcards = document.createElement('div');
+    const scratchcardsLabel = document.createElement('div');
+    const scratchcardsImage = document.createElement('div');
+    const scratchcardsButton = document.createElement('div');
+
+    const scratchcardsGame = document.createElement('div');
+    const scratchcardsGameWrapper = document.createElement('div');
+    const scratchcardsGameLabel = document.createElement('div');
+    const scratchcardsGameContainer = document.createElement('div');
+    const scratchcardsGameCardWrapper = document.createElement('div');
+    const scratchcardsGameCardBlock = document.createElement('div');
+    const scratchcardsGameCanvas = document.createElement('canvas');
+    const scratchcardsGamePrize = document.createElement('div');
+    const scratchcardsGamePrizeLabel = document.createElement('div');
+    const scratchcardsGamePrizePrizes = document.createElement('div');
+    const scratchcardsGamePrizePrizesPrize1 = document.createElement('div');
+    const scratchcardsGamePrizePrizesPrize2 = document.createElement('div');
+    const scratchcardsGamePrizePrizesPrize3 = document.createElement('div');
+    const scratchcardsGamePrizePrizesPrize1Label = document.createElement('div');
+    const scratchcardsGamePrizePrizesPrize2Label = document.createElement('div');
+    const scratchcardsGamePrizePrizesPrize3Label = document.createElement('div');
+    const scratchcardsGamePrizeButton = document.createElement('div');
+
+    const scratchcardsPopup = document.createElement('div');
+    const scratchcardsPopupLabel = document.createElement('div');
+    const scratchcardsPopupDescription = document.createElement('div');
+    const scratchcardsPopupButton = document.createElement('div');
+
+    const singleWheel = document.createElement('div');
+    const singleWheelWrapper = document.createElement('div');
+    const singleWheelPopup = document.createElement('div');
+    const singleWheelPopupLabel = document.createElement('div');
+    const singleWheelPopupDescription = document.createElement('div');
+    const singleWheelPopupButton = document.createElement('div');
+
+    wheel.classList.add('wheel-item');
+    wheelLabel.classList.add('wheel-label');
+    wheelImage.classList.add('wheel-image');
+    wheelButton.classList.add('wheel-button');
+
+    scratchcards.classList.add('scratchcards-item');
+    scratchcardsLabel.classList.add('scratchcards-label');
+    scratchcardsImage.classList.add('scratchcards-image');
+    scratchcardsButton.classList.add('scratchcards-button');
+
+    singleWheel.classList.add('single-wheel');
+    singleWheelWrapper.classList.add('single-wheel-wrapper');
+
+    singleWheelPopup.classList.add('single-wheel-popup');
+    singleWheelPopupLabel.classList.add('single-wheel-popup-label');
+    singleWheelPopupDescription.classList.add('single-wheel-popup-description');
+    singleWheelPopupButton.classList.add('single-wheel-popup-button');
+
+    scratchcardsGame.classList.add('scratchcards-game');
+    scratchcardsGameWrapper.classList.add('scratchcards-game-wrapper');
+    scratchcardsGameLabel.classList.add('scratchcards-game-label');
+
+    scratchcardsGameContainer.classList.add('scratchcards-game-container');
+    scratchcardsGamePrize.classList.add('scratchcards-game-prize');
+    scratchcardsGamePrizeLabel.classList.add('scratchcards-game-prize-label');
+    scratchcardsGamePrizePrizes.classList.add('scratchcards-game-prize-prizes');
+    scratchcardsGamePrizePrizesPrize1.classList.add('scratchcards-game-prize-prizes-first');
+    scratchcardsGamePrizePrizesPrize2.classList.add('scratchcards-game-prize-prizes-second');
+    scratchcardsGamePrizePrizesPrize3.classList.add('scratchcards-game-prize-prizes-third');
+    scratchcardsGamePrizePrizesPrize1Label.classList.add('scratchcards-game-prize-prizes-label');
+    scratchcardsGamePrizePrizesPrize2Label.classList.add('scratchcards-game-prize-prizes-label');
+    scratchcardsGamePrizePrizesPrize3Label.classList.add('scratchcards-game-prize-prizes-label');
+    scratchcardsGamePrizeButton.classList.add('scratchcards-game-prize-button');
+    scratchcardsGameCardWrapper.classList.add('scratchcards-game-cardWrapper');
+    scratchcardsGameCardBlock.classList.add('scratchcards-game-card-block');
+
+    const wcardSize = isMobile ? '230' : '300';
+
+    scratchcardsGameCanvas.classList.add('scratchcards-game-canvas');
+    scratchcardsGameCanvas.setAttribute('width', wcardSize);
+    scratchcardsGameCanvas.setAttribute('height', wcardSize);
+
+    scratchcardsPopup.classList.add('scratchcards-popup');
+    scratchcardsPopupLabel.classList.add('scratchcards-popup-label');
+    scratchcardsPopupDescription.classList.add('scratchcards-popup-description');
+    scratchcardsPopupButton.classList.add('scratchcards-popup-button');
+
+    wheelLabel.innerHTML = this.settings.lbWidget.settings.translation.rewards.wheelLabel;
+    scratchcardsLabel.innerHTML = this.settings.lbWidget.settings.translation.rewards.scratchcardsLabel;
+    wheelButton.innerHTML = this.settings.lbWidget.settings.translation.rewards.wheelButton;
+    scratchcardsButton.innerHTML = this.settings.lbWidget.settings.translation.rewards.scratchcardsButton;
+
+    singleWheelPopupLabel.innerHTML = this.settings.lbWidget.settings.translation.rewards.singleWheelWinLabel;
+    singleWheelPopupButton.innerHTML = this.settings.lbWidget.settings.translation.rewards.singleWheelWinButton;
+
+    scratchcardsPopupLabel.innerHTML = this.settings.lbWidget.settings.translation.rewards.singleWheelWinLabel;
+    scratchcardsPopupButton.innerHTML = this.settings.lbWidget.settings.translation.rewards.singleWheelWinButton;
+
+    scratchcardsGameLabel.innerHTML = this.settings.lbWidget.settings.translation.rewards.scratchcardsLabel;
+    scratchcardsGamePrizeLabel.innerHTML = this.settings.lbWidget.settings.translation.rewards.prizeLabel;
+    scratchcardsGamePrizeButton.innerHTML = this.settings.lbWidget.settings.translation.rewards.prizeButton;
+
+    scratchcardsGamePrizePrizesPrize1Label.innerHTML = 'First prize';
+    scratchcardsGamePrizePrizesPrize2Label.innerHTML = 'Second prize';
+    scratchcardsGamePrizePrizesPrize3Label.innerHTML = 'Third prize';
+
+    scratchcardsPopup.appendChild(scratchcardsPopupLabel);
+    scratchcardsPopup.appendChild(scratchcardsPopupDescription);
+    scratchcardsPopup.appendChild(scratchcardsPopupButton);
+
+    scratchcardsGamePrizePrizesPrize1.appendChild(scratchcardsGamePrizePrizesPrize1Label);
+    scratchcardsGamePrizePrizesPrize2.appendChild(scratchcardsGamePrizePrizesPrize2Label);
+    scratchcardsGamePrizePrizesPrize3.appendChild(scratchcardsGamePrizePrizesPrize3Label);
+
+    scratchcardsGamePrizePrizes.appendChild(scratchcardsGamePrizePrizesPrize1);
+    scratchcardsGamePrizePrizes.appendChild(scratchcardsGamePrizePrizesPrize2);
+    scratchcardsGamePrizePrizes.appendChild(scratchcardsGamePrizePrizesPrize3);
+
+    scratchcardsGamePrize.appendChild(scratchcardsGamePrizeLabel);
+    scratchcardsGamePrize.appendChild(scratchcardsGamePrizePrizes);
+    scratchcardsGamePrize.appendChild(scratchcardsGamePrizeButton);
+
+    scratchcardsGameCardWrapper.appendChild(scratchcardsGameCanvas);
+    scratchcardsGameCardWrapper.appendChild(scratchcardsGameCardBlock);
+
+    scratchcardsGameContainer.appendChild(scratchcardsGameCardWrapper);
+    scratchcardsGameContainer.appendChild(scratchcardsGamePrize);
+
+    scratchcardsGameWrapper.appendChild(scratchcardsGameLabel);
+    scratchcardsGameWrapper.appendChild(scratchcardsGameContainer);
+    scratchcardsGame.appendChild(scratchcardsGameWrapper);
+    scratchcardsGame.appendChild(scratchcardsPopup);
+
+    singleWheelPopup.appendChild(singleWheelPopupLabel);
+    singleWheelPopup.appendChild(singleWheelPopupDescription);
+    singleWheelPopup.appendChild(singleWheelPopupButton);
+
+    singleWheel.appendChild(singleWheelWrapper);
+    singleWheel.appendChild(singleWheelPopup);
+
+    wheel.appendChild(wheelLabel);
+    wheel.appendChild(wheelImage);
+    wheel.appendChild(wheelButton);
+
+    scratchcards.appendChild(scratchcardsLabel);
+    scratchcards.appendChild(scratchcardsImage);
+    scratchcards.appendChild(scratchcardsButton);
+
+    list.appendChild(wheel);
+    list.appendChild(scratchcards);
+    list.appendChild(singleWheel);
+    list.appendChild(scratchcardsGame);
+  };
+
+  this.loadScratchCards = function () {
+    const isMobile = window.screen.availWidth <= 768;
+    const _this = this;
+    const scratchcardsGame = document.querySelector('.scratchcards-game');
+    const backBtn = document.querySelector('.cl-main-widget-reward-header-back');
+    const scratchAllBtn = document.querySelector('.scratchcards-game-prize-button');
+    const cardBlock = document.querySelector('.scratchcards-game-card-block');
+    const themeWrapper = document.querySelector('.cl-widget-ms-wrapper');
+
+    const isLightTheme = themeWrapper.classList.contains('lightTheme');
+
+    cardBlock.innerHtml = '';
+    while (cardBlock.firstChild) {
+      cardBlock.removeChild(cardBlock.lastChild);
+    }
+
+    const prizeClasses = ['prize-1', 'prize-2', 'prize-3'];
+
+    for (let i = 0; i < 9; i++) {
+      const cell = document.createElement('div');
+      cell.classList.add('scratchcards-game-card-cell');
+      const randNum = Math.floor(Math.random() * 3);
+      cell.classList.add(prizeClasses[randNum]);
+      cardBlock.appendChild(cell);
+    }
+
+    scratchcardsGame.classList.add('cl-show');
+    backBtn.style.display = 'block';
+
+    const grid = [];
+    for (let i = 0; i < 3; i++) {
+      const row = [];
+      for (let j = 0; j < 3; j++) {
+        row.push({ image: getRandomImage(), scratched: false });
+      }
+      grid.push(row);
+    }
+
+    function getRandomImage () {
+      return 'https://first-space.cdn.ziqni.com/member-home-page/img/second_prize.39d8d773.png';
+    }
+
+    const canvas = document.querySelector('.scratchcards-game-canvas');
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+    const cellSize = isMobile ? 60 : 80;
+    const spacing = isMobile ? 15 : 20;
+    const borderRadius = 10;
+    const cardSize = isMobile ? 212 : 300;
+
+    ctx.clearRect(0, 0, cardSize, cardSize);
+
+    for (let i = 0; i < 3; i++) {
+      for (let j = 0; j < 3; j++) {
+        const cell = grid[i][j];
+        const x = j * (cellSize + spacing) + 10;
+        const y = i * (cellSize + spacing) + 10;
+
+        if (cell.scratched) {
+          const image = new Image();
+          image.src = cell.image;
+          image.onload = () => {
+            ctx.save();
+            ctx.beginPath();
+            ctx.moveTo(x + borderRadius, y);
+            ctx.arcTo(x + cellSize, y, x + cellSize, y + borderRadius, borderRadius);
+            ctx.arcTo(x + cellSize, y + cellSize, x + cellSize - borderRadius, y + cellSize, borderRadius);
+            ctx.arcTo(x, y + cellSize, x, y + cellSize - borderRadius, borderRadius);
+            ctx.arcTo(x, y, x + borderRadius, y, borderRadius);
+            ctx.closePath();
+            ctx.clip();
+
+            ctx.drawImage(image, x, y, cellSize, cellSize);
+
+            ctx.restore();
+          };
+        } else {
+          ctx.save();
+          ctx.beginPath();
+          ctx.moveTo(x + borderRadius, y);
+          ctx.arcTo(x + cellSize, y, x + cellSize, y + borderRadius, borderRadius);
+          ctx.arcTo(x + cellSize, y + cellSize, x + cellSize - borderRadius, y + cellSize, borderRadius);
+          ctx.arcTo(x, y + cellSize, x, y + cellSize - borderRadius, borderRadius);
+          ctx.arcTo(x, y, x + borderRadius, y, borderRadius);
+          ctx.closePath();
+          ctx.shadowColor = isLightTheme ? 'rgba(238, 62, 200, 0.4)' : 'rgba(64, 106, 140, 0.5)';
+          ctx.shadowBlur = 12;
+          ctx.fillStyle = isLightTheme ? '#ffffff' : '#1A202C';
+          ctx.fill();
+          ctx.strokeStyle = isLightTheme ? '#F7A1E4' : '#406A8C';
+          ctx.stroke();
+          ctx.clip();
+
+          ctx.fillStyle = '#BEE9F3';
+          ctx.font = '40px Syne';
+
+          const textWidth = ctx.measureText('?').width;
+          const textX = x + (cellSize - textWidth) / 2;
+          const textY = y + cellSize / 2 + 15;
+
+          ctx.fillText('?', textX, textY);
+
+          ctx.restore();
+        }
+      }
+    }
+
+    let isDrag = false;
+
+    canvas.addEventListener('mousedown', function (event) {
+      isDrag = true;
+      clearArc(event.offsetX, event.offsetY);
+      judgeVisible();
+    }, false);
+
+    canvas.addEventListener('mousemove', function (event) {
+      if (!isDrag) {
+        return;
+      }
+      clearArc(event.offsetX, event.offsetY);
+      judgeVisible();
+    }, false);
+
+    canvas.addEventListener('mouseup', function (event) {
+      isDrag = false;
+    }, false);
+
+    canvas.addEventListener('touchstart', function (event) {
+      if (event.targetTouches.length !== 1) {
+        return;
+      }
+
+      const r = canvas.getBoundingClientRect();
+      const currX = event.touches[0].clientX - r.left;
+      const currY = event.touches[0].clientY - r.top;
+
+      event.preventDefault();
+
+      isDrag = true;
+
+      clearArc(currX, currY);
+      judgeVisible();
+    }, false);
+
+    canvas.addEventListener('touchmove', function (event) {
+      if (!isDrag || event.targetTouches.length !== 1) {
+        return;
+      }
+
+      const r = canvas.getBoundingClientRect();
+      const currX = event.touches[0].clientX - r.left;
+      const currY = event.touches[0].clientY - r.top;
+
+      event.preventDefault();
+      clearArc(currX, currY);
+      judgeVisible();
+    }, false);
+
+    canvas.addEventListener('touchend', function (event) {
+      isDrag = false;
+    }, false);
+
+    function clearArc (x, y) {
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.beginPath();
+      ctx.arc(x, y, 30, 0, Math.PI * 2, false);
+      ctx.fill();
+    }
+
+    function judgeVisible () {
+      const imageData = ctx.getImageData(0, 0, 300, 300);
+      const pixels = imageData.data;
+      const result = {};
+      let i;
+      let len;
+
+      for (i = 3, len = pixels.length; i < len; i += 4) {
+        result[pixels[i]] || (result[pixels[i]] = 0);
+        result[pixels[i]]++;
+      }
+
+      let n = 0;
+      for (let i = 0; i < pixels.length; i += 100) {
+        if (pixels[i + 3] < 128) {
+          n += 100;
+        }
+      }
+
+      if (n >= pixels.length * 0.9) {
+        ctx.globalCompositeOperation = 'destination-over';
+        clearCanvas();
+      }
+    }
+
+    function clearCanvas () {
+      const context = canvas.getContext('2d');
+      context.clearRect(0, 0, canvas.width, canvas.height);
+      showPopup();
+    }
+
+    function showPopup () {
+      const popup = document.querySelector('.scratchcards-popup');
+      popup.style.display = 'flex';
+
+      const wrapp = document.querySelector('.scratchcards-game-wrapper');
+      wrapp.classList.add('blur');
+
+      const description = document.querySelector('.scratchcards-popup-description');
+      description.innerHTML = _this.settings.lbWidget.settings.translation.rewards.singleWheelWinDescription + ' ' + 'First prize';
+      description.innerHTML = _this.settings.lbWidget.settings.translation.rewards.singleWheelWinDescription + ' ' + 'First prize';
+
+      const climeBtn = document.querySelector('.scratchcards-popup-button');
+      climeBtn.addEventListener('click', () => {
+        const popup = document.querySelector('.scratchcards-popup');
+        const wrapp = document.querySelector('.scratchcards-game-wrapper');
+
+        popup.style.display = 'none';
+        wrapp.classList.remove('blur');
+      });
+    }
+
+    scratchAllBtn.addEventListener('click', clearCanvas, false);
+    document.addEventListener('DOMContentLoaded', judgeVisible, false);
+  };
+
+  this.loadSingleWheels = async function (singleWheelsData) {
+    console.log('singleWheelsData:', singleWheelsData);
+    const isMobile = window.screen.availWidth <= 768;
+    const singleWheel = document.querySelector('.single-wheel');
+    const singleWheelWrapper = singleWheel.querySelector('.single-wheel-wrapper');
+    const backBtn = document.querySelector('.cl-main-widget-reward-header-back ');
+    singleWheel.classList.add('cl-show');
+    backBtn.style.display = 'block';
+
+    if (singleWheelsData && singleWheelsData.length) {
+      singleWheelsData.forEach((singleWheel, idx) => {
+        const swDom = this.createSingleWheelDom(idx, singleWheel, isMobile);
+        singleWheelWrapper.appendChild(swDom);
+      });
+      for (let i = 0; i < singleWheelsData.length; i++) {
+        await this.loadSingleWheel(isMobile, singleWheelsData[i], i);
+      }
+    }
+  };
+
+  this.loadSingleWheel = async function (isMobile, singleWheel, idx) {
+    const _this = this;
+    const preLoader = _this.preloader();
+    const tiles = singleWheel.tiles;
+
+    const rand = (m, M) => Math.random() * (M - m) + m;
+    const tot = tiles.length;
+    const spinEl = document.querySelector('#spin-' + idx);
+    const climeBtn = document.querySelector('.single-wheel-popup-button');
+    const ctx = document.querySelector('#wheel-' + idx).getContext('2d');
+    const dia = ctx.canvas.width;
+    const rad = dia / 2;
+    const PI = Math.PI;
+    const TAU = 2 * PI;
+    const arc = TAU / tiles.length;
+
+    const friction = 0.991;
+    let angVel = 0;
+    let ang = 0;
+
+    const wheelFont = isMobile ? '10px sans-serif' : 'bold 15px sans-serif';
+
+    const getIndex = () => Math.floor(tot - (ang / TAU) * tot) % tot;
+
+    const randomRgbColor = () => {
+      const r = Math.floor(Math.random() * 256); // Random between 0-255
+      const g = Math.floor(Math.random() * 256); // Random between 0-255
+      const b = Math.floor(Math.random() * 256); // Random between 0-255
+      return 'rgb(' + r + ',' + g + ',' + b + ')';
+    };
+
+    const addImageProcess = (src) => {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = reject;
+        img.src = src;
+      });
+    };
+
+    // eslint-disable-next-line no-unused-vars
+    const loadImage = async (ctx, src, rad, rot) => {
+      const img = await addImageProcess(src);
+      ctx.save();
+      ctx.resetTransform();
+      ctx.translate(rad, rad);
+      ctx.rotate(rot);
+      ctx.clip();
+      ctx.drawImage(img, 0, -75, 150, 150);
+      ctx.restore();
+    };
+
+    async function drawSector (sector, i) {
+      const ang = arc * i;
+      // eslint-disable-next-line no-unused-vars
+      const rot = ang + arc / 2;
+      ctx.save();
+      // COLOR
+      ctx.beginPath();
+      ctx.fillStyle = randomRgbColor();
+      ctx.strokeStyle = '#8D0C71';
+      ctx.moveTo(rad, rad);
+      ctx.arc(rad, rad, rad, ang, ang + arc);
+      ctx.lineTo(rad, rad);
+      ctx.fill();
+      if (sector.iconLink) {
+        await loadImage(ctx, sector.iconLink, rad, rot);
+      }
+      ctx.stroke();
+      // TEXT
+      ctx.translate(rad, rad);
+      ctx.rotate(ang + arc / 2);
+      ctx.textAlign = 'right';
+      ctx.fillStyle = '#fff';
+      ctx.font = wheelFont;
+      ctx.strokeText(stripHtml(sector.text), rad - 15, 10);
+      ctx.fillText(stripHtml(sector.text), rad - 15, 10);
+      ctx.restore();
+    }
+
+    function rotate () {
+      ctx.canvas.style.transform = `rotate(${ang - PI / 2}rad)`;
+    }
+
+    function frame () {
+      if (!angVel) return;
+      angVel *= friction;
+      if (angVel < 0.002) {
+        angVel = 0;
+        const sector = tiles[getIndex()];
+
+        const popup = document.querySelector('.single-wheel-popup');
+        popup.style.display = 'flex';
+
+        const wrapp = document.querySelector('.single-wheel-wrapper');
+        wrapp.classList.add('blur');
+
+        const description = document.querySelector('.single-wheel-popup-description');
+        description.innerHTML = _this.settings.lbWidget.settings.translation.rewards.singleWheelWinDescription + ' ' + stripHtml(sector.text);
+      } // Bring to stop
+      ang += angVel; // Update angle
+      ang %= TAU; // Normalize angle
+      rotate();
+    }
+
+    function engine () {
+      frame();
+      requestAnimationFrame(engine);
+    }
+    async function init () {
+      for (const [i, sector] of tiles.entries()) {
+        await drawSector(sector, i);
+      }
+      // rotate();
+      engine();
+      spinEl.addEventListener('click', () => {
+        const play = _this.settings.lbWidget.playInstantWin();
+        console.log('play:', play);
+        if (!angVel) angVel = rand(0.25, 0.45);
+      });
+      climeBtn.addEventListener('click', () => {
+        const popup = document.querySelector('.single-wheel-popup');
+        popup.style.display = 'none';
+
+        const wrapp = document.querySelector('.single-wheel-wrapper');
+        wrapp.classList.remove('blur');
+      });
+    }
+
+    preLoader.show(async function () {
+      await init();
+      preLoader.hide();
+    });
+  };
+
+  this.createSingleWheelDom = function (idx, singleWheel, isMobile) {
+    const sw = document.createElement('div');
+    sw.classList.add('single-wheel-element');
+    sw.classList.add('single-wheel-element-' + idx);
+
+    const wheelSize = isMobile ? '192' : '300';
+
+    const template = require('../templates/mainWidget/singleWheelDom.hbs');
+    sw.innerHTML = template({
+      idx: idx,
+      wheelSize: wheelSize,
+      label: singleWheel.name ?? '',
+      description: singleWheel.description ? stripHtml(singleWheel.description) : '',
+      buttonLabel: 'Spin'
+    });
+
+    return sw;
+  };
+
+  this.hideInstantWins = function () {
+    const singleWheel = document.querySelector('.single-wheel');
+    const scratchcardsGame = document.querySelector('.scratchcards-game');
+    const backBtn = document.querySelector('.cl-main-widget-reward-header-back ');
+
+    singleWheel.classList.remove('cl-show');
+    scratchcardsGame.classList.remove('cl-show');
+    backBtn.style.display = 'none';
+  };
+
+  this.loadMessages = function (pageNumber, callback, paginationArr = null) {
+    const _this = this;
 
     _this.settings.lbWidget.checkForAvailableMessages(pageNumber, function () {
-      _this.messagesListLayout(pageNumber);
-      _this.settings.lbWidget.updateMessagesNavigationCounts();
+      _this.messagesListLayout(pageNumber, paginationArr);
+      // _this.settings.lbWidget.updateMessagesNavigationCounts();
 
       if (typeof callback === 'function') {
         callback();
@@ -2740,12 +4155,12 @@ export const MainWidget = function (options) {
     });
   };
 
-  this.loadMissions = function (pageNumber, callback) {
+  this.loadMissions = function (pageNumber, callback, paginationArr = null) {
     const _this = this;
 
     _this.settings.lbWidget.checkForAvailableMissions(pageNumber, function () {
-      _this.missionsListLayout(pageNumber);
-      _this.settings.lbWidget.updateMissionsNavigationCounts();
+      _this.missionsListLayout(pageNumber, paginationArr);
+      // _this.settings.lbWidget.updateMissionsNavigationCounts();
 
       if (typeof callback === 'function') {
         callback();
@@ -2753,11 +4168,23 @@ export const MainWidget = function (options) {
     });
   };
 
-  var changeInterval;
-  var changeContainerInterval;
+  this.closeOpenedItems = function () {
+    this.hideCompetitionList();
+    this.hideAchievementDetails();
+    this.hideRewardDetails();
+    this.hideMessageDetails();
+    this.hideMissionMap();
+    this.hideMissionDetails();
+  };
+
+  let changeInterval;
+  let changeContainerInterval;
   this.navigationSwitch = function (target, callback) {
-    var _this = this;
-    var preLoader = _this.preloader();
+    const _this = this;
+    const preLoader = _this.preloader();
+
+    const instantWinsBackIcon = query(_this.settings.container, '.cl-main-widget-reward-header-back');
+    instantWinsBackIcon.style.display = 'none';
 
     if (_this.settings.navigationSwitchInProgress && _this.settings.navigationSwitchLastAtempt + 3000 < new Date().getTime()) {
       _this.settings.navigationSwitchInProgress = false;
@@ -2772,24 +4199,52 @@ export const MainWidget = function (options) {
           if (changeInterval) clearTimeout(changeInterval);
           if (changeContainerInterval) clearTimeout(changeContainerInterval);
 
+          _this.closeOpenedItems();
+
           objectIterator(query(_this.settings.container, '.cl-main-widget-navigation-items .cl-active-nav'), function (obj) {
             removeClass(obj, 'cl-active-nav');
           });
 
           objectIterator(query(_this.settings.container, '.cl-main-widget-section-container .cl-main-active-section'), function (obj) {
             removeClass(obj, 'cl-main-active-section');
-            setTimeout(function () {
-              obj.style.display = 'none';
-            }, 150);
+            obj.style.display = 'none';
           });
 
           changeContainerInterval = setTimeout(function () {
-            if (hasClass(target, 'cl-main-widget-navigation-lb-icon')) {
+            if (target.classList.contains('cl-main-widget-navigation-dashboard') || target.closest('.cl-main-widget-navigation-dashboard')) {
+              const dashboardContainer = query(_this.settings.container, '.cl-main-widget-section-container .' + _this.settings.lbWidget.settings.navigation.dashboard.containerClass);
+
+              dashboardContainer.style.display = 'flex';
+
+              if (_this.settings.lbWidget.settings.navigation.achievements.enable) {
+                _this.settings.lbWidget.checkForAvailableAchievements(1, function (achievementData) {
+                  _this.loadDashboardAchievements(achievementData);
+                });
+              }
+
+              if (_this.settings.lbWidget.settings.navigation.tournaments.enable) {
+                _this.loadDashboardTournaments();
+              }
+
+              changeInterval = setTimeout(function () {
+                addClass(dashboardContainer, 'cl-main-active-section');
+              }, 30);
+
+              _this.loadAwards();
+
+              preLoader.hide();
+
+              _this.settings.navigationSwitchInProgress = false;
+            } else if (target.classList.contains('cl-main-widget-navigation-lb') || target.closest('.cl-main-widget-navigation-lb')) {
               _this.settings.lbWidget.checkForAvailableRewards(1);
               _this.loadLeaderboard(function () {
-                var lbContainer = query(_this.settings.container, '.cl-main-widget-section-container .' + _this.settings.lbWidget.settings.navigation.tournaments.containerClass);
+                const lbContainer = query(_this.settings.container, '.cl-main-widget-section-container .' + _this.settings.lbWidget.settings.navigation.tournaments.containerClass);
+                const missingMember = query(lbContainer, '.cl-main-widget-lb-missing-member');
+                if (missingMember) {
+                  missingMember.style.display = 'none';
+                }
 
-                lbContainer.style.display = 'block';
+                lbContainer.style.display = 'flex';
                 changeInterval = setTimeout(function () {
                   addClass(lbContainer, 'cl-main-active-section');
                 }, 30);
@@ -2801,14 +4256,14 @@ export const MainWidget = function (options) {
                 preLoader.hide();
 
                 _this.settings.navigationSwitchInProgress = false;
-              });
-            } else if (hasClass(target, 'cl-main-widget-navigation-ach-icon')) {
+              }, true);
+            } else if (target.classList.contains('cl-main-widget-navigation-ach') || target.closest('.cl-main-widget-navigation-ach')) {
               _this.loadAchievements(1, function () {
-                var achContainer = query(_this.settings.container, '.cl-main-widget-section-container .' + _this.settings.lbWidget.settings.navigation.achievements.containerClass);
+                const achContainer = query(_this.settings.container, '.cl-main-widget-section-container .' + _this.settings.lbWidget.settings.navigation.achievements.containerClass);
 
                 _this.settings.achievement.detailsContainer.style.display = 'none';
 
-                achContainer.style.display = 'block';
+                achContainer.style.display = 'flex';
                 changeInterval = setTimeout(function () {
                   addClass(achContainer, 'cl-main-active-section');
 
@@ -2821,12 +4276,12 @@ export const MainWidget = function (options) {
 
                 _this.settings.navigationSwitchInProgress = false;
               });
-            } else if (hasClass(target, 'cl-main-widget-navigation-rewards-icon')) {
+            } else if (target.classList.contains('cl-main-widget-navigation-rewards') || target.closest('.cl-main-widget-navigation-rewards')) {
               _this.loadAwards(
                 function () {
                   const rewardsContainer = query(_this.settings.container, '.cl-main-widget-section-container .' + _this.settings.lbWidget.settings.navigation.rewards.containerClass);
 
-                  rewardsContainer.style.display = 'block';
+                  rewardsContainer.style.display = 'flex';
                   changeInterval = setTimeout(function () {
                     addClass(rewardsContainer, 'cl-main-active-section');
                   }, 30);
@@ -2840,13 +4295,14 @@ export const MainWidget = function (options) {
                   _this.settings.navigationSwitchInProgress = false;
                 },
                 1,
+                1,
                 1
               );
-            } else if (hasClass(target, 'cl-main-widget-navigation-inbox-icon')) {
+            } else if (target.classList.contains('cl-main-widget-navigation-inbox') || target.closest('.cl-main-widget-navigation-inbox')) {
               _this.loadMessages(1, function () {
-                var inboxContainer = query(_this.settings.container, '.cl-main-widget-section-container .' + _this.settings.lbWidget.settings.navigation.inbox.containerClass);
+                const inboxContainer = query(_this.settings.container, '.cl-main-widget-section-container .' + _this.settings.lbWidget.settings.navigation.inbox.containerClass);
 
-                inboxContainer.style.display = 'block';
+                inboxContainer.style.display = 'flex';
                 changeInterval = setTimeout(function () {
                   addClass(inboxContainer, 'cl-main-active-section');
                 }, 30);
@@ -2855,11 +4311,11 @@ export const MainWidget = function (options) {
 
                 _this.settings.navigationSwitchInProgress = false;
               });
-            } else if (hasClass(target, 'cl-main-widget-navigation-missions-icon')) {
+            } else if (target.classList.contains('cl-main-widget-navigation-missions') || target.closest('.cl-main-widget-navigation-missions')) {
               _this.loadMissions(1, function () {
                 const missionsContainer = query(_this.settings.container, '.cl-main-widget-section-container .' + _this.settings.lbWidget.settings.navigation.missions.containerClass);
 
-                missionsContainer.style.display = 'block';
+                missionsContainer.style.display = 'flex';
                 changeInterval = setTimeout(function () {
                   addClass(missionsContainer, 'cl-main-active-section');
                 }, 30);
@@ -2871,7 +4327,9 @@ export const MainWidget = function (options) {
             }
           }, 250);
 
-          addClass(target.parentNode, 'cl-active-nav');
+          const targetBtn = target.classList.contains('cl-main-widget-navigation-item') ? target : target.closest('.cl-main-widget-navigation-item');
+
+          addClass(targetBtn, 'cl-active-nav');
         });
       } else if (typeof callback === 'function') {
         _this.settings.navigationSwitchInProgress = false;
@@ -2881,8 +4339,10 @@ export const MainWidget = function (options) {
   };
 
   this.resetNavigation = function (callback) {
-    var _this = this;
+    const _this = this;
     const listIcon = query(_this.settings.container, '.cl-main-widget-lb-header-list-icon');
+    const backIcon = query(_this.settings.container, '.cl-main-widget-lb-header-back-icon');
+    const missionBackIcon = query(_this.settings.container, '.cl-main-widget-mission-header-back-icon');
 
     objectIterator(query(_this.settings.container, '.cl-main-widget-navigation-items .cl-active-nav'), function (obj) {
       removeClass(obj, 'cl-active-nav');
@@ -2893,7 +4353,7 @@ export const MainWidget = function (options) {
       removeClass(obj, 'cl-main-active-section');
     });
 
-    var activeNave = false;
+    let activeNave = false;
     objectIterator(query(_this.settings.container, '.cl-main-widget-navigation-container .cl-main-widget-navigation-item'), function (navItem, key, count) {
       if (!activeNave && !hasClass(navItem, 'cl-hidden-navigation-item')) {
         _this.navigationSwitch(query(navItem, '.cl-main-navigation-item'));
@@ -2901,9 +4361,11 @@ export const MainWidget = function (options) {
       }
     });
 
-    listIcon.style.opacity = '1';
+    listIcon.style.display = 'block';
+    backIcon.style.display = 'none';
+    missionBackIcon.style.display = 'none';
     _this.hideEmbeddedCompetitionDetailsContent();
-    // _this.hideCompetitionList();
+    _this.hideCompetitionList();
 
     setTimeout(function () {
       if (typeof callback !== 'undefined') callback();
@@ -2911,30 +4373,25 @@ export const MainWidget = function (options) {
   };
 
   this.initLayout = function (callback) {
-    var _this = this;
+    const _this = this;
 
     _this.settings.active = true;
 
-    _this.loadCompetitionList();
+    _this.loadLeaderboard(() => {}, true);
 
-    _this.settings.container.style.display = 'block';
-    _this.settings.overlayContainer.style.display = 'block';
     setTimeout(function () {
+      _this.settings.container.style.display = 'block';
+      _this.settings.overlayContainer.style.display = 'block';
       addClass(_this.settings.container, 'cl-show');
 
-      var member = query(_this.settings.leaderboard.list, '.cl-lb-member-row');
+      const member = query(_this.settings.leaderboard.resultContainer, '.cl-lb-member-row');
       if (member !== null) {
-        _this.missingMember(_this.isElementVisibleInView(member, _this.settings.leaderboard.list.parentNode));
         _this.missingMember(_this.isElementVisibleInView(member, _this.settings.leaderboard.resultContainer));
       } else {
         _this.missingMemberReset();
       }
 
       _this.resetNavigation(callback);
-      const scrollY = document.documentElement.style.getPropertyValue('--scroll-y');
-      const body = document.body;
-      body.style.position = 'fixed';
-      body.style.top = `-${scrollY}`;
-    }, 30);
+    }, 200);
   };
 };

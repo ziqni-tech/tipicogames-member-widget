@@ -4,12 +4,26 @@
         "hours": "v",
         "minutesShortHand": "min",
         "minutes": "m",
-        "seconds": "s"
+        "seconds": "s",
+        "daysFull": "Dienos",
+        "hoursFull": "Valandos",
+        "minutesFull": "Minutės",
+        "secondsFull": "sekundės"
     },
     "achievements": {
         "label": "Pasiekimai",
         "more": "Daugiau",
-        "complete": "užbaigtas 100%"
+        "complete": "užbaigtas 100%",
+        "enter": "Įveskite pasiekimą",
+        "leave": "Palikite pasiekimus",
+        "listEnterBtn": "Prisijunk",
+        "listLeaveBtn": "Palikti",
+        "listProgressionBtn": "Apdorojimas...",
+        "leavePopupTitle": "Palikite pasiekimą",
+        "leavePopupDescription": "Ar tikrai norite palikti šį laimėjimą?",
+        "leavePopupClose": "Uždaryti",
+        "leavePopupConfirm": "Palikti",
+        "progress": "Progresas"
     },
     "tournaments": {
         "label": "Turnyrai",
@@ -20,7 +34,9 @@
         "finishing": "Besibaigiantys",
         "finished": "Pasibaigę",
         "registered": "Užregistruotas",
-        "noAvailableCompetitions": "Šiuo metu turnyrų nėra"
+        "noAvailableCompetitions": "Šiuo metu turnyrų nėra",
+        "processing": "Apdorojimas...",
+        "date": "Data"
     },
     "leaderboard": {
         "rank": "Vieta",
@@ -28,6 +44,12 @@
         "points": "Taškai",
         "prize": "Prizai",
         "you": "Jūs"
+    },
+    "brackets": {
+        "title": "Turnyrų laikiklis",
+        "starts": "Prasideda",
+        "ends": "Baigiasi",
+        "ended": "Baigėsi"
     },
     "miniLeaderboard": {
         "highScore": "Aukščiausias rezultatas",
@@ -45,12 +67,48 @@
         "claimed": "Atsiimtas",
         "availableRewards": "Galimi Apdovanojimai",
         "rewards": "Atsiimti Apdovanojimai",
-        "expiredRewards": "Pasibaigė Galioti Apdovanojimai"
+        "expiredRewards": "Pasibaigė Galioti Apdovanojimai",
+        "instantWins": "Momentiniai laimėjimai",
+        "wheelLabel": "Vienas ratas",
+        "scratchcardsLabel": "Nutrinamos kortelės",
+        "wheelButton": "žaisti",
+        "scratchcardsButton": "žaisti",
+        "singleWheelWinLabel": "Sveikiname!",
+        "singleWheelWinDescription": "Tu laimėjai",
+        "singleWheelWinButton": "Reikalauti",
+        "prizeLabel": "Atskleiskite savo prizą nubraukdami!",
+        "prizeButton": "Nubraukite viską"
     },
     "messages": {
         "label": "Žinutės"
     },
+    "dashboard": {
+        "label": "Prietaisų skydelis",
+        "instantWinsTitle": "Momentiniai laimėjimai",
+        "achievementsTitle": "Pasiekimai",
+        "tournamentsTitle": "Dabartiniai turnyrai",
+        "upcomingTournamentsTitle": "Būsimi turnyrai",
+        "tournamentBtn": "Žiūrėti daugiau",
+        "endsTitle": "Baigiasi",
+        "startsTitle": "Prasideda",
+        "prizeTitle": "Prizas",
+        "singleWheelTitle": "Vienas ratas",
+        "singleWheelButton": "žaisti",
+        "scratchcardsTitle": "Nutrinamos kortelės",
+        "scratchcardsButton": "žaisti",
+        "seeAll": "Matyti viską"
+    },
+    "missions": {
+        "label": "Misijos",
+        "btn": "Eik",
+        "prizeLabel": "Prizas",
+        "mapLabel": "Misijos žemėlapis"
+    },
     "global": {
-        "copy": "Sukūrė Ziqni"
+        "copy": "Sukūrė Ziqni",
+        "descriptionLabel": "Apibūdinimas",
+        "tAndCLabel": "Sąlygos ir nuostatos",
+        "tAndCEmpty": "Jokių sąlygų ir sąlygų nepateikta",
+        "descriptionEmpty": "Aprašymų nepateikta"
     }
 }

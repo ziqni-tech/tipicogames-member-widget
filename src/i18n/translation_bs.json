@@ -1,0 +1,114 @@
+{
+    "time": {
+        "days": "dani",
+        "hours": "sati",
+        "minutesShortHand": "min",
+        "minutes": "minuti",
+        "seconds": "sekunde",
+        "daysFull": "Dani",
+        "hoursFull": "Sati",
+        "minutesFull": "Minute",
+        "secondsFull": "Sekunde"
+    },
+    "achievements": {
+        "label": "dostignuća",
+        "more": "više",
+        "complete": "završeno 100%",
+        "enter": "Unesite postignuće",
+        "leave": "Ostavite postignuće",
+        "listEnterBtn": "Pridružite se",
+        "listLeaveBtn": "Odlazi",
+        "listProgressionBtn": "Obrada...",
+        "leavePopupTitle": "Ostavite postignuće",
+        "leavePopupDescription": "Jeste li sigurni da želite napustiti ovo postignuće?",
+        "leavePopupClose": "Zatvori",
+        "leavePopupConfirm": "Odlazi",
+        "progress": "Napredak"
+    },
+    "tournaments": {
+		"label":"turniri",
+        "enter": "Uđite u turnir",
+        "readyCompetitions": "Predstojeći turniri",
+        "activeCompetitions": "Aktivni turniri",
+        "finishedCompetitions": "Završeni turniri",
+        "finishing": "Završavaju se",
+        "finished": "Završeni",
+        "registered": "Registrovani",
+        "noAvailableCompetitions": "Nema dostupnih takmičenja",
+        "processing": "Obrada...",
+        "date": "Datum"
+    },
+    "leaderboard": {
+        "rank": "rang",
+        "name": "ime",
+        "points": "poeni",
+        "prize": "nagrada",
+        "you": "Vi"
+    },
+    "brackets": {
+        "title": "Grupa turnira",
+        "starts": "Počinje",
+        "ends": "Završava",
+        "ended": "Završeno"
+    },
+    "miniLeaderboard": {
+        "highScore": "Vaš rezultat",
+        "lastScore": "Poslednji rezultat",
+        "rank": "Rang",
+        "startsIn": "Počinje za",
+        "started": "počelo",
+        "starting": "Počinje ",
+        "finishing": "završavaju se",
+        "finished": "završen"
+    },
+    "rewards": {
+        "label": "Nagrade",
+        "claim": "Uzmite sada",
+        "claimed": "Uzeto",
+        "availableRewards": "Dostupne nagrade",
+        "rewards": "Uzete nagrade",
+        "expiredRewards": "Istekle nagrade",
+        "instantWins": "Instant pobjede",
+        "wheelLabel": "Pojedinačni točak",
+        "scratchcardsLabel": "Scratchcards",
+        "wheelButton": "Igraj",
+        "scratchcardsButton": "Igraj",
+        "singleWheelWinLabel": "Čestitamo!",
+        "singleWheelWinDescription": "Ti si pobijedio",
+        "singleWheelWinButton": "TVRDITI",
+        "prizeLabel": "Otkrijte svoju nagradu grebanjem!",
+        "prizeButton": "Izgrebaj sve"
+    },
+    "messages": {
+        "label": "Poruke"
+    },
+    "dashboard": {
+        "label": "Dashboard",
+        "instantWinsTitle": "Instant pobjede",
+        "achievementsTitle": "Dostignuća",
+        "tournamentsTitle": "Trenutni turniri",
+        "upcomingTournamentsTitle": "Nadolazeći turniri",
+        "tournamentBtn": "Vidjeti više",
+        "endsTitle": "Završava",
+        "startsTitle": "Počinje",
+        "prizeTitle": "Nagrada",
+        "singleWheelTitle": "Pojedinačni točak",
+        "singleWheelButton": "Igraj",
+        "scratchcardsTitle": "Scratchcards",
+        "scratchcardsButton": "Igraj",
+        "seeAll": "Vidjeti sve"
+    },
+    "missions": {
+        "label": "Misije",
+        "btn": "Idi",
+        "prizeLabel": "Nagrada",
+        "mapLabel": "Karta misije"
+    },
+    "global": {
+        "copy": "Pokreće ga Ziqni",
+        "descriptionLabel": "Opis",
+        "tAndCLabel": "Odredbe i uvjeti",
+        "tAndCEmpty": "Nisu navedeni uslovi i odredbe",
+        "descriptionEmpty": "Nisu navedeni opisi"
+    }
+}
