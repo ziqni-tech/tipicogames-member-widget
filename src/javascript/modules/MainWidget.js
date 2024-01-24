@@ -465,7 +465,7 @@ export const MainWidget = function (options) {
     mainSectionContainer.appendChild(preLoaderContainer);
     mainSectionContainer.appendChild(landscapeClose);
 
-    innerWrapper.appendChild(navigationContainer);
+    // innerWrapper.appendChild(navigationContainer);
     innerWrapper.appendChild(mainSectionContainer);
     wrapper.appendChild(innerWrapper);
 
@@ -550,13 +550,17 @@ export const MainWidget = function (options) {
     const sectionDashboard = document.createElement('div');
     sectionDashboard.setAttribute('class', this.settings.lbWidget.settings.navigation.dashboard.containerClass + ' cl-main-section-item');
 
+    const headerLabel = this.settings.lbWidget.settings.translation.dashboard.label +
+      (this.settings.lbWidget.settings.member ? ', ' + this.settings.lbWidget.settings.member.name : '');
+
     const template = require('../templates/layouts/dashboardAreaLayout.hbs');
     sectionDashboard.innerHTML = template({
-      isInstantWins: this.settings.lbWidget.settings.instantWins.enable,
+      isInstantWins: false,
       isAchievements: this.settings.lbWidget.settings.navigation.achievements.enable,
       isTournaments: this.settings.lbWidget.settings.navigation.tournaments.enable,
       seeAllLabel: this.settings.lbWidget.settings.translation.dashboard.seeAll,
-      headerLabel: this.settings.lbWidget.settings.translation.dashboard.label,
+      headerLabel: headerLabel,
+      rewardsTitle: this.settings.lbWidget.settings.translation.dashboard.rewardsTitle,
       tournamentsTitle: this.settings.lbWidget.settings.translation.dashboard.tournamentsTitle,
       achievementsTitle: this.settings.lbWidget.settings.translation.dashboard.achievementsTitle,
       instantWinsTitle: this.settings.lbWidget.settings.translation.dashboard.instantWinsTitle,
@@ -1480,6 +1484,16 @@ export const MainWidget = function (options) {
       ? elemContainer.top - (elemTop - indentation) <= elemHeight : elemBottom - elemContainer.bottom <= elemHeight;
   };
 
+  this.isDashboardMemberVisibleInView = function (container, dashboardHeaderMember, dashboardHeader) {
+    if (container.scrollTop > 32) {
+      dashboardHeaderMember.classList.add('active');
+      dashboardHeader.classList.add('filled');
+    } else {
+      dashboardHeaderMember.classList.remove('active');
+      dashboardHeader.classList.remove('filled');
+    }
+  };
+
   let onresizeInitialised = false;
   this.eventListeners = function () {
     const _this = this;
@@ -1513,7 +1527,6 @@ export const MainWidget = function (options) {
         const member = query(_this.settings.leaderboard.resultContainer, '.cl-lb-member-row');
 
         if (member !== null) {
-          // _this.missingMember(_this.isElementVisibleInView(member, _this.settings.leaderboard.list.parentNode));
           _this.missingMember(_this.isElementVisibleInView(member, _this.settings.leaderboard.resultContainer));
         }
       };
@@ -1536,6 +1549,16 @@ export const MainWidget = function (options) {
           if (notificationContainer) notificationContainer.classList.remove('lightTheme');
         }
       });
+    }
+
+    const dashboardBody = document.querySelector('.cl-main-widget-dashboard-body');
+    const dashboardHeaderMember = document.querySelector('.cl-main-widget-dashboard-header-label');
+    const dashboardHeader = document.querySelector('.cl-main-widget-dashboard-header');
+
+    if (dashboardBody && dashboardHeaderMember && dashboardBody.onscroll === null) {
+      dashboardBody.onscroll = function (event) {
+        _this.isDashboardMemberVisibleInView(event.target, dashboardHeaderMember, dashboardHeader);
+      };
     }
   };
 
@@ -2416,6 +2439,38 @@ export const MainWidget = function (options) {
     });
 
     return listItem;
+  };
+
+  this.dashboardAwardItem = function (award) {
+    console.log('award:', award);
+    const listItem = document.createElement('div');
+    listItem.setAttribute('class', 'dashboard-rewards-list-item');
+    listItem.setAttribute('data-id', award.id);
+
+    const rewardImg = `background-image: url(${award.rewardData.iconLink ?? ''})`;
+
+    const template = require('../templates/dashboard/awardItem.hbs');
+    listItem.innerHTML = template({
+      rewardValue: award.rewardValue,
+      rewardType: award.rewardType.uom ?? '',
+      expiresInLabel: this.settings.lbWidget.settings.translation.rewards.expiresInLabel,
+      rewardImg: rewardImg
+    });
+
+    return listItem;
+  };
+
+  this.loadDashboardAwards = async function (claimedAwards = [], availableAwards = [], expiredAwards = []) {
+    const awardsList = query(this.settings.section, '.cl-main-widget-dashboard-rewards-list');
+    awardsList.innerHTML = '';
+
+    if (availableAwards.length) {
+      availableAwards = availableAwards.slice(0, 5);
+      availableAwards.forEach(a => {
+        const listItem = this.dashboardAwardItem(a);
+        awardsList.appendChild(listItem);
+      });
+    }
   };
 
   this.loadDashboardTournaments = async function () {
@@ -3397,6 +3452,38 @@ export const MainWidget = function (options) {
     this.hideRewardDetails();
   };
 
+  this.activateDashboard = () => {
+    const _this = this;
+    const preLoader = _this.preloader();
+    const dashboardContainer = query(this.settings.container, '.cl-main-widget-section-container .' + this.settings.lbWidget.settings.navigation.dashboard.containerClass);
+
+    dashboardContainer.style.display = 'flex';
+
+    this.settings.lbWidget.checkForAvailableAwards(function (claimedAwards, availableAwards, expiredAwards) {
+      _this.loadDashboardAwards(claimedAwards, availableAwards, expiredAwards);
+    });
+
+    if (this.settings.lbWidget.settings.navigation.achievements.enable) {
+      this.settings.lbWidget.checkForAvailableAchievements(1, function (achievementData) {
+        _this.loadDashboardAchievements(achievementData);
+      });
+    }
+
+    if (this.settings.lbWidget.settings.navigation.tournaments.enable) {
+      this.loadDashboardTournaments();
+    }
+
+    changeInterval = setTimeout(function () {
+      addClass(dashboardContainer, 'cl-main-active-section');
+    }, 30);
+
+    this.loadAwards();
+
+    preLoader.hide();
+
+    this.settings.navigationSwitchInProgress = false;
+  };
+
   let changeInterval;
   let changeContainerInterval;
   this.navigationSwitch = function (target, callback) {
@@ -3545,6 +3632,8 @@ export const MainWidget = function (options) {
       obj.style.display = 'none';
       removeClass(obj, 'cl-main-active-section');
     });
+
+    this.activateDashboard();
 
     let activeNave = false;
     objectIterator(query(_this.settings.container, '.cl-main-widget-navigation-container .cl-main-widget-navigation-item'), function (navItem, key, count) {

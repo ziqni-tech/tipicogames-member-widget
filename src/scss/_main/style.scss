@@ -1129,7 +1129,7 @@
   padding: 0;
   font-family: 'Inter', sans-serif;
   font-weight: 300;
-  margin: 0;
+  margin: 0 0 0 -1px;
   box-sizing: border-box;
   line-height: 20px;
   border: 0;
@@ -1147,14 +1147,16 @@
   transition: background 0.3s;
   position: relative;
   display: flex;
-  width: 100%;
+  width: calc(100% + 1px);
   height: 100%;
   z-index: 1;
   left: 0;
-  background-color: #192627;
+  background-color: var(--ui-main-bg-color);
   background-image: url(../../images/pattern.svg);
   background-repeat: no-repeat;
   border-radius: 24px 24px 0 0;
+  padding-left: 16px;
+  overflow: hidden;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-navigation-container {
@@ -1472,49 +1474,62 @@
   align-items: center;
   justify-content: center;
   width: 100%;
-  height: 84px;
+  height: 48px;
   position: relative;
   z-index: 2;
 }
 
+.cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-header.filled {
+  background-color: var(--ui-main-bg-color);
+}
+
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-header .cl-main-widget-dashboard-header-label {
   width: 100%;
-  text-align: center;
-  line-height: 30px;
-  color: var(--lb3-tournament-header-label-color);
-  font-size: 24px;
-  font-weight: 700;
+  text-align: left;
+  line-height: 21px;
+  color: var(--ui-color-primary);
+  font-size: 16px;
+  font-weight: 600;
+  display: none;
+}
+
+.cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-header .cl-main-widget-dashboard-header-label.active {
+  display: block;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-header .cl-main-widget-dashboard-header-close {
   position: absolute;
   display: block;
-  background-image: $lb3-tournament-header-close-back-image;
+  background-image: url(../../images/close-icon.svg);
   background-repeat: no-repeat;
   background-position: 50% 50%;
   background-size: 100%;
   width: 32px;
   height: 32px;
-  right: 18px;
-  top: 18px;
+  right: 8px;
+  top: 8px;
   cursor: pointer;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-body {
-  padding: 0 57px 0 60px;
-  margin-right: 20px;
-  height: calc(100% - 144px);
+  height: calc(100% - 82px);
   overflow: auto;
 }
 
+.cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-body .cl-main-widget-dashboard-body-label {
+  text-align: left;
+  line-height: 31px;
+  color: var(--ui-color-primary);
+  font-size: 24px;
+  font-weight: 600;
+}
+
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-body::-webkit-scrollbar {
-  width: 4px;
-  background: #141E28;
+  display: none;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-body::-webkit-scrollbar-thumb {
-  border-radius: 10px;
-  background: #304F69;
+  display: none;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-body .cl-main-widget-dashboard-tournaments.hidden,
@@ -1522,17 +1537,28 @@
   display: none;
 }
 
+.cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-body .cl-main-widget-dashboard-tournaments,
+.cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-body .cl-main-widget-dashboard-achievements,
+.cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-body .cl-main-widget-dashboard-rewards {
+  padding-top: 24px;
+}
+
+.cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-body .cl-main-widget-dashboard-achievements-header,
+.cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-body .cl-main-widget-dashboard-tournaments-header,
+.cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-body .cl-main-widget-dashboard-rewards-header {
+  display: flex;
+  justify-content: space-between;
+  padding-right: 8px;
+}
+
+.cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-body .cl-main-widget-dashboard-rewards-title,
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-body .cl-main-widget-dashboard-instant-wins-title,
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-body .cl-main-widget-dashboard-achievements-title,
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-body .cl-main-widget-dashboard-tournaments-title {
   color: #ffffff;
-  font-size: 20px;
-  font-weight: 700;
-}
-
-.cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-body .cl-main-widget-dashboard-tournaments-title,
-.cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-body .cl-main-widget-dashboard-achievements-title {
-  padding-top: 30px;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24px;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-instant-wins {}
@@ -1675,21 +1701,33 @@
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-tournaments-list {
-  padding-top: 20px;
+  padding-top: 8px;
   display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
+  flex-wrap: nowrap;
+  overflow-y: auto;
+}
+
+.cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-tournaments-list::-webkit-scrollbar {
+  display: none;
+}
+
+.cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-tournaments-list::-webkit-scrollbar-thumb {
+  display: none;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-tournaments-list .dashboard-tournament-item {
-  width: 340px;
-  height: 226px;
-  background: #141E28;
-  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  width: 288px;
+  height: 386px;
+  background: var(--card-active);
+  border-radius: 8px;
   overflow: hidden;
   position: relative;
   margin-bottom: 20px;
   cursor: pointer;
+  margin-right: 8px;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .dashboard-tournament-item:nth-child(1) .dashboard-tournament-list-bg {
@@ -1781,33 +1819,130 @@
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-achievements-list {
-  padding-top: 20px;
+  margin-top: 8px;
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   justify-content: space-between;
+  overflow-y: auto;
 }
 
+.cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-achievements-list::-webkit-scrollbar {
+  display: none;
+}
+
+.cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-achievements-list::-webkit-scrollbar-thumb {
+  display: none;
+}
+
+.cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-rewards-list-more,
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-tournaments-list-more,
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-achievements-list-more {
-  font-size: 14px;
-  font-weight: 700;
-  line-height: 16px;
-  letter-spacing: 0;
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 600;
   cursor: pointer;
-  text-align: left;
+  text-transform: uppercase;
+  color: var(--Gray-6);
+  &::after {
+    content: '';
+    display: block;
+    width: 24px;
+    height: 24px;
+    background: url(../../images/arrow-right.svg) no-repeat center;
+  }
+}
+
+.cl-main-widget-dashboard-rewards-list {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-y: auto;
+  margin-top: 8px;
+}
+
+.cl-main-widget-dashboard-rewards-list::-webkit-scrollbar {
+  display: none;
+}
+
+.cl-main-widget-dashboard-rewards-list::-webkit-scrollbar-thumb {
+  display: none;
+}
+
+.cl-main-widget-dashboard-rewards-list .dashboard-rewards-list-item {
+  display: flex;
+  justify-content: space-between;
+  width: 288px;
+  height: 132px;
+  padding: 8px 8px 8px 16px;
+  margin-right: 8px;
+  align-items: center;
+  gap: 16px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  background: var(--card-active);
+}
+
+.dashboard-rewards-list-item .dashboard-rewards-list-item-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.dashboard-rewards-list-item-expires-label {
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 12px;
+  text-transform: uppercase;
+  color: var(--ui-color-text-secondary);
+}
+
+.dashboard-rewards-list-item-expires-value {
+  color: var(--ui-color-error);
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 12px;
+  text-transform: uppercase;
+}
+
+.dashboard-rewards-list-item-reward-value {
+  color: #FFF;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 31px;
+}
+
+.dashboard-rewards-list-item-reward-type {
+  color: #FFF;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 16px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 96px;
+}
+
+.dashboard-rewards-list-item .dashboard-rewards-list-item-img {
+  width: 152px;
+  height: 116px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-achievements-list .cl-ach-list-item {
-  width: 340px;
+  display: flex;
+  flex-shrink: 0;
+  flex-direction: column;
+  width: 288px;
   height: 164px;
-  background: #141E28;
-  border-radius: 10px;
-  margin-bottom: 20px;
-  padding: 14px 16px;
-}
-
-.cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-achievements-list .cl-ach-list-item:last-child {
-  border-bottom: none;
+  background: var(--card-active);
+  border-radius: 8px;
+  padding: 16px;
+  margin-right: 8px;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-achievements-list .cl-ach-list-details-cont {
@@ -6665,2106 +6800,6 @@
               }
             }
           }
-        }
-      }
-    }
-  }
-}
-
-.cl-main-widget-wrapper.lightTheme {
-  * {
-    color: var(--lightTheme-font-color);
-  }
-  #cy {
-    border: 1px solid #B9CEDF;
-  }
-  .cl-main-widget-missions-map-wrapper {
-    border: 1px solid #B9CEDF;
-  }
-  .cl-main-widget-lb-optin-action {
-    color: #ffffff;
-  }
-  .paginator-item {
-    border: 1px solid #cccccc;
-    color: #080D12;
-    &.active {
-      background: #BEE9F3;
-      border: 1px solid #F7A1E4;
-      box-shadow: 0 2px 12px rgba(238, 62, 200, 0.4);
-    }
-    &.prev {
-      background: url(../../images/arrow-left-dark.svg) no-repeat center;
-    }
-    &.next {
-      background: url(../../images/arrow-right-dark.svg) no-repeat center;
-    }
-  }
-  .cl-main-widget-tournaments-list {
-    background: #EDF3F7;
-    .cl-tour-list-item:nth-child(odd) {
-      background: #DCE6EF;
-    }
-    .cl-tour-list-details-prize,
-    .cl-tour-list-details-period,
-    .cl-tour-list-details-label {
-      color: #141E28;
-    }
-  }
-  .cl-main-widget-section-container {
-    &.cl-main-active-embedded-description {
-      .cl-main-widget-lb-details-description-container {
-        border: 1px solid #B9CEDF;
-      }
-      .cl-main-widget-lb-details-description-header-back {
-        background-image: $lb3-tournament-description-back-image-black;
-      }
-    }
-    .cl-main-widget-lb-header {
-      .cl-main-widget-lb-header-back-icon {
-        background-image: $lb3-tournament-header-back-image-black;
-      }
-      .cl-main-widget-lb-header-close {
-        background-image: $lb3-tournament-header-close-light-image;
-      }
-    }
-    .cl-main-widget-lb-footer-content,
-    .cl-main-widget-ach-footer-content,
-    .cl-main-widget-reward-footer-content,
-    .cl-main-widget-inbox-footer-content,
-    .cl-main-widget-missions-footer-content {
-      color: #141E28;
-    }
-    .cl-main-accordion-container {
-      .cl-main-accordion-container-menu {
-        background: #DCE6EF;
-        .cl-main-accordion-container-menu-item.active {
-          background: #BEE9F3;
-          border: 1px solid #F7A1E4;
-          box-shadow: 0 2px 12px rgba(238, 62, 200, 0.4);
-        }
-      }
-      .cl-shown {
-        .cl-accordion-list-container {
-          border: 1px solid #B9CEDF;
-          background-color: #edf3f7;
-        }
-      }
-    }
-    .cl-main-widget-ach-header {
-      .cl-main-widget-ach-header-label {
-        color: #0d0d0d;
-      }
-      .cl-main-widget-ach-header-close {
-        background-image: $lb3-tournament-header-close-light-image;
-      }
-    }
-    .cl-main-widget-section-ach {
-      .cl-ach-list-item {
-        background: #DCE6EF;
-      }
-      .cl-ach-list-details-cont {
-        border-bottom: solid 1px #B9CEDF;
-      }
-      .cl-ach-list-actions-reward {
-        background: #EDF3F7;
-        color: #223241;
-        &::before {
-          background: url(../../images/award-icon-dark.svg) no-repeat center;
-          background-size: contain;
-        }
-      }
-      .cl-ach-list-progression-cont {
-        background: #ffffff;
-      }
-      .cl-ach-list-progression-bar {
-        background: linear-gradient(90deg, #406A8C 0%, #739DBF 100%);
-      }
-      .cl-ach-list-details-label {
-        color: #141E28;
-      }
-      .cl-ach-list-more {
-        color: #170213;
-      }
-      .cl-main-widget-ach-list-popup {
-        background-color: #DCE6EF;
-      }
-      .cl-main-widget-ach-list-popup-close {
-        background-image: url(../../images/close-icon-light.svg);
-      }
-      .cl-main-widget-ach-list-popup-title {
-        color: #141e28;
-        border-bottom: solid 1px #b9cedf;
-      }
-      .cl-main-widget-ach-list-popup-description {
-        color: #141e28;
-        border-bottom: solid 1px #b9cedf;
-      }
-      .cl-main-widget-ach-list-popup-cancel {
-        color: #170213;
-      }
-    }
-    .cl-main-widget-missions-details-container {
-      background: #edf3f7;
-      .cl-main-widget-missions-details-wrapper {
-        background: #DCE6EF;
-      }
-      .cl-main-widget-missions-details-header {
-        .cl-main-widget-missions-details-back-btn {
-          background-image: url(../../images/small-left-arrow-black.svg);
-        }
-        .cl-main-widget-missions-details-info-btn {
-          color: #0D0D0D;
-          border: 1px solid #cccccc;
-        }
-      }
-      .cl-main-widget-missions-details-header-label {
-        color: #0D0D0D;
-      }
-      .cl-main-widget-missions-details-tc-label,
-      .cl-main-widget-missions-details-description,
-      .cl-main-widget-missions-details-tc,
-      .cl-main-widget-missions-details-description-label {
-        color: #0D0D0D;
-      }
-    }
-    .cl-main-widget-ach-details-container {
-      background: #edf3f7;
-      .cl-main-widget-ach-details-wrapper {
-        background: #DCE6EF;
-        .cl-main-widget-ach-details-header {
-          .cl-main-widget-ach-details-back-btn {
-            background-image: url(../../images/small-left-arrow-black.svg);
-          }
-          .cl-main-widget-ach-details-header-label {
-            color: #080D12;
-          }
-        }
-        .cl-main-widget-ach-details-optin-action {
-          color: #080D12;
-        }
-        .cl-main-widget-ach-details-reward {
-          background: #EDF3F7;
-          color: #223241;
-          &::before {
-            background: url(../../images/award-icon-dark.svg) no-repeat center;
-            background-size: contain;
-          }
-        }
-        .cl-main-widget-ach-details-tc,
-        .cl-main-widget-ach-details-body {
-          color: var(--lightTheme-font-color);
-        }
-        .cl-main-widget-ach-details-body-progress-cont {
-          background: #fff;
-        }
-        .cl-main-widget-ach-details-body-progress-bar {
-          background: linear-gradient(90deg, #406A8C 0%, #739DBF 100%);
-        }
-        .cl-main-widget-ach-details-header-info {
-          color: #080d12;
-          border: 1px solid #ccc;
-        }
-      }
-    }
-    .cl-main-widget-reward-list {
-      background: #edf3f7;
-      .cl-main-accordion-container {
-        .cl-shown {
-          .cl-accordion-list-container {
-            border: none;
-            &::-webkit-scrollbar {
-              background: #DCE6EF;
-            }
-            &::-webkit-scrollbar-thumb {
-              background: #96B5CF;
-            }
-          }
-        }
-      }
-    }
-    .cl-main-widget-reward-details-container {
-      background: #edf3f7;
-      .cl-main-widget-reward-details-wrapper {
-        background: #DCE6EF;
-        box-shadow: none;
-      }
-      .cl-main-widget-reward-details-back-btn {
-        background-image: url(../../images/small-left-arrow-black.svg);
-      }
-      .cl-main-widget-reward-details-header-label {
-        color: #080D12;
-      }
-      .cl-main-widget-reward-winnings-value {
-        color: #080D12;
-      }
-      .cl-main-widget-reward-claim-btn {
-        color: #080D12;
-      }
-    }
-    .cl-main-widget-reward-list-body-res {
-      .cl-rew-list-item {
-        background: #DCE6EF;
-      }
-      .cl-rew-list-details-label {
-        color: #080D12;
-      }
-      .cl-rew-list-details-type {
-        color: #080D12;
-      }
-      .cl-rew-list-details-prize {
-        background: #EDF3F7;
-        color: #141E28;
-        &::before {
-          background: url(../../images/award-icon-dark.svg) no-repeat center;
-        }
-      }
-      .wheel-item, .scratchcards-item {
-        background: #DCE6EF;
-      }
-      .wheel-label, .scratchcards-label {
-        color: #080D12;
-      }
-      .wheel-image, .scratchcards-image {
-        background-color: #ffffff;
-      }
-      .scratchcards-image {
-        background-image: url(../../images/scratchcards-light.svg);
-        background-position: 64px 7px;
-      }
-      .single-wheel-wrapper {
-        border: 1px solid #B9CEDF;
-      }
-      .single-wheel {
-        background: #edf3f7;
-      }
-      .single-wheel-label {
-        color: #080D12;
-      }
-      .single-wheel-description {
-        color: #141E28;
-      }
-      .single-wheel-button {
-        color: #ffffff;
-      }
-      .single-wheel-canvas::after {
-        background-color: #BEE9F3;
-        border: 1px solid #F7A1E4;
-        box-shadow: 0 2px 12px rgba(238, 62, 200, 0.4);
-      }
-      .single-wheel-popup {
-        background: #FFFFFF;
-        border: 1px solid #F7A1E4;
-        box-shadow: 0 2px 12px rgba(238, 62, 200, 0.4);
-      }
-      .single-wheel-popup-label {
-        color: #304F69;
-      }
-      .single-wheel-popup-description {
-        color: #141E28;
-      }
-      .single-wheel-popup-button {
-        color: #ffffff;
-      }
-      .scratchcards-game {
-        background: #edf3f7;
-      }
-      .scratchcards-game-wrapper {
-        border: 1px solid #B9CEDF;
-      }
-      .scratchcards-game-label {
-        color: #080D12;
-      }
-      .scratchcards-game-prize-button {
-        color: #ffffff;
-      }
-      .scratchcards-game-prize-label {
-        color: #223241;
-      }
-      .scratchcards-game-prize-prizes-label {
-        color: #304F69;
-      }
-      .scratchcards-game-card-cell {
-        border: 1px solid #F7A1E4;
-        box-shadow: 0 2px 12px rgba(238, 62, 200, 0.4);
-      }
-    }
-    .cl-main-widget-reward-header {
-      .cl-main-widget-reward-header-label {
-        color: #080D12;
-      }
-      .cl-main-widget-reward-header-back {
-        background-image: url(../../images/left-arrow-black.svg);
-      }
-      .cl-main-widget-reward-header-close {
-        background-image: $lb3-tournament-header-close-light-image;
-      }
-    }
-    .cl-main-widget-inbox-header {
-      .cl-main-widget-inbox-header-label {
-        color: #080D12;
-      }
-      .cl-main-widget-inbox-header-close {
-        background-image: $lb3-tournament-header-close-light-image;
-      }
-    }
-    .cl-main-widget-missions-header {
-      .cl-main-widget-missions-header-label {
-        color: #0d0d0d;
-      }
-      .cl-main-widget-missions-header-close {
-        background-image: $lb3-tournament-header-close-light-image;
-      }
-      .cl-main-widget-mission-header-back-icon {
-        background-image: url(../../images/left-arrow-black.svg);
-      }
-    }
-    .cl-missions-list-item {
-      background: #DCE6EF;
-    }
-    .cl-main-widget-missions-list-body {
-      &::-webkit-scrollbar {
-        background: #DCE6EF;
-      }
-      &::-webkit-scrollbar-thumb {
-        background: #96B5CF;
-      }
-    }
-    .cl-main-widget-missions-map-container {
-      background: #EDF3F7;
-    }
-    .cl-main-widget-missions-list-body-res {
-      .cl-missions-list-details-label {
-        color: #080D12;
-      }
-      .cl-missions-list-details-actions-reward {
-        background: #EDF3F7;
-        color: #223241;
-        &::before {
-          background: url(../../images/award-icon-dark.svg) no-repeat center;
-          background-size: contain;
-        }
-      }
-      .cl-missions-list-details-progress-cont {
-        background: #ffffff;
-      }
-      .cl-missions-list-details-progress-bar {
-        background: linear-gradient(90deg, #406A8C 0%, #739DBF 100%);
-      }
-    }
-
-    .cl-main-widget-lb-details-description-info {
-      color: #080D12;
-      border: 1px solid #cccccc;
-    }
-
-    .cl-main-widget-lb-details-description-container {
-      &::-webkit-scrollbar {
-        background: #DCE6EF;
-      }
-      &::-webkit-scrollbar-thumb {
-        background: #96B5CF;
-      }
-    }
-
-    .cl-main-widget-lb-details-brackets {
-      .connections-table_round-item {
-        background-color: #dce6ef;
-        .connections-table_round-item-name {
-          color: #080D12;
-        }
-        .connections-table_round-item-date-title {
-          color: #223241;
-        }
-        .connections-table_round-item-date-value {
-          color: #080D12;
-        }
-      }
-    }
-
-    .cl-main-widget-section-dashboard {
-      .cl-main-widget-dashboard-body {
-        &::-webkit-scrollbar {
-          background: #DCE6EF;
-        }
-        &::-webkit-scrollbar-thumb {
-          background: #96B5CF;
-        }
-      }
-      .cl-main-widget-dashboard-header-label {
-        color: #0d0d0d;
-      }
-      .cl-main-widget-dashboard-header-close {
-        background-image: url(../../images/close-icon-light.svg);
-      }
-      .cl-main-widget-dashboard-tournaments-title,
-      .cl-main-widget-dashboard-achievements-title,
-      .cl-main-widget-dashboard-instant-wins-title {
-        color: #080D12;
-      }
-      .cl-main-widget-dashboard-instant-wins-wheel,
-      .cl-main-widget-dashboard-instant-wins-cards,
-      .cl-ach-list-item {
-        background-color: #DCE6EF;
-      }
-      .cl-main-widget-dashboard-instant-wins-wheel-image,
-      .cl-main-widget-dashboard-instant-wins-cards-image {
-        background-color: #ffffff;
-      }
-      .cl-main-widget-dashboard-instant-wins-wheel-title,
-      .cl-main-widget-dashboard-instant-wins-cards-title,
-      .cl-ach-list-details-label {
-        color: #080D12;
-      }
-      .cl-main-widget-dashboard-instant-wins-wheel-description,
-      .cl-main-widget-dashboard-instant-wins-cards-description {
-        color: #141E28;
-      }
-      .cl-ach-list-actions-reward {
-        background: #edf3f7;
-        color: #223241;
-        &::before {
-          background: url(../../images/award-icon-dark.svg) no-repeat center;
-          background-size: contain;
-        }
-      }
-      .cl-ach-list-progression-cont {
-        background: #fff;
-        .cl-ach-list-progression-bar {
-          background: linear-gradient(90deg, #406A8C 0%, #739DBF 100%);
-        }
-      }
-      .cl-main-widget-ach-list-popup {
-        background-color: #DCE6EF;
-      }
-      .cl-main-widget-ach-list-popup-close {
-        background-image: url(../../images/close-icon-light.svg);
-      }
-      .cl-main-widget-ach-list-popup-title {
-        color: #141e28;
-        border-bottom: solid 1px #b9cedf;
-      }
-      .cl-main-widget-ach-list-popup-description {
-        color: #141e28;
-        border-bottom: solid 1px #b9cedf;
-      }
-      .cl-main-widget-ach-list-popup-cancel {
-        color: #170213;
-      }
-      .cl-main-widget-dashboard-instant-wins-cards-title-mobile,
-      .cl-main-widget-dashboard-instant-wins-wheel-title-mobile {
-        color: #080D12;
-      }
-      .dashboard-tournament-item {
-        background-color: #dce6ef;
-      }
-      .cl-main-widget-dashboard-achievements-list {
-        .cl-ach-list-more {
-          color: #170213;
-        }
-      }
-    }
-
-    .cl-main-widget-lb-details-description-date-label,
-    .cl-main-widget-lb-details-content-date-label,
-    .cl-main-widget-lb-details-content-date,
-    .cl-main-widget-lb-details-content-date,
-    .cl-main-widget-lb-details-description-date {
-      color: #ffffff;
-    }
-  }
-  .cl-main-widget-inner-wrapper {
-    background: #EDF3F7;
-    .cl-main-widget-navigation-container {
-      .cl-main-widget-navigation-logo {
-        background-image: url(../../images/ziqni-logo-nav-dark.svg);
-      }
-      .cl-main-widget-navigation-dashboard-icon {
-        background-image: $lb3-dashboard-icon-black;
-      }
-      .cl-main-widget-navigation-lb-icon {
-        background-image: $lb3-tournament-icon-black;
-      }
-      .cl-main-widget-navigation-ach-icon {
-        background-image: $lb3-achievements-icon-black;
-      }
-      .cl-main-widget-navigation-rewards-icon {
-        background-image: $lb3-rewards-icon-black;
-      }
-      .cl-main-widget-navigation-inbox-icon {
-        background-image: $lb3-messages-icon-black;
-      }
-      .cl-main-widget-navigation-missions-icon {
-        background-image: $lb3-missions-icon-black;
-      }
-      .cl-active-nav {
-        .cl-main-navigation-item-title {
-          color: #ffffff;
-        }
-        .cl-main-widget-navigation-dashboard-icon {
-          background-image: $lb3-dashboard-icon;
-        }
-        .cl-main-widget-navigation-lb-icon {
-          background-image: $lb3-tournament-icon;
-        }
-        .cl-main-widget-navigation-ach-icon {
-          background-image: $lb3-achievements-icon;
-        }
-        .cl-main-widget-navigation-rewards-icon {
-          background-image: $lb3-rewards-icon;
-        }
-        .cl-main-widget-navigation-inbox-icon {
-          background-image: $lb3-messages-icon;
-        }
-        .cl-main-widget-navigation-missions-icon {
-          background-image: $lb3-missions-icon;
-        }
-      }
-    }
-    .cl-main-widget-section-container {
-      .cl-col {
-        color: #0D0D0D;
-      }
-      .cl-icon-col {
-        .cl-icon-col-img {
-          color: #ffffff;
-        }
-      }
-      .cl-main-widget-lb-details-content-label-text {
-        color: #ffffff;
-      }
-      .cl-main-widget-lb-details-content-date-headers-item {
-        color: #ffffff;
-      }
-      .banner-date {
-        .banner-date-cell {
-          color: #ffffff;
-        }
-      }
-      .cl-main-widget-lb-details-description-label-text {
-        color: #ffffff;
-      }
-      .cl-main-widget-lb-details-description-date-headers-item {
-        color: #ffffff;
-      }
-      .cl-main-widget-lb-missing-member-details {
-        background: #BEE9F3 !important;
-        border: 1px solid #F7A1E4;
-        box-shadow: 0 2px 12px rgba(238, 62, 200, 0.4);
-      }
-      .cl-main-widget-lb-header {
-        .cl-main-widget-lb-header-label {
-          color: #0D0D0D;
-        }
-        .cl-main-widget-lb-header-list-icon {
-          background-image: $lb3-tournament-header-list-back-image-black;
-        }
-      }
-      .cl-main-widget-lb-leaderboard {
-        border: 1px solid #B9CEDF;
-        .cl-main-widget-lb-leaderboard-header-top-res {
-          .cl-lb-row:nth-child(odd) {
-            background: #DCE6EF;
-          }
-          .cl-col {
-            color: #0D0D0D;
-          }
-        }
-        .cl-main-widget-lb-leaderboard-body-res {
-          .cl-lb-row:nth-child(even) {
-            background: #DCE6EF;
-          }
-        }
-      }
-      .cl-main-widget-lb-leaderboard-header-labels {
-        .cl-col {
-          color: #0D0D0D;
-        }
-      }
-      .cl-main-widget-lb-leaderboard-header-top-res {
-        background-color: #edf3f7;
-      }
-      .cl-lb-row.cl-lb-member-row {
-        background: #BEE9F3 !important;
-        border: 1px solid #F7A1E4;
-        box-shadow: 0 2px 12px rgba(238, 62, 200, 0.4);
-      }
-      .cl-main-widget-lb-missing-member {
-        background: #BEE9F3 !important;
-        border: 1px solid #F7A1E4;
-        box-shadow: 0 2px 12px rgba(238, 62, 200, 0.4);
-      }
-      .cl-main-widget-lb-leaderboard-res-container {
-        &::-webkit-scrollbar {
-          background: #DCE6EF;
-        }
-        &::-webkit-scrollbar-thumb {
-          background: #96B5CF;
-        }
-      }
-      .cl-main-widget-inbox-list-body-res {
-        .cl-inbox-list-item {
-          background: #DCE6EF;
-        }
-        .cl-inbox-list-details-label {
-          color: #080D12;
-        }
-        .cl-inbox-list-details-description {
-          color: #141E28;
-        }
-      }
-      .cl-main-widget-inbox-details-container {
-        background: #edf3f7;
-        .cl-main-widget-inbox-details-wrapper {
-          background: #DCE6EF;
-        }
-        .cl-main-widget-inbox-details-header {
-          .cl-main-widget-inbox-details-back-btn {
-            background-image: url(../../images/small-left-arrow-black.svg);
-          }
-          .cl-main-widget-inbox-details-header-label {
-            color: #080D12;
-          }
-          .cl-main-widget-inbox-details-header-date {
-            color: #141E28;
-          }
-        }
-      }
-    }
-  }
-}
-
-/**
- * *************************************
- * ********** Mobile Devices ***********
- * *************************************
- */
-@media screen and (max-width: 1005px) {
-  .cl-main-widget-wrapper {
-    .cl-main-widget-section-container {
-      .cl-main-widget-dashboard-body {
-        padding: 0 20px 0 23px;
-      }
-      .cl-main-widget-dashboard-instant-wins-wrapp {
-        justify-content: space-around;
-        .cl-main-widget-dashboard-instant-wins-wheel,
-        .cl-main-widget-dashboard-instant-wins-cards {
-          width: 280px;
-        }
-
-        .cl-main-widget-dashboard-instant-wins-cards-image,
-        .cl-main-widget-dashboard-instant-wins-wheel-image {
-          width: 122px;
-        }
-      }
-
-      .cl-main-widget-dashboard-achievements-list {
-        justify-content: space-around;
-        .cl-ach-list-item {
-          width: 280px;
-        }
-        .cl-ach-list-details-label {
-          max-width: 150px;
-        }
-      }
-
-      .cl-main-widget-dashboard-tournaments-list {
-        justify-content: space-around;
-        .dashboard-tournament-item {
-          width: 280px;
-        }
-      }
-
-      .cl-main-widget-ach-list {
-        padding-right: 27px;
-        padding-left: 20px;
-      }
-      .cl-main-widget-ach-list-body-res {
-        justify-content: space-around;
-      }
-      .cl-main-widget-section-ach {
-        .cl-ach-list-item {
-          width: 280px;
-        }
-        .cl-ach-list-details-label {
-          max-width: 150px;
-        }
-      }
-    }
-  }
-}
-
-@media (orientation: landscape) and (max-height: 600px) {
-  .cl-main-widget-wrapper {
-    padding: 20px 20px 10px;
-    .cl-main-widget-navigation-container {
-      width: 120px;
-      .cl-main-widget-navigation-darkMode-toggle {
-        display: none;
-      }
-      .cl-main-navigation-item-title {
-        display: none;
-      }
-      .cl-main-widget-navigation-items {
-        padding: 20px 0 0 0;
-        .cl-main-widget-navigation-item {
-          width: 90px;
-          min-height: 44px;
-          margin-bottom: 8px;
-        }
-      }
-    }
-
-    .cl-main-widget-lb-optin-container {
-      bottom: 0;
-    }
-
-    .cl-main-widget-section-container {
-      .cl-mobile-theme-switcher {
-        display: block;
-        width: 24px;
-        height: 24px;
-        position: absolute;
-        top: 10px;
-        right: 18px;
-        background: url(../../images/theme-switcher.svg) no-repeat center;
-        background-size: cover;
-        z-index: 10;
-      }
-
-      .cl-main-widget-missions-footer,
-      .cl-main-widget-inbox-footer,
-      .cl-main-widget-reward-footer,
-      .cl-main-widget-ach-footer {
-        display: none;
-      }
-
-      // Dashboard
-      .cl-main-widget-dashboard-header {
-        height: 40px;
-        .cl-main-widget-dashboard-header-label {
-          font-size: 18px;
-        }
-      }
-      .cl-main-widget-dashboard-body {
-        height: calc(100% - 56px);
-        .cl-main-widget-dashboard-instant-wins-title,
-        .cl-main-widget-dashboard-achievements-title,
-        .cl-main-widget-dashboard-tournaments-title {
-          font-size: 17px;
-        }
-      }
-      .cl-main-widget-lb-footer {
-        display: none;
-      }
-
-      // LB
-      .cl-main-widget-lb-header {
-        height: 40px;
-        .cl-main-widget-lb-header-label {
-          font-size: 18px;
-        }
-        .cl-main-widget-lb-header-back-icon,
-        .cl-main-widget-lb-header-list-icon {
-          width: 25px;
-          height: 25px;
-          top: 20px;
-        }
-      }
-      .cl-main-widget-tournaments-list.cl-show {
-        top: 40px;
-        height: calc(100% - 40px);
-      }
-      .cl-main-widget-tournaments-list {
-        height: calc(100% - 46px);
-        border-radius: 0 0 20px 0;
-      }
-      .cl-main-widget-lb-leaderboard {
-        height: calc(100% - 94px);
-      }
-      &.cl-main-active-embedded-description {
-        .cl-main-widget-lb-details {
-          height: calc(100% - 52px);
-        }
-        .cl-main-widget-lb-details-description-container {
-          height: 100%;
-        }
-        .cl-main-widget-lb-details-description-close {
-          bottom: 50px;
-        }
-      }
-      .cl-main-widget-lb-missing-member-details {
-        bottom: 10px;
-      }
-      .cl-main-widget-lb-leaderboard-header-top-res {
-        position: relative;
-      }
-
-      // Achievements
-      .cl-main-widget-ach-header {
-        height: 40px;
-        .cl-main-widget-ach-header-label {
-          font-size: 18px;
-        }
-      }
-      .cl-main-widget-ach-list {
-        height: calc(100% - 52px);
-      }
-      .cl-main-widget-ach-details-container {
-        top: 40px;
-        height: calc(100% - 40px);
-        overflow: auto;
-        border-radius: 0 0 30px 0;
-        &.cl-show {
-          padding-left: 0;
-        }
-      }
-
-      // Awards
-      .cl-main-widget-reward-header {
-        height: 40px;
-        .cl-main-widget-reward-header-label {
-          font-size: 18px;
-        }
-      }
-      .cl-main-widget-reward-list {
-        top: 40px;
-        height: calc(100% - 62px);
-      }
-      .cl-main-widget-reward-details-container {
-        height: calc(100% - 76px);
-        overflow: auto;
-        border-radius: 0 0 30px 0;
-        &.cl-show {
-          padding-left: 0;
-        }
-      }
-
-      // Messages
-      .cl-main-widget-inbox-header {
-        height: 40px;
-        .cl-main-widget-inbox-header-label {
-          font-size: 18px;
-        }
-      }
-      .cl-main-widget-inbox-list {
-        height: calc(100% - 52px);
-      }
-      .cl-main-widget-inbox-details-container {
-        top: 40px;
-        height: calc(100% - 52px);
-        overflow: auto;
-        border-radius: 0 0 30px 0;
-        &.cl-show {
-          padding-left: 0;
-        }
-      }
-
-      // Missions
-      .cl-main-widget-missions-header {
-        height: 40px;
-        .cl-main-widget-missions-header-label {
-          font-size: 18px;
-        }
-        .cl-main-widget-mission-header-back-icon {
-          width: 35px;
-          height: 35px;
-        }
-      }
-      .cl-main-widget-missions-list {
-        height: calc(100% - 52px);
-      }
-      .cl-main-widget-missions-map-container {
-        top: 40px;
-        height: calc(100% - 52px);
-        border-radius: 0 0 30px 0;
-      }
-      .cl-main-widget-missions-details-container {
-        top: 40px;
-        height: calc(100% - 52px);
-        overflow: auto;
-        border-radius: 0 0 30px 0;
-        &.cl-show {
-          padding-left: 0;
-        }
-      }
-
-      .cl-main-widget-lb-details-content {
-        height: 40px;
-        .cl-main-widget-lb-details-content-label {
-          padding-top: 9px;
-          .cl-main-widget-lb-details-content-date {
-            height: 0;
-            margin: 0;
-            padding: 0;
-            visibility: hidden;
-          }
-          .cl-main-widget-lb-details-content-date-headers {
-            height: 0;
-            margin: 0;
-            padding: 0;
-            visibility: hidden;
-          }
-        }
-      }
-      .cl-main-accordion-container {
-        .cl-accordion.cl-shown {
-          height: calc(100% - 40px);
-        }
-      }
-      .cl-main-widget-lb-details {
-        margin: 0 16px 0 0;
-      }
-    }
-  }
-}
-
-@media (orientation: landscape) and (max-height: 460px) and (min-width: 600px) {
-  .cl-main-widget-wrapper {
-    padding: 10px 20px 10px;
-    .cl-main-widget-section-container {
-      .cl-main-widget-dashboard-header {
-        .cl-main-widget-dashboard-header-close {
-          display: none;
-        }
-      }
-      .cl-main-widget-lb-header {
-        .cl-main-widget-lb-header-close {
-          display: none;
-        }
-      }
-      .cl-main-widget-ach-header {
-        .cl-main-widget-ach-header-close {
-          display: none;
-        }
-      }
-      .cl-main-widget-reward-header {
-        .cl-main-widget-reward-header-close {
-          display: none;
-        }
-      }
-      .cl-main-widget-inbox-header {
-        .cl-main-widget-inbox-header-close {
-          display: none;
-        }
-      }
-      .cl-main-widget-missions-header {
-        .cl-main-widget-missions-header-close {
-          display: none;
-        }
-      }
-    }
-
-    .cl-main-widget-ach-list-body-res {
-      .paginator {
-        margin-right: 32px;
-      }
-    }
-
-    .cl-landscape-close {
-      position: absolute;
-      display: block;
-      background-image: url(../../images/close-icon.svg);
-      background-repeat: no-repeat;
-      background-position: 50% 50%;
-      background-size: 100%;
-      width: 50px;
-      height: 50px;
-      right: -8px;
-      bottom: -8px;
-      cursor: pointer;
-      z-index: 10;
-    }
-    .cl-main-widget-navigation-container {
-      width: 120px;
-      padding-top: 10px;
-      padding-bottom: 10px;
-
-      .cl-main-widget-navigation-darkMode-toggle {
-        display: none;
-      }
-
-      .cl-main-navigation-item-title {
-        display: none;
-      }
-
-      .cl-main-widget-navigation-logo {
-        display: none;
-      }
-
-      .cl-main-widget-navigation-missions-icon,
-      .cl-main-widget-navigation-inbox-icon,
-      .cl-main-widget-navigation-rewards-icon,
-      .cl-main-widget-navigation-ach-icon,
-      .cl-main-widget-navigation-lb-icon,
-      .cl-main-widget-navigation-dashboard-icon {
-        height: 24px;
-        width: 24px;
-      }
-
-      .cl-main-widget-navigation-items {
-        padding: 0;
-        justify-content: space-between;
-        display: flex;
-        flex-direction: column;
-
-        .cl-main-widget-navigation-item {
-          width: 70px;
-          min-height: 36px;
-          margin-bottom: 0;
-        }
-      }
-    }
-  }
-  .cl-main-widget-wrapper.lightTheme {
-    .cl-landscape-close {
-      background-image: url(../../images/close-icon-light.svg);
-    }
-  }
-}
-
-@media screen and (max-width: 600px) {
-  #cy {
-    height: 300px;
-  }
-  .cl-main-widget-wrapper {
-    padding: 0;
-    width: calc(100% + 1px);
-    .cl-main-widget-pre-loader {
-      width: 100%;
-      border-radius: 20px 20px 0 0;
-    }
-    .cl-mobile-theme-switcher {
-      display: block;
-      width: 32px;
-      height: 32px;
-      position: absolute;
-      top: -16px;
-      left: 1px;
-      background: url(../../images/theme-switcher.svg) no-repeat center;
-      z-index: 10;
-    }
-    .cl-main-widget-inner-wrapper {
-      flex-direction: column-reverse;
-      justify-content: flex-end;
-      border-radius: 20px 20px 0 0 !important;
-      position: absolute;
-      bottom: 0;
-      top: auto;
-      max-height: unset;
-      height: calc(100% - 32px);
-      padding: 0 12px;
-      margin: 0;
-    }
-
-    .cl-main-widget-navigation-container {
-      flex-direction: row;
-      width: 100%;
-      height: unset;
-      align-items: unset;
-      padding: 0;
-      .cl-main-widget-navigation-items {
-        display: flex;
-        padding: 0;
-        justify-content: space-around;
-        height: 50px;
-        .cl-main-widget-navigation-item {
-          height: 50px;
-          min-height: unset;
-          width: unset;
-          justify-content: center;
-          padding: 0 8px;
-          .cl-main-navigation-item-title {
-            display: none;
-          }
-          &.cl-active-nav {
-            .cl-main-navigation-item-title {
-              display: block;
-              font-size: 9px;
-            }
-          }
-        }
-        .cl-main-widget-navigation-dashboard-icon,
-        .cl-main-widget-navigation-ach-icon,
-        .cl-main-widget-navigation-rewards-icon,
-        .cl-main-widget-navigation-inbox-icon,
-        .cl-main-widget-navigation-missions-icon,
-        .cl-main-widget-navigation-lb-icon {
-          width: 22px;
-          height: 22px;
-          margin-top: 0;
-          margin-bottom: 2px;
-        }
-      }
-      .cl-main-widget-navigation-logo {
-        display: none;
-      }
-      .cl-main-widget-navigation-darkMode-toggle {
-        display: none;
-      }
-    }
-
-    .cl-main-widget-section-container {
-      height: calc(100% - 90px);
-      width: 100%;
-      .cl-main-widget-missions-footer,
-      .cl-main-widget-inbox-footer-content,
-      .cl-main-widget-reward-footer-content,
-      .cl-main-widget-ach-footer,
-      .cl-main-widget-inbox-footer,
-      .cl-main-widget-lb-footer {
-        display: none;
-      }
-      .cl-main-widget-lb-missing-member-details {
-        bottom: 26px
-      }
-      .cl-main-widget-lb-details-description-close {
-        bottom: 68px !important;
-      }
-      .cl-main-widget-lb-header {
-        height: 72px;
-        .cl-main-widget-lb-header-list-icon {
-          width: 32px;
-          height: 32px;
-          left: 0;
-          transform: unset;
-          top: 29px;
-        }
-        .cl-main-widget-lb-header-close {
-          width: 32px;
-          height: 32px;
-          right: -11px;
-          top: -16px;
-        }
-        .cl-main-widget-lb-header-back-icon {
-          width: 32px;
-          height: 32px;
-          transform: unset;
-          top: 29px;
-        }
-        .cl-main-widget-lb-header-label {
-          font-size: 16px;
-          padding-top: 16px;
-        }
-      }
-      .cl-main-widget-lb-details {
-        margin-right: 0;
-        height: 120px;
-      }
-      .cl-main-widget-lb-leaderboard {
-        margin-right: 0;
-        margin-top: 12px;
-        height: calc(100% - 220px);
-        .cl-main-widget-lb-leaderboard-header-top-res {
-          padding: 0 12px;
-        }
-        .cl-main-widget-lb-leaderboard-body {
-          padding: 0 12px;
-        }
-      }
-      .cl-main-widget-lb-details-content {
-        height: 120px;
-        .cl-main-widget-lb-details-content-label {
-          padding-top: 16px;
-        }
-        .cl-main-widget-lb-details-content-date {
-          margin-top: 2px;
-        }
-        .cl-main-widget-lb-details-content-label-text {
-          font-size: 14px;
-        }
-        .cl-main-widget-lb-details-content-date-headers-item {
-          font-size: 12px;
-          width: 60px;
-        }
-        .banner-date {
-          .banner-date-cell{
-            font-size: 20px;
-            width: 20px;
-            height: 36px;
-          }
-          .banner-minutes,
-          .banner-seconds,
-          .banner-hours {
-            padding-left: 16px;
-          }
-          .banner-months {
-            padding-right: 16px;
-          }
-        }
-      }
-      .cl-main-widget-lb-details-description-date-headers {
-        height: 24px;
-      }
-      .cl-main-widget-lb-details-description-label-text {
-        font-size: 14px;
-        line-height: 14px;
-        padding-top: 16px;
-      }
-      .cl-main-widget-lb-details-description-date-headers-item {
-        font-size: 12px;
-        width: 60px;
-      }
-      .cl-main-widget-lb-details-description-date {
-        .banner-date {
-          .banner-date-cell{
-            font-size: 18px;
-            width: 18px;
-            height: 36px;
-          }
-          .banner-minutes,
-          .banner-seconds,
-          .banner-hours {
-            padding-left: 16px;
-          }
-        }
-        .banner-months {
-          padding-right: 16px;
-        }
-      }
-
-      .cl-main-widget-lb-leaderboard-header {
-        .cl-col.cl-rank-col {
-          transform: translate(8px, 0);
-        }
-        .cl-col.cl-reward-col {
-          transform: translate(14px, 0);
-        }
-      }
-
-      &.cl-main-active-embedded-description {
-        .cl-main-widget-lb-details-description-banner {
-          height: 120px;
-        }
-        .cl-main-widget-lb-details-description-header-title {
-          font-size: 14px;
-        }
-        .cl-main-widget-lb-details-description-container {
-          height: calc(100% - 12px);
-        }
-      }
-      .cl-main-accordion-container {
-        padding-right: 0;
-        .cl-accordion-list-container-header {
-          height: 36px;
-          font-size: 10px;
-          padding: 0 10px;
-          .cl-accordion-list-container-header-label {
-            padding-left: 12px;
-            max-width: 170px;
-          }
-          .cl-accordion-list-container-header-date {
-            max-width: 100px;
-          }
-          .cl-accordion-list-container-header-prize {
-            flex-grow: 1;
-            text-align: right;
-            padding-right: 6px;
-          }
-        }
-      }
-      .cl-main-widget-tournaments-list {
-        .paginator.accordion {
-          padding: 16px 12px 20px 12px;
-        }
-        .paginator-item {
-          flex-shrink: 0;
-        }
-        .cl-accordion-list {
-          padding: 0 10px;
-          font-size: 10px;
-        }
-        .cl-tour-list-details-cont {
-          font-size: 10px;
-          .cl-tour-list-details-label-icon {
-            margin-left: 12px;
-          }
-          .cl-tour-list-details-label {
-            max-width: 130px;
-          }
-          .cl-tour-list-details-period {
-            max-width: 100px;
-            padding-left: 6px;
-            line-height: 12px;
-          }
-          .cl-tour-list-details-prize {
-            flex-grow: 1;
-            text-align: right;
-            padding-right: 6px;
-          }
-        }
-        .cl-accordion.cl-shown {
-          height: calc(100% - 25px);
-        }
-      }
-      .cl-main-widget-tournaments-list.cl-show {
-        left: -1px;
-        top: 70px;
-        width: calc(100% + 2px);
-      }
-      .cl-main-widget-tournaments-list {
-        height: calc(100% - 66px);
-      }
-
-      .cl-main-widget-ach-header {
-        height: 72px;
-        .cl-main-widget-ach-header-close {
-          width: 32px;
-          height: 32px;
-          right: -11px;
-          top: -16px;
-        }
-        .cl-main-widget-ach-header-label {
-          font-size: 16px;
-          padding-top: 16px;
-        }
-      }
-      .cl-main-widget-ach-list {
-        height: calc(100% - 92px);
-        padding: 0;
-        .cl-main-widget-ach-list-body-res {
-          justify-content: center;
-        }
-      }
-      .cl-main-widget-inbox-list-body::-webkit-scrollbar {
-        width: 4px;
-        background: #141E28;
-      }
-      .cl-main-widget-inbox-list-body::-webkit-scrollbar-thumb {
-        border-radius: 10px;
-        background: #304F69;
-      }
-      .cl-main-widget-ach-list-body::-webkit-scrollbar {
-        width: 4px;
-        background: #141E28;
-      }
-      .cl-main-widget-ach-list-body::-webkit-scrollbar-thumb {
-        border-radius: 10px;
-        background: #304F69;
-      }
-      .cl-main-widget-ach-list-body {
-        padding: 0 8px 0 0;
-      }
-      .cl-main-widget-section-ach {
-        .cl-ach-list-icon {
-          width: 45px;
-          height: 45px;
-          background-size: 30px;
-          &::before {
-            width: 45px;
-            height: 45px;
-          }
-          &::after {
-            width: 45px;
-            height: 22px;
-            background-size: cover;
-          }
-        }
-        .cl-ach-list-details-label {
-          font-size: 12px;
-          line-height: 12px;
-          padding-bottom: 10px;
-        }
-        .cl-ach-list-item {
-          padding: 10px 12px;
-          height: unset;
-          width: 100%;
-        }
-        .cl-main-widget-ach-list-popup {
-          width: 270px;
-        }
-      }
-      .cl-main-widget-ach-details-container {
-        top: 72px;
-        &.cl-show {
-          padding: 0;
-          top: 72px;
-          height: calc(100% - 82px);
-        }
-      }
-
-      .cl-main-widget-reward-header {
-        padding-right: 0;
-        height: 72px;
-        .cl-main-widget-reward-header-close {
-          width: 32px;
-          height: 32px;
-          right: -11px;
-          top: -16px;
-        }
-        .cl-main-widget-reward-header-back {
-          width: 32px;
-          height: 32px;
-        }
-        .cl-main-widget-reward-header-label {
-          font-size: 16px;
-          padding-top: 16px;
-        }
-      }
-      .cl-main-widget-reward-list {
-        height: calc(100% - 82px);
-        left: unset;
-        .cl-main-widget-reward-list-body-res {
-          padding: 0;
-          .cl-accordion-list {
-            padding: 0;
-            justify-content: space-around;
-          }
-          .cl-rew-list-item {
-            max-width: 144px;
-            padding: 10px 6px;
-            margin-bottom: 10px;
-          }
-          .cl-rew-list-details-label {
-            padding: 0 6px;
-            font-size: 12px;
-          }
-          .cl-rew-list-details-type {
-            padding: 0 6px;
-            font-size: 12px;
-          }
-          .cl-rew-list-details-icon {
-            width: 100px;
-            height: 100px;
-            background-size: 70px;
-            &::before {
-              width: 100px;
-              height: 100px;
-            }
-            &::after {
-              width: 100px;
-              height: 100px;
-            }
-          }
-          .wheel-label, .scratchcards-label {
-            font-size: 12px;
-            line-height: 38px;
-          }
-          .wheel-item, .scratchcards-item {
-            width: 144px;
-            height: 180px;
-          }
-          .wheel-image, .scratchcards-image {
-            width: 130px;
-            height: 80px;
-            background-size: contain;
-            margin-bottom: 18px;
-            background-repeat: no-repeat;
-            background-position: center;
-          }
-          .wheel-button, .scratchcards-button {
-            font-size: 12px;
-            width: 132px;
-            height: 26px;
-          }
-          .scratchcards-game-label, .single-wheel-label {
-            font-size: 14px;
-          }
-          .scratchcards-game-container {
-            flex-direction: column;
-            padding: 10px 0 0;
-            align-items: center;
-          }
-          .scratchcards-game-prize-prizes {
-            margin-top: 10px;
-            justify-content: space-around;
-          }
-          .scratchcards-game-prize-prizes-first,
-          .scratchcards-game-prize-prizes-second,
-          .scratchcards-game-prize-prizes-third {
-            width: 50px;
-            height: 50px;
-            background-size: 28px;
-            &::before {
-              width: 50px;
-              height: 50px;
-            }
-            &::after {
-              width: 50px;
-              height: 50px;
-            }
-          }
-          .scratchcards-game-prize-label {
-            margin-top: 30px;
-          }
-          .scratchcards-game-prize-prizes-label {
-            font-size: 12px;
-            width: 82px;
-            left: -15px;
-          }
-          .single-wheel-canvas {
-            width: 192px;
-            height: 192px;
-            &::before {
-              width: 14px;
-              height: 14px;
-              left: 85px;
-              top: 85px;
-            }
-            &::after {
-              width: 205px;
-              height: 205px;
-              left: -8px;
-              top: -7px;
-            }
-          }
-          .single-wheel-pointer {
-            width: 25px;
-            height: 18px;
-            top: -12px;
-            left: 83px;
-            background-size: contain;
-          }
-          .single-wheel-button {
-            margin-top: 42px;
-          }
-          .single-wheel-wrapper {
-            height: calc(100% - 20px);
-          }
-          .scratchcards-game-wrapper {
-            height: calc(100% - 20px);
-          }
-          .scratchcards-game-cardWrapper {
-            width: 220px;
-            height: 220px;
-          }
-          .scratchcards-game-card-block {
-            width: 210px;
-            height: 210px;
-          }
-          .scratchcards-game-card-cell {
-            width: 60px;
-            height: 60px;
-            margin-bottom: 15px;
-          }
-        }
-        .cl-main-accordion-container {
-          .cl-accordion {
-            &.cl-shown {
-              height: calc(100% - 34px);
-            }
-          }
-          .cl-main-accordion-container-menu {
-            height: 30px;
-            padding: 0 4px;
-          }
-          .cl-main-accordion-container-menu-item {
-            font-size: 10px;
-            padding: 4px 14px;
-          }
-          .cl-shown {
-            .cl-accordion-list-container {
-              padding: 0;
-            }
-          }
-        }
-      }
-      .cl-main-widget-reward-details-container {
-        top: 72px;
-        &.cl-show {
-          padding-left: 0;
-          height: calc(100% - 80px);
-          top: 72px;
-        }
-        .cl-main-widget-reward-details-header-label {
-          font-size: 14px;
-        }
-        .cl-main-widget-reward-details-wrapper {
-          border: 1px solid #223241;
-        }
-        .cl-main-widget-reward-details-header {
-          padding: 8px;
-          min-height: 46px;
-        }
-      }
-
-      .cl-main-widget-section-inbox {
-        .cl-main-widget-inbox-header {
-          height: 72px;
-          .cl-main-widget-inbox-header-close {
-            width: 32px;
-            height: 32px;
-            right: -11px;
-            top: -16px;
-          }
-          .cl-main-widget-inbox-header-label {
-            font-size: 16px;
-            padding-top: 16px;
-          }
-        }
-        .cl-main-widget-inbox-list {
-          padding: 0;
-        }
-        .cl-inbox-list-details-label {
-          font-size: 12px;
-        }
-        .cl-inbox-list-details-description {
-          font-size: 10px;
-        }
-        .cl-inbox-list-details-date {
-          font-size: 10px;
-        }
-        .cl-main-widget-inbox-list {
-          height: calc(100% - 92px);
-        }
-        .cl-main-widget-inbox-details-container {
-          top: 72px;
-          &.cl-show {
-            padding: 0;
-            top: 72px;
-            height: calc(100% - 80px);
-          }
-          .cl-main-widget-inbox-details-header-label {
-            font-size: 14px;
-          }
-          .cl-main-widget-inbox-details-header-date {
-            font-size: 10px;
-          }
-          .cl-main-widget-inbox-details-body {
-            font-size: 12px;
-          }
-        }
-      }
-
-      .cl-main-widget-section-missions {
-        .cl-main-widget-missions-header {
-          padding-right: 0;
-          height: 72px;
-          .cl-main-widget-missions-header-label {
-            font-size: 16px;
-            padding-top: 16px;
-          }
-          .cl-main-widget-missions-header-close {
-            width: 32px;
-            height: 32px;
-            right: -11px;
-            top: -16px;
-          }
-          .cl-main-widget-mission-header-back-icon {
-            width: 32px;
-            height: 32px;
-            transform: unset;
-            top: 26px;
-          }
-        }
-        .cl-main-widget-missions-map-container {
-          top: 72px;
-          height: calc(100% - 82px);
-        }
-        .cl-main-widget-missions-map-wrapper {
-          margin-right: 0;
-        }
-        .cl-main-widget-missions-list {
-          height: calc(100% - 82px);
-          padding: 0;
-        }
-        .cl-main-widget-missions-list-body-res {
-          padding: 0;
-          justify-content: space-around;
-          .cl-missions-list-details-progress-cont {
-            width: 88px;
-          }
-          .cl-missions-list-details-date {
-            right: 0;
-            font-size: 10px;
-          }
-          .cl-missions-list-item {
-            width: 144px;
-            height: 256px;
-          }
-          .cl-missions-list-details-img {
-            height: 135px;
-          }
-          .cl-missions-list-details-label {
-            font-size: 12px;
-            line-height: 12px;
-          }
-          .cl-missions-list-details-progress-label {
-            font-size: 10px;
-          }
-          .cl-missions-list-details-actions {
-            flex-direction: column;
-            padding: 8px 8px 0;
-          }
-          .cl-missions-list-details-actions-reward {
-            height: 26px;
-            font-size: 16px;
-            line-height: 26px;
-            margin-bottom: 6px;
-            width: 100%;
-            &::before {
-              top: 7px;
-            }
-          }
-          .cl-missions-list-details-actions-btn {
-            height: 26px;
-            font-size: 12px;
-            width: 100%;
-          }
-          .cl-missions-list-details-progress {
-            padding: 8px 12px 0;
-          }
-        }
-        .cl-main-widget-missions-details-container {
-          padding-left: 0;
-          top: 72px;
-          height: calc(100% - 80px);
-          .cl-main-widget-missions-details-container-wrapper {
-            padding-right: 0;
-            margin-right: 0;
-            .cl-main-widget-missions-details-body-wrapper {
-              flex-direction: column;
-              align-items: center;
-            }
-            .cl-main-widget-missions-details-header {
-              padding: 8px 8px 0;
-            }
-            .cl-main-widget-missions-details-body-container {
-              padding: 0 20px 0 20px;
-            }
-            .cl-main-widget-missions-details-header-label {
-              text-align: center;
-              font-size: 14px;
-              padding-top: 10px;
-            }
-            .cl-main-widget-missions-details-tc-label,
-            .cl-main-widget-missions-details-description-label {
-              font-size: 10px;
-              font-weight: 700;
-            }
-            .cl-main-widget-missions-details-description,
-            .cl-main-widget-missions-details-tc,
-            .cl-main-widget-missions-details-description {
-              font-size: 10px;
-            }
-            .cl-main-widget-missions-graph-container {
-              height: 256px;
-            }
-            .cl-main-widget-missions-details-body-image {
-              margin-left: 0;
-              width: 100px;
-              height: 100px;
-              margin-top: -46px;
-              &::before {
-                width: 100px;
-                height: 100px;
-              }
-              &::after {
-                width: 100px;
-                height: 100px;
-              }
-            }
-          }
-        }
-      }
-
-      .cl-main-widget-section-dashboard {
-        .cl-main-widget-dashboard-header {
-          height: 72px;
-          .cl-main-widget-dashboard-header-close {
-            width: 32px;
-            height: 32px;
-            right: -11px;
-            top: -16px;
-          }
-          .cl-main-widget-dashboard-header-label {
-            font-size: 16px;
-            padding-top: 16px;
-          }
-        }
-        .cl-main-widget-dashboard-body {
-          padding: 0 8px 0 0;
-          margin: 0 -8px 0 0;
-          height: calc(100% - 90px);
-        }
-        .cl-main-widget-dashboard-instant-wins-wheel-title,
-        .cl-main-widget-dashboard-instant-wins-cards-title {
-          display: none;
-        }
-        .cl-main-widget-dashboard-instant-wins-cards-title-mobile,
-        .cl-main-widget-dashboard-instant-wins-wheel-title-mobile {
-          display: block;
-        }
-        .cl-main-widget-dashboard-achievements-title,
-        .cl-main-widget-dashboard-instant-wins-title {
-          font-size: 14px;
-        }
-        .cl-main-widget-dashboard-achievements-title {
-          padding-top: 20px;
-        }
-        .cl-main-widget-dashboard-achievements-list {
-          padding-top: 10px;
-        }
-        .cl-main-widget-dashboard-instant-wins-wrapp {
-          justify-content: space-around;
-          padding-top: 10px;
-        }
-        .cl-main-widget-dashboard-instant-wins-wheel-image {
-          width: 132px;
-          height: 84px;
-        }
-        .cl-main-widget-dashboard-instant-wins-cards-image {
-          width: 132px;
-          height: 84px;
-          background-size: 78px;
-        }
-        .cl-main-widget-dashboard-instant-wins-wheel {
-          flex-direction: column;
-          width: 144px;
-          padding: 10px 6px;
-          margin: 0;
-        }
-        .cl-main-widget-dashboard-instant-wins-cards {
-          flex-direction: column;
-          width: 144px;
-          padding: 10px 6px;
-        }
-        .cl-main-widget-dashboard-instant-wins-wheel-description,
-        .cl-main-widget-dashboard-instant-wins-cards-description {
-          display: none;
-        }
-        .cl-main-widget-dashboard-instant-wins-wheel-body {
-          padding: 0;
-        }
-        .cl-main-widget-dashboard-instant-wins-cards-body {
-          padding: 0;
-        }
-        .cl-main-widget-dashboard-instant-wins-wheel-button,
-        .cl-main-widget-dashboard-instant-wins-cards-button {
-          height: 26px;
-          font-size: 12px;
-          margin-top: 20px;
-        }
-        .cl-main-widget-dashboard-achievements-list {
-          .cl-ach-list-item {
-            padding: 10px 12px;
-            height: unset;
-            width: 100%;
-            .cl-ach-list-icon {
-              width: 45px;
-              height: 45px;
-              &::before {
-                width: 45px;
-                height: 45px;
-              }
-              &::after {
-                width: 45px;
-                height: 22px;
-                background-size: cover;
-              }
-            }
-            .cl-ach-list-details-label {
-              font-size: 12px;
-              line-height: 12px;
-              padding-bottom: 10px;
-            }
-            .cl-ach-list-more {
-              text-align: center;
-              color: var(--light-font-color);
-              border: 1px solid #ee3ec8;
-              text-decoration: none;
-              border-radius: 10px;
-              padding: 10px 28px;
-              cursor: pointer;
-              transition: all .3s ease;
-              font-style: normal;
-              font-weight: 700;
-              font-size: 14px;
-              line-height: 14px;
-              background: unset;
-            }
-          }
-        }
-        .cl-main-widget-dashboard-tournaments-list {
-          flex-direction: column;
-          .dashboard-tournament-item {
-            width: 100%;
-            margin-bottom: 20px;
-          }
-        }
-      }
-    }
-  }
-  .cl-main-widget-wrapper.lightTheme {
-    .cl-main-widget-section-container {
-      .cl-main-widget-inbox-list-body::-webkit-scrollbar {
-        background: #dce6ef;
-      }
-      .cl-main-widget-inbox-list-body::-webkit-scrollbar-thumb {
-        background: #96b5cf;
-      }
-
-      .cl-main-widget-ach-list-body::-webkit-scrollbar {
-        background: #dce6ef;
-      }
-      .cl-main-widget-ach-list-body::-webkit-scrollbar-thumb {
-        background: #96b5cf;
-      }
-    }
-    .cl-main-widget-dashboard-achievements-list .cl-ach-list-more {
-      color: #170213 !important;
-    }
-  }
-}
-
-@media (orientation: landscape) and (max-width: 768px) and (max-height: 600px) {
-  .cl-main-widget-wrapper {
-    .cl-main-widget-section-container {
-      .cl-main-widget-lb-details {
-        height: 40px;
-      }
-      .cl-main-widget-lb-details-content {
-        height: 40px;
-      }
-    }
-  }
-}
-
-@media screen and (max-width: 425px) {
-  .cl-main-widget-wrapper {
-    .cl-main-widget-section-container {
-      .cl-main-widget-lb-leaderboard-header {
-        padding: 0 12px;
-        .cl-rank-col {
-          max-width: 100px;
-          transform: translate(24px, 0) !important;
-        }
-        .cl-name-col {
-          max-width: 124px;
-          transform: translate(-12px, 0) !important;
-        }
-        .cl-points-col {
-          width: 100%;
-          max-width: 80px;
-          transform: translate(-10px, 0) !important;
-        }
-        .cl-reward-col {
-          transform: translate(28px, 0) !important;
-        }
-      }
-      .cl-main-widget-lb-leaderboard-header-top-res {
-        .cl-rank-col-value {
-          transform: translate(14px, 0);
-        }
-      }
-      .cl-main-widget-lb-leaderboard-res-container {
-        .cl-rank-col {
-          max-width: 60px;
-          width: 100%;
-        }
-        .cl-name-col {
-          max-width: 100px;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-        .cl-points-col {
-          max-width: 80px;
-        }
-        .cl-reward-col {
-          width: 100%;
-          max-width: 90px;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          text-align: center;
-        }
-      }
-
-      .cl-main-widget-lb-missing-member-details {
-        padding-left: 18px;
-        .cl-rank-col {
-          max-width: 50px;
-        }
-        .cl-name-col {
-          min-width: 50px;
-        }
-      }
-    }
-  }
-}
-
-@media screen and (max-width: 375px) {
-  .cl-main-widget-wrapper {
-    .cl-main-widget-section-container {
-      .cl-main-widget-lb-leaderboard-header {
-        .cl-rank-col {
-          transform: translate(12px, 0) !important;
-        }
-        .cl-name-col {
-          transform: translate(10px, 0) !important;
-          min-width: 58px;
-        }
-        .cl-points-col {
-          transform: translate(30px, 0) !important;
-          min-width: 60px;
-        }
-        .cl-reward-col {
-          transform: translate(48px, 0) !important;
-        }
-      }
-      .cl-main-widget-lb-leaderboard-res-container {
-        .cl-rank-col {
-          max-width: 60px;
-          width: 100%;
-        }
-        .cl-name-col {
-          max-width: 60px;
-        }
-        .cl-points-col {
-          min-width: 60px;
-        }
-        .cl-reward-col {
-          min-width: 60px;
-        }
-        .cl-main-widget-lb-leaderboard-header-top-res {
-          .cl-rank-col-value {
-            transform: translate(14px, 0);
-          }
-        }
-      }
-      .cl-main-widget-lb-details-content {
-        .cl-main-widget-lb-details-content-date-headers-item {
-          width: 56px;
-        }
-        .cl-main-widget-lb-details-content-date {
-          .banner-date {
-            .banner-months {
-              padding-right: 14px;
-            }
-            .banner-seconds,
-            .banner-minutes,
-            .banner-hours {
-              padding-left: 14px;
-            }
-            .banner-date-cell {
-              font-size: 18px;
-              width: 18px;
-              height: 32px;
-            }
-          }
-        }
-      }
-      .cl-main-widget-lb-details-description-container {
-        .cl-main-widget-lb-details-description-date {
-          .banner-date {
-            .banner-months {
-              padding-right: 10px;
-            }
-            .banner-date-cell {
-              font-size: 16px;
-              width: 16px;
-              height: 30px;
-            }
-            .banner-seconds,
-            .banner-minutes,
-            .banner-hours {
-              padding-left: 10px;
-            }
-          }
-        }
-        .cl-main-widget-lb-details-description-date-headers-item {
-          font-size: 10px;
-          width: 46px;
         }
       }
     }

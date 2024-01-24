@@ -65,6 +65,7 @@
     },
     "rewards": {
         "label": "Awards",
+        "expiresInLabel": "Expires In",
         "claim": "Claim",
         "claimed": "Claimed",
         "expired": "Expired",
@@ -86,10 +87,11 @@
         "label": "Messages"
     },
     "dashboard": {
-        "label": "Dashboard",
+        "label": "Hi",
         "instantWinsTitle": "Instant wins",
-        "achievementsTitle": "Achievements",
-        "tournamentsTitle": "Current Tournaments",
+        "rewardsTitle": "Rewards",
+        "achievementsTitle": "Missions",
+        "tournamentsTitle": "Tournaments",
         "upcomingTournamentsTitle": "Upcoming Tournaments",
         "tournamentBtn": "See more",
         "endsTitle": "Ends",
@@ -99,7 +101,7 @@
         "singleWheelButton": "Play",
         "scratchcardsTitle": "Scratchcards",
         "scratchcardsButton": "Play",
-        "seeAll": "See all"
+        "seeAll": "View all"
     },
     "missions": {
         "label": "Missions",

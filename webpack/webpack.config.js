@@ -23,13 +23,10 @@ module.exports = (env) => {
 
   const webpackDevConfig = require('./webpack.dev.config');
   const webpackProdConfig = require('./webpack.prod.config');
-  const webpackLayoutsConfig = require('./webpack.layouts.config');
 
   if (process.env && process.env.production) {
     if (process.env.production === "prod") {
       return webpackProdConfig;
-    } else if (process.env.production === "layouts") {
-      return webpackLayoutsConfig;
     } else {
       return webpackDevConfig;
     }
