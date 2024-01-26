@@ -1,56 +1,114 @@
 {
     "time": {
-        "days": "днів",
-        "hours": "год",
+        "days": "дні",
+        "hours": "години",
         "minutesShortHand": "хв",
-        "minutes": "хв",
-        "seconds": "с"
+        "minutes": "хвилини",
+        "seconds": "секунди",
+        "daysFull": "Днів",
+        "hoursFull": "Годин",
+        "minutesFull": "Хвилин",
+        "secondsFull": "Секунд"
     },
     "achievements": {
         "label": "Досягнення",
         "more": "Більше",
-        "complete": "завершено 100%"
+        "complete": "виконано 100%",
+        "enter": "Увійти до досягнень",
+        "leave": "Залишити досягнення",
+        "listEnterBtn": "Приєднатися",
+        "listLeaveBtn": "Залишити",
+        "listProgressionBtn": "Обробка...",
+        "leavePopupTitle": "Залишити досягнення",
+        "leavePopupDescription": "Ви впевнені, що хочете залишити це досягнення?",
+        "leavePopupClose": "Закрити",
+        "leavePopupConfirm": "Залишити",
+        "progress": "Прогрес"
     },
     "tournaments": {
         "label": "Турніри",
-        "enter": "Увійти в турнір",
-        "readyCompetitions": "Майбутні турніри",
-        "activeCompetitions": "Активні турніри",
-        "finishedCompetitions": "Закінчені турніри",
-        "finishing": "Закінчуються",
-        "finished": "Закінчені",
-        "registered": "Зареєстровані",
-        "noAvailableCompetitions": "Відсутні конкуренції"
+        "enter": "Увійти до турніру",
+        "processing": "Обробка...",
+        "readyCompetitions": "Наявні",
+        "activeCompetitions": "Активні",
+        "finishedCompetitions": "Завершені",
+        "finishing": "Завершується",
+        "finished": "Завершено",
+        "registered": "Зареєстровано",
+        "noAvailableCompetitions": "Немає доступних турнірів",
+        "date": "Дата"
     },
     "leaderboard": {
-        "rank": "Місце",
+        "rank": "Рейтинг",
         "name": "Ім'я",
         "points": "Очки",
         "prize": "Приз",
         "you": "Ви"
     },
+    "brackets": {
+        "title": "Сітка турніру",
+        "starts": "Починається",
+        "ends": "Закінчується",
+        "ended": "Закінчено"
+    },
     "miniLeaderboard": {
-        "highScore": "Високий результат",
-        "lastScore": "Останній результат",
-        "rank": "Місце",
-        "startsIn": "Починаються в",
-        "started": "розпочато",
-        "starting": "починаються",
-        "finishing": "закінчуються",
-        "finished": "закінчені"
+        "highScore": "Рекордний бал",
+        "lastScore": "Останній бал",
+        "rank": "Рейтинг",
+        "startsIn": "Починається через",
+        "started": "почалося",
+        "starting": "початок",
+        "finishing": "закінчення",
+        "finished": "завершено"
     },
     "rewards": {
         "label": "Винагороди",
-        "claim": "Запитати зараз",
-        "claimed": "Запитані",
+        "claim": "Заявити",
+        "claimed": "Заявлено",
         "availableRewards": "Доступні винагороди",
-        "rewards": "Запитані винагороди",
-        "expiredRewards": "Прострочені винагороди"
+        "instantWins": "Миттєві перемоги",
+        "rewards": "Заявлені винагороди",
+        "expiredRewards": "Закінчилися винагороди",
+        "wheelLabel": "Один круг",
+        "scratchcardsLabel": "Скретч-карти",
+        "wheelButton": "Грати",
+        "scratchcardsButton": "Грати",
+        "singleWheelWinLabel": "Вітаємо!",
+        "singleWheelWinDescription": "Ви виграли",
+        "singleWheelWinButton": "Заявити",
+        "prizeLabel": "Розкрийте свій приз, скретчуючи!",
+        "prizeButton": "Скретч усе"
     },
     "messages": {
         "label": "Повідомлення"
     },
+    "dashboard": {
+        "label": "Панель інструментів",
+        "instantWinsTitle": "Миттєві перемоги",
+        "achievementsTitle": "Досягнення",
+        "tournamentsTitle": "Поточні турніри",
+        "upcomingTournamentsTitle": "Майбутні турніри",
+        "tournamentBtn": "Докладніше",
+        "endsTitle": "Завершується",
+        "startsTitle": "Починається",
+        "prizeTitle": "Приз",
+        "singleWheelTitle": "Один круг",
+        "singleWheelButton": "Грати",
+        "scratchcardsTitle": "Скретч-карти",
+        "scratchcardsButton": "Грати",
+        "seeAll": "Переглянути все"
+    },
+    "missions": {
+        "label": "Місії",
+        "btn": "Перейти",
+        "prizeLabel": "Приз",
+        "mapLabel": "Карта місій"
+    },
     "global": {
-        "copy": "На платформі Ziqni"
+        "copy": "Запитується від Ziqni",
+        "descriptionLabel": "Опис",
+        "tAndCLabel": "Умови та положення",
+        "tAndCEmpty": "Умови та положення не надано",
+        "descriptionEmpty": "Опис відсутній"
     }
 }

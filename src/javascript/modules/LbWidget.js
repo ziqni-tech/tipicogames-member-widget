@@ -1,6 +1,4 @@
 import 'regenerator-runtime/runtime';
-import Identicon from 'identicon.js';
-import jsSHA from 'jssha';
 import cssVars from 'css-vars-ponyfill';
 
 import mergeObjects from '../utils/mergeObjects';
@@ -15,11 +13,11 @@ import removeClass from '../utils/removeClass';
 import closest from '../utils/closest';
 import isMobileTablet from '../utils/isMobileTablet';
 import camelToKebabCase from '../utils/camelToKebabCase';
+import pagination from '../utils/paginator';
 
 import competitionStatusMap from '../helpers/competitionStatuses';
 
 import cLabs from './cLabs';
-import './Ajax';
 
 import { Notifications } from './Notifications';
 import { MiniScoreBoard } from './MiniScoreBoard';
@@ -43,13 +41,12 @@ import {
   RewardsApiWs,
   LeaderboardApiWs,
   LeaderboardSubscriptionRequest,
-  MessagesApiWs,
-  MessageRequest,
   AwardsApiWs,
   AwardRequest,
   ClaimAwardRequest,
-  GraphsApiWs,
-  EntityGraphRequest
+  InstantWinsApiWs,
+  InstantWinRequest,
+  InstantWinPlayRequest
 } from '@ziqni-tech/member-api-client';
 
 const translation = require(`../../i18n/translation_${process.env.LANG}.json`);
@@ -78,8 +75,9 @@ export const LbWidget = function (options) {
     miniScoreBoard: null,
     canvasAnimation: null,
     enableNotifications: false,
+    hideEmptyTabs: false,
+    defaultLightTheme: false,
     mainWidget: null,
-    globalAjax: new cLabs.Ajax(),
     language: process.env.LANG,
     currency: '',
     spaceName: '',
@@ -92,10 +90,13 @@ export const LbWidget = function (options) {
     gameId: '',
     enforceGameLookup: false, // tournament lookup will include/exclude game only requests
     apiKey: '',
+    memberToken: '',
     expires: 36000000,
     member: null,
     itemsPerPage: 10,
     layout: {
+      logoUrl: '',
+      showThemeSwitcher: true,
       enableMiniScoreBoardDragging: true, // enable/disable dragging with mouse/touch
       miniScoreBoardPosition: { // default position of mini scoreboard left/right/bottom/top (Example: top: '20px')
         left: null,
@@ -106,10 +107,15 @@ export const LbWidget = function (options) {
       allowOrientationChange: true, // allows the switch between horizontal/vertical orientation
       miniScoreBoardOrientation: 'horizontal' // vertical/horizontal => default is horizontal
     },
+    historicalData: {
+      finalisedCompetitions: 30,
+      messagesForTheLast: 30
+    },
     competition: {
       activeCompetitionId: null,
       activeContestId: null,
       activeCompetition: null,
+      contests: null,
       activeContest: null,
       refreshInterval: null,
       refreshIntervalMillis: 1000000,
@@ -136,21 +142,19 @@ export const LbWidget = function (options) {
     awards: {
       availableAwards: [],
       claimedAwards: [],
+      expiredAwards: [],
       rewards: [],
       totalCount: 0,
       claimedTotalCount: 0,
-      intervalId: null
+      intervalId: null,
+      showExpiredAwards: false
     },
     iconIntervalId: null,
-    messages: {
-      messages: [],
-      totalCount: 0
-    },
-    missions: {
-      missions: [],
-      totalCount: 0
+    instantWins: {
+      enable: false
     },
     tournaments: {
+      showTournamentsMenuPrizeColumn: true,
       activeCompetitionId: null,
       readyCompetitions: [],
       activeCompetitions: [],
@@ -181,41 +185,35 @@ export const LbWidget = function (options) {
       }
     },
     navigation: { // primary navigation items, if all are disabled init will fail, if only 1 is enabled items will be hidden
+      dashboard: {
+        enable: true,
+        navigationClass: 'cl-main-widget-navigation-dashboard',
+        navigationClassIcon: 'cl-main-widget-navigation-dashboard-icon',
+        containerClass: 'cl-main-widget-section-dashboard',
+        order: 1
+      },
       tournaments: {
         enable: true,
         showFinishedTournaments: true,
         navigationClass: 'cl-main-widget-navigation-lb',
         navigationClassIcon: 'cl-main-widget-navigation-lb-icon',
         containerClass: 'cl-main-widget-lb',
-        order: 1
+        order: 2
       },
       achievements: {
         enable: true,
+        showReadyAchievements: false,
         navigationClass: 'cl-main-widget-navigation-ach',
         navigationClassIcon: 'cl-main-widget-navigation-ach-icon',
         containerClass: 'cl-main-widget-section-ach',
-        order: 2
+        order: 3
       },
       rewards: {
-        enable: false,
+        enable: true,
         navigationClass: 'cl-main-widget-navigation-rewards',
         navigationClassIcon: 'cl-main-widget-navigation-rewards-icon',
         containerClass: 'cl-main-widget-section-reward',
-        order: 3
-      },
-      inbox: {
-        enable: true,
-        navigationClass: 'cl-main-widget-navigation-inbox',
-        navigationClassIcon: 'cl-main-widget-navigation-inbox-icon',
-        containerClass: 'cl-main-widget-section-inbox',
         order: 4
-      },
-      missions: {
-        enable: false,
-        navigationClass: 'cl-main-widget-navigation-missions',
-        navigationClassIcon: 'cl-main-widget-navigation-missions-icon',
-        containerClass: 'cl-main-widget-section-missions',
-        order: 5
       }
     },
     apiWs: {
@@ -227,9 +225,8 @@ export const LbWidget = function (options) {
       optInApiWsClient: null,
       rewardsApiWsClient: null,
       awardsApiWsClient: null,
-      messagesApiWsClient: null,
-      missionsApiWsClient: null,
-      filesApiWsClient: null
+      filesApiWsClient: null,
+      instantWinsApiWsClient: null
     },
     uri: {
       gatewayDomain: cLabs.api.url,
@@ -242,71 +239,23 @@ export const LbWidget = function (options) {
       memberCompetitionOptInCheck: '/api/v1/:space/members/reference/:id/competition/:competitionId/optin-check',
       translationPath: '' // ../i18n/translation_:language.json
     },
-    loadTranslations: true,
+    loadCustomTranslations: true,
     showCopyright: true,
     translation: translation,
     resources: [], // Example: ["http://example.com/style.css", "http://example.com/my-fonts.css"]
     styles: null, // Example: {widgetBgColor: '#1f294a', widgetIcon: 'url(../../../examples/images/logo-icon-3.png)'}
     partialFunctions: {
-      uri: {
-        availableCompetitionsListParameters: function (filter) {
-          return filter;
-        },
-        finishedCompetitionsListParameters: function (filter) {
-          return filter;
-        },
-        competitionByIdParameters: function (filter) {
-          return filter;
-        },
-        leaderboardParameters: function (filter) {
-          return filter;
-        },
-        achievementsAvailableForAllListParameters: function (filter) {
-          return filter;
-        },
-        achievementsForMemberListParameters: function (filter) {
-          return filter;
-        },
-        achievementByIdParameters: function (filter) {
-          return filter;
-        },
-        claimedRewardsListParameters: function (filter) {
-          return filter;
-        },
-        notClaimedRewardsListParameters: function (filter) {
-          return filter;
-        },
-        expiredRewardsListParameters: function (filter) {
-          return filter;
-        },
-        availableMessagesListParameters: function (filter) {
-          return filter;
-        }
-      },
       startupCallback: function (instance) {},
       rewardFormatter: function (reward) {
         let defaultRewardValue = Number.isInteger(reward.rewardValue)
           ? reward.rewardValue
-          : reward.rewardValue.toFixed(2);
+          : Math.floor(reward.rewardValue * 100) / 100;
 
-        if (reward.rewardType && reward.rewardType.uomSymbol) {
+        if (reward.rewardType?.uomSymbol) {
           defaultRewardValue = reward.rewardType.uomSymbol + defaultRewardValue;
         }
 
         return defaultRewardValue;
-      },
-      awardFormatter: function (award) {
-        let defaultAwardValue = Number.isInteger(award.rewardValue)
-          ? award.rewardValue
-          : award.rewardValue.toFixed(2);
-
-        if (award.uomSymbol) {
-          defaultAwardValue = award.uomSymbol + defaultAwardValue;
-        } else if (!award.uom && award.rewardType && award.rewardType.uomSymbol) {
-          defaultAwardValue = award.rewardType.uomSymbol + award.rewardValue;
-        }
-
-        return defaultAwardValue;
       },
       competitionDataAvailableResponseParser: function (competitionData, callback) { callback(competitionData); },
       competitionDataFinishedResponseParser: function (competitionData, callback) { callback(competitionData); },
@@ -317,14 +266,12 @@ export const LbWidget = function (options) {
       achievementDataForMemberGroupResponseParser: function (achievementData, callback) { callback(achievementData); },
       achievementDataResponseParser: function (achievementData, callback) { callback(achievementData); },
       rewardDataResponseParser: function (rewardData, callback) { callback(rewardData); },
-      messageDataResponseParser: function (messageData, callback) { callback(messageData); },
       claimRewardDataResponseParser: function (claimRewardData, callback) { callback(claimRewardData); },
       issuedAchievementsDataResponseParser: function (issuedAchievementsData, callback) { callback(issuedAchievementsData); },
       memberAchievementsProgressionDataResponseParser: function (memberAchievementsProgressionData, callback) { callback(memberAchievementsProgressionData); },
       claimedRewardsDataResponseParser: function (claimedRewardsData, callback) { callback(claimedRewardsData); },
       notClaimedRewardsDataResponseParser: function (notClaimedRewardsData, callback) { callback(notClaimedRewardsData); },
-      expiredRewardsDataResponseParser: function (expiredRewardsData, callback) { callback(expiredRewardsData); },
-      availableMessagesDataResponseParser: function (availableMessagesData, callback) { callback(availableMessagesData); }
+      expiredRewardsDataResponseParser: function (expiredRewardsData, callback) { callback(expiredRewardsData); }
     },
     callbacks: {
       onContestStatusChanged: function (contestId, currentState, previousState) {},
@@ -361,6 +308,7 @@ export const LbWidget = function (options) {
     var _this = this;
     var largeResult = [];
     var result = [];
+    if (duration.months()) largeResult.push(duration.months() + '<span class="time-ind">' + _this.settings.translation.time.months + '</span>');
     if (duration.days()) largeResult.push(duration.days() + '<span class="time-ind">' + _this.settings.translation.time.days + '</span>');
     if (duration.hours() || duration.days() > 0) {
       result.push(formatNumberLeadingZeros(duration.hours(), 2) + '<span class="time-ind">' + _this.settings.translation.time.hours + '</span>');
@@ -373,40 +321,130 @@ export const LbWidget = function (options) {
     return (largeResult.length > 0) ? (largeResult.join(' ') + ' ' + result.join(':')) : result.join(':');
   };
 
-  this.populateIdenticonBase64Image = function (str) {
-    if (str && str.length > 0) {
-      /* eslint new-cap: "off" */
-      var shaObj = new jsSHA('SHA-512', 'TEXT');
-      shaObj.update(str);
-      var hash = shaObj.getHash('HEX', 1);
+  this.formatAwardDateTime = function (duration) {
+    const days = formatNumberLeadingZeros(duration.days(), 2);
+    const hours = formatNumberLeadingZeros(duration.hours(), 2);
+    const minutes = formatNumberLeadingZeros(duration.minutes(), 2);
+    const seconds = formatNumberLeadingZeros(duration.seconds(), 2);
 
-      /**
-       * for IE 11 comment out the lines above and use this code with the jsSHA library inside utils
-       * import jsSHA from '../utils/jsSHA';
-       var shaObj = new jsSHA(str, 'TEXT');
-       var hash = shaObj.getHash('SHA-512', 'HEX', 1);
-       */
+    const daysElem = days + this.settings.translation.time.days;
+    const hoursElem = hours + this.settings.translation.time.hours;
+    const minutesElem = minutes + this.settings.translation.time.minutes;
+    const secondsElem = seconds + this.settings.translation.time.seconds;
 
-      var data = new Identicon(hash, {
-        background: [255, 255, 255, 255], // rgba white
-        margin: 0.1, // 20% margin
-        size: 22, // 420px square
-        format: 'svg' // use SVG instead of PNG
-      }).toString();
+    return daysElem + ' ' + hoursElem + ' ' + minutesElem + ' ' + secondsElem;
+  };
 
-      var icon = 'data:image/svg+xml;base64,' + data;
+  this.formatBannerDateTime = function (duration) {
+    const months = formatNumberLeadingZeros(duration.months(), 2);
+    const days = formatNumberLeadingZeros(duration.days(), 2);
+    const hours = formatNumberLeadingZeros(duration.hours(), 2);
+    const minutes = formatNumberLeadingZeros(duration.minutes(), 2);
+    const seconds = formatNumberLeadingZeros(duration.seconds(), 2);
 
-      return icon;
-    } else {
-      return '';
+    let monthsElem = '';
+    if (Number(months[0]) || Number(months[1])) {
+      monthsElem = '<div class="banner-months"><div class="banner-date-cell">' + months[0] + '</div><div class="banner-date-cell">' + months[1] + '</div></div>';
     }
+
+    const daysElem = '<div class="banner-days"><div class="banner-date-cell">' + days[0] + '</div><div class="banner-date-cell">' + days[1] + '</div></div>';
+    const hoursElem = '<div class="banner-hours"><div class="banner-date-cell">' + hours[0] + '</div><div class="banner-date-cell">' + hours[1] + '</div></div>';
+    const minutesElem = '<div class="banner-minutes"><div class="banner-date-cell">' + minutes[0] + '</div><div class="banner-date-cell">' + minutes[1] + '</div></div>';
+    const secondsElem = '<div class="banner-seconds"><div class="banner-date-cell">' + seconds[0] + '</div><div class="banner-date-cell">' + seconds[1] + '</div></div>';
+
+    return '<div class="banner-date">' + monthsElem + daysElem + hoursElem + minutesElem + secondsElem + '</div>';
+  };
+
+  this.getDashboardCompetitions = async function () {
+    const activeRequest = CompetitionRequest.constructFromObject({
+      languageKey: this.settings.language,
+      competitionFilter: {
+        statusCode: {
+          moreThan: 20,
+          lessThan: 30
+        },
+        sortBy: [{
+          queryField: 'created',
+          order: 'Desc'
+        }],
+        limit: 2,
+        skip: 0
+      }
+    }, null);
+
+    const readyRequest = CompetitionRequest.constructFromObject({
+      languageKey: this.settings.language,
+      competitionFilter: {
+        statusCode: {
+          moreThan: 10,
+          lessThan: 20
+        },
+        sortBy: [{
+          queryField: 'created',
+          order: 'Desc'
+        }],
+        limit: 2,
+        skip: 0
+      }
+    }, null);
+
+    const activeCompetitions = await this.getCompetitionsApi(activeRequest);
+    const readyCompetitions = await this.getCompetitionsApi(readyRequest);
+    let activeCompetitionsData = activeCompetitions.data;
+    let readyCompetitionsData = readyCompetitions.data;
+
+    if (activeCompetitionsData) {
+      const ids = activeCompetitionsData.map(a => a.id);
+      const rewardRequest = {
+        entityFilter: [{
+          entityType: 'Competition',
+          entityIds: ids
+        }],
+        currencyKey: this.settings.currency,
+        skip: 0,
+        limit: 20
+      };
+      const rewards = await this.getRewardsApi(rewardRequest);
+      const rewardsData = rewards.data;
+
+      activeCompetitionsData = activeCompetitionsData.map(comp => {
+        comp.rewards = rewardsData.filter(r => r.entityId === comp.id);
+
+        return comp;
+      });
+    }
+
+    if (readyCompetitionsData) {
+      const ids = readyCompetitionsData.map(a => a.id);
+      const rewardRequest = {
+        entityFilter: [{
+          entityType: 'Competition',
+          entityIds: ids
+        }],
+        currencyKey: this.settings.currency,
+        skip: 0,
+        limit: 20
+      };
+      const rewards = await this.getRewardsApi(rewardRequest);
+      const rewardsData = rewards.data;
+
+      readyCompetitionsData = readyCompetitionsData.map(comp => {
+        comp.rewards = rewardsData.filter(r => r.entityId === comp.id);
+
+        return comp;
+      });
+    }
+
+    return { activeCompetitions: activeCompetitionsData, readyCompetitions: readyCompetitionsData };
   };
 
   /**
    * get a list of available competition filtered by provided global criteria
    * @param callback {Function}
+   * @param readyPageNumber
+   * @param activePageNumber
+   * @param finishedPageNumber
    */
-
   this.checkForAvailableCompetitions = async function (
     callback,
     readyPageNumber = 1,
@@ -424,8 +462,8 @@ export const LbWidget = function (options) {
           queryField: 'created',
           order: 'Desc'
         }],
-        limit: 20,
-        skip: (readyPageNumber - 1) * 20
+        limit: 12,
+        skip: (readyPageNumber - 1) * 12
       }
     }, null);
 
@@ -440,10 +478,13 @@ export const LbWidget = function (options) {
           queryField: 'created',
           order: 'Desc'
         }],
-        limit: 20,
-        skip: (activePageNumber - 1) * 20
+        limit: 12,
+        skip: (activePageNumber - 1) * 12
       }
     }, null);
+
+    const finishedDateFilter = new Date();
+    finishedDateFilter.setDate(finishedDateFilter.getDate() - this.settings.historicalData.finalisedCompetitions ?? 30);
 
     const finishedCompetitionRequest = CompetitionRequest.constructFromObject({
       languageKey: this.settings.language,
@@ -452,12 +493,16 @@ export const LbWidget = function (options) {
           moreThan: 30,
           lessThan: 50
         },
+        endDateRange: {
+          before: finishedDateFilter.toISOString(),
+          after: (new Date()).toISOString()
+        },
         sortBy: [{
           queryField: 'created',
           order: 'Desc'
         }],
-        limit: 20,
-        skip: (finishedPageNumber - 1) * 20
+        limit: 12,
+        skip: (finishedPageNumber - 1) * 12
       }
     }, null);
 
@@ -475,48 +520,67 @@ export const LbWidget = function (options) {
       this.settings.tournaments.finishedTotalCount = finishedCompetitions.meta.totalRecordsFound;
     }
 
-    const optInActiveCompetitions = this.settings.tournaments.activeCompetitions.filter(c => c.constraints && c.constraints.includes('optinRequiredForEntrants'));
-    const optInReadyCompetitions = this.settings.tournaments.readyCompetitions.filter(c => c.constraints && c.constraints.includes('optinRequiredForEntrants'));
+    if (this.settings.tournaments.activeCompetitions.length) {
+      const ids = this.settings.tournaments.activeCompetitions.map(a => a.id);
+      const rewardRequest = {
+        entityFilter: [{
+          entityType: 'Competition',
+          entityIds: ids
+        }],
+        currencyKey: this.settings.currency,
+        skip: 0,
+        limit: 20
+      };
+      const rewards = await this.getRewardsApi(rewardRequest);
+      const rewardsData = rewards.data;
 
-    let activeOptInIds = [];
-    if (optInActiveCompetitions.length) {
-      activeOptInIds = optInActiveCompetitions.map(a => {
-        if (a.constraints && a.constraints.includes('optinRequiredForEntrants')) {
-          return a.id;
-        }
+      this.settings.tournaments.activeCompetitions = this.settings.tournaments.activeCompetitions.map(comp => {
+        comp.rewards = rewardsData.filter(r => r.entityId === comp.id);
+
+        return comp;
       });
+    }
 
-      if (activeOptInIds.length) {
-        const statuses = await this.getCompetitionOptInStatus(activeOptInIds);
-        if (statuses.length) {
-          statuses.forEach(s => {
-            const idx = this.settings.tournaments.activeCompetitions.findIndex(a => a.id === s.entityId);
-            if (idx !== -1) {
-              this.settings.tournaments.activeCompetitions[idx].optInStatusCode = s.statusCode;
-            }
-          });
-        }
-      }
+    if (this.settings.tournaments.readyCompetitions.length) {
+      const ids = this.settings.tournaments.readyCompetitions.map(a => a.id);
+      const rewardRequest = {
+        entityFilter: [{
+          entityType: 'Competition',
+          entityIds: ids
+        }],
+        currencyKey: this.settings.currency,
+        skip: 0,
+        limit: 20
+      };
+      const rewards = await this.getRewardsApi(rewardRequest);
+      const rewardsData = rewards.data;
 
-      let readyOptInIds = [];
-      if (optInReadyCompetitions.length) {
-        readyOptInIds = optInReadyCompetitions.map(a => {
-          if (a.constraints && a.constraints.includes('optinRequiredForEntrants')) {
-            return a.id;
-          }
-        });
-        if (readyOptInIds.length) {
-          const statuses = await this.getCompetitionOptInStatus(readyOptInIds);
-          if (statuses.length) {
-            statuses.forEach(s => {
-              const idx = this.settings.tournaments.readyCompetitions.findIndex(a => a.id === s.entityId);
-              if (idx !== -1) {
-                this.settings.tournaments.readyCompetitions[idx].optInStatusCode = s.statusCode;
-              }
-            });
-          }
-        }
-      }
+      this.settings.tournaments.readyCompetitions = this.settings.tournaments.readyCompetitions.map(comp => {
+        comp.rewards = rewardsData.filter(r => r.entityId === comp.id);
+
+        return comp;
+      });
+    }
+
+    if (this.settings.navigation.tournaments.showFinishedTournaments && this.settings.tournaments.finishedCompetitions.length) {
+      const ids = this.settings.tournaments.finishedCompetitions.map(a => a.id);
+      const rewardRequest = {
+        entityFilter: [{
+          entityType: 'Competition',
+          entityIds: ids
+        }],
+        currencyKey: this.settings.currency,
+        skip: 0,
+        limit: 20
+      };
+      const rewards = await this.getRewardsApi(rewardRequest);
+      const rewardsData = rewards.data;
+
+      this.settings.tournaments.finishedCompetitions = this.settings.tournaments.finishedCompetitions.map(comp => {
+        comp.rewards = rewardsData.filter(r => r.entityId === comp.id);
+
+        return comp;
+      });
     }
 
     if (typeof callback === 'function') {
@@ -640,16 +704,38 @@ export const LbWidget = function (options) {
 
     if (contests.length) {
       this.settings.competition.contests = contests;
-      contests.forEach(contest => {
-        if (contest.statusCode < 50 && contest.statusCode > 20 && this.settings.competition.activeContest === null) {
-          this.settings.competition.activeContest = contest;
-          this.settings.competition.activeContestId = contest.id;
+      if (json[0].statusCode === 15) {
+        contests.forEach(contest => {
+          if (contest.statusCode === 15) {
+            this.settings.competition.activeContest = contest;
+            this.settings.competition.activeContestId = contest.id;
 
+            if (typeof this.settings.competition.activeContest.rewards === 'undefined') {
+              this.settings.competition.activeContest.rewards = [];
+            }
+          }
+        });
+      } else {
+        const activeContests = contests.filter(c => c.statusCode === 25);
+        if (activeContests.length) {
+          this.settings.competition.activeContest = activeContests[0];
+          this.settings.competition.activeContestId = activeContests[0].id;
           if (typeof this.settings.competition.activeContest.rewards === 'undefined') {
             this.settings.competition.activeContest.rewards = [];
           }
         }
-      });
+
+        contests.forEach(contest => {
+          if (contest.statusCode < 50 && contest.statusCode > 20 && this.settings.competition.activeContest === null) {
+            this.settings.competition.activeContest = contest;
+            this.settings.competition.activeContestId = contest.id;
+
+            if (typeof this.settings.competition.activeContest.rewards === 'undefined') {
+              this.settings.competition.activeContest.rewards = [];
+            }
+          }
+        });
+      }
     }
 
     if (typeof callback === 'function') {
@@ -712,6 +798,32 @@ export const LbWidget = function (options) {
             this.log(error);
           });
       }
+    } else if (this.settings.competition.activeCompetition.statusCode === 35 || this.settings.competition.activeCompetition.statusCode === 45) {
+      const leaderboardSubscriptionRequest = LeaderboardSubscriptionRequest.constructFromObject({
+        entityId: this.settings.competition.activeCompetition.id,
+        action: 'Subscribe',
+        leaderboardFilter: {
+          topRanksToInclude: count,
+          ranksAboveToInclude: this.settings.leaderboard.miniScoreBoard.rankingsCount,
+          ranksBelowToInclude: this.settings.leaderboard.miniScoreBoard.rankingsCount
+        }
+      });
+
+      this.subscribeToLeaderboardApi(leaderboardSubscriptionRequest)
+        .then(data => {
+          let leaderboardEntries = [];
+          if (data && data.leaderboardEntries) {
+            leaderboardEntries = data.leaderboardEntries;
+          }
+          _this.settings.leaderboard.leaderboardData = leaderboardEntries;
+          this.settings.partialFunctions.leaderboardDataResponseParser(leaderboardEntries, function (lbData) {
+            _this.settings.leaderboard.leaderboardData = lbData;
+          });
+          callback(_this.settings.leaderboard.leaderboardData);
+        })
+        .catch(error => {
+          this.log(error);
+        });
     } else {
       this.settings.leaderboard.leaderboardData = [];
       callback();
@@ -759,31 +871,14 @@ export const LbWidget = function (options) {
     }
   };
 
-  this.updateMessagesNavigationCounts = function () {
-    const _this = this;
-
-    if (_this.settings.mainWidget.settings.navigation !== null) {
-      const menuItemCount = query(_this.settings.mainWidget.settings.navigation, '.' + _this.settings.navigation.inbox.navigationClass + ' .cl-main-navigation-item-count');
-      menuItemCount.innerHTML = _this.settings.messages.totalCount;
-    }
-  };
-
-  this.updateMissionsNavigationCounts = function () {
-    const _this = this;
-
-    if (_this.settings.mainWidget.settings.navigation !== null) {
-      const menuItemCount = query(_this.settings.mainWidget.settings.navigation, '.' + _this.settings.navigation.missions.navigationClass + ' .cl-main-navigation-item-count');
-      menuItemCount.innerHTML = _this.settings.missions.totalCount;
-    }
-  };
-
-  // var checkAchievementsAjax = new cLabs.Ajax();
   this.checkForAvailableAchievements = function (pageNumber, callback) {
     const _this = this;
 
     if (!this.settings.apiWs.achievementsApiWsClient) {
       this.settings.apiWs.achievementsApiWsClient = new AchievementsApiWs(this.apiClientStomp);
     }
+
+    const moreValue = this.settings.navigation.achievements.showReadyAchievements ? 10 : 20;
 
     const achievementRequest = AchievementRequest.constructFromObject({
       languageKey: this.settings.language,
@@ -794,15 +889,15 @@ export const LbWidget = function (options) {
         endDate: null,
         ids: [],
         statusCode: {
-          moreThan: 20,
+          moreThan: moreValue,
           lessThan: 30
         },
         sortBy: [{
           queryField: 'created',
           order: 'Desc'
         }],
-        skip: (pageNumber - 1) * this.settings.itemsPerPage,
-        limit: this.settings.itemsPerPage,
+        skip: (pageNumber - 1) * 6,
+        limit: 6,
         constraints: []
       }
     }, null);
@@ -832,11 +927,62 @@ export const LbWidget = function (options) {
         }
       }
 
+      if (_this.settings.achievements.list.length) {
+        const ids = _this.settings.achievements.list.map(a => a.id);
+        const rewardRequest = {
+          entityFilter: [{
+            entityType: 'Achievement',
+            entityIds: ids
+          }],
+          currencyKey: this.settings.currency,
+          skip: 0,
+          limit: 20
+        };
+        const rewards = await this.getRewardsApi(rewardRequest);
+        const rewardsData = rewards.data;
+
+        _this.settings.achievements.list = _this.settings.achievements.list.map(achievement => {
+          const idx = rewardsData.findIndex(r => r.entityId === achievement.id);
+          if (idx !== -1) {
+            achievement.reward = rewardsData[idx];
+          }
+
+          return achievement;
+        });
+      }
+
       if (typeof callback === 'function') callback(_this.settings.achievements.list);
     });
   };
 
-  // var getAchievementsAjax = new cLabs.Ajax();
+  this.playInstantWin = async function () {
+    const request = InstantWinPlayRequest.constructFromObject({
+      awardId: '',
+      languageKey: this.settings.language,
+      currencyKey: this.settings.currency
+    }, null);
+
+    return await this.playInstantWinsApi(request);
+  };
+
+  this.getSingleWheels = async function (callback) {
+    const request = InstantWinRequest.constructFromObject({
+      languageKey: this.settings.language,
+      currencyKey: this.settings.currency,
+      instantWinFilter: {
+        instantWinTypes: [1],
+        limit: 20,
+        skip: 0
+      }
+    }, null);
+
+    const singleWheels = await this.getInstantWinsApi(request);
+
+    if (typeof callback === 'function') {
+      callback(singleWheels.data);
+    }
+  };
+
   this.getAchievement = function (achievementId, callback) {
     const achievementData = this.settings.achievements.list.filter(a => a.id === achievementId);
 
@@ -845,9 +991,65 @@ export const LbWidget = function (options) {
     }
   };
 
+  this.getAchievementsByIds = async function (achievementIds) {
+    if (!this.settings.apiWs.achievementsApiWsClient) {
+      this.settings.apiWs.achievementsApiWsClient = new AchievementsApiWs(this.apiClientStomp);
+    }
+
+    const request = AchievementRequest.constructFromObject({
+      languageKey: this.settings.language,
+      achievementFilter: {
+        ids: achievementIds,
+        statusCode: {
+          moreThan: 0,
+          lessThan: 100
+        },
+        limit: achievementIds.length
+      }
+    }, null);
+
+    return new Promise((resolve, reject) => {
+      this.settings.apiWs.achievementsApiWsClient.getAchievements(request, (json) => {
+        resolve(json.data);
+      });
+    });
+  };
+
+  this.leaveAchievement = function (activeAchievementId, isDashboard = false) {
+    const _this = this;
+    if (!this.settings.apiWs.optInApiWsClient) {
+      this.settings.apiWs.optInApiWsClient = new OptInApiWs(this.apiClientStomp);
+    }
+
+    const optInRequest = ManageOptinRequest.constructFromObject({
+      entityId: activeAchievementId,
+      entityType: 'Achievement',
+      action: 'leave'
+    }, null);
+
+    const preLoader = this.settings.mainWidget.preloader();
+    preLoader.show(async function () {
+      await _this.settings.apiWs.optInApiWsClient.manageOptin(optInRequest, (json) => {
+        setTimeout(function () {
+          if (isDashboard) {
+            _this.checkForAvailableAchievements(1, function (achievementData) {
+              _this.settings.mainWidget.loadDashboardAchievements(achievementData, function () {
+                preLoader.hide();
+              });
+            });
+          } else {
+            _this.settings.mainWidget.loadAchievements(1, function () {
+              preLoader.hide();
+            });
+          }
+        }, 2000);
+      });
+    });
+  };
+
   this.getAward = async function (awardId, callback) {
     let awardData = null;
-    const awards = [...this.settings.awards.availableAwards, ...this.settings.awards.claimedAwards];
+    const awards = [...this.settings.awards.availableAwards, ...this.settings.awards.claimedAwards, ...this.settings.awards.expiredAwards];
     const idx = awards.findIndex(r => r.id === awardId);
     if (idx !== -1) {
       awardData = awards[idx];
@@ -894,7 +1096,6 @@ export const LbWidget = function (options) {
     });
   };
 
-  // var getRewardAjax = new cLabs.Ajax();
   this.getReward = function (rewardId, callback) {
     let rewardData = null;
     const idx = this.settings.rewards.rewards.findIndex(r => r.id === rewardId);
@@ -907,67 +1108,6 @@ export const LbWidget = function (options) {
     }
   };
 
-  this.getMessage = async function (messageId, callback, isSys = false) {
-    const _this = this;
-    if (!this.settings.apiWs.messagesApiWsClient) {
-      this.settings.apiWs.messagesApiWsClient = new MessagesApiWs(this.apiClientStomp);
-    }
-
-    if (isSys) {
-      const messageRequest = {
-        messageFilter: {
-          ids: [messageId],
-          skip: 0,
-          limit: 1
-        }
-      };
-      await this.settings.apiWs.messagesApiWsClient.getMessages(messageRequest, (json) => {
-        if (json.data && json.data.length) {
-          if (json.data[0].messageType === 'Notification') {
-            if (_this.settings.enableNotifications) {
-              _this.settings.notifications.addEvent({
-                subject: json.data[0].subject,
-                body: json.data[0].body,
-                id: json.data[0].id
-              });
-            }
-          }
-          if (json.data[0].messageType === 'InboxItem') {
-            _this.checkForAvailableMessages(1, function () {
-              _this.updateMessagesNavigationCounts();
-              if (typeof callback === 'function') {
-                callback();
-              }
-            });
-          }
-        }
-      });
-    } else {
-      const messageRequest = MessageRequest.constructFromObject({
-        languageKey: this.settings.language,
-        messageFilter: {
-          ids: [messageId],
-          messageType: 'InboxItem', // NotificationInboxItem Achievement Ticket Reward Text Notification InboxItem
-          skip: 0,
-          limit: 15
-        }
-      });
-
-      await this.settings.apiWs.messagesApiWsClient.getMessages(messageRequest, (json) => {
-        if (json.data.length) {
-          if (typeof callback === 'function') {
-            callback(json.data[0]);
-          }
-        } else {
-          if (typeof callback === 'function') {
-            callback(null);
-          }
-        }
-      });
-    }
-  };
-
-  // var claimRewardAjax = new cLabs.Ajax();
   this.claimAward = async function (rewardId, callback) {
     if (!this.settings.apiWs.awardsApiWsClient) {
       this.settings.apiWs.awardsApiWsClient = new AwardsApiWs(this.apiClientStomp);
@@ -1005,6 +1145,7 @@ export const LbWidget = function (options) {
   this.checkForAvailableAwards = async function (callback, pageNumber = 1, claimedPageNumber = 1) {
     this.settings.awards.availableAwards = [];
     this.settings.awards.claimedAwards = [];
+    this.settings.awards.expiredAwards = [];
     this.settings.awards.rewards = [];
 
     const availableAwardRequest = AwardRequest.constructFromObject({
@@ -1018,8 +1159,8 @@ export const LbWidget = function (options) {
           queryField: 'created',
           order: 'Desc'
         }],
-        skip: (pageNumber - 1) * 20,
-        limit: 20
+        skip: (pageNumber - 1) * 6,
+        limit: 6
       },
       currencyKey: this.settings.currency
     });
@@ -1035,41 +1176,127 @@ export const LbWidget = function (options) {
           queryField: 'created',
           order: 'Desc'
         }],
-        skip: (claimedPageNumber - 1) * 20,
-        limit: 20
+        skip: (claimedPageNumber - 1) * 6,
+        limit: 6
       },
       currencyKey: this.settings.currency
     });
 
-    this.getAwardsApi(claimedAwardRequest)
-      .then(json => {
-        this.settings.awards.claimedAwards = json.data;
-        this.settings.awards.claimedTotalCount = (json.meta && json.meta.totalRecordsFound)
-          ? json.meta.totalRecordsFound
-          : 0;
+    const expiredAwardRequest = AwardRequest.constructFromObject({
+      languageKey: this.settings.language,
+      awardFilter: {
+        statusCode: {
+          moreThan: 114,
+          lessThan: 116
+        },
+        sortBy: [{
+          queryField: 'created',
+          order: 'Desc'
+        }],
+        skip: (claimedPageNumber - 1) * 6,
+        limit: 6
+      },
+      currencyKey: this.settings.currency
+    });
 
-        if (typeof callback === 'function') {
-          callback();
+    const claimedAwards = await this.getAwardsApi(claimedAwardRequest);
+    this.settings.awards.claimedAwards = claimedAwards.data;
+    const claimedRewardIds = this.settings.awards.claimedAwards.map(c => c.rewardId);
+    if (claimedRewardIds.length) {
+      const rewardRequest = {
+        entityFilter: [{
+          entityType: 'Reward',
+          entityIds: claimedRewardIds
+        }],
+        currencyKey: this.settings.currency,
+        skip: 0,
+        limit: 20
+      };
+
+      const rewards = await this.getRewardsApi(rewardRequest);
+      const rewardsData = rewards.data;
+
+      this.settings.awards.claimedAwards = this.settings.awards.claimedAwards.map(award => {
+        const idx = rewardsData.findIndex(r => r.id === award.rewardId);
+        if (idx !== -1) {
+          award.rewardData = rewardsData[idx];
         }
-      })
-      .catch(error => {
-        this.log(error);
+
+        return award;
       });
+    }
 
-    this.getAwardsApi(availableAwardRequest)
-      .then(json => {
-        this.settings.awards.availableAwards = json.data;
-        this.settings.awards.totalCount = (json.meta && json.meta.totalRecordsFound)
-          ? json.meta.totalRecordsFound
-          : 0;
+    this.settings.awards.claimedTotalCount = (claimedAwards.meta && claimedAwards.meta.totalRecordsFound)
+      ? claimedAwards.meta.totalRecordsFound
+      : 0;
 
-        if (typeof callback === 'function') {
-          callback();
+    const availableAwards = await this.getAwardsApi(availableAwardRequest);
+    this.settings.awards.availableAwards = availableAwards.data;
+
+    const rewardIds = this.settings.awards.availableAwards.map(c => c.rewardId);
+    if (rewardIds.length) {
+      const rewardRequest = {
+        entityFilter: [{
+          entityType: 'Reward',
+          entityIds: rewardIds
+        }],
+        currencyKey: this.settings.currency,
+        skip: 0,
+        limit: 20
+      };
+
+      const rewards = await this.getRewardsApi(rewardRequest);
+      const rewardsData = rewards.data;
+
+      this.settings.awards.availableAwards = this.settings.awards.availableAwards.map(award => {
+        const idx = rewardsData.findIndex(r => r.id === award.rewardId);
+        if (idx !== -1) {
+          award.rewardData = rewardsData[idx];
         }
-      })
-      .catch(error => {
-        this.log(error);
+
+        return award;
       });
+    }
+
+    this.settings.awards.totalCount = (availableAwards.meta && availableAwards.meta.totalRecordsFound)
+      ? availableAwards.meta.totalRecordsFound
+      : 0;
+
+    const expiredAwards = await this.getAwardsApi(expiredAwardRequest);
+    this.settings.awards.expiredAwards = expiredAwards.data;
+
+    const expiredRewardIds = this.settings.awards.expiredAwards.map(c => c.rewardId);
+    if (expiredRewardIds.length) {
+      const rewardRequest = {
+        entityFilter: [{
+          entityType: 'Reward',
+          entityIds: expiredRewardIds
+        }],
+        currencyKey: this.settings.currency,
+        skip: 0,
+        limit: 20
+      };
+
+      const rewards = await this.getRewardsApi(rewardRequest);
+      const rewardsData = rewards.data;
+
+      this.settings.awards.expiredAwards = this.settings.awards.expiredAwards.map(award => {
+        const idx = rewardsData.findIndex(r => r.id === award.rewardId);
+        if (idx !== -1) {
+          award.rewardData = rewardsData[idx];
+        }
+
+        return award;
+      });
+    }
+
+    if (typeof callback === 'function') {
+      callback(
+        this.settings.awards.claimedAwards,
+        this.settings.awards.availableAwards,
+        this.settings.awards.expiredAwards
+      );
+    }
   };
 
   this.getAwardsApi = function (awardRequest) {
@@ -1178,143 +1405,31 @@ export const LbWidget = function (options) {
     });
   };
 
-  this.checkForAvailableMessages = async function (pageNumber, callback) {
-    const messageRequest = MessageRequest.constructFromObject({
-      languageKey: this.settings.language,
-      messageFilter: {
-        messageType: 'InboxItem', // NotificationInboxItem Achievement Ticket Reward Text Notification InboxItem
-        sortBy: [{
-          queryField: 'created',
-          order: 'Desc'
-        }],
-        skip: (pageNumber - 1) * 15,
-        limit: 15
-      }
-    });
-
-    this.getMessagesApi(messageRequest)
-      .then(json => {
-        this.settings.messages.messages = json.data ?? [];
-        this.settings.messages.totalCount = (json.meta && json.meta.totalRecordsFound) ? json.meta.totalRecordsFound : 0;
-        if (typeof callback === 'function') {
-          callback(this.settings.messages.messages);
-        }
-      })
-      .catch(error => {
-        this.log(error);
-      });
-  };
-
-  this.getMessagesApi = async function (messageRequest) {
-    if (!this.settings.apiWs.messagesApiWsClient) {
-      this.settings.apiWs.messagesApiWsClient = new MessagesApiWs(this.apiClientStomp);
+  this.playInstantWinsApi = async function (playRequest) {
+    if (!this.settings.apiWs.instantWinsApiWsClient) {
+      this.settings.apiWs.instantWinsApiWsClient = new InstantWinsApiWs(this.apiClientStomp);
     }
+
     return new Promise((resolve, reject) => {
-      this.settings.apiWs.messagesApiWsClient.getMessages(messageRequest, (json) => {
+      this.settings.apiWs.instantWinsApiWsClient.playInstantWin(playRequest, (json) => {
         resolve(json);
       });
     });
   };
 
-  this.checkForAvailableMissions = function (pageNumber, callback) {
-    if (!this.settings.apiWs.achievementsApiWsClient) {
-      this.settings.apiWs.achievementsApiWsClient = new AchievementsApiWs(this.apiClientStomp);
-    }
-
-    const missionsRequest = AchievementRequest.constructFromObject({
-      languageKey: this.settings.language,
-      achievementFilter: {
-        ids: [],
-        statusCode: {
-          moreThan: 20,
-          lessThan: 30
-        },
-        sortBy: [{
-          queryField: 'created',
-          order: 'Desc'
-        }],
-        skip: (pageNumber - 1) * 15,
-        limit: 15,
-        constraints: ['hasNoDependancies']
-      }
-    }, null);
-
-    this.settings.apiWs.achievementsApiWsClient.getAchievements(missionsRequest, async (json) => {
-      this.settings.missions.missions = json.data ?? [];
-      this.settings.missions.totalCount = (json.meta && json.meta.totalRecordsFound) ? json.meta.totalRecordsFound : 0;
-
-      if (typeof callback === 'function') callback(this.settings.missions.missions);
-    });
-  };
-
-  this.getMission = function (id, callback) {
-    if (!this.settings.apiWs.achievementsApiWsClient) {
-      this.settings.apiWs.achievementsApiWsClient = new AchievementsApiWs(this.apiClientStomp);
-    }
-
-    const achievementRequest = AchievementRequest.constructFromObject({
-      languageKey: this.settings.language,
-      achievementFilter: {
-        ids: [id],
-        skip: 0,
-        limit: 1
-      }
-    }, null);
-
-    this.settings.apiWs.achievementsApiWsClient.getAchievements(achievementRequest, (json) => {
-      const mainData = json.data[0];
-
-      const tempGraphRequest = EntityGraphRequest.constructFromObject({
-        ids: [id]
-      });
-
-      this.getGraphApi(tempGraphRequest)
-        .then(json => {
-          if (typeof callback === 'function') {
-            const data = {
-              data: mainData,
-              graph: json.data
-            };
-            callback(data);
-          }
-        })
-        .catch(error => {
-          this.log(error);
-        });
-    });
-  };
-
-  this.getGraphApi = async function (graphRequest) {
-    if (!this.settings.apiWs.missionsApiWsClient) {
-      this.settings.apiWs.missionsApiWsClient = new GraphsApiWs(this.apiClientStomp);
+  this.getInstantWinsApi = async function (instantWinRequest) {
+    if (!this.settings.apiWs.instantWinsApiWsClient) {
+      this.settings.apiWs.instantWinsApiWsClient = new InstantWinsApiWs(this.apiClientStomp);
     }
 
     return new Promise((resolve, reject) => {
-      this.settings.apiWs.missionsApiWsClient.getGraph(graphRequest, (json) => {
+      this.settings.apiWs.instantWinsApiWsClient.listInstantWins(instantWinRequest, (json) => {
         resolve(json);
       });
     });
   };
 
-  this.optInMemberToActiveCompetition = async function (callback, id = null) {
-    if (!this.settings.apiWs.optInApiWsClient) {
-      this.settings.apiWs.optInApiWsClient = new OptInApiWs(this.apiClientStomp);
-    }
-
-    const optInRequest = ManageOptinRequest.constructFromObject({
-      entityId: id ?? this.settings.competition.activeCompetition.id,
-      entityType: 'Competition',
-      action: 'join'
-    }, null);
-
-    await this.settings.apiWs.optInApiWsClient.manageOptin(optInRequest, (json) => {
-      if (typeof callback === 'function') {
-        callback();
-      }
-    });
-  };
-
-  this.optOutMemberFromActiveCompetition = async function (callback) {
+  this.optInMemberToActiveCompetition = async function (callback) {
     if (!this.settings.apiWs.optInApiWsClient) {
       this.settings.apiWs.optInApiWsClient = new OptInApiWs(this.apiClientStomp);
     }
@@ -1322,7 +1437,7 @@ export const LbWidget = function (options) {
     const optInRequest = ManageOptinRequest.constructFromObject({
       entityId: this.settings.competition.activeCompetition.id,
       entityType: 'Competition',
-      action: 'leave'
+      action: 'join'
     }, null);
 
     await this.settings.apiWs.optInApiWsClient.manageOptin(optInRequest, (json) => {
@@ -1372,7 +1487,7 @@ export const LbWidget = function (options) {
         )
       ) {
         const optInStatus = await this.getCompetitionOptInStatus(
-          [this.settings.competition.activeCompetition.id]
+          this.settings.competition.activeCompetition.id
         );
 
         if (optInStatus.length && optInStatus[0].statusCode >= 15 && optInStatus[0].statusCode <= 35) {
@@ -1397,8 +1512,8 @@ export const LbWidget = function (options) {
     ) {
       var count = (_this.settings.miniScoreBoard.settings.active) ? 0 : _this.settings.leaderboard.fullLeaderboardSize;
       _this.getLeaderboardData(count, function (data) {
-        // if (_this.settings.miniScoreBoard.settings.active) _this.settings.miniScoreBoard.loadScoreBoard();
-        if (_this.settings.mainWidget.settings.active) _this.settings.mainWidget.loadLeaderboard();
+        if (_this.settings.miniScoreBoard.settings.active) _this.settings.miniScoreBoard.loadScoreBoard();
+        if (_this.settings.mainWidget.settings.active) _this.settings.mainWidget.loadLeaderboard(() => {}, false);
       });
     }
 
@@ -1430,7 +1545,7 @@ export const LbWidget = function (options) {
             _this.settings.miniScoreBoard.loadScoreBoard();
           }
           if (_this.settings.mainWidget.settings.active) {
-            _this.settings.mainWidget.loadLeaderboard();
+            _this.settings.mainWidget.loadLeaderboard(() => {}, true);
           }
 
           // restart leaderboard refresh
@@ -1450,7 +1565,7 @@ export const LbWidget = function (options) {
     });
   };
 
-  this.activeDataRefresh = function (callback) {
+  this.activeDataRefresh = function (callback, isReloadTime = false) {
     var _this = this;
 
     if (_this.settings.competition.refreshInterval) {
@@ -1480,7 +1595,7 @@ export const LbWidget = function (options) {
               _this.settings.miniScoreBoard.loadScoreBoard();
             }
             if (_this.settings.mainWidget.settings.active) {
-              _this.settings.mainWidget.loadLeaderboard();
+              _this.settings.mainWidget.loadLeaderboard(() => {}, isReloadTime);
             }
 
             // restart leaderboard refresh
@@ -1497,13 +1612,13 @@ export const LbWidget = function (options) {
             callback();
           }
         }
-        _this.checkForAvailableAwards(
-          function () {
-            _this.updateRewardsNavigationCounts();
-          },
-          1,
-          1
-        );
+        // _this.checkForAvailableAwards(
+        //   function () {
+        //     // _this.updateRewardsNavigationCounts();
+        //   },
+        //   1,
+        //   1
+        // );
         _this.checkForAvailableRewards(1, function () {
           if (_this.settings.mainWidget.settings.active) {
             _this.settings.mainWidget.updateLeaderboard();
@@ -1524,9 +1639,9 @@ export const LbWidget = function (options) {
       clearTimeout(_this.settings.leaderboard.refreshInterval);
     }
 
-    // if (_this.settings.miniScoreBoard) {
-    //   _this.settings.miniScoreBoard.clearAll();
-    // }
+    if (_this.settings.miniScoreBoard) {
+      _this.settings.miniScoreBoard.clearAll();
+    }
     if (_this.settings.mainWidget) {
       _this.settings.mainWidget.clearAll();
     }
@@ -1565,6 +1680,11 @@ export const LbWidget = function (options) {
   };
 
   this.restartActivity = function (callback) {
+    var _this = this;
+
+    // _this.activeDataRefresh();
+    _this.settings.miniScoreBoard.updateScoreBoard();
+
     if (typeof callback === 'function') {
       callback();
     }
@@ -1597,31 +1717,21 @@ export const LbWidget = function (options) {
   };
 
   this.loadWidgetTranslations = function (callback) {
-    var _this = this;
+    const _this = this;
 
-    if (typeof _this.settings.uri.translationPath === 'string' && _this.settings.uri.translationPath.length > 0 && _this.settings.loadTranslations) {
-      var url = (stringContains(_this.settings.uri.translationPath, 'http')) ? _this.settings.uri.translationPath.replace(':language', _this.settings.language) : _this.settings.uri.gatewayDomain + _this.settings.uri.translationPath.replace(':language', _this.settings.language);
+    if (typeof _this.settings.uri.translationPath === 'string' && _this.settings.uri.translationPath.length > 0 && _this.settings.loadCustomTranslations) {
+      const url = (stringContains(_this.settings.uri.translationPath, 'http')) ? _this.settings.uri.translationPath.replace(':language', _this.settings.language) : _this.settings.uri.gatewayDomain + _this.settings.uri.translationPath.replace(':language', _this.settings.language);
 
-      _this.settings.globalAjax.abort().getData({
-        type: 'GET',
-        url: url,
-        headers: {
-          'X-API-KEY': _this.settings.apiKey
-        },
-        success: function (response, dataObj, xhr) {
-          if (xhr.status === 200) {
-            var json = JSON.parse(response);
-
-            _this.settings.translation = mergeObjects(_this.settings.translation, json);
-
-            callback();
-          } else {
-            _this.log('no translation foound ' + response);
-
-            callback();
-          }
-        }
-      });
+      fetch(url, { method: 'GET' })
+        .then(response => response.json())
+        .then(json => {
+          _this.settings.translation = mergeObjects(_this.settings.translation, json);
+          callback();
+        })
+        .catch(error => {
+          _this.log('no translation foound ' + error);
+          callback();
+        });
     } else {
       if (_this.settings.language) {
         const translation = require(`../../i18n/translation_${_this.settings.language}.json`);
@@ -1633,7 +1743,7 @@ export const LbWidget = function (options) {
   };
 
   this.startup = function () {
-    var _this = this;
+    const _this = this;
 
     _this.activeDataRefresh(function () {
       _this.settings.partialFunctions.startupCallback(_this);
@@ -1651,9 +1761,9 @@ export const LbWidget = function (options) {
     }
   };
 
-  var _cleanupInstance;
+  let _cleanupInstance;
   this.cleanup = function () {
-    var _this = this;
+    const _this = this;
 
     if (_cleanupInstance) {
       clearTimeout(_cleanupInstance);
@@ -1667,9 +1777,9 @@ export const LbWidget = function (options) {
   };
 
   this.loadStylesheet = function (callback) {
-    var _this = this;
-    var createdResources = false;
-    var availableLinks = [];
+    const _this = this;
+    let createdResources = false;
+    const availableLinks = [];
 
     objectIterator(query('link'), function (link) {
       if (link !== null) {
@@ -1687,7 +1797,7 @@ export const LbWidget = function (options) {
       });
 
       if (!exists) {
-        var link = document.createElement('link');
+        const link = document.createElement('link');
         link.setAttribute('rel', 'stylesheet');
         link.setAttribute('type', 'text/css');
         link.setAttribute('href', resource);
@@ -1720,7 +1830,7 @@ export const LbWidget = function (options) {
   this.clickedMiniScoreBoard = function () {
     if (!this.settings.isLoadComplete) return;
 
-    var _this = this;
+    const _this = this;
 
     if (!_this.settings.miniScoreBoard.settings.dragging) {
       _this.deactivateCompetitionsAndLeaderboards(function () {
@@ -1741,27 +1851,11 @@ export const LbWidget = function (options) {
           // load initial available reward data
           if (_this.settings.navigation.rewards.enable) {
             _this.checkForAvailableAwards(
-              function () {
-                _this.updateRewardsNavigationCounts();
-              },
+              function () {},
               1,
               1
             );
             _this.checkForAvailableRewards(1);
-          }
-
-          // load initial available messages data
-          if (_this.settings.navigation.inbox.enable) {
-            _this.checkForAvailableMessages(1, function () {
-              _this.updateMessagesNavigationCounts();
-            });
-          }
-
-          // load initial available messages data
-          if (_this.settings.navigation.missions.enable) {
-            _this.checkForAvailableMissions(1, function () {
-              _this.updateMissionsNavigationCounts();
-            });
           }
         });
       });
@@ -1802,7 +1896,7 @@ export const LbWidget = function (options) {
   };
 
   this.eventHandlers = async function (el) {
-    var _this = this;
+    const _this = this;
 
     // mini scoreboard opt-in action
     if (hasClass(el, 'cl-widget-ms-optin-action') && !hasClass(el, 'checking')) {
@@ -1832,31 +1926,7 @@ export const LbWidget = function (options) {
         await _this.optInMemberToActiveCompetition(function () {
           setTimeout(function () {
             preLoader.hide();
-            _this.settings.mainWidget.loadLeaderboard();
-          }, 2000);
-        });
-      });
-
-      // Tournaments list opt-in action
-    } else if (hasClass(el, 'cl-tour-list-enter') && !hasClass(el, 'checking')) {
-      addClass(el, 'checking');
-
-      const preLoader = _this.settings.mainWidget.preloader();
-      preLoader.show(async function () {
-        await _this.optInMemberToActiveCompetition(async function () {
-          await _this.checkForAvailableCompetitions(null);
-          _this.settings.mainWidget.loadCompetitionList(preLoader.hide());
-        }, el.dataset.id);
-      });
-
-      // Leaderboard details opt-out action
-    } else if (hasClass(el, 'cl-main-widget-lb-optout-action')) {
-      const preLoader = _this.settings.mainWidget.preloader();
-      preLoader.show(async function () {
-        await _this.optOutMemberFromActiveCompetition(function () {
-          setTimeout(function () {
-            preLoader.hide();
-            _this.settings.mainWidget.loadLeaderboard();
+            _this.settings.mainWidget.loadLeaderboard(() => {}, true);
           }, 2000);
         });
       });
@@ -1904,6 +1974,8 @@ export const LbWidget = function (options) {
         this.settings.apiWs.optInApiWsClient = new OptInApiWs(this.apiClientStomp);
       }
 
+      const isDashboard = closest(el, '.cl-main-widget-dashboard-achievements-list');
+
       const optInRequest = ManageOptinRequest.constructFromObject({
         entityId: activeAchievementId,
         entityType: 'Achievement',
@@ -1914,9 +1986,17 @@ export const LbWidget = function (options) {
       preLoader.show(async function () {
         await _this.settings.apiWs.optInApiWsClient.manageOptin(optInRequest, (json) => {
           setTimeout(function () {
-            _this.settings.mainWidget.loadAchievements(1, function () {
-              preLoader.hide();
-            });
+            if (isDashboard) {
+              _this.checkForAvailableAchievements(1, function (achievementData) {
+                _this.settings.mainWidget.loadDashboardAchievements(achievementData, function () {
+                  preLoader.hide();
+                });
+              });
+            } else {
+              _this.settings.mainWidget.loadAchievements(1, function () {
+                preLoader.hide();
+              });
+            }
           }, 2000);
         });
       });
@@ -1924,27 +2004,12 @@ export const LbWidget = function (options) {
       // Achievement list leave action
     } else if (hasClass(el, 'cl-ach-list-leave')) {
       const activeAchievementId = el.dataset.id;
-      if (!this.settings.apiWs.optInApiWsClient) {
-        this.settings.apiWs.optInApiWsClient = new OptInApiWs(this.apiClientStomp);
+
+      if (closest(el, '.cl-main-widget-dashboard-achievements-list')) {
+        this.settings.mainWidget.showLeaveAchievementPopup(activeAchievementId, true);
+      } else {
+        this.settings.mainWidget.showLeaveAchievementPopup(activeAchievementId);
       }
-
-      const optInRequest = ManageOptinRequest.constructFromObject({
-        entityId: activeAchievementId,
-        entityType: 'Achievement',
-        action: 'leave'
-      }, null);
-
-      const preLoader = _this.settings.mainWidget.preloader();
-      preLoader.show(async function () {
-        await _this.settings.apiWs.optInApiWsClient.manageOptin(optInRequest, (json) => {
-          setTimeout(function () {
-            _this.settings.mainWidget.loadAchievements(1, function () {
-              preLoader.hide();
-            });
-          }, 2000);
-        });
-      });
-
       // close mini scoreboard info area
     } else if (hasClass(el, 'cl-widget-ms-information-close') && !hasClass(el, 'checking')) {
       _this.settings.miniScoreBoard.clearAll();
@@ -1955,96 +2020,555 @@ export const LbWidget = function (options) {
 
       // close leaderboard window
     } else if (
-      hasClass(el, 'cl-main-widget-section-container-close') ||
       hasClass(el, 'cl-main-widget-lb-header-close') ||
       hasClass(el, 'cl-main-widget-ach-header-close') ||
       hasClass(el, 'cl-main-widget-reward-header-close') ||
       hasClass(el, 'cl-main-widget-inbox-header-close') ||
       hasClass(el, 'cl-widget-main-widget-overlay-wrapper') ||
-      hasClass(el, 'cl-main-widget-tournaments-close-btn')
+      hasClass(el, 'cl-main-widget-dashboard-header-close') ||
+      hasClass(el, 'cl-landscape-close')
     ) {
-      // _this.closeEverything();
       _this.settings.mainWidget.hide(function () {
         _this.activeDataRefresh();
       });
 
       // load embedded competition details
-    } else if (!_this.settings.leaderboard.layoutSettings.titleLinkToDetailsPage && (
-      hasClass(el, 'cl-main-widget-lb-details-content-label') ||
-      (closest(el, '.cl-main-widget-lb-details-content-label') !== null) ||
-      hasClass(el, '.cl-main-widget-lb-header-label')
-    )) {
-      _this.settings.mainWidget.showEmbeddedCompetitionDetailsContent(function () {});
+    } else if (
+      !_this.settings.leaderboard.layoutSettings.titleLinkToDetailsPage &&
+      (hasClass(el, 'cl-main-widget-lb-details-content') ||
+        closest(el, '.cl-main-widget-lb-details-content') !== null)
+    ) {
+      const preLoader = _this.settings.mainWidget.preloader();
+      preLoader.show(function () {
+        _this.settings.mainWidget.showEmbeddedCompetitionDetailsContent(function () {
+          preLoader.hide();
+        });
+      });
+
+      // load embedded competition details
+    } else if (hasClass(el, 'connections-table_round-item') || closest(el, '.connections-table_round-item') !== null) {
+      const item = hasClass(el, 'connections-table_round-item') ? el : closest(el, '.connections-table_round-item');
+      const preLoader = _this.settings.mainWidget.preloader();
+
+      if (_this.settings.competition.activeContestId && _this.settings.competition.activeContestId === item.dataset.connectId) {
+        return;
+      }
+
+      preLoader.show(async function () {
+        if (_this.settings.competition.activeContestId && _this.settings.competition.activeContest.statusCode !== 15) {
+          const leaderboardUnsubscribeRequest = LeaderboardSubscriptionRequest.constructFromObject({
+            entityId: _this.settings.competition.activeContestId,
+            action: 'Unsubscribe',
+            leaderboardFilter: {}
+          });
+          _this.settings.leaderboard.leaderboardData = [];
+          await _this.subscribeToLeaderboardApi(leaderboardUnsubscribeRequest);
+        }
+
+        _this.settings.competition.activeContestId = item.dataset.connectId;
+        const activeContestIdx = _this.settings.competition.contests.findIndex(c => c.id === _this.settings.competition.activeContestId);
+        if (activeContestIdx !== -1) {
+          _this.settings.competition.activeContest = _this.settings.competition.contests[activeContestIdx];
+        }
+
+        let ranksAboveToInclude = 0;
+        let ranksBelowToInclude = 0;
+
+        if (_this.settings.leaderboard.miniScoreBoard.enableRankings) {
+          ranksAboveToInclude = _this.settings.leaderboard.miniScoreBoard.rankingsCount;
+          ranksBelowToInclude = _this.settings.leaderboard.miniScoreBoard.rankingsCount;
+        }
+
+        const leaderboardSubscriptionRequest = LeaderboardSubscriptionRequest.constructFromObject({
+          entityId: _this.settings.competition.activeContestId,
+          action: 'Subscribe',
+          leaderboardFilter: {
+            topRanksToInclude: _this.settings.leaderboard.fullLeaderboardSize,
+            ranksAboveToInclude: ranksAboveToInclude,
+            ranksBelowToInclude: ranksBelowToInclude
+          }
+        });
+
+        if (_this.settings.competition.activeContest.statusCode === 15) {
+          _this.checkForAvailableRewards(1, () => {
+            _this.settings.mainWidget.showEmbeddedCompetitionDetailsContent(() => {});
+            _this.settings.mainWidget.loadLeaderboard(() => {}, true);
+            preLoader.hide();
+          });
+        } else {
+          _this.subscribeToLeaderboardApi(leaderboardSubscriptionRequest)
+            .then(data => {
+              let leaderboardEntries = [];
+              if (data && data.leaderboardEntries) {
+                leaderboardEntries = data.leaderboardEntries;
+              }
+              _this.settings.leaderboard.leaderboardData = leaderboardEntries;
+              _this.settings.partialFunctions.leaderboardDataResponseParser(leaderboardEntries, function (lbData) {
+                _this.settings.leaderboard.leaderboardData = lbData;
+              });
+              _this.settings.mainWidget.leaderboardDetailsUpdate();
+              _this.settings.mainWidget.showEmbeddedCompetitionDetailsContent(function () {});
+              _this.checkForAvailableRewards(1);
+            })
+            .catch(error => {
+              _this.log(error);
+            });
+
+          preLoader.hide();
+        }
+      });
 
       // hide embedded competition details
-    } else if (!_this.settings.leaderboard.layoutSettings.titleLinkToDetailsPage && hasClass(el, 'cl-main-widget-lb-details-description-close')) {
-      _this.settings.mainWidget.hideEmbeddedCompetitionDetailsContent(function () {});
-
-      // load competition details
-    } else if (hasClass(el, 'cl-main-widget-lb-details-content-label') || closest(el, '.cl-main-widget-lb-details-content-label') !== null) {
-      if (_this.settings.competition.activeContest !== null) {
-        _this.settings.mainWidget.loadCompetitionDetails(function () {
-        });
+    } else if (
+      !_this.settings.leaderboard.layoutSettings.titleLinkToDetailsPage &&
+      (
+        hasClass(el, 'cl-main-widget-lb-details-description-close') ||
+        hasClass(el, 'cl-main-widget-lb-header-back-icon') ||
+        hasClass(el, 'cl-main-widget-lb-details-description-header-back')
+      )
+    ) {
+      const missingMember = document.querySelector('.cl-main-widget-lb-missing-member');
+      if (missingMember) {
+        missingMember.style.display = 'none';
       }
+      _this.settings.mainWidget.hideEmbeddedCompetitionDetailsContent(function () {});
+      _this.settings.mainWidget.hideCompetitionList();
 
       // pagination
     } else if (hasClass(el, 'paginator-item')) {
       const preLoader = _this.settings.mainWidget.preloader();
       if (el.closest('.cl-main-widget-ach-list-body-res')) {
-        _this.settings.mainWidget.loadAchievements(el.dataset.page);
+        let pageNumber;
+        const pagesCount = Math.ceil(_this.settings.achievements.totalCount / 6);
+        let isPrev = false;
+        let isNext = false;
+
+        if (el.dataset && el.dataset.page === '...') {
+          if (el.previousSibling.dataset && el.previousSibling.dataset.page && el.previousSibling.dataset.page === '1') {
+            isPrev = true;
+          } else {
+            isNext = true;
+          }
+        }
+
+        if (el.classList.contains('prev') || isPrev) {
+          const activePage = Number(el.closest('.paginator').querySelector('.active').dataset.page);
+          if (activePage > 1) {
+            pageNumber = activePage - 1;
+          } else {
+            return;
+          }
+        } else if (el.classList.contains('next') || isNext) {
+          const activePage = Number(el.closest('.paginator').querySelector('.active').dataset.page);
+          if (activePage < pagesCount) {
+            pageNumber = activePage + 1;
+          } else {
+            return;
+          }
+        } else {
+          pageNumber = Number(el.dataset.page);
+        }
+
+        let paginationArr = null;
+        if (pagesCount > 7) {
+          paginationArr = pagination(6, pageNumber, pagesCount);
+        }
+
+        preLoader.show(async function () {
+          _this.settings.mainWidget.loadAchievements(pageNumber, preLoader.hide(), paginationArr);
+        });
       }
       if (el.closest('.cl-main-widget-reward-list-body-res')) {
         if (el.closest('.paginator-claimed')) {
+          let pageNumber;
+          const pagesCount = Math.ceil(_this.settings.awards.claimedTotalCount / 6);
+          let isPrev = false;
+          let isNext = false;
+
+          if (el.dataset && el.dataset.page === '...') {
+            if (el.previousSibling.dataset && el.previousSibling.dataset.page && el.previousSibling.dataset.page === '1') {
+              isPrev = true;
+            } else {
+              isNext = true;
+            }
+          }
+
+          if (el.classList.contains('prev') || isPrev) {
+            const activePage = Number(el.closest('.paginator').querySelector('.active').dataset.page);
+            if (activePage > 1) {
+              pageNumber = activePage - 1;
+            } else {
+              return;
+            }
+          } else if (el.classList.contains('next') || isNext) {
+            const activePage = Number(el.closest('.paginator').querySelector('.active').dataset.page);
+            if (activePage < pagesCount) {
+              pageNumber = activePage + 1;
+            } else {
+              return;
+            }
+          } else {
+            pageNumber = Number(el.dataset.page);
+          }
+
+          let paginationArr = null;
+          if (pagesCount > 7) {
+            paginationArr = pagination(6, pageNumber, pagesCount);
+          }
+
           preLoader.show(async function () {
-            _this.settings.mainWidget.loadAwards(preLoader.hide(), 1, el.dataset.page);
+            _this.settings.mainWidget.loadAwards(preLoader.hide(), 1, pageNumber, 1, paginationArr, true, false);
           });
         }
         if (el.closest('.paginator-available')) {
+          let pageNumber;
+          const pagesCount = Math.ceil(_this.settings.awards.totalCount / 6);
+          let isPrev = false;
+          let isNext = false;
+
+          if (el.dataset && el.dataset.page === '...') {
+            if (el.previousSibling.dataset && el.previousSibling.dataset.page && el.previousSibling.dataset.page === '1') {
+              isPrev = true;
+            } else {
+              isNext = true;
+            }
+          }
+
+          if (el.classList.contains('prev') || isPrev) {
+            const activePage = Number(el.closest('.paginator').querySelector('.active').dataset.page);
+            if (activePage > 1) {
+              pageNumber = activePage - 1;
+            } else {
+              return;
+            }
+          } else if (el.classList.contains('next') || isNext) {
+            const activePage = Number(el.closest('.paginator').querySelector('.active').dataset.page);
+            if (activePage < pagesCount) {
+              pageNumber = activePage + 1;
+            } else {
+              return;
+            }
+          } else {
+            pageNumber = Number(el.dataset.page);
+          }
+
+          let paginationArr = null;
+          if (pagesCount > 7) {
+            paginationArr = pagination(6, pageNumber, pagesCount);
+          }
+
           preLoader.show(async function () {
-            _this.settings.mainWidget.loadAwards(preLoader.hide(), el.dataset.page, 1);
+            _this.settings.mainWidget.loadAwards(preLoader.hide(), pageNumber, 1, 1, paginationArr, false, false);
           });
         }
       }
-      if (el.closest('.cl-main-widget-inbox-list-body-res')) {
-        _this.settings.mainWidget.loadMessages(el.dataset.page);
-      }
-      if (el.closest('.cl-main-widget-missions-list-body-res')) {
-        _this.settings.mainWidget.loadMissions(el.dataset.page);
-      }
+
       if (el.closest('.paginator-finished')) {
+        let pageNumber;
+        const pagesCount = Math.ceil(_this.settings.tournaments.finishedTotalCount / 12);
+        let isPrev = false;
+        let isNext = false;
+
+        if (el.dataset && el.dataset.page === '...') {
+          if (el.previousSibling.dataset && el.previousSibling.dataset.page && el.previousSibling.dataset.page === '1') {
+            isPrev = true;
+          } else {
+            isNext = true;
+          }
+        }
+
+        if (el.classList.contains('prev') || isPrev) {
+          const activePage = Number(el.closest('.paginator-finished').querySelector('.active').dataset.page);
+          if (activePage > 1) {
+            pageNumber = activePage - 1;
+          } else {
+            return;
+          }
+        } else if (el.classList.contains('next') || isNext) {
+          const activePage = Number(el.closest('.paginator-finished').querySelector('.active').dataset.page);
+          const pagesCount = Math.ceil(_this.settings.tournaments.finishedTotalCount / 12);
+          if (activePage < pagesCount) {
+            pageNumber = activePage + 1;
+          } else {
+            return;
+          }
+        } else {
+          pageNumber = Number(el.dataset.page);
+        }
+
+        let paginationArr = null;
+        if (pagesCount > 7) {
+          paginationArr = pagination(6, pageNumber, pagesCount);
+        }
         preLoader.show(async function () {
-          await _this.checkForAvailableCompetitions(null, 1, 1, Number(el.dataset.page));
-          _this.settings.mainWidget.loadCompetitionList(preLoader.hide(), 1, 1, Number(el.dataset.page));
+          await _this.checkForAvailableCompetitions(null, 1, 1, pageNumber);
+          _this.settings.mainWidget.loadCompetitionList(preLoader.hide(), 1, 1, pageNumber, paginationArr, false, false, true);
         });
       }
       if (el.closest('.paginator-ready')) {
+        let pageNumber;
+        const pagesCount = Math.ceil(_this.settings.tournaments.readyTotalCount / 12);
+        let isPrev = false;
+        let isNext = false;
+
+        if (el.dataset && el.dataset.page === '...') {
+          if (el.previousSibling.dataset && el.previousSibling.dataset.page && el.previousSibling.dataset.page === '1') {
+            isPrev = true;
+          } else {
+            isNext = true;
+          }
+        }
+
+        if (el.classList.contains('prev') || isPrev) {
+          const activePage = Number(el.closest('.paginator-ready').querySelector('.active').dataset.page);
+          if (activePage > 1) {
+            pageNumber = activePage - 1;
+          } else {
+            return;
+          }
+        } else if (el.classList.contains('next') || isNext) {
+          const activePage = Number(el.closest('.paginator-ready').querySelector('.active').dataset.page);
+          const pagesCount = Math.ceil(_this.settings.tournaments.readyTotalCount / 12);
+          if (activePage < pagesCount) {
+            pageNumber = activePage + 1;
+          } else {
+            return;
+          }
+        } else {
+          pageNumber = Number(el.dataset.page);
+        }
+
+        let paginationArr = null;
+        if (pagesCount > 7) {
+          paginationArr = pagination(6, pageNumber, pagesCount);
+        }
         preLoader.show(async function () {
-          await _this.checkForAvailableCompetitions(null, Number(el.dataset.page), 1, 1);
-          _this.settings.mainWidget.loadCompetitionList(preLoader.hide(), Number(el.dataset.page), 1, 1);
+          await _this.checkForAvailableCompetitions(null, pageNumber, 1, 1);
+          _this.settings.mainWidget.loadCompetitionList(preLoader.hide(), pageNumber, 1, 1, paginationArr, true, false, false);
         });
       }
       if (el.closest('.paginator-active')) {
+        let pageNumber;
+        const pagesCount = Math.ceil(_this.settings.tournaments.totalCount / 12);
+        let isPrev = false;
+        let isNext = false;
+
+        if (el.dataset && el.dataset.page === '...') {
+          if (el.previousSibling.dataset && el.previousSibling.dataset.page && el.previousSibling.dataset.page === '1') {
+            isPrev = true;
+          } else {
+            isNext = true;
+          }
+        }
+
+        if (el.classList.contains('prev') || isPrev) {
+          const activePage = Number(el.closest('.paginator-active').querySelector('.active').dataset.page);
+          if (activePage > 1) {
+            pageNumber = activePage - 1;
+          } else {
+            return;
+          }
+        } else if (el.classList.contains('next') || isNext) {
+          const activePage = Number(el.closest('.paginator-active').querySelector('.active').dataset.page);
+          const pagesCount = Math.ceil(_this.settings.tournaments.totalCount / 12);
+          if (activePage < pagesCount) {
+            pageNumber = activePage + 1;
+          } else {
+            return;
+          }
+        } else {
+          pageNumber = Number(el.dataset.page);
+        }
+
+        let paginationArr = null;
+        if (pagesCount > 7) {
+          paginationArr = pagination(6, pageNumber, pagesCount);
+        }
+
         preLoader.show(async function () {
-          await _this.checkForAvailableCompetitions(null, 1, Number(el.dataset.page), 1);
-          _this.settings.mainWidget.loadCompetitionList(preLoader.hide(), 1, Number(el.dataset.page), 1);
+          await _this.checkForAvailableCompetitions(null, 1, pageNumber, 1);
+          _this.settings.mainWidget.loadCompetitionList(preLoader.hide(), 1, pageNumber, 1, paginationArr, false, true, false);
         });
       }
 
-      // load achievement details
-    } else if (hasClass(el, 'cl-ach-list-more')) {
-      _this.getAchievement(el.dataset.id, function (data) {
-        _this.settings.achievements.activeAchievementId = data.id;
-        _this.settings.mainWidget.loadAchievementDetails(data, function () {
+      // load dashboard achievements
+    } else if (hasClass(el, 'cl-main-widget-dashboard-achievements-list-more')) {
+      const preLoader = _this.settings.mainWidget.preloader();
+      const dashboard = document.querySelector('.cl-main-widget-section-dashboard');
+      const dashboardIcon = document.querySelector('.cl-main-widget-navigation-dashboard');
+      const achIcon = document.querySelector('.cl-main-widget-navigation-ach');
+
+      preLoader.show(function () {
+        achIcon.classList.add('cl-active-nav');
+        dashboard.style.display = 'none';
+        dashboardIcon.classList.remove('cl-active-nav');
+
+        _this.settings.mainWidget.loadAchievements(1, function () {
+          const achContainer = query(_this.settings.mainWidget.settings.container, '.cl-main-widget-section-container .' + _this.settings.navigation.achievements.containerClass);
+
+          _this.settings.mainWidget.settings.achievement.detailsContainer.style.display = 'none';
+
+          achContainer.style.display = 'flex';
+          setTimeout(function () {
+            addClass(achContainer, 'cl-main-active-section');
+          }, 30);
+
+          preLoader.hide();
         });
       });
+
+      // load dashboard competitions
+    } else if (hasClass(el, 'cl-main-widget-dashboard-tournaments-list-more')) {
+      const preLoader = _this.settings.mainWidget.preloader();
+      const dashboard = document.querySelector('.cl-main-widget-section-dashboard');
+      const dashboardIcon = document.querySelector('.cl-main-widget-navigation-dashboard');
+      const compIcon = document.querySelector('.cl-main-widget-navigation-lb');
+
+      preLoader.show(function () {
+        compIcon.classList.add('cl-active-nav');
+        dashboard.style.display = 'none';
+        dashboardIcon.classList.remove('cl-active-nav');
+
+        _this.checkForAvailableRewards(1);
+        _this.settings.mainWidget.loadLeaderboard(function () {
+          const lbContainer = query(_this.settings.mainWidget.settings.container, '.cl-main-widget-section-container .' + _this.settings.navigation.tournaments.containerClass);
+
+          lbContainer.style.display = 'flex';
+          setTimeout(function () {
+            addClass(lbContainer, 'cl-main-active-section');
+          }, 30);
+
+          preLoader.hide();
+        }, true);
+      });
+
       // load achievement details
-    } else if (el.closest('.cl-ach-list-item')) {
-      const wrapper = el.closest('.cl-ach-list-item');
-      const id = wrapper.dataset.id;
-      _this.getAchievement(id, function (data) {
-        _this.settings.achievements.activeAchievementId = data.id;
-        _this.settings.mainWidget.loadAchievementDetails(data, function () {
+    } else if (hasClass(el, 'cl-ach-list-more') || closest(el, '.cl-ach-list-details-cont') !== null) {
+      const id = closest(el, '.cl-ach-list-item').dataset.id;
+
+      if (closest(el, '.cl-main-widget-dashboard-achievements-list')) {
+        const dashboard = document.querySelector('.cl-main-widget-section-dashboard');
+        const dashboardIcon = document.querySelector('.cl-main-widget-navigation-dashboard');
+        const achIcon = document.querySelector('.cl-main-widget-navigation-ach');
+        const detailsContainer = document.querySelector('.cl-main-widget-ach-details-container');
+
+        dashboard.style.display = 'none';
+        dashboardIcon.classList.remove('cl-active-nav');
+        achIcon.classList.add('cl-active-nav');
+        detailsContainer.classList.add('cl-show');
+        detailsContainer.style.display = 'block';
+
+        _this.settings.mainWidget.loadAchievements(1, function () {
+          const achContainer = query(_this.settings.mainWidget.settings.container, '.cl-main-widget-section-container .' + _this.settings.navigation.achievements.containerClass);
+
+          achContainer.style.display = 'flex';
+          addClass(achContainer, 'cl-main-active-section');
+
+          _this.getAchievement(id, function (data) {
+            _this.settings.achievements.activeAchievementId = data.id;
+            _this.settings.mainWidget.loadAchievementDetails(data, function () {
+            });
+          });
+
+          _this.settings.navigationSwitchInProgress = false;
         });
+      } else {
+        _this.getAchievement(id, function (data) {
+          _this.settings.achievements.activeAchievementId = data.id;
+          _this.settings.mainWidget.loadAchievementDetails(data, function () {
+          });
+        });
+      }
+
+      // dashboard wheel button
+    } else if (hasClass(el, 'cl-main-widget-dashboard-instant-wins-wheel-button')) {
+      const dashboard = document.querySelector('.cl-main-widget-section-dashboard');
+      const dashboardIcon = document.querySelector('.cl-main-widget-navigation-dashboard');
+      const awardsIcon = document.querySelector('.cl-main-widget-navigation-rewards');
+
+      dashboard.style.display = 'none';
+      dashboardIcon.classList.remove('cl-active-nav');
+      awardsIcon.classList.add('cl-active-nav');
+
+      const rewardsContainer = query(_this.settings.mainWidget.settings.container, '.cl-main-widget-section-container .' + _this.settings.navigation.rewards.containerClass);
+      rewardsContainer.style.display = 'flex';
+      addClass(rewardsContainer, 'cl-main-active-section');
+
+      const container = document.querySelector('.cl-main-widget-reward-list-body-res');
+      const sections = container.querySelectorAll('.cl-accordion');
+      const instantWinsSection = container.querySelector('.cl-accordion.instantWins');
+      const menuItems = container.querySelectorAll('.cl-main-accordion-container-menu-item');
+      const instantMenuItem = container.querySelector('.cl-main-accordion-container-menu-item.instantWins');
+
+      menuItems.forEach(i => i.classList.remove('active'));
+      instantMenuItem.classList.add('active');
+      sections.forEach(s => s.classList.remove('cl-shown'));
+      instantWinsSection.classList.add('cl-shown');
+
+      await _this.getSingleWheels(function (data) {
+        _this.settings.mainWidget.loadSingleWheels(data);
+      });
+
+      // dashboard scratchcards button
+    } else if (hasClass(el, 'cl-main-widget-dashboard-instant-wins-cards-button')) {
+      const dashboard = document.querySelector('.cl-main-widget-section-dashboard');
+      const dashboardIcon = document.querySelector('.cl-main-widget-navigation-dashboard');
+      const awardsIcon = document.querySelector('.cl-main-widget-navigation-rewards');
+
+      dashboard.style.display = 'none';
+      dashboardIcon.classList.remove('cl-active-nav');
+      awardsIcon.classList.add('cl-active-nav');
+
+      const rewardsContainer = query(_this.settings.mainWidget.settings.container, '.cl-main-widget-section-container .' + _this.settings.navigation.rewards.containerClass);
+      rewardsContainer.style.display = 'flex';
+      addClass(rewardsContainer, 'cl-main-active-section');
+
+      const container = document.querySelector('.cl-main-widget-reward-list-body-res');
+      const sections = container.querySelectorAll('.cl-accordion');
+      const instantWinsSection = container.querySelector('.cl-accordion.instantWins');
+      const menuItems = container.querySelectorAll('.cl-main-accordion-container-menu-item');
+      const instantMenuItem = container.querySelector('.cl-main-accordion-container-menu-item.instantWins');
+
+      menuItems.forEach(i => i.classList.remove('active'));
+      instantMenuItem.classList.add('active');
+      sections.forEach(s => s.classList.remove('cl-shown'));
+      instantWinsSection.classList.add('cl-shown');
+
+      _this.settings.mainWidget.loadScratchCards();
+
+      // dashboard competition button
+    } else if (hasClass(el, 'dashboard-tournament-item') || closest(el, '.dashboard-tournament-item')) {
+      const tournamentId = hasClass(el, 'dashboard-tournament-item')
+        ? el.dataset.id
+        : closest(el, '.dashboard-tournament-item').dataset.id;
+      const dashboard = document.querySelector('.cl-main-widget-section-dashboard');
+      const dashboardIcon = document.querySelector('.cl-main-widget-navigation-dashboard');
+      const lbIcon = document.querySelector('.cl-main-widget-navigation-lb');
+
+      dashboard.style.display = 'none';
+      dashboardIcon.classList.remove('cl-active-nav');
+      lbIcon.classList.add('cl-active-nav');
+      const preLoader = _this.settings.mainWidget.preloader();
+
+      preLoader.show(function () {
+        _this.settings.mainWidget.populateLeaderboardResultsWithDefaultEntries(true);
+        _this.settings.mainWidget.settings.active = true;
+        _this.settings.tournaments.activeCompetitionId = tournamentId;
+        _this.activeDataRefresh(function () {
+          _this.settings.mainWidget.hideCompetitionList(async function () {
+            if (!_this.settings.leaderboard.layoutSettings.titleLinkToDetailsPage) {
+              await _this.settings.mainWidget.showEmbeddedCompetitionDetailsContent(function () {});
+            } else if (_this.settings.competition.activeContest !== null) {
+              _this.settings.mainWidget.loadCompetitionDetails(function () {});
+            }
+
+            const lbContainer = query(_this.settings.mainWidget.settings.container, '.cl-main-widget-section-container .' + _this.settings.navigation.tournaments.containerClass);
+            lbContainer.style.display = 'flex';
+            addClass(lbContainer, 'cl-main-active-section');
+
+            preLoader.hide();
+          });
+        }, true);
       });
 
       // leaderboard details back button
@@ -2061,14 +2585,39 @@ export const LbWidget = function (options) {
       _this.settings.mainWidget.hideRewardDetails(function () {
       });
 
-      // messages details back button
-    } else if (hasClass(el, 'cl-main-widget-inbox-details-back-btn')) {
-      _this.settings.mainWidget.hideMessageDetails(function () {
+      // competition details info button
+    } else if (hasClass(el, 'cl-main-widget-lb-details-description-info')) {
+      _this.settings.mainWidget.toggleCompetitionDescription();
+
+      // achievement details info button
+    } else if (hasClass(el, 'cl-main-widget-ach-details-header-info')) {
+      _this.settings.mainWidget.toggleAchievementDescription();
+
+      // Single Wheel
+    } else if (hasClass(el, 'wheel-button')) {
+      await _this.getSingleWheels(function (data) {
+        _this.settings.mainWidget.loadSingleWheels(data);
       });
 
-      // mission details back button
-    } else if (hasClass(el, 'cl-main-widget-missions-details-back-btn')) {
-      _this.settings.mainWidget.hideMissionDetails(function () {
+      // Single Wheel
+    } else if (hasClass(el, 'scratchcards-button')) {
+      _this.settings.mainWidget.loadScratchCards();
+
+      // load rewards details
+    } else if (hasClass(el, 'cl-rew-list-details-claim')) {
+      const awardId = closest(el, '.cl-rew-list-item').dataset.id;
+      const preLoader = _this.settings.mainWidget.preloader();
+      preLoader.show(async function () {
+        await _this.claimAward(awardId, function () {
+          setTimeout(function () {
+            _this.settings.mainWidget.loadAwards(
+              function () {
+                preLoader.hide();
+              },
+              1
+            );
+          }, 2000);
+        });
       });
 
       // load rewards details
@@ -2076,26 +2625,6 @@ export const LbWidget = function (options) {
       var awardId = (hasClass(el, 'cl-rew-list-item')) ? el.dataset.id : closest(el, '.cl-rew-list-item').dataset.id;
       _this.getAward(awardId, function (data) {
         _this.settings.mainWidget.loadRewardDetails(data, function () {
-        });
-      });
-
-      // load inbox details
-    } else if (hasClass(el, 'cl-inbox-list-item') || closest(el, '.cl-inbox-list-item') !== null) {
-      const messageId = (hasClass(el, 'cl-inbox-list-item')) ? el.dataset.id : closest(el, '.cl-inbox-list-item').dataset.id;
-      _this.getMessage(messageId, function (data) {
-        _this.settings.mainWidget.loadMessageDetails(data, function () {
-        });
-      });
-
-      // load mission details
-    } else if (hasClass(el, 'cl-missions-list-item') || closest(el, '.cl-missions-list-item') !== null) {
-      const missionId = (hasClass(el, 'cl-missions-list-item')) ? el.dataset.id : closest(el, '.cl-missions-list-item').dataset.id;
-      const preLoader = _this.settings.mainWidget.preloader();
-      preLoader.show(function () {
-        _this.getMission(missionId, function (data) {
-          _this.settings.mainWidget.loadMissonDetails(data, function () {
-            preLoader.hide();
-          });
         });
       });
 
@@ -2136,7 +2665,7 @@ export const LbWidget = function (options) {
       });
 
       // primary widget navigation
-    } else if (hasClass(el, 'cl-main-navigation-item')) {
+    } else if (el.closest('.cl-main-widget-navigation-items')) {
       _this.settings.mainWidget.navigationSwitch(el);
 
       // competition list
@@ -2144,17 +2673,12 @@ export const LbWidget = function (options) {
       if (_this.settings.leaderboard.refreshInterval) {
         clearTimeout(_this.settings.leaderboard.refreshInterval);
       }
-      _this.settings.mainWidget.loadCompetitionList(function () {
-        _this.activeDataRefresh();
-      });
+      _this.settings.mainWidget.loadCompetitionList();
 
       // load competition
     } else if (hasClass(el, 'cl-tour-list-item') || closest(el, '.cl-tour-list-item') !== null) {
       const tournamentId = (hasClass(el, 'cl-tour-list-item')) ? el.dataset.id : closest(el, '.cl-tour-list-item').dataset.id;
       const preLoader = _this.settings.mainWidget.preloader();
-      const mainContainer = document.querySelector('.cl-main-widget-section-container');
-
-      mainContainer.classList.add('cl-main-active-embedded-description');
 
       preLoader.show(function () {
         _this.settings.mainWidget.populateLeaderboardResultsWithDefaultEntries(true);
@@ -2162,20 +2686,29 @@ export const LbWidget = function (options) {
         _this.settings.tournaments.activeCompetitionId = tournamentId;
         _this.activeDataRefreshSimple(function () {
           _this.settings.mainWidget.hideCompetitionList(async function () {
-            if (!_this.settings.leaderboard.layoutSettings.titleLinkToDetailsPage) {
-              await _this.settings.mainWidget.showEmbeddedCompetitionDetailsContent(function () {});
-            } else if (_this.settings.competition.activeContest !== null) {
-              _this.settings.mainWidget.loadCompetitionDetails(function () {});
-            }
-
+            // if (!_this.settings.leaderboard.layoutSettings.titleLinkToDetailsPage) {
+            //   await _this.settings.mainWidget.showEmbeddedCompetitionDetailsContent(function () {});
+            // } else if (_this.settings.competition.activeContest !== null) {
+            //   _this.settings.mainWidget.loadCompetitionDetails(function () {});
+            // }
+            _this.settings.mainWidget.hideEmbeddedCompetitionDetailsContent(function () {});
+            _this.checkForAvailableRewards(1, function () {
+              if (_this.settings.mainWidget.settings.active) {
+                _this.settings.mainWidget.updateLeaderboard();
+              }
+            });
             preLoader.hide();
           });
         });
       });
 
       // hide competition list view
-    } else if (hasClass(el, 'cl-main-widget-tournaments-back-btn')) {
+    } else if (hasClass(el, 'cl-main-widget-tournaments-back-btn') || hasClass(el, 'cl-main-widget-lb-header-back-icon')) {
       _this.settings.mainWidget.hideCompetitionList();
+
+      // hide Instant Wins
+    } else if (hasClass(el, 'cl-main-widget-reward-header-back')) {
+      _this.settings.mainWidget.hideInstantWins();
 
       // mini scoreboard action to open primary widget
     } else if ((hasClass(el, 'cl-widget-ms-icon-wrapper') || closest(el, '.cl-widget-ms-icon-wrapper') !== null) || (hasClass(el, 'cl-widget-ms-information-wrapper') || closest(el, '.cl-widget-ms-information-wrapper') !== null)) {
@@ -2184,6 +2717,21 @@ export const LbWidget = function (options) {
       // accordion navigation
     } else if (hasClass(el, 'cl-accordion-label')) {
       _this.settings.mainWidget.accordionNavigation(el);
+    } else if (hasClass(el, 'cl-main-accordion-container-menu-item')) {
+      if (el.classList.contains('not-available')) return;
+      _this.settings.mainWidget.listsNavigation(el);
+
+      // mobile theme switcher
+    } else if (hasClass(el, 'cl-mobile-theme-switcher')) {
+      const mainContainer = document.querySelector('.cl-main-widget-wrapper');
+      const msContainer = document.querySelector('.cl-widget-ms-wrapper');
+      if (mainContainer.classList.contains('lightTheme')) {
+        mainContainer.classList.remove('lightTheme');
+        msContainer.classList.remove('lightTheme');
+      } else {
+        mainContainer.classList.add('lightTheme');
+        msContainer.classList.add('lightTheme');
+      }
     }
   };
 
@@ -2195,8 +2743,7 @@ export const LbWidget = function (options) {
         case 27: // on escape
           if (_this.settings.mainWidget.settings.active) {
             _this.settings.mainWidget.hide(function () {
-              // _this.settings.miniScoreBoard.settings.active = true;
-              // _this.settings.miniScoreBoard.settings.container.style.display = 'block';
+              _this.settings.miniScoreBoard.settings.active = true;
 
               _this.activeDataRefresh();
             });
@@ -2206,13 +2753,29 @@ export const LbWidget = function (options) {
     });
 
     document.body.addEventListener('click', function (event) {
-      var el = event.target;
+      const el = event.target;
 
-      _this.eventHandlers(el);
+      _this.eventHandlers(el).then(() => {});
     });
+
+    // if (_this.isMobile()) {
+    //   document.body.addEventListener('touchend', function (event) {
+    //     var el = event.target;
+    //
+    //     if (!_this.settings.miniScoreBoard.settings.dragging) {
+    //       _this.eventHandlers(el);
+    //     }
+    //   });
+    // } else {
+    //   document.body.addEventListener('click', function (event) {
+    //     var el = event.target;
+    //
+    //     _this.eventHandlers(el);
+    //   });
+    // }
   };
 
-  this.getCompetitionOptInStatus = async function (competitionIds) {
+  this.getCompetitionOptInStatus = async function (competitionId) {
     if (!this.settings.apiWs.optInApiWsClient) {
       this.settings.apiWs.optInApiWsClient = new OptInApiWs(this.apiClientStomp);
     }
@@ -2220,13 +2783,13 @@ export const LbWidget = function (options) {
     const optInStatesRequest = OptInStatesRequest.constructFromObject({
       optinStatesFilter: {
         entityTypes: ['Competition'],
-        ids: competitionIds,
+        ids: [competitionId],
         statusCodes: {
           gt: -5,
           lt: 40
         },
         skip: 0,
-        limit: 20
+        limit: 1
       }
     }, null);
 
@@ -2294,7 +2857,6 @@ export const LbWidget = function (options) {
       _this.settings.leaderboard.leaderboardData = [];
     });
 
-    // _this.settings.mainWidget.hide();
     _this.settings.mainWidget.settings.preLoader.preLoaderActive = false;
     this.stopActivity();
 
@@ -2338,8 +2900,7 @@ export const LbWidget = function (options) {
               _this.settings.mainWidget.destroyLayout();
 
               restartReloadInterval = setTimeout(function () {
-                // _this.settings.miniScoreBoard.settings.active = true;
-                // _this.settings.miniScoreBoard.settings.container.style.display = 'block';
+                _this.settings.miniScoreBoard.settings.active = true;
                 _this.startup();
               }, 300);
             });
@@ -2374,7 +2935,12 @@ export const LbWidget = function (options) {
   this.initApiClientStomp = async function () {
     const _this = this;
     this.settings.authToken = null;
-    await this.generateUserToken();
+
+    if (this.settings.memberToken) {
+      this.settings.authToken = this.settings.memberToken;
+    } else {
+      await this.generateUserToken();
+    }
 
     if (this.apiClientStomp) {
       await this.apiClientStomp.disconnect();
@@ -2395,12 +2961,9 @@ export const LbWidget = function (options) {
             this.settings.partialFunctions.leaderboardDataResponseParser(leaderboardEntries, function (lbData) {
               _this.settings.leaderboard.leaderboardData = lbData;
             });
-            // this.settings.miniScoreBoard.loadScoreBoard();
-            this.settings.mainWidget.loadLeaderboard();
+            // this.settings.miniScoreBoard.loadScoreBoard(true);
+            this.settings.mainWidget.loadLeaderboard(() => {}, false);
           }
-        }
-        if (json && json.entityType === 'Message') {
-          this.getMessage(json.entityId, function () { _this.animateIcon('Message'); }, true);
         }
         if (json && json.entityType === 'Award') {
           _this.settings.mainWidget.loadAwards(
@@ -2437,6 +3000,7 @@ export const LbWidget = function (options) {
         if (json && json.entityType === 'Achievement') {
           if (headers.callback === 'optinStatus') {
             _this.settings.mainWidget.achievementItemUpdateProgression(json.entityId, json.percentageComplete);
+            _this.settings.mainWidget.achievementDashboardItemUpdateProgression(json.entityId, json.percentageComplete);
           } else {
             _this.settings.mainWidget.loadAchievements();
           }
@@ -2480,8 +3044,13 @@ export const LbWidget = function (options) {
     if (body.data && body.data.jwtToken) {
       this.settings.authToken = body.data.jwtToken;
     } else {
-      console.error('Member Token Error');
+      console.warn('Member Token Error');
     }
+  };
+
+  this.refreshMemberToken = async function (memberToken) {
+    this.settings.memberToken = memberToken;
+    await this.initApiClientStomp();
   };
 
   /**
@@ -2530,7 +3099,6 @@ export const LbWidget = function (options) {
             if (typeof this.settings.callbacks.onLoadComplete === 'function') {
               this.settings.callbacks.onLoadComplete();
             }
-            // this.clickedMiniScoreBoard();
           });
         });
       });

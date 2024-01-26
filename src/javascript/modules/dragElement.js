@@ -4,16 +4,17 @@ import { addClass, hasClass, isiOSDevice, isMobileTablet, removeClass } from '..
 let movementInterval;
 
 const dragElement = function (elmnt, draggableEl, overlayContainer, container, dragging, finishDragging, mobileTouch) {
-  var pos1 = 0;
-  var pos2 = 0;
-  var pos3 = 0;
-  var pos4 = 0;
-  var isMobile = isMobileTablet();
-  var isiOS = isiOSDevice();
-  var isParentWindow = elmnt.parentNode.nodeName === 'BODY';
-  var maxLeft = (isParentWindow ? window.innerWidth : container.offsetWidth);
-  var maxTop = (isParentWindow ? window.innerHeight : container.offsetHeight);
-  var touchStart; var moving = null;
+  let pos1 = 0;
+  let pos2 = 0;
+  let pos3 = 0;
+  let pos4 = 0;
+  const isMobile = isMobileTablet();
+  const isiOS = isiOSDevice();
+  const isParentWindow = elmnt.parentNode.nodeName === 'BODY';
+  let maxLeft = (isParentWindow ? window.innerWidth : container.offsetWidth);
+  let maxTop = (isParentWindow ? window.innerHeight : container.offsetHeight);
+  let touchStart;
+  let moving = null;
   // scrollObj2 = query(".scroll-res");
 
   if (movementInterval) {
@@ -53,13 +54,13 @@ const dragElement = function (elmnt, draggableEl, overlayContainer, container, d
 
       touchStart = setTimeout(function () {
         justATouch = false;
-      }, 100);
+      }, 300);
     }, { passive: isiOS });
 
     draggableEl.addEventListener('touchmove', function (e) {
       e.preventDefault();
-      pos3 = e.targetTouches[0].pageX;
-      pos4 = e.targetTouches[0].pageY;
+      pos3 = e.targetTouches[0].clientX;
+      pos4 = e.targetTouches[0].clientY;
       // moving = new Date().getTime();
 
       elementDrag(e);
@@ -110,9 +111,8 @@ const dragElement = function (elmnt, draggableEl, overlayContainer, container, d
    * - elmnt => is the main container that has the positioning applied to
    * - draggableEl => key element that is mean for dragging
    */
-  var checkMaxMinRestraints = function (newTop, newLeft, offsetMaxLeft, offsetMaxTop) {
-    var // minLeft = (isVertical ? elmnt.offsetWidth/4 : 0 ), // attempt to restrict the container to go out of bounds by a few pixels, needs some work
-      minLeft = 0;
+  var checkMaxMinRestraints = function (newTop, newLeft, offsetMaxLeft, offsetMaxTop, isVertical) {
+    var minLeft = isVertical ? 15 : 0;
     var top = (newTop <= 0 ? 0 : newTop);
     var left = (newLeft <= minLeft ? minLeft : newLeft);
 
@@ -133,8 +133,8 @@ const dragElement = function (elmnt, draggableEl, overlayContainer, container, d
     e = e || window.event;
     e.preventDefault();
     // calculate the new cursor position:
-    var posX = (isMobile) ? e.targetTouches[0].pageX : e.clientX;
-    var posY = (isMobile) ? e.targetTouches[0].pageY : e.clientY;
+    var posX = (isMobile) ? e.targetTouches[0].clientX : e.clientX;
+    var posY = (isMobile) ? e.targetTouches[0].clientY : e.clientY;
     var isVertical = hasClass(elmnt, 'cl-vertical-mini');
     var offsetMaxLeft = maxLeft - parseInt(elmnt.offsetWidth + (isVertical ? draggableEl.offsetWidth / 7 : draggableEl.offsetWidth / 1.6));
     var offsetMaxTop = maxTop - parseInt(elmnt.offsetHeight + (isVertical ? draggableEl.offsetHeight / 1.2 : draggableEl.offsetHeight / 4));
@@ -149,23 +149,14 @@ const dragElement = function (elmnt, draggableEl, overlayContainer, container, d
 
     if (!hasClass(elmnt, 'cl-being-moved')) addClass(elmnt, 'cl-being-moved');
 
-    var newTop = (isMobile) ? (posY - parseInt(draggableEl.offsetHeight / 2)) : (elmnt.offsetTop - pos2);
-    var newLeft = (isMobile) ? (posX - parseInt(draggableEl.offsetWidth / 2)) : (elmnt.offsetLeft - pos1);
-    var leftTopCheck = checkMaxMinRestraints(newTop, newLeft, offsetMaxLeft, offsetMaxTop); // set the element's new position:
+    const containerRect = container.getBoundingClientRect();
 
-    // scrollObj2.innerHTML = leftTopCheck.top + "-" + leftTopCheck.left + " : "+ newTop + "-" + newLeft + " : " + (posX < 0 || posY < 0 || posX > maxLeft || posY > maxTop) + "-" + (newTop > offsetMaxTop || newLeft > offsetMaxLeft);
-    // scrollObj2.innerHTML = leftTopCheck.top + "-" + leftTopCheck.left + " : "+ newTop +"-"+ newLeft + " : " + (posX < 0 || posY < 0 || posX > maxLeft || posY > maxTop) + "-" + (newTop > offsetMaxTop || newLeft > offsetMaxLeft);
+    const newTop = (isMobile) ? (posY - containerRect.top - 20) : (elmnt.offsetTop - pos2);
+    const newLeft = (isMobile) ? (posX - containerRect.left - 25) : (elmnt.offsetLeft - pos1);
+    var leftTopCheck = checkMaxMinRestraints(newTop, newLeft, offsetMaxLeft, offsetMaxTop, isVertical);
 
-    if (posX < 0 || posY < 0 || posX > maxLeft || posY > maxTop) {
-      closeDragElement(e);
-    } else if (newTop > offsetMaxTop || newLeft > offsetMaxLeft) {
-      closeDragElement(e);
-    } else if (leftTopCheck.top > offsetMaxTop || leftTopCheck.left > offsetMaxLeft) {
-      closeDragElement(e);
-    } else {
-      elmnt.style.top = leftTopCheck.top + 'px';
-      elmnt.style.left = leftTopCheck.left + 'px';
-    }
+    elmnt.style.top = leftTopCheck.top + 'px';
+    elmnt.style.left = leftTopCheck.left + 'px';
 
     if (typeof dragging === 'function') dragging(newTop, newLeft);
   }

@@ -4,12 +4,26 @@
         "hours": "h",
         "minutesShortHand": "mín",
         "minutes": "m",
-        "seconds": "s"
+        "seconds": "s",
+        "daysFull": "Dias",
+        "hoursFull": "Horas",
+        "minutesFull": "Minutos",
+        "secondsFull": "Segundos"
     },
     "achievements": {
         "label": "Conquistas",
         "more": "Mais",
-        "complete": "concluído a 100%"
+        "complete": "concluído a 100%",
+        "enter": "Insira a conquista",
+        "leave": "Deixar a conquista",
+        "listEnterBtn": "Juntar",
+        "listLeaveBtn": "Deixar",
+        "listProgressionBtn": "Em processamento...",
+        "leavePopupTitle": "Deixe a conquista",
+        "leavePopupDescription": "Tem certeza de que deseja sair dessa conquista?",
+        "leavePopupClose": "Fechar",
+        "leavePopupConfirm": "Deixar",
+        "progress": "Progresso"
     },
     "tournaments": {
         "label": "Torneios",
@@ -20,7 +34,9 @@
         "finishing": "A concluir",
         "finished": "Concluído",
         "registered": "Registado",
-        "noAvailableCompetitions": "Sem competição disponível"
+        "noAvailableCompetitions": "Sem competição disponível",
+        "processing": "Em processamento...",
+        "date": "Data"
     },
     "leaderboard": {
         "rank": "Classificação",
@@ -28,6 +44,12 @@
         "points": "Pontos",
         "prize": "Prémio",
         "you": "Vocês"
+    },
+    "brackets": {
+        "title": "Chave de torneios",
+        "starts": "Começa",
+        "ends": "Termina",
+        "ended": "Terminou"
     },
     "miniLeaderboard": {
         "highScore": "Pontuação máxima",
@@ -45,12 +67,48 @@
         "claimed": "Reivindicado",
         "availableRewards": "Recompensas disponíveis",
         "rewards": "Recompensas reivindicadas",
-        "expiredRewards": "Recompensas expiradas"
+        "expiredRewards": "Recompensas expiradas",
+        "instantWins": "Vitórias Instantâneas",
+        "wheelLabel": "A Roda Única",
+        "scratchcardsLabel": "Raspadinhas",
+        "wheelButton": "Jogar",
+        "scratchcardsButton": "Jogar",
+        "singleWheelWinLabel": "Parabéns!",
+        "singleWheelWinDescription": "Você ganhou",
+        "singleWheelWinButton": "Alegar",
+        "prizeLabel": "Descubra seu prêmio raspando!",
+        "prizeButton": "Raspe tudo"
     },
     "messages": {
         "label": "Mensagens"
     },
+    "dashboard": {
+        "label": "Painel",
+        "instantWinsTitle": "Vitórias instantâneas",
+        "achievementsTitle": "Conquistas",
+        "tournamentsTitle": "Torneios Atuais",
+        "upcomingTournamentsTitle": "Próximos Torneios",
+        "tournamentBtn": "Ver mais",
+        "endsTitle": "Termina",
+        "startsTitle": "Começa",
+        "prizeTitle": "Prêmio",
+        "singleWheelTitle": "A Roda Única",
+        "singleWheelButton": "Jogar",
+        "scratchcardsTitle": "Raspadinhas",
+        "scratchcardsButton": "Jogar",
+        "seeAll": "Ver tudo"
+    },
+    "missions": {
+        "label": "Missões",
+        "btn": "Ir",
+        "prizeLabel": "Prêmio",
+        "mapLabel": "Mapa da missão"
+    },
     "global": {
-        "copy": "Desenvolvido por Ziqni"
+        "copy": "Desenvolvido por Ziqni",
+        "descriptionLabel": "Descrição",
+        "tAndCLabel": "Termos e Condições",
+        "tAndCEmpty": "Nenhum Termos e Condições fornecidos",
+        "descriptionEmpty": "Nenhuma descrição fornecida"
     }
 }

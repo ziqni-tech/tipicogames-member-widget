@@ -4,23 +4,39 @@
         "hours": "ساعت",
         "minutesShortHand": "دقیقه",
         "minutes": "دقیقه",
-        "seconds": "ثانیه"
+        "seconds": "ثانیه",
+        "daysFull": "روزها",
+        "hoursFull": "ساعت ها",
+        "minutesFull": "دقایق",
+        "secondsFull": "ثانیه ها"
     },
     "achievements": {
         "label": "دستاوردها",
         "more": "موارد بیشتر",
-        "complete": "100% کامل"
+        "complete": "100% کامل",
+        "enter": "اچیومنت را وارد کنید",
+        "leave": "دستاورد را ترک کنید",
+        "listEnterBtn": "پیوستن",
+        "listLeaveBtn": "ترک کردن",
+        "listProgressionBtn": "در حال پردازش...",
+        "leavePopupTitle": "دستاورد را ترک کنید",
+        "leavePopupDescription": "آیا مطمئنید که می خواهید این دستاورد را ترک کنید؟",
+        "leavePopupClose": "بستن",
+        "leavePopupConfirm": "ترک کردن",
+        "progress": "پیش رفتن"
     },
     "tournaments": {
 		"label":"مسابقات",
         "enter": "ورود به مسابقه",
+        "processing": "در حال پردازش...",
         "readyCompetitions": "مسابقات پیش رو",
         "activeCompetitions": "مسابقات فعال",
         "finishedCompetitions": "مسابقات به اتمام رسیده",
         "finishing": "در حال اتمام",
         "finished": "تمام شد",
         "registered": "ثبت شده",
-        "noAvailableCompetitions": "هیچ   رقابتی موجود نیست"
+        "noAvailableCompetitions": "هیچ   رقابتی موجود نیست",
+        "date": "تاریخ"
     },
     "leaderboard": {
         "rank": "رتبه",
@@ -28,6 +44,12 @@
         "points": "امتیاز",
         "prize": "جایزه",
         "you": "شما"
+    },
+    "brackets": {
+        "title": "براکت مسابقات",
+        "starts": "شروع می شود",
+        "ends": "به پایان می رسد",
+        "ended": "به پایان رسید"
     },
     "miniLeaderboard": {
         "highScore": "امتیاز بالا",
@@ -45,12 +67,48 @@
         "claimed": "مطالبه شد",
         "availableRewards": "پاداش های موجود",
         "rewards": "پاداش های مطالبه شده",
-        "expiredRewards": "پاداش های منقضی شده"
+        "expiredRewards": "پاداش های منقضی شده",
+        "instantWins": "برنده های فوری",
+        "wheelLabel": "تک چرخ",
+        "scratchcardsLabel": "کارت های خراش",
+        "wheelButton": "بازی",
+        "scratchcardsButton": "بازی",
+        "singleWheelWinLabel": "تبریک می گویم!",
+        "singleWheelWinDescription": "برنده شدی",
+        "singleWheelWinButton": "مطالبه",
+        "prizeLabel": "با خراش دادن، جایزه خود را کشف کنید!",
+        "prizeButton": "همه را خراش دهید"
     },
     "messages": {
         "label": "پیام ها"
     },
+    "dashboard": {
+        "label": "داشبورد",
+        "instantWinsTitle": "برنده های فوری",
+        "achievementsTitle": "دستاوردها",
+        "tournamentsTitle": "مسابقات جاری",
+        "upcomingTournamentsTitle": "مسابقات آتی",
+        "tournamentBtn": "بیشتر ببین",
+        "endsTitle": "به پایان می رسد",
+        "startsTitle": "شروع می شود",
+        "prizeTitle": "جایزه",
+        "singleWheelTitle": "تک چرخ",
+        "singleWheelButton": "بازی",
+        "scratchcardsTitle": "کارت های خراش",
+        "scratchcardsButton": "بازی",
+        "seeAll": "همه را ببین"
+    },
+    "missions": {
+        "label": "ماموریت ها",
+        "btn": "برو",
+        "prizeLabel": "جایزه",
+        "mapLabel": "نقشه ماموریت"
+    },
     "global": {
-        "copy": "قدرت گرفته از Ziqni"
+        "copy": "قدرت گرفته از Ziqni",
+        "descriptionLabel": "شرح",
+        "tAndCLabel": "شرایط و ضوابط",
+        "tAndCEmpty": "هیچ شرایط و ضوابطی ارائه نشده است",
+        "descriptionEmpty": "هیچ توضیحاتی ارائه نشده است"
     }
 }

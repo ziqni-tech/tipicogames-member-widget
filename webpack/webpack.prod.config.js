@@ -61,7 +61,7 @@ module.exports = {
           loader: 'babel-loader',
           options: {
             presets: ['@babel/preset-env'],
-            plugins: ['@babel/plugin-proposal-object-rest-spread']
+            plugins: ['@babel/plugin-transform-object-rest-spread']
           }
         }
       },
@@ -72,18 +72,27 @@ module.exports = {
       {
         test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
         loader: 'svg-url-loader',
-        query: {
-          limit: 8192,
+        options: {
+          limit: INLINE_CSS ? 8192000 : 8192,
           mimetype: 'application/svg+xml'
         }
       },
       {
         test: /\.(png|jpg)$/,
         loader: 'url-loader',
-        query: {
-          limit: 8192
+        options: {
+          limit: INLINE_CSS ? true : 8192
         }
       },
+      {
+        test: /\.hbs$/,
+        loader: 'handlebars-loader',
+        options: {
+          precompileOptions: {
+            knownHelpersOnly: false
+          }
+        }
+      }
     ]
   },
   plugins: [

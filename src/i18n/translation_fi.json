@@ -4,23 +4,39 @@
         "hours": "t",
         "minutesShortHand": "min",
         "minutes": "m",
-        "seconds": "s"
+        "seconds": "s",
+        "daysFull": "Päivää",
+        "hoursFull": "Tuntia",
+        "minutesFull": "Pöytäkirja",
+        "secondsFull": "Sekuntia"
     },
     "achievements": {
         "label": "Saavutukset",
         "more": "Lisää",
-        "complete": "valmis 100 %"
+        "complete": "valmis 100 %",
+        "enter": "Anna saavutus",
+        "leave": "Jätä saavutus",
+        "listEnterBtn": "Liittyä seuraan",
+        "listLeaveBtn": "Lähde",
+        "listProgressionBtn": "Käsitellään...",
+        "leavePopupTitle": "Jätä saavutus",
+        "leavePopupDescription": "Haluatko varmasti jättää tämän saavutuksen?",
+        "leavePopupClose": "Kiinni",
+        "leavePopupConfirm": "Lähde",
+        "progress": "Edistyminen"
     },
     "tournaments": {
         "label": "Turnaukset",
         "enter": "Osallistu turnaukseen",
+        "processing": "Käsitellään...",
         "readyCompetitions": "Tulevat turnaukset",
         "activeCompetitions": "Aktiiviset turnaukset",
         "finishedCompetitions": "Päättyneet turnaukset",
         "finishing": "Viimeistellään",
         "finished": "Päättynyt",
         "registered": "Rekisteröity",
-        "noAvailableCompetitions": "Ei saatavilla olevaa kilpailua"
+        "noAvailableCompetitions": "Ei saatavilla olevaa kilpailua",
+        "date": "Päivämäärä"
     },
     "leaderboard": {
         "rank": "Sijoitus",
@@ -28,6 +44,12 @@
         "points": "Pisteet",
         "prize": "Palkinto",
         "you": "Sinä"
+    },
+    "brackets": {
+        "title": "Turnaushaarukka",
+        "starts": "Alkaa",
+        "ends": "Päättyy",
+        "ended": "Päättyi"
     },
     "miniLeaderboard": {
         "highScore": "Korkeat pisteet",
@@ -45,12 +67,48 @@
         "claimed": "Lunastettu",
         "availableRewards": "Käytettävissä olevat palkinnot",
         "rewards": "Lunastetut palkinnot",
-        "expiredRewards": "Vanhentuneet palkinnot"
+        "expiredRewards": "Vanhentuneet palkinnot",
+        "instantWins": "Välittömät voitot",
+        "wheelLabel": "Yksi pyörä",
+        "scratchcardsLabel": "Raaputusarvat",
+        "wheelButton": "Pelata",
+        "scratchcardsButton": "Pelata",
+        "singleWheelWinLabel": "Onnittelut!",
+        "singleWheelWinDescription": "Sinä voitit",
+        "singleWheelWinButton": "Väite",
+        "prizeLabel": "Paljasta palkintosi raaputtamalla pois!",
+        "prizeButton": "Raaputa kaikki"
     },
     "messages": {
         "label": "Viestit"
     },
+    "dashboard": {
+        "label": "Kojelauta",
+        "instantWinsTitle": "Välittömät voitot",
+        "achievementsTitle": "Saavutukset",
+        "tournamentsTitle": "Nykyiset turnaukset",
+        "upcomingTournamentsTitle": "Tulevat turnaukset",
+        "tournamentBtn": "Katso lisää",
+        "endsTitle": "Päättyy",
+        "startsTitle": "Alkaa",
+        "prizeTitle": "Palkinto",
+        "singleWheelTitle": "Yksi pyörä",
+        "singleWheelButton": "Pelata",
+        "scratchcardsTitle": "Raaputusarvat",
+        "scratchcardsButton": "Pelata",
+        "seeAll": "Näytä kaikki"
+    },
+    "missions": {
+        "label": "Tehtävät",
+        "btn": "Mennä",
+        "prizeLabel": "Palkinto",
+        "mapLabel": "Tehtävä kartta"
+    },
     "global": {
-        "copy": "Toimitti Ziqni"
+        "copy": "Toimitti Ziqni",
+        "descriptionLabel": "Kuvaus",
+        "tAndCLabel": "Käyttöehdot",
+        "tAndCEmpty": "Ei annettuja ehtoja",
+        "descriptionEmpty": "Kuvauksia ei ole annettu"
     }
 }

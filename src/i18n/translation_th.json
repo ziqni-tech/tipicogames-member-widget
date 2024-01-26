@@ -1,56 +1,114 @@
 {
     "time": {
         "days": "วัน",
-        "hours": "ชม.",
+        "hours": "ชั่วโมง",
         "minutesShortHand": "นาที",
         "minutes": "นาที",
-        "seconds": "วินาที"
+        "seconds": "วินาที",
+        "daysFull": "วัน",
+        "hoursFull": "ชั่วโมง",
+        "minutesFull": "นาที",
+        "secondsFull": "วินาที"
     },
     "achievements": {
         "label": "ความสำเร็จ",
         "more": "เพิ่มเติม",
-        "complete": "เสร็จสมบูรณ์ 100%"
+        "complete": "เสร็จสิ้น 100%",
+        "enter": "เข้าสู่ความสำเร็จ",
+        "leave": "ออกจากความสำเร็จ",
+        "listEnterBtn": "เข้าร่วม",
+        "listLeaveBtn": "ออก",
+        "listProgressionBtn": "กำลังดำเนินการ...",
+        "leavePopupTitle": "ออกจากความสำเร็จ",
+        "leavePopupDescription": "คุณแน่ใจหรือไม่ว่าต้องการออกจากความสำเร็จนี้?",
+        "leavePopupClose": "ปิด",
+        "leavePopupConfirm": "ออก",
+        "progress": "ความคืบหน้า"
     },
     "tournaments": {
         "label": "การแข่งขัน",
-        "enter": "เข้าสู่การแข่งขัน",
-        "readyCompetitions": "การแข่งขันที่จะเกิดขึ้น",
-        "activeCompetitions": "การแข่งขันที่ดำเนินการอยู่",
-        "finishedCompetitions": "การแข่งขันเสร็จสิ้น",
-        "finishing": "กำลังดำเนินการ",
+        "enter": "เข้าร่วมการแข่งขัน",
+        "processing": "กำลังดำเนินการ...",
+        "readyCompetitions": "เร็ว ๆ นี้",
+        "activeCompetitions": "กิจกรรมที่กำลังดำเนินการ",
+        "finishedCompetitions": "เสร็จสิ้น",
+        "finishing": "กำลังจบ",
         "finished": "เสร็จสิ้น",
         "registered": "ลงทะเบียนแล้ว",
-        "noAvailableCompetitions": "ไม่มีการแข่งขัน"
+        "noAvailableCompetitions": "ไม่มีการแข่งขันที่พร้อมใช้งาน",
+        "date": "วันที่"
     },
     "leaderboard": {
         "rank": "อันดับ",
         "name": "ชื่อ",
-        "points": "แต้ม",
+        "points": "คะแนน",
         "prize": "รางวัล",
         "you": "คุณ"
+    },
+    "brackets": {
+        "title": "ตารางการแข่งขัน",
+        "starts": "เริ่ม",
+        "ends": "จบ",
+        "ended": "จบแล้ว"
     },
     "miniLeaderboard": {
         "highScore": "คะแนนสูงสุด",
         "lastScore": "คะแนนล่าสุด",
         "rank": "อันดับ",
-        "startsIn": "เริ่มต้นใน",
+        "startsIn": "เริ่มใน",
         "started": "เริ่มแล้ว",
         "starting": "กำลังเริ่ม",
-        "finishing": "กำลังดำเนินการ",
-        "finished": "เสร็จสิ้น"
+        "finishing": "กำลังจบ",
+        "finished": "เสร็จแล้ว"
     },
     "rewards": {
         "label": "รางวัล",
-        "claim": "รับทันที",
-        "claimed": "รับแล้ว",
+        "claim": "เรียกรางวัล",
+        "claimed": "เรียกรางวัลแล้ว",
         "availableRewards": "รางวัลที่มี",
-        "rewards": "รางวัลที่รับแล้ว",
-        "expiredRewards": "รางวัลที่หมดอายุ"
+        "instantWins": "รางวัลทันที",
+        "rewards": "รางวัลที่เรียก",
+        "expiredRewards": "รางวัลที่หมดอายุ",
+        "wheelLabel": "รอบเดียว",
+        "scratchcardsLabel": "บัตรลวดลาย",
+        "wheelButton": "เล่น",
+        "scratchcardsButton": "เล่น",
+        "singleWheelWinLabel": "ขอแสดงความยินดี!",
+        "singleWheelWinDescription": "คุณได้รับ",
+        "singleWheelWinButton": "เรียกรางวัล",
+        "prizeLabel": "เปิดเผยรางวัลของคุณโดยการขูดออก!",
+        "prizeButton": "ขูดทั้งหมด"
     },
     "messages": {
         "label": "ข้อความ"
     },
+    "dashboard": {
+        "label": "แดชบอร์ด",
+        "instantWinsTitle": "รางวัลทันที",
+        "achievementsTitle": "ความสำเร็จ",
+        "tournamentsTitle": "การแข่งขันปัจจุบัน",
+        "upcomingTournamentsTitle": "การแข่งขันที่กำลังจะเกิดขึ้น",
+        "tournamentBtn": "ดูเพิ่มเติม",
+        "endsTitle": "จบ",
+        "startsTitle": "เริ่ม",
+        "prizeTitle": "รางวัล",
+        "singleWheelTitle": "รอบเดียว",
+        "singleWheelButton": "เล่น",
+        "scratchcardsTitle": "บัตรลวดลาย",
+        "scratchcardsButton": "เล่น",
+        "seeAll": "ดูทั้งหมด"
+    },
+    "missions": {
+        "label": "ภารกิจ",
+        "btn": "ไป",
+        "prizeLabel": "รางวัล",
+        "mapLabel": "แผนที่ภารกิจ"
+    },
     "global": {
-        "copy": "ทำงานด้วย Ziqni"
+        "copy": "ขับเคลื่อนโดย Ziqni",
+        "descriptionLabel": "คำอธิบาย",
+        "tAndCLabel": "ข้อกำหนดและเงื่อนไข",
+        "tAndCEmpty": "ไม่มีข้อกำหนดและเงื่อนไข",
+        "descriptionEmpty": "ไม่มีคำอธิบาย"
     }
 }

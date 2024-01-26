@@ -4,12 +4,26 @@
         "hours": "hodín",
         "minutesShortHand": "min",
         "minutes": "minút",
-        "seconds": "sekúnd"
+        "seconds": "sekúnd",
+        "daysFull": "Dni",
+        "hoursFull": "hodiny",
+        "minutesFull": "Minúty",
+        "secondsFull": "sekúnd"
     },
     "achievements": {
         "label": "misie",
         "more": "viac",
-        "complete": "100% dokončené"
+        "complete": "100% dokončené",
+        "enter": "Zadajte Achievement",
+        "leave": "Nechajte úspech",
+        "listEnterBtn": "Pripojte sa",
+        "listLeaveBtn": "Odísť",
+        "listProgressionBtn": "Spracováva sa...",
+        "leavePopupTitle": "Nechajte úspech",
+        "leavePopupDescription": "Naozaj chcete opustiť tento úspech?",
+        "leavePopupClose": "Zavrieť",
+        "leavePopupConfirm": "Odísť",
+        "progress": "Pokrok"
     },
     "tournaments": {
 		"label":"turnaje",
@@ -20,7 +34,9 @@
         "finishing": "Končí sa",
         "finished": "Ukončené",
         "registered": "Zaregistrovaný",
-        "noAvailableCompetitions": "Súťaž nie je k dispozícii"
+        "noAvailableCompetitions": "Súťaž nie je k dispozícii",
+        "processing": "Spracováva sa...",
+        "date": "Dátum"
     },
     "leaderboard": {
         "rank": "úroveň",
@@ -28,6 +44,12 @@
         "points": "body",
         "prize": "cena",
         "you": "Ty"
+    },
+    "brackets": {
+        "title": "Záver turnajov",
+        "starts": "Začne",
+        "ends": "Koniec",
+        "ended": "Ukončený"
     },
     "miniLeaderboard": {
         "highScore": "Najvyššie skóre",
@@ -45,12 +67,48 @@
         "claimed": "Uplatnené",
         "availableRewards": "Odmeny k dispozícii",
         "rewards": "Uplatnené odmeny",
-        "expiredRewards": "Expirované odmeny"
+        "expiredRewards": "Expirované odmeny",
+        "instantWins": "Okamžité výhry",
+        "wheelLabel": "Jediné koleso",
+        "scratchcardsLabel": "stieracie žreby",
+        "wheelButton": "hrať",
+        "scratchcardsButton": "hrať",
+        "singleWheelWinLabel": "Gratulujem!",
+        "singleWheelWinDescription": "Vyhral si",
+        "singleWheelWinButton": "Nárokovať",
+        "prizeLabel": "Odhaľte svoju cenu zoškrabaním!",
+        "prizeButton": "Poškriabať všetko"
     },
     "messages": {
         "label": "Správy"
     },
+    "dashboard": {
+        "label": "Dashboard",
+        "instantWinsTitle": "Okamžité výhry",
+        "achievementsTitle": "Úspechy",
+        "tournamentsTitle": "Aktuálne turnaje",
+        "upcomingTournamentsTitle": "Nadchádzajúce turnaje",
+        "tournamentBtn": "Pozrieť viac",
+        "endsTitle": "Koniec",
+        "startsTitle": "Začne",
+        "prizeTitle": "cena",
+        "singleWheelTitle": "Jediné koleso",
+        "singleWheelButton": "hrať",
+        "scratchcardsTitle": "stieracie žreby",
+        "scratchcardsButton": "hrať",
+        "seeAll": "Vidieť všetko"
+    },
+    "missions": {
+        "label": "Misie",
+        "btn": "Choď",
+        "prizeLabel": "cena",
+        "mapLabel": "Mapa misie"
+    },
     "global": {
-        "copy": "Beží na Ziqni"
+        "copy": "Beží na Ziqni",
+        "descriptionLabel": "Popis",
+        "tAndCLabel": "podmienky",
+        "tAndCEmpty": "Neboli poskytnuté žiadne zmluvné podmienky",
+        "descriptionEmpty": "Nie sú poskytnuté žiadne popisy"
     }
 }

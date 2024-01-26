@@ -4,12 +4,26 @@
         "hours": "ч",
         "minutesShortHand": "мин",
         "minutes": "м",
-        "seconds": "с"
+        "seconds": "с",
+        "daysFull": "Дни",
+        "hoursFull": "Часы",
+        "minutesFull": "Минуты",
+        "secondsFull": "Секунды"
     },
     "achievements": {
         "label": "Достижения",
         "more": "Больше",
-        "complete": "завершенные 100%"
+        "complete": "завершенные 100%",
+        "enter": "Подключиться к достижению",
+        "leave": "Покинуть достижение",
+        "listEnterBtn": "Присоединиться",
+        "listLeaveBtn": "Покинуть",
+        "listProgressionBtn": "Обработка...",
+        "leavePopupTitle": "Покинуть достижение",
+        "leavePopupDescription": "Вы уверены, что хотите оставить это достижение?",
+        "leavePopupClose": "Закрыть",
+        "leavePopupConfirm": "Покинуть",
+        "progress": "Прогресс"
     },
     "tournaments": {
         "label": "Турниры",
@@ -20,7 +34,9 @@
         "finishing": "Заканчивается",
         "finished": "Завершенные",
         "registered": "Зарегистрированные",
-        "noAvailableCompetitions": "Нет доступных соревнований"
+        "noAvailableCompetitions": "Нет доступных соревнований",
+        "processing": "Обработка...",
+        "date": "Дата"
     },
     "leaderboard": {
         "rank": "Ранг",
@@ -28,6 +44,12 @@
         "points": "Очки",
         "prize": "Приз",
         "you": "Вы"
+    },
+    "brackets": {
+        "title": "Сетка турнира",
+        "starts": "Начинается",
+        "ends": "Заканчивается",
+        "ended": "Закончено"
     },
     "miniLeaderboard": {
         "highScore": "Рекорд",
@@ -45,12 +67,48 @@
         "claimed": "Запрошенные",
         "availableRewards": "Доступные награды",
         "rewards": "Запрошенные награды",
-        "expiredRewards": "Просроченные награды"
+        "expiredRewards": "Просроченные награды",
+        "instantWins": "Мгновенные выигрыши",
+        "wheelLabel": "Одиночное колесо",
+        "scratchcardsLabel": "Скретч-карты",
+        "wheelButton": "Играть",
+        "scratchcardsButton": "Играть",
+        "singleWheelWinLabel": "Поздравляем!",
+        "singleWheelWinDescription": "Вы выиграли",
+        "singleWheelWinButton": "Требовать",
+        "prizeLabel": "Откройте свой приз, соскребя его!",
+        "prizeButton": "Сотрите все"
     },
     "messages": {
         "label": "Сообщения"
     },
+    "dashboard": {
+        "label": "Панель",
+        "instantWinsTitle": "Мгновенные выигрыши",
+        "achievementsTitle": "Достижения",
+        "tournamentsTitle": "Текущие турниры",
+        "upcomingTournamentsTitle": "Предстоящие турниры",
+        "tournamentBtn": "Узнать больше",
+        "endsTitle": "Заканчивается",
+        "startsTitle": "Начинается",
+        "prizeTitle": "Приз",
+        "singleWheelTitle": "Одиночное колесо",
+        "singleWheelButton": "Играть",
+        "scratchcardsTitle": "Скретч-карты",
+        "scratchcardsButton": "Играть",
+        "seeAll": "Увидеть все"
+    },
+    "missions": {
+        "label": "Миссии",
+        "btn": "Вперед",
+        "prizeLabel": "Приз",
+        "mapLabel": "Карта миссии"
+    },
     "global": {
-        "copy": "При поддержке Ziqni"
+        "copy": "При поддержке Ziqni",
+        "descriptionLabel": "Описание",
+        "tAndCLabel": "Условия использования",
+        "tAndCEmpty": "Условия использования не предоставлены",
+        "descriptionEmpty": "Описания не предоставлены"
     }
 }

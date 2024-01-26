@@ -4,15 +4,29 @@
         "hours": "óra",
         "minutesShortHand": "λεπ",
         "minutes": "perc",
-        "seconds": "másodperc"
+        "seconds": "másodperc",
+        "daysFull": "Napok",
+        "hoursFull": "Órák",
+        "minutesFull": "Percek",
+        "secondsFull": "Másodpercek"
     },
     "achievements": {
         "label": "eredmények",
         "more": "több",
-        "complete": "100% kész"
+        "complete": "100% kész",
+        "enter": "Írja be az eredményt",
+        "leave": "Hagyja el az eredményt",
+        "listEnterBtn": "Csatlakozik",
+        "listLeaveBtn": "Elhagy",
+        "listProgressionBtn": "Feldolgozás...",
+        "leavePopupTitle": "Hagyja az eredményt",
+        "leavePopupDescription": "Biztosan elhagyja ezt a jutalmat?",
+        "leavePopupClose": "Bezárás",
+        "leavePopupConfirm": "Elhagy",
+        "progress": "Előrehalad"
     },
     "tournaments": {
-		"label":"bajnokságok",
+        "label":"bajnokságok",
         "enter": "Belépés a bajnokságba",
         "readyCompetitions": "Közelgő bajnokságok",
         "activeCompetitions": "Aktív bajnokságok",
@@ -20,7 +34,9 @@
         "finishing": "Befejezés",
         "finished": "Befejezve",
         "registered": "Regisztrált",
-        "noAvailableCompetitions": "Nincs elérhető verseny"
+        "noAvailableCompetitions": "Nincs elérhető verseny",
+        "processing": "Feldolgozás...",
+        "date": "Dátum"
     },
     "leaderboard": {
         "rank": "rangsor",
@@ -28,6 +44,12 @@
         "points": "pont",
         "prize": "díj",
         "you": "Te"
+    },
+    "brackets": {
+        "title": "Versenyek zárójelben",
+        "starts": "Indul",
+        "ends": "Véget ér",
+        "ended": "Vége lett"
     },
     "miniLeaderboard": {
         "highScore": "Magas pontszám",
@@ -45,12 +67,48 @@
         "claimed": "Igényelve",
         "availableRewards": "Elérhető jutalmak",
         "rewards": "Igényelt jutalmak",
-        "expiredRewards": "Lejárt jutalmak"
+        "expiredRewards": "Lejárt jutalmak",
+        "instantWins": "Azonnali nyerések",
+        "wheelLabel": "Az egyetlen kerék",
+        "scratchcardsLabel": "Kaparós sorsjegy",
+        "wheelButton": "Játék",
+        "scratchcardsButton": "Játék",
+        "singleWheelWinLabel": "Gratulálunk!",
+        "singleWheelWinDescription": "Ön nyert",
+        "singleWheelWinButton": "Követelés",
+        "prizeLabel": "Fedezd fel nyereményed kaparással!",
+        "prizeButton": "Scratch mind"
     },
     "messages": {
         "label": "Üzenetek"
     },
+    "dashboard": {
+        "label": "Irányítópult",
+        "instantWinsTitle": "Azonnali nyerések",
+        "achievementsTitle": "Eredmények",
+        "tournamentsTitle": "Aktuális versenyek",
+        "upcomingTournamentsTitle": "Közelgő versenyek",
+        "tournamentBtn": "Többet látni",
+        "endsTitle": "Véget ér",
+        "startsTitle": "Indul",
+        "prizeTitle": "Díj",
+        "singleWheelTitle": "Az egyetlen kerék",
+        "singleWheelButton": "Játék",
+        "scratchcardsTitle": "Kaparós sorsjegy",
+        "scratchcardsButton": "Játék",
+        "seeAll": "Az összes megtekintése"
+    },
+    "missions": {
+        "label": "Küldetések",
+        "btn": "Megy",
+        "prizeLabel": "Díj",
+        "mapLabel": "Küldetés térkép"
+    },
     "global": {
-        "copy": "Üzemeltető: Ziqni"
+        "copy": "Üzemeltető: Ziqni",
+        "descriptionLabel": "Leírás",
+        "tAndCLabel": "Felhasználási feltételek",
+        "tAndCEmpty": "Nincsenek megadva Általános Szerződési Feltételek",
+        "descriptionEmpty": "Nincsenek leírások"
     }
 }

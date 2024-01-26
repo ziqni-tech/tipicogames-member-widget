@@ -4,12 +4,26 @@
         "hours": "h",
         "minutesShortHand": "min",
         "minutes": "m",
-        "seconds": "s"
+        "seconds": "s",
+        "daysFull": "Giorni",
+        "hoursFull": "Ore",
+        "minutesFull": "Minuti",
+        "secondsFull": "Secondi"
     },
     "achievements": {
         "label": "Risultati",
         "more": "Altri",
-        "complete": "completo al 100%"
+        "complete": "completo al 100%",
+        "enter": "Inserisci Risultati",
+        "leave": "Lascia il conseguimento",
+        "listEnterBtn": "Giuntura",
+        "listLeaveBtn": "Partire",
+        "listProgressionBtn": "In lavorazione...",
+        "leavePopupTitle": "Lascia il risultato",
+        "leavePopupDescription": "Sei sicuro di voler abbandonare questo risultato?",
+        "leavePopupClose": "Vicino",
+        "leavePopupConfirm": "Partire",
+        "progress": "Progresso"
     },
     "tournaments": {
         "label": "Tornei",
@@ -20,7 +34,9 @@
         "finishing": "Terminerà",
         "finished": "Terminato",
         "registered": "Registrato",
-        "noAvailableCompetitions": "Nessuna concorrenza disponibile"
+        "noAvailableCompetitions": "Nessuna concorrenza disponibile",
+        "processing": "In lavorazione...",
+        "date": "Data"
     },
     "leaderboard": {
         "rank": "Posizione",
@@ -28,6 +44,12 @@
         "points": "Punti",
         "prize": "In palio",
         "you": "Tu"
+    },
+    "brackets": {
+        "title": "Girone dei tornei",
+        "starts": "Inizia",
+        "ends": "Finisce",
+        "ended": "Conclusa"
     },
     "miniLeaderboard": {
         "highScore": "Punteggio più alto",
@@ -45,12 +67,48 @@
         "claimed": "Riscattati",
         "availableRewards": "Premi disponibili",
         "rewards": "Premi riscattati",
-        "expiredRewards": "Premi scaduti"
+        "expiredRewards": "Premi scaduti",
+        "instantWins": "Vittorie istantanee",
+        "wheelLabel": "La Ruota Unica",
+        "scratchcardsLabel": "Gratta e vinci",
+        "wheelButton": "Giocare",
+        "scratchcardsButton": "Giocare",
+        "singleWheelWinLabel": "Congratulazioni!",
+        "singleWheelWinDescription": "Hai vinto",
+        "singleWheelWinButton": "Reclamo",
+        "prizeLabel": "Scopri il tuo premio grattando!",
+        "prizeButton": "Gratta tutto"
     },
     "messages": {
         "label": "Messaggi"
     },
+    "dashboard": {
+        "label": "Pannello di controllo",
+        "instantWinsTitle": "Vittorie istantanee",
+        "achievementsTitle": "Risultati",
+        "tournamentsTitle": "Tornei attuali",
+        "upcomingTournamentsTitle": "Prossimi Tornei",
+        "tournamentBtn": "Vedi altro",
+        "endsTitle": "Finisce",
+        "startsTitle": "Inizia",
+        "prizeTitle": "Premio",
+        "singleWheelTitle": "La Ruota Unica",
+        "singleWheelButton": "Giocare",
+        "scratchcardsTitle": "Gratta e vinci",
+        "scratchcardsButton": "Giocare",
+        "seeAll": "Vedi tutto"
+    },
+    "missions": {
+        "label": "Missioni",
+        "btn": "Andare",
+        "prizeLabel": "Premio",
+        "mapLabel": "Mappa della missione"
+    },
     "global": {
-        "copy": "Realizzato da Ziqni"
+        "copy": "Realizzato da Ziqni",
+        "descriptionLabel": "Descrizione",
+        "tAndCLabel": "Termini & Condizioni",
+        "tAndCEmpty": "Nessun termine e condizioni forniti",
+        "descriptionEmpty": "Nessuna descrizione fornita"
     }
 }

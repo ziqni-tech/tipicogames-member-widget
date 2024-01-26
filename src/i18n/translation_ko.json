@@ -4,12 +4,26 @@
         "hours": "시간",
         "minutesShortHand": "분",
         "minutes": "분",
-        "seconds": "초"
+        "seconds": "초",
+        "daysFull": "날",
+        "hoursFull": "시간",
+        "minutesFull": "분",
+        "secondsFull": "초"
     },
     "achievements": {
         "label": "업적",
         "more": "더 보기",
-        "complete": "100% 완료"
+        "complete": "100% 완료",
+        "enter": "업적 입력",
+        "leave": "업적 남기기",
+        "listEnterBtn": "가입하다",
+        "listLeaveBtn": "떠나다",
+        "listProgressionBtn": "처리 중...",
+        "leavePopupTitle": "업적을 남겨주세요",
+        "leavePopupDescription": "이 업적을 종료하시겠습니까?",
+        "leavePopupClose": "닫다",
+        "leavePopupConfirm": "떠나다",
+        "progress": "진전"
     },
     "tournaments": {
         "label": "토너먼트",
@@ -20,7 +34,9 @@
         "finishing": "마무리 중",
         "finished": "완료",
         "registered": "등록 완료",
-        "noAvailableCompetitions": "사용 가능한 경쟁이 없습니다."
+        "noAvailableCompetitions": "사용 가능한 경쟁이 없습니다.",
+        "processing": "처리 중...",
+        "date": "날짜"
     },
     "leaderboard": {
         "rank": "순위",
@@ -28,6 +44,12 @@
         "points": "포인트",
         "prize": "상",
         "you": "당신"
+    },
+    "brackets": {
+        "title": "토너먼트 대진표",
+        "starts": "시작",
+        "ends": "종료",
+        "ended": "종료됨"
     },
     "miniLeaderboard": {
         "highScore": "최고 점수",
@@ -45,12 +67,48 @@
         "claimed": "받기 완료",
         "availableRewards": "받을 수 있는 보상",
         "rewards": "받은 보상",
-        "expiredRewards": "만료된 보상"
+        "expiredRewards": "만료된 보상",
+        "instantWins": "즉시 승리",
+        "wheelLabel": "싱글 휠",
+        "scratchcardsLabel": "스크래치카드",
+        "wheelButton": "놀다",
+        "scratchcardsButton": "놀다",
+        "singleWheelWinLabel": "축하해요!",
+        "singleWheelWinDescription": "당신이 이겼어요",
+        "singleWheelWinButton": "주장하다",
+        "prizeLabel": "긁어서 상품을 찾아보세요!",
+        "prizeButton": "모두 스크래치"
     },
     "messages": {
         "label": "메시지"
     },
+    "dashboard": {
+        "label": "계기반",
+        "instantWinsTitle": "즉각적인 승리",
+        "achievementsTitle": "업적",
+        "tournamentsTitle": "현재 토너먼트",
+        "upcomingTournamentsTitle": "다가오는 토너먼트",
+        "tournamentBtn": "더보기",
+        "endsTitle": "종료",
+        "startsTitle": "시작",
+        "prizeTitle": "상",
+        "singleWheelTitle": "싱글 휠",
+        "singleWheelButton": "놀다",
+        "scratchcardsTitle": "스크래치카드",
+        "scratchcardsButton": "놀다",
+        "seeAll": "모두 보기"
+    },
+    "missions": {
+        "label": "임무",
+        "btn": "가다",
+        "prizeLabel": "상",
+        "mapLabel": "미션 맵"
+    },
     "global": {
-        "copy": "Ziqni 운영"
+        "copy": "Ziqni 운영",
+        "descriptionLabel": "설명",
+        "tAndCLabel": "이용약관",
+        "tAndCEmpty": "이용약관이 제공되지 않았습니다.",
+        "descriptionEmpty": "제공된 설명이 없습니다."
     }
 }

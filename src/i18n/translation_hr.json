@@ -4,12 +4,26 @@
         "hours": "h",
         "minutesShortHand": "min",
         "minutes": "m",
-        "seconds": "s"
+        "seconds": "s",
+        "daysFull": "Dana",
+        "hoursFull": "Sati",
+        "minutesFull": "Minuta",
+        "secondsFull": "Sekundi"
     },
     "achievements": {
         "label": "Postignuća",
         "more": "Više",
-        "complete": "dovršeno 100%"
+        "complete": "dovršeno 100%",
+        "enter": "Unesite postignuće",
+        "leave": "Napusti postignuće",
+        "listEnterBtn": "Pridružiti",
+        "listLeaveBtn": "Napustiti",
+        "listProgressionBtn": "Obrada...",
+        "leavePopupTitle": "Ostavite postignuće",
+        "leavePopupDescription": "Jeste li sigurni da želite napustiti ovo postignuće?",
+        "leavePopupClose": "Zatvoriti",
+        "leavePopupConfirm": "Napustiti",
+        "progress": "Napredak"
     },
     "tournaments": {
         "label": "Turniri",
@@ -20,7 +34,9 @@
         "finishing": "Završava",
         "finished": "Završeno",
         "registered": "Registrirano",
-        "noAvailableCompetitions": "Nema dostupnog natjecanja"
+        "noAvailableCompetitions": "Nema dostupnog natjecanja",
+        "processing": "Obrada...",
+        "date": "Datum"
     },
     "leaderboard": {
         "rank": "Rang",
@@ -28,6 +44,12 @@
         "points": "Bodovi",
         "prize": "Nagrada",
         "you": "Vas"
+    },
+    "brackets": {
+        "title": "Grupa turnira",
+        "starts": "Počinje",
+        "ends": "Završava",
+        "ended": "Završeno"
     },
     "miniLeaderboard": {
         "highScore": "Najbolji rezultat",
@@ -45,12 +67,48 @@
         "claimed": "Preuzeto",
         "availableRewards": "Dostupne nagrade",
         "rewards": "Preuzete nagrade",
-        "expiredRewards": "Istekle nagrade"
+        "expiredRewards": "Istekle nagrade",
+        "instantWins": "Trenutačne pobjede",
+        "wheelLabel": "Jedan kotač",
+        "scratchcardsLabel": "Strugalice",
+        "wheelButton": "igra",
+        "scratchcardsButton": "igra",
+        "singleWheelWinLabel": "Čestitamo!",
+        "singleWheelWinDescription": "Pobjedio si",
+        "singleWheelWinButton": "Zahtjev",
+        "prizeLabel": "Otkrijte svoju nagradu struganjem!",
+        "prizeButton": "Ogrebi sve"
     },
     "messages": {
         "label": "Poruke"
     },
+    "dashboard": {
+        "label": "Nadzorna ploča",
+        "instantWinsTitle": "Instant pobjede",
+        "achievementsTitle": "Dostignuća",
+        "tournamentsTitle": "Aktualni turniri",
+        "upcomingTournamentsTitle": "Nadolazeći turniri",
+        "tournamentBtn": "Vidi više",
+        "endsTitle": "Završava",
+        "startsTitle": "Počinje",
+        "prizeTitle": "Nagrada",
+        "singleWheelTitle": "Jedan kotač",
+        "singleWheelButton": "igra",
+        "scratchcardsTitle": "Strugalice",
+        "scratchcardsButton": "igra",
+        "seeAll": "Vidi sve"
+    },
+    "missions": {
+        "label": "Misije",
+        "btn": "Ići",
+        "prizeLabel": "Nagrada",
+        "mapLabel": "Karta misije"
+    },
     "global": {
-        "copy": "Pokreće Ziqni"
+        "copy": "Pokreće Ziqni",
+        "descriptionLabel": "Opis",
+        "tAndCLabel": "Uvjeti korištenja",
+        "tAndCEmpty": "Nisu navedeni Uvjeti i odredbe",
+        "descriptionEmpty": "Nema opisa"
     }
 }

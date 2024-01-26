@@ -4,12 +4,26 @@
         "hours": "h",
         "minutesShortHand": "min",
         "minutes": "m",
-        "seconds": "s"
+        "seconds": "s",
+        "daysFull": "Dni",
+        "hoursFull": "godziny",
+        "minutesFull": "Minuty",
+        "secondsFull": "sekundy"
     },
     "achievements": {
         "label": "Osiągnięcia",
         "more": "Więcej",
-        "complete": "Ukończono w 100%"
+        "complete": "Ukończono w 100%",
+        "enter": "Wpisz osiągnięcie",
+        "leave": "Zostaw osiągnięcie",
+        "listEnterBtn": "Dołączyć",
+        "listLeaveBtn": "Wyjechać",
+        "listProgressionBtn": "Przetwarzanie...",
+        "leavePopupTitle": "Zostaw osiągnięcie",
+        "leavePopupDescription": "Czy na pewno chcesz zostawić to osiągnięcie?",
+        "leavePopupClose": "Zamknąć",
+        "leavePopupConfirm": "Wyjechać",
+        "progress": "Postęp"
     },
     "tournaments": {
         "label": "Turnieje",
@@ -20,7 +34,9 @@
         "finishing": "Kończy się",
         "finished": "Zakończone",
         "registered": "Zarejestrowano",
-        "noAvailableCompetitions": "Brak dostępnej konkurencji"
+        "noAvailableCompetitions": "Brak dostępnej konkurencji",
+        "processing": "Przetwarzanie...",
+        "date": "Data"
     },
     "leaderboard": {
         "rank": "Ocena",
@@ -28,6 +44,12 @@
         "points": "Pkt.",
         "prize": "Nagroda",
         "you": "Ty"
+    },
+    "brackets": {
+        "title": "Wspornik turniejowy",
+        "starts": "Rozpoczyna się",
+        "ends": "Kończy się",
+        "ended": "Zakończone"
     },
     "miniLeaderboard": {
         "highScore": "Najlepszy wynik",
@@ -45,12 +67,48 @@
         "claimed": "Odebrane",
         "availableRewards": "Dostępne nagrody",
         "rewards": "Odebrane nagrody",
-        "expiredRewards": "Wygasłe nagrody"
+        "expiredRewards": "Wygasłe nagrody",
+        "instantWins": "Natychmiastowe zwycięstwa",
+        "wheelLabel": "Pojedyncze koło",
+        "scratchcardsLabel": "Zdrapki",
+        "wheelButton": "Grać",
+        "scratchcardsButton": "Grać",
+        "singleWheelWinLabel": "Gratulacje!",
+        "singleWheelWinDescription": "Wygrałeś",
+        "singleWheelWinButton": "Prawo",
+        "prizeLabel": "Odkryj swoją nagrodę poprzez zdrapywanie!",
+        "prizeButton": "Zdrap wszystko"
     },
     "messages": {
         "label": "Wiadomości"
     },
+    "dashboard": {
+        "label": "Panel",
+        "instantWinsTitle": "Natychmiastowe zwycięstwa",
+        "achievementsTitle": "Osiągnięcia",
+        "tournamentsTitle": "Aktualne turnieje",
+        "upcomingTournamentsTitle": "Nadchodzące turnieje",
+        "tournamentBtn": "Zobacz więcej",
+        "endsTitle": "Kończy się",
+        "startsTitle": "Rozpoczyna się",
+        "prizeTitle": "Nagroda",
+        "singleWheelTitle": "Pojedyncze koło",
+        "singleWheelButton": "Grać",
+        "scratchcardsTitle": "Zdrapki",
+        "scratchcardsButton": "Grać",
+        "seeAll": "Widzieć wszystko"
+    },
+    "missions": {
+        "label": "Misje",
+        "btn": "Iść",
+        "prizeLabel": "Nagroda",
+        "mapLabel": "Mapa misji"
+    },
     "global": {
-        "copy": "Obsługiwane przez Ziqni"
+        "copy": "Obsługiwane przez Ziqni",
+        "descriptionLabel": "Opis",
+        "tAndCLabel": "Zasady i Warunki",
+        "tAndCEmpty": "Nie podano żadnych warunków",
+        "descriptionEmpty": "Brak opisów"
     }
 }

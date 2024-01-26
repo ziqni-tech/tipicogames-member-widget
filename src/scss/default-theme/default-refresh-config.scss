@@ -1,44 +1,73 @@
 $lb3-widget-icon: url(../../images/ziqni-logo.svg);
 $lb3-widget-icon-2x: url(../../images/ziqni-logo.svg);
+$lb3-widget-icon-nav: url(../../images/ziqni-logo-nav.svg);
 $lb3-widget-info-icon-bg-img: url(../../images/info-icon-dark.svg);
 $lb3-widget-image-banner-active-info-icon-bg-img:  url(../../images/info-icon.svg);
+$lb3-dashboard-icon: url(../../images/home.svg);
+$lb3-dashboard-icon-black: url(../../images/home-black.svg);
 $lb3-tournament-icon: url(../../images/big-tournament-icon.svg);
+$lb3-tournament-icon-black: url(../../images/big-tournament-icon-black.svg);
+$lb3-tournament-default-banner: url(../../images/default-banner.png);
+$lb3-tournament-default-icon: url(../../images/tourDef.svg);
 $lb3-tournament-icon-bg-image: url(../../images/big-default-blue-btn-icon.svg);
 $lb3-tournament-icon-bg-image-2x: url(../../images/big-default-blue-btn-icon.svg);
 $lb3-tournament-header-close-back-image: url(../../images/close-icon.svg);
+$lb3-tournament-header-close-light-image: url(../../images/close-icon-light.svg);
 $lb3-tournament-header-list-back-image: url(../../images/menu.svg);
+$lb3-tournament-header-list-back-image-black: url(../../images/menu-black.svg);
+$lb3-tournament-header-back-image: url(../../images/left-arrow.svg);
+$lb3-tournament-header-back-image-black: url(../../images/left-arrow-black.svg);
+$lb3-tournament-description-back-image: url(../../images/small-left-arrow.svg);
+$lb3-tournament-description-back-image-black: url(../../images/small-left-arrow-black.svg);
 $lb3-tournament-lb-top-res-back: url(../../images/medals-v3.png);
-$lb3-tournament-lb-first-place-back: url(../../images/medals.png);
-$lb3-tournament-lb-second-place-back: url(../../images/medals.png);
-$lb3-tournament-lb-third-place-back: url(../../images/medals.png);
 $lb3-achievements-icon: url(../../images/big-challenge-icon.svg);
+$lb3-achievements-icon-black: url(../../images/big-challenge-icon-black.svg);
+$lb3-achievements-default-icon: url(../../images/frame.svg);
+$lb3-achievements-default-icon-border: url(../../images/ellipse.svg);
 $lb3-achievements-icon-bg-image: url(../../images/big-default-blue-btn-icon.svg);
 $lb3-achievements-icon-bg-image-2x: url(../../images/big-default-blue-btn-icon.svg);
 $lb3-achievements-header-close-image: url(../../images/close-icon.svg);
 $lb3-rewards-icon: url(../../images/big-reward-icon.svg);
+$lb3-rewards-icon-black: url(../../images/big-reward-icon-black.svg);
 $lb3-rewards-icon-bg-image: url(../../images/big-default-blue-btn-icon.svg);
 $lb3-rewards-icon-bg-image-2x: url(../../images/big-default-blue-btn-icon.svg);
 $lb3-rewards-header-close-image: url(../../images/close-icon.svg);
+$lb3-award-default-icon: url(../../images/award.svg);
+$lb3-award-small-icon: url(../../images/award-icon.svg);
 $lb3-messages-icon: url(../../images/big-message-icon.svg);
+$lb3-messages-icon-black: url(../../images/big-message-icon-black.svg);
 $lb3-messages-icon-bg-image: url(../../images/big-default-blue-btn-icon.svg);
 $lb3-messages-icon-bg-image-2x: url(../../images/big-default-blue-btn-icon.svg);
 $lb3-missions-icon: url(../../images/rocket-icon.svg);
+$lb3-missions-icon-black: url(../../images/rocket-icon-black.svg);
+$lb3-missions-def-img: url(../../images/missionDef.png);
 $lb3-missions-icon-bg-image: url(../../images/big-default-blue-btn-icon.svg);
 $lb3-missions-icon-bg-image-2x: url(../../images/big-default-blue-btn-icon.svg);
 $lb3-messages-header-close-image: url(../../images/close-icon.svg);
 $lb3-notification-back-image: url(../../images/big-default-blue-btn-icon.svg);
-$prev-btn-icon-bg: url(../../images/prev-btn-icon-grey.svg);
+$pagination-prev-icon: url(../../images/arrow-left.svg);
+$pagination-next-icon: url(../../images/arrow-right.svg);
 
 :root {
   //Theme Colours
-  --primary-color: #ffffff;
-  --primary-color-darken: #000000;
+  --ui-main-bg-color: #192627;
+  --ui-color-primary: #50F5FF;
+  --Gray-6: #858585;
+  --card-active: #224A4D;
+  --ui-color-text-secondary: #BDBDBD;
+  --ui-color-error: #F88;
+  --widget-bg-blue: rgba(80, 245, 255, 0.08);
+  --Primary-Dark: #141414;
+  --ui-color-success: #68FFA5;
+
+  --primary-color: #f1f2f4;
+  --primary-color-darken: #0F1921;
   --primary-color-lighten: #999999;
   --primary-button-color: #007dfb;
   --primary-border-color: #636f83;
 
-  --primary-font-color: #282f37;
-  --primary-background-color: #ffffff;
+  --primary-font-color: #FFFFFF;
+  --primary-background-color: #0f1921;
   --primary-background-color-hover: #d7d7d7;
   --light-font-color: #ffffff;
   --dark-font-color: #000000;
@@ -46,13 +75,17 @@ $prev-btn-icon-bg: url(../../images/prev-btn-icon-grey.svg);
   --darkest-color: #212121;
   --light-grey: #737373;
 
+  --lb-widget-bg-color: #0F1921;
+  --lb-widget-border-color: #304F69;
+  --lb-widget-header-text-color: rgba(255, 255, 255, 0.8);
+
+  --lightTheme-font-color: #080D12;
+
+
   // MAIN
-  --lb3-widget-font: "Inter", Helvetica, Arial, serif;
-  --lb3-widget-bg-color: var(--primary-color);
-  --lb3-widget-border-color: var(--primary-border-color);
+  --lb3-widget-font: "Gotham A", "Gotham B", "Gotham", Helvetica, Arial, serif;
   --lb3-widget-text-color: var(--dark-font-color);
   --lb3-widget-date-text-color: var(--primary-font-color);
-  --lb3-widget-header-text-color: var(--light-grey);
 
   --lb3-widget-navigation-icon-width: 73px;
   --lb3-widget-navigation-icon-height: 73px;
@@ -83,10 +116,10 @@ $prev-btn-icon-bg: url(../../images/prev-btn-icon-grey.svg);
   --lb3-miniscoreboard-points-label-color: var(--light-grey);
 
   // FIRST TO
-  --lb3-miniscoreboard-inverse-first-to-date-color: var(--dark-font-color);
-  --lb3-miniscoreboard-inverse-first-to-date-only-color: var(--dark-font-color);
-  --lb3-miniscoreboard-first-to-header-rank-color: var(--dark-font-color);
-  --lb3-miniscoreboard-first-to-header-points-color: var(--dark-font-color);
+  --lb3-miniscoreboard-inverse-first-to-date-color: var(--primary-font-color);
+  --lb3-miniscoreboard-inverse-first-to-date-only-color: var(--primary-font-color);
+  --lb3-miniscoreboard-first-to-header-rank-color: var(--primary-font-color);
+  --lb3-miniscoreboard-first-to-header-points-color: var(--primary-font-color);
 
   --lb3-miniscoreboard-vertical-first-to-rank-color: var(--light-grey);
   --lb3-miniscoreboard-vertical-first-to-points-color: var(--light-grey);

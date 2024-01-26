@@ -4,29 +4,39 @@
         "hours": "h",
         "minutesShortHand": "min",
         "minutes": "m",
-        "seconds": "s"
-    },
-    "menu": {
-        "tournaments": "Turniere",
-        "achievements": "Erfolge",
-        "rewards": "Prämien",
-        "inbox": "Mitteilungen"
+        "seconds": "s",
+        "daysFull": "Tage",
+        "hoursFull": "Std",
+        "minutesFull": "Protokoll",
+        "secondsFull": "Sekunden"
     },
     "achievements": {
         "label": "Erfolge",
         "more": "Mehr",
-        "complete": "100% abschließen"
+        "complete": "100% abschließen",
+        "enter": "Geben Sie Leistung ein",
+        "leave": "Erfolg hinterlassen",
+        "listEnterBtn": "Verbinden",
+        "listLeaveBtn": "Verlassen",
+        "listProgressionBtn": "Wird bearbeitet...",
+        "leavePopupTitle": "Verlassen Sie den Erfolg",
+        "leavePopupDescription": "Sind Sie sicher, dass Sie diesen Erfolg verlassen möchten?",
+        "leavePopupClose": "Schließen",
+        "leavePopupConfirm": "Verlassen",
+        "progress": "Fortschritt"
     },
     "tournaments": {
         "label": "Turniere",
         "enter": "Turnier betreten",
+        "processing": "Wird bearbeitet...",
         "readyCompetitions": "Kommende Turniere",
         "activeCompetitions": "Aktive Turniere",
         "finishedCompetitions": "Abgeschlossene Turniere",
         "finishing": "Abschließen",
         "finished": "Abgeschlossen",
         "registered": "Registriert",
-        "noAvailableCompetitions": "Keine verfügbare Konkurrenz"
+        "noAvailableCompetitions": "Keine verfügbare Konkurrenz",
+        "date": "Datum"
     },
     "leaderboard": {
         "rank": "Rang",
@@ -34,6 +44,12 @@
         "points": "Punkte",
         "prize": "Preis",
         "you": "Sie"
+    },
+    "brackets": {
+        "title": "Turniere-Klammer",
+        "starts": "Beginnt",
+        "ends": "Endet",
+        "ended": "Beendet"
     },
     "miniLeaderboard": {
         "highScore": "Bestenliste",
@@ -51,12 +67,48 @@
         "claimed": "Beansprucht",
         "availableRewards": "Verfügbare Prämien",
         "rewards": "Beanspruchte Prämien",
-        "expiredRewards": "Abgelaufene Prämien"
+        "expiredRewards": "Abgelaufene Prämien",
+        "instantWins": "Sofortige Gewinne",
+        "wheelLabel": "Das Einzelrad",
+        "scratchcardsLabel": "Rubbelkarten",
+        "wheelButton": "Spielen",
+        "scratchcardsButton": "Spielen",
+        "singleWheelWinLabel": "Glückwunsch!",
+        "singleWheelWinDescription": "Du hast gewonnen",
+        "singleWheelWinButton": "Beanspruchen",
+        "prizeLabel": "Entdecken Sie Ihren Preis durch Rubbeln!",
+        "prizeButton": "Alles kratzen"
     },
     "messages": {
         "label": "Mitteilungen"
     },
+    "dashboard": {
+        "label": "Armaturenbrett",
+        "instantWinsTitle": "Sofortige Gewinne",
+        "achievementsTitle": "Erfolge",
+        "tournamentsTitle": "Aktuelle Turniere",
+        "upcomingTournamentsTitle": "Kommende Turniere",
+        "tournamentBtn": "Mehr sehen",
+        "endsTitle": "Endet",
+        "startsTitle": "Beginnt",
+        "prizeTitle": "Preis",
+        "singleWheelTitle": "Das Einzelrad",
+        "singleWheelButton": "Spielen",
+        "scratchcardsTitle": "Rubbelkarten",
+        "scratchcardsButton": "Spielen",
+        "seeAll": "Alles sehen"
+    },
+    "missions": {
+        "label": "Missionen",
+        "btn": "Gehen",
+        "prizeLabel": "Preis",
+        "mapLabel": "Missionskarte"
+    },
     "global": {
-        "copy": "Unterstützt von Ziqni"
+        "copy": "Unterstützt von Ziqni",
+        "descriptionLabel": "Beschreibung",
+        "tAndCLabel": "Geschäftsbedingungen",
+        "tAndCEmpty": "Es liegen keine Allgemeinen Geschäftsbedingungen vor",
+        "descriptionEmpty": "Keine Beschreibungen bereitgestellt"
     }
 }

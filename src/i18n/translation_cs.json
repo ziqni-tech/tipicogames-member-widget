@@ -4,23 +4,39 @@
         "hours": "h",
         "minutesShortHand": "min",
         "minutes": "m",
-        "seconds": "s"
+        "seconds": "s",
+        "daysFull": "Dny",
+        "hoursFull": "Hodiny",
+        "minutesFull": "Minut",
+        "secondsFull": "Sekundy"
     },
     "achievements": {
         "label": "Úspěchy",
         "more": "Více",
-        "complete": "dokončeno 100 %"
+        "complete": "dokončeno 100 %",
+        "enter": "Zadejte Achievement",
+        "leave": "Opustit úspěch",
+        "listEnterBtn": "Připojit",
+        "listLeaveBtn": "Odejít",
+        "listProgressionBtn": "Zpracovává se...",
+        "leavePopupTitle": "Nechte úspěch",
+        "leavePopupDescription": "Opravdu chcete tento úspěch opustit?",
+        "leavePopupClose": "Zavřít",
+        "leavePopupConfirm": "Odejít",
+        "progress": "Pokrok"
     },
     "tournaments": {
         "label": "Turnaje",
         "enter": "Účastnit se turnaje",
+        "processing": "Zpracovává se...",
         "readyCompetitions": "Nadcházející turnaje",
         "activeCompetitions": "Aktivní turnaje",
         "finishedCompetitions": "Dokončené turnaje",
         "finishing": "Dokončování",
         "finished": "Dokončeno",
         "registered": "Registrace",
-        "noAvailableCompetitions": "Žádná dostupná konkurence"
+        "noAvailableCompetitions": "Žádná dostupná konkurence",
+        "date": "Datum"
     },
     "leaderboard": {
         "rank": "Pořadí",
@@ -28,6 +44,12 @@
         "points": "Body",
         "prize": "Cena",
         "you": "Vy"
+    },
+    "brackets": {
+        "title": "Závorka turnajů",
+        "starts": "Začíná",
+        "ends": "Končí",
+        "ended": "Skončilo"
     },
     "miniLeaderboard": {
         "highScore": "Nejvyšší skóre",
@@ -45,12 +67,48 @@
         "claimed": "Získáno",
         "availableRewards": "Dostupné odměny",
         "rewards": "Získané odměny",
-        "expiredRewards": "Prošlé odměny"
+        "expiredRewards": "Prošlé odměny",
+        "instantWins": "Okamžité výhry",
+        "wheelLabel": "Jediné kolo",
+        "scratchcardsLabel": "Stírací losy",
+        "wheelButton": "Hrát si",
+        "scratchcardsButton": "Hrát si",
+        "singleWheelWinLabel": "Gratulujeme!",
+        "singleWheelWinDescription": "Vyhrál jsi",
+        "singleWheelWinButton": "Nárok",
+        "prizeLabel": "Odhalte svou cenu seškrábáním!",
+        "prizeButton": "Poškrábat všechny"
     },
     "messages": {
         "label": "Zprávy"
     },
+    "dashboard": {
+        "label": "Přístrojová deska",
+        "instantWinsTitle": "Okamžité výhry",
+        "achievementsTitle": "Úspěchy",
+        "tournamentsTitle": "Aktuální turnaje",
+        "upcomingTournamentsTitle": "Nadcházející turnaje",
+        "tournamentBtn": "Vidět víc",
+        "endsTitle": "Končí",
+        "startsTitle": "Začíná",
+        "prizeTitle": "Cena",
+        "singleWheelTitle": "Jediné kolo",
+        "singleWheelButton": "Hrát si",
+        "scratchcardsTitle": "Stírací losy",
+        "scratchcardsButton": "Hrát si",
+        "seeAll": "Vidět vše"
+    },
+    "missions": {
+        "label": "Mise",
+        "btn": "Jít",
+        "prizeLabel": "Cena",
+        "mapLabel": "Mapa mise"
+    },
     "global": {
-        "copy": "Běží na Ziqni"
+        "copy": "Běží na Ziqni",
+        "descriptionLabel": "Popis",
+        "tAndCLabel": "Všeobecné obchodní podmínky",
+        "tAndCEmpty": "Nejsou uvedeny žádné smluvní podmínky",
+        "descriptionEmpty": "Nebyly poskytnuty žádné popisy"
     }
 }

@@ -1,56 +1,114 @@
 {
     "time": {
-        "days": "d",
-        "hours": "h",
-        "minutesShortHand": "分",
-        "minutes": "m",
-        "seconds": "s"
+        "days": "天",
+        "hours": "小时",
+        "minutesShortHand": "分钟",
+        "minutes": "分钟",
+        "seconds": "秒",
+        "daysFull": "天",
+        "hoursFull": "小时",
+        "minutesFull": "分钟",
+        "secondsFull": "秒"
     },
     "achievements": {
         "label": "成就",
         "more": "更多",
-        "complete": "完成100％"
+        "complete": "完成 100%",
+        "enter": "进入成就",
+        "leave": "离开成就",
+        "listEnterBtn": "加入",
+        "listLeaveBtn": "离开",
+        "listProgressionBtn": "处理中...",
+        "leavePopupTitle": "离开成就",
+        "leavePopupDescription": "您确定要离开这个成就吗？",
+        "leavePopupClose": "关闭",
+        "leavePopupConfirm": "离开",
+        "progress": "进度"
     },
     "tournaments": {
-        "label": "锦标赛",
-        "enter": "参加锦标赛",
-        "readyCompetitions": "即将举行的锦标赛",
-        "activeCompetitions": "进行中锦标赛",
-        "finishedCompetitions": "已结束锦标赛",
-        "finishing": "即将完成",
-        "finished": "已完成",
+        "label": "比赛",
+        "enter": "参加比赛",
+        "processing": "处理中...",
+        "readyCompetitions": "即将开始",
+        "activeCompetitions": "进行中",
+        "finishedCompetitions": "已结束",
+        "finishing": "即将结束",
+        "finished": "已结束",
         "registered": "已注册",
-        "noAvailableCompetitions": "没有可用的竞争"
+        "noAvailableCompetitions": "没有可用的比赛",
+        "date": "日期"
     },
     "leaderboard": {
         "rank": "排名",
-        "name": "名字",
-        "points": "分数",
-        "prize": "奖",
+        "name": "名称",
+        "points": "积分",
+        "prize": "奖品",
         "you": "您"
     },
+    "brackets": {
+        "title": "比赛表",
+        "starts": "开始",
+        "ends": "结束",
+        "ended": "已结束"
+    },
     "miniLeaderboard": {
-        "highScore": "高分",
+        "highScore": "最高分",
         "lastScore": "最后得分",
         "rank": "排名",
-        "startsIn": "开始于",
-        "started": "开始了",
-        "starting": "开始",
-        "finishing": "即将完成",
-        "finished": "已完成"
+        "startsIn": "即将开始",
+        "started": "已开始",
+        "starting": "即将开始",
+        "finishing": "即将结束",
+        "finished": "已结束"
     },
     "rewards": {
         "label": "奖励",
-        "claim": "现在领取",
+        "claim": "领取",
         "claimed": "已领取",
         "availableRewards": "可用奖励",
+        "instantWins": "即时赢取",
         "rewards": "已领取奖励",
-        "expiredRewards": "过期奖励"
+        "expiredRewards": "已过期奖励",
+        "wheelLabel": "单一轮盘",
+        "scratchcardsLabel": "刮刮卡",
+        "wheelButton": "玩",
+        "scratchcardsButton": "玩",
+        "singleWheelWinLabel": "恭喜！",
+        "singleWheelWinDescription": "您赢得了",
+        "singleWheelWinButton": "领取",
+        "prizeLabel": "刮开以揭示您的奖品！",
+        "prizeButton": "刮开全部"
     },
     "messages": {
-        "label": "留言内容"
+        "label": "消息"
+    },
+    "dashboard": {
+        "label": "仪表板",
+        "instantWinsTitle": "即时赢取",
+        "achievementsTitle": "成就",
+        "tournamentsTitle": "当前比赛",
+        "upcomingTournamentsTitle": "即将开始的比赛",
+        "tournamentBtn": "查看更多",
+        "endsTitle": "结束",
+        "startsTitle": "开始",
+        "prizeTitle": "奖品",
+        "singleWheelTitle": "单一轮盘",
+        "singleWheelButton": "玩",
+        "scratchcardsTitle": "刮刮卡",
+        "scratchcardsButton": "玩",
+        "seeAll": "查看全部"
+    },
+    "missions": {
+        "label": "任务",
+        "btn": "前往",
+        "prizeLabel": "奖品",
+        "mapLabel": "任务地图"
     },
     "global": {
-        "copy": "由Ziqni提供支持"
+        "copy": "由Ziqni提供支持",
+        "descriptionLabel": "描述",
+        "tAndCLabel": "条款和条件",
+        "tAndCEmpty": "未提供条款和条件",
+        "descriptionEmpty": "未提供描述"
     }
 }

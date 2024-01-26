@@ -4,12 +4,26 @@
         "hours": "h",
         "minutesShortHand": "min",
         "minutes": "m",
-        "seconds": "s"
+        "seconds": "s",
+        "daysFull": "Zile",
+        "hoursFull": "Ore",
+        "minutesFull": "Minute",
+        "secondsFull": "secunde"
     },
     "achievements": {
         "label": "Premii",
         "more": "Mai mult",
-        "complete": "finalizează 100%"
+        "complete": "finalizează 100%",
+        "enter": "Intră în Achievement",
+        "leave": "Lasă Realizarea",
+        "listEnterBtn": "A te alatura",
+        "listLeaveBtn": "Părăsi",
+        "listProgressionBtn": "Prelucrare...",
+        "leavePopupTitle": "Lasă realizarea",
+        "leavePopupDescription": "Ești sigur că vrei să părăsești această realizare?",
+        "leavePopupClose": "Închide",
+        "leavePopupConfirm": "Părăsi",
+        "progress": "Progres"
     },
     "tournaments": {
         "label": "Concursuri",
@@ -20,7 +34,9 @@
         "finishing": "Finalizare",
         "finished": "Finalizat",
         "registered": "Înregistrat",
-        "noAvailableCompetitions": "Nu există concurs disponibil"
+        "noAvailableCompetitions": "Nu există concurs disponibil",
+        "processing": "Prelucrare...",
+        "date": "Data"
     },
     "leaderboard": {
         "rank": "Poziție",
@@ -28,6 +44,12 @@
         "points": "Puncte",
         "prize": "Premiu",
         "you": "Tu"
+    },
+    "brackets": {
+        "title": "Paranteză pentru turnee",
+        "starts": "Începe",
+        "ends": "Se termină",
+        "ended": "Încheiat"
     },
     "miniLeaderboard": {
         "highScore": "Cel mai mare scor",
@@ -45,12 +67,48 @@
         "claimed": "Revendicate",
         "availableRewards": "Recompense disponibile",
         "rewards": "Recompense revendicate",
-        "expiredRewards": "Recompense expirate"
+        "expiredRewards": "Recompense expirate",
+        "instantWins": "Câștiguri instant",
+        "wheelLabel": "Roata Unică",
+        "scratchcardsLabel": "Carduri razuibile",
+        "wheelButton": "Joaca",
+        "scratchcardsButton": "Joaca",
+        "singleWheelWinLabel": "Felicitări!",
+        "singleWheelWinDescription": "Ai castigat",
+        "singleWheelWinButton": "Revendicare",
+        "prizeLabel": "Descoperiți-vă premiul zgâriind!",
+        "prizeButton": "Zgârie totul"
     },
     "messages": {
         "label": "Mesaje"
     },
+    "dashboard": {
+        "label": "Bord",
+        "instantWinsTitle": "Câștigări instantanee",
+        "achievementsTitle": "Realizări",
+        "tournamentsTitle": "Turneele curente",
+        "upcomingTournamentsTitle": "Turnee viitoare",
+        "tournamentBtn": "Vezi mai mult",
+        "endsTitle": "Se termină",
+        "startsTitle": "Începe",
+        "prizeTitle": "Premiu",
+        "singleWheelTitle": "Roata Unică",
+        "singleWheelButton": "Joaca",
+        "scratchcardsTitle": "Carduri razuibile",
+        "scratchcardsButton": "Joaca",
+        "seeAll": "Vezi toate"
+    },
+    "missions": {
+        "label": "Misiuni",
+        "btn": "Merge",
+        "prizeLabel": "Premiu",
+        "mapLabel": "Harta misiunii"
+    },
     "global": {
-        "copy": "Elaborat de Ziqni"
+        "copy": "Elaborat de Ziqni",
+        "descriptionLabel": "Descriere",
+        "tAndCLabel": "termeni si conditii",
+        "tAndCEmpty": "Nu sunt furnizați Termeni și Condiții",
+        "descriptionEmpty": "Nu sunt furnizate descrieri"
     }
 }

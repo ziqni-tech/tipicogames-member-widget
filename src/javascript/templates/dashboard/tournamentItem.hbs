@@ -1,0 +1,41 @@
+<div class="dashboard-tournament-list-bg" style="background-image: url({{ itemBg }})">
+  <div class="dashboard-tournament-list-bg-blur">
+    <img src="{{ itemBg }}" alt="" class="dashboard-tournament-list-bg-img">
+  </div>
+</div>
+<div class="dashboard-tournament-list-info">
+  <div class="dashboard-tournament-list-cont">
+    <div class="dashboard-tournament-list-icon" style="background-image: url({{ icon }})"></div>
+    <div class="dashboard-tournament-list-details-wrap">
+      <div class="dashboard-tournament-list-details-expires">{{ endsLabel }} <span class="dashboard-tournament-list-details-expires-timer"></span></div>
+      <div class="dashboard-tournament-list-details-label">{{ title }}</div>
+    </div>
+  </div>
+  <div class="dashboard-tournament-list-details-reward">
+    <svg width="40" height="41" viewBox="0 0 40 41" fill="none" xmlns="http://www.w3.org/2000/svg" class="dashboard-tournament-list-details-reward-img">
+      <path fill-rule="evenodd" clip-rule="evenodd" d="M11.2023 8H29.631L37.0833 15.4523L20.4167 32.119L3.75
+    15.4523L11.2023 8ZM18.5199 9.57135H12.6178L14.0934 13.9979L18.5199 9.57135ZM12.6599 14.6667L11.1844 10.2401L6.7579
+    14.6667H12.6599ZM6.7579 16.238H13.2319L18.0875 27.5676L6.7579 16.238ZM22.7459 27.5676L34.0754 16.238H27.6014L22.7459
+    27.5676ZM28.1734 14.6667H34.0754L29.6489 10.2401L28.1734 14.6667ZM28.2155 9.57135H22.3135L26.74 13.9979L28.2155
+    9.57135ZM25.1865 14.6667H15.6468L20.4167 9.89679L25.1865 14.6667ZM14.9415 16.238H25.8918L20.4167 29.0134L14.9415
+    16.238Z" fill="white"></path>
+    </svg>
+    <div class="dashboard-tournament-list-details-reward-first">1</div>
+    <div class="dashboard-tournament-list-details-reward-title">{{ rewardName }}</div>
+  </div>
+  <div class="dashboard-tournament-list-details-data">
+    <div class="dashboard-tournament-list-details-position">
+      <div class="dashboard-tournament-list-details-position-value">4</div>
+      <div class="dashboard-tournament-list-details-position-label">Position</div>
+    </div>
+    <div class="dashboard-tournament-list-details-left">
+      <div class="dashboard-tournament-list-details-left-value">134</div>
+      <div class="dashboard-tournament-list-details-left-label">Spins left</div>
+    </div>
+    <div class="dashboard-tournament-list-details-points">
+      <div class="dashboard-tournament-list-details-points-value">2340</div>
+      <div class="dashboard-tournament-list-details-points-label">Points</div>
+    </div>
+  </div>
+  <div class="dashboard-tournament-list-btn">{{ playTournamentLabel }}</div>
+</div>

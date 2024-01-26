@@ -4,15 +4,29 @@
         "hours": "jam",
         "minutesShortHand": "mnt",
         "minutes": "menit",
-        "seconds": "detik"
+        "seconds": "detik",
+        "daysFull": "Hari",
+        "hoursFull": "Jam",
+        "minutesFull": "Menit",
+        "secondsFull": "Detik"
     },
     "achievements": {
         "label": "prestasi",
         "more": "selengkapnya",
-        "complete": "selesaikan 100%"
+        "complete": "selesaikan 100%",
+        "enter": "Masukkan Prestasi",
+        "leave": "Tinggalkan Prestasi",
+        "listEnterBtn": "Bergabung",
+        "listLeaveBtn": "Meninggalkan",
+        "listProgressionBtn": "Pengolahan...",
+        "leavePopupTitle": "Tinggalkan prestasi itu",
+        "leavePopupDescription": "Apakah Anda yakin ingin meninggalkan pencapaian ini?",
+        "leavePopupClose": "Menutup",
+        "leavePopupConfirm": "Meninggalkan",
+        "progress": "Kemajuan"
     },
     "tournaments": {
-		"label":"turnamen",
+        "label":"turnamen",
         "enter": "Masuki turnamen",
         "readyCompetitions": "Turnamen Mendatang",
         "activeCompetitions": "Turnamen Aktif",
@@ -20,7 +34,9 @@
         "finishing": "Terakhir",
         "finished": "Selesai",
         "registered": "Terdaftar",
-        "noAvailableCompetitions": "Tidak ada kompetisi"
+        "noAvailableCompetitions": "Tidak ada kompetisi",
+        "processing": "Pengolahan...",
+        "date": "Tanggal"
     },
     "leaderboard": {
         "rank": "peringkat",
@@ -28,6 +44,12 @@
         "points": "poin",
         "prize": "hadiah",
         "you": "Anda"
+    },
+    "brackets": {
+        "title": "Braket turnamen",
+        "starts": "Dimulai",
+        "ends": "Berakhir",
+        "ended": "Berakhir"
     },
     "miniLeaderboard": {
         "highScore": "Skor Tinggi",
@@ -45,12 +67,48 @@
         "claimed": "Diklaim",
         "availableRewards": "Imbalan Tersedia",
         "rewards": "Imbalan Diklaim",
-        "expiredRewards": "Imbalan Kedaluwarsa"
+        "expiredRewards": "Imbalan Kedaluwarsa",
+        "instantWins": "Kemenangan Instan",
+        "wheelLabel": "Roda Tunggal",
+        "scratchcardsLabel": "Kartu awal",
+        "wheelButton": "Bermain",
+        "scratchcardsButton": "Bermain",
+        "singleWheelWinLabel": "Selamat!",
+        "singleWheelWinDescription": "Anda menang",
+        "singleWheelWinButton": "Mengeklaim",
+        "prizeLabel": "Temukan hadiah Anda dengan menggaruknya!",
+        "prizeButton": "Gores semuanya"
     },
     "messages": {
         "label": "Pesan"
     },
+    "dashboard": {
+        "label": "Dasbor",
+        "instantWinsTitle": "Kemenangan instan",
+        "achievementsTitle": "Prestasi",
+        "tournamentsTitle": "Turnamen Saat Ini",
+        "upcomingTournamentsTitle": "Turnamen Mendatang",
+        "tournamentBtn": "Lihat selengkapnya",
+        "endsTitle": "Berakhir",
+        "startsTitle": "Dimulai",
+        "prizeTitle": "Hadiah",
+        "singleWheelTitle": "Roda Tunggal",
+        "singleWheelButton": "Bermain",
+        "scratchcardsTitle": "Kartu awal",
+        "scratchcardsButton": "Bermain",
+        "seeAll": "Lihat semua"
+    },
+    "missions": {
+        "label": "Misi",
+        "btn": "Pergi",
+        "prizeLabel": "Hadiah",
+        "mapLabel": "Peta misi"
+    },
     "global": {
-        "copy": "Didukung oleh Ziqni"
+        "copy": "Didukung oleh Ziqni",
+        "descriptionLabel": "Keterangan",
+        "tAndCLabel": "Syarat & Ketentuan",
+        "tAndCEmpty": "Tidak ada Syarat dan Ketentuan yang disediakan",
+        "descriptionEmpty": "Tidak ada Deskripsi yang disediakan"
     }
 }

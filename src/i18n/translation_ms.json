@@ -1,0 +1,114 @@
+{
+    "time": {
+        "days": "hari",
+        "hours": "jam",
+        "minutesShortHand": "min",
+        "minutes": "minit",
+        "seconds": "saat",
+        "daysFull": "hari-hari",
+        "hoursFull": "Jam",
+        "minutesFull": "minit",
+        "secondsFull": "Detik"
+    },
+    "achievements": {
+        "label": "pencapaian",
+        "more": "lagi",
+        "complete": "lengkap 100%",
+        "enter": "Masukkan Pencapaian",
+        "leave": "Pencapaian Cuti",
+        "listEnterBtn": "Sertai",
+        "listLeaveBtn": "cuti",
+        "listProgressionBtn": "Memproses...",
+        "leavePopupTitle": "Tinggalkan pencapaian",
+        "leavePopupDescription": "Adakah anda pasti mahu meninggalkan pencapaian ini?",
+        "leavePopupClose": "tutup",
+        "leavePopupConfirm": "cuti",
+        "progress": "Kemajuan"
+    },
+    "tournaments": {
+        "label":"pertandingan",
+        "enter": "pertandingan",
+        "readyCompetitions": "Pertandingan Akan Datang",
+        "activeCompetitions": "Pertandingan Aktif",
+        "finishedCompetitions": "Pertandingan Selesai",
+        "finishing": "Akan Tamat",
+        "finished": "Tamat",
+        "registered": "Didaftar",
+        "noAvailableCompetitions": "Tiada pertandingan tersedia",
+        "processing": "Memproses...",
+        "date": "Tarikh"
+    },
+    "leaderboard": {
+        "rank": "kedudukan",
+        "name": "nama",
+        "points": "mata",
+        "prize": "hadiah",
+        "you": "Anda"
+    },
+    "brackets": {
+        "title": "Kurungan kejohanan",
+        "starts": "Bermula",
+        "ends": "tamat",
+        "ended": "Berakhir"
+    },
+    "miniLeaderboard": {
+        "highScore": "Skor Tinggi",
+        "lastScore": "Skor Terakhir",
+        "rank": "Kedudukan",
+        "startsIn": "Bermula dalam",
+        "started": "bermula",
+        "starting": "Bermula",
+        "finishing": "akan tamat",
+        "finished": "tamat"
+    },
+    "rewards": {
+        "label": "Ganjaran",
+        "claim": "Tuntut Sekarang",
+        "claimed": "Dituntut",
+        "availableRewards": "Ganjaran Tersedia",
+        "rewards": "Ganjaran Yang Dituntut",
+        "expiredRewards": "Ganjaran Luput",
+        "instantWins": "Kemenangan Segera",
+        "wheelLabel": "Roda Tunggal",
+        "scratchcardsLabel": "Kad conteng",
+        "wheelButton": "Main",
+        "scratchcardsButton": "Main",
+        "singleWheelWinLabel": "tahniah!",
+        "singleWheelWinDescription": "Anda telah menang",
+        "singleWheelWinButton": "Tuntutan",
+        "prizeLabel": "Temui hadiah anda dengan mencakar!",
+        "prizeButton": "Gores semua"
+    },
+    "messages": {
+        "label": "Mesej"
+    },
+    "dashboard": {
+        "label": "Papan pemuka",
+        "instantWinsTitle": "Kemenangan segera",
+        "achievementsTitle": "Pencapaian",
+        "tournamentsTitle": "Kejohanan Semasa",
+        "upcomingTournamentsTitle": "Kejohanan Akan Datang",
+        "tournamentBtn": "Lihat lagi",
+        "endsTitle": "tamat",
+        "startsTitle": "Bermula",
+        "prizeTitle": "Hadiah",
+        "singleWheelTitle": "Roda Tunggal",
+        "singleWheelButton": "Main",
+        "scratchcardsTitle": "Kad conteng",
+        "scratchcardsButton": "Main",
+        "seeAll": "Lihat semua"
+    },
+    "missions": {
+        "label": "Misi",
+        "btn": "Pergi",
+        "prizeLabel": "Hadiah",
+        "mapLabel": "Peta misi"
+    },
+    "global": {
+        "copy": "Dikuasakan oleh Ziqni",
+        "descriptionLabel": "Penerangan",
+        "tAndCLabel": "Terma & Syarat",
+        "tAndCEmpty": "Tiada Terma dan Syarat disediakan",
+        "descriptionEmpty": "Tiada Penerangan disediakan"
+    }
+}

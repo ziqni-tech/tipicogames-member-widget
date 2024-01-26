@@ -1,0 +1,12 @@
+<div class="cl-rank-col cl-col cl-rank-{{ rank }}">
+  <div class="cl-rank-col-value">{{ rank }}</div>
+</div>
+<div class="cl-icon-col cl-col">
+  <div class="cl-icon-col-img">{{ icon }}</div>
+</div>
+<div class="cl-name-col cl-col">{{ name }}</div>
+<div class="cl-growth-col cl-col" data-growth="{{ datasetGrowth }}" data-change="{{ datasetChange }}">
+  <span class="cl-growth-icon cl-growth-same"></span>
+</div>
+<div class="cl-points-col cl-col">--</div>
+<div class="cl-reward-col cl-col {{#if rewardEnabled}} {{ rewardEnabledClass }} {{/if}}">{{ rewardValue }}</div>

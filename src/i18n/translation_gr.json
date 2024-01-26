@@ -4,23 +4,39 @@
         "hours": "ώρες",
         "minutesShortHand": "λεπ",
         "minutes": "λεπτά",
-        "seconds": "δευτερόλεπτα"
+        "seconds": "δευτερόλεπτα",
+        "daysFull": "Ημέρες",
+        "hoursFull": "Ωρες",
+        "minutesFull": "Λεπτά",
+        "secondsFull": "Δευτερόλεπτα"
     },
     "achievements": {
         "label": "επιτεύγματα",
         "more": "περισσότερα",
-        "complete": "ολοκλήρωση 100%"
+        "complete": "ολοκλήρωση 100%",
+        "enter": "Εισαγάγετε το επίτευγμα",
+        "leave": "Αφήστε το επίτευγμα",
+        "listEnterBtn": "Συμμετοχή",
+        "listLeaveBtn": "Αδεια",
+        "listProgressionBtn": "Επεξεργασία...",
+        "leavePopupTitle": "Αφήστε το επίτευγμα",
+        "leavePopupDescription": "Είστε βέβαιοι ότι θέλετε να αποχωρήσετε από αυτό το επίτευγμα;",
+        "leavePopupClose": "Κλείσε",
+        "leavePopupConfirm": "Αδεια",
+        "progress": "Πρόοδος"
     },
     "tournaments": {
 		"label":"τουρνουά",
         "enter": "Είσοδος σε τουρνουά",
+        "processing": "Επεξεργασία...",
         "readyCompetitions": "Επερχόμενα Τουρνουά",
         "activeCompetitions": "Ενεργά Τουρνουά",
         "finishedCompetitions": "Συμπληρωμένα Τουρνουά",
         "finishing": "Ολοκληρώνονται",
         "finished": "Ολοκληρώθηκαν",
         "registered": "Εγγεγραμμένοι",
-        "noAvailableCompetitions": "Μη διαθέσιμος διαγωνισμός"
+        "noAvailableCompetitions": "Μη διαθέσιμος διαγωνισμός",
+        "date": "Ημερομηνία"
     },
     "leaderboard": {
         "rank": "θέση",
@@ -28,6 +44,12 @@
         "points": "βαθμοί",
         "prize": "έπαθλο",
         "you": "Εσείς"
+    },
+    "brackets": {
+        "title": "Βραχίονας τουρνουά",
+        "starts": "Ξεκινά",
+        "ends": "Τελειώνει",
+        "ended": "Τελείωσε"
     },
     "miniLeaderboard": {
         "highScore": "Υψηλότερο Σκορ",
@@ -45,12 +67,48 @@
         "claimed": "Διεκδικήθηκαν",
         "availableRewards": "Διαθέσιμα Βραβεία",
         "rewards": "Βραβεία που διεκδικήθηκαν",
-        "expiredRewards": "Βραβεία που έληξαν"
+        "expiredRewards": "Βραβεία που έληξαν",
+        "instantWins": "Άμεσες νίκες",
+        "wheelLabel": "Ο Μονός Τροχός",
+        "scratchcardsLabel": "Ξυστά",
+        "wheelButton": "Παίζω",
+        "scratchcardsButton": "Παίζω",
+        "singleWheelWinLabel": "Συγχαρητήρια!",
+        "singleWheelWinDescription": "Κέρδισες",
+        "singleWheelWinButton": "Απαίτηση",
+        "prizeLabel": "Αποκαλύψτε το βραβείο σας με το ξύσιμο!",
+        "prizeButton": "Ξύστε όλα"
     },
     "messages": {
         "label": "Μηνύματα"
     },
+    "dashboard": {
+        "label": "Ταμπλό",
+        "instantWinsTitle": "Άμεσες νίκες",
+        "achievementsTitle": "Επιτεύγματα",
+        "tournamentsTitle": "Τρέχοντα τουρνουά",
+        "upcomingTournamentsTitle": "Προσεχή Τουρνουά",
+        "tournamentBtn": "Δείτε περισσότερα",
+        "endsTitle": "Τελειώνει",
+        "startsTitle": "Ξεκινά",
+        "prizeTitle": "Βραβείο",
+        "singleWheelTitle": "Ο Μονός Τροχός",
+        "singleWheelButton": "Παίζω",
+        "scratchcardsTitle": "Ξυστά",
+        "scratchcardsButton": "Παίζω",
+        "seeAll": "Προβολή όλων"
+    },
+    "missions": {
+        "label": "Αποστολές",
+        "btn": "Πηγαίνω",
+        "prizeLabel": "Βραβείο",
+        "mapLabel": "Χάρτης αποστολής"
+    },
     "global": {
-        "copy": "Με τη δύναμη της Ziqni"
+        "copy": "Με τη δύναμη της Ziqni",
+        "descriptionLabel": "Περιγραφή",
+        "tAndCLabel": "όροι και Προϋποθέσεις",
+        "tAndCEmpty": "Δεν παρέχονται Όροι και Προϋποθέσεις",
+        "descriptionEmpty": "Δεν παρέχονται περιγραφές"
     }
 }
