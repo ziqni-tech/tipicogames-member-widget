@@ -321,6 +321,20 @@ export const LbWidget = function (options) {
     return (largeResult.length > 0) ? (largeResult.join(' ') + ' ' + result.join(':')) : result.join(':');
   };
 
+  this.formatAwardDateTime = function (duration) {
+    const days = formatNumberLeadingZeros(duration.days(), 2);
+    const hours = formatNumberLeadingZeros(duration.hours(), 2);
+    const minutes = formatNumberLeadingZeros(duration.minutes(), 2);
+    const seconds = formatNumberLeadingZeros(duration.seconds(), 2);
+
+    const daysElem = days + this.settings.translation.time.days;
+    const hoursElem = hours + this.settings.translation.time.hours;
+    const minutesElem = minutes + this.settings.translation.time.minutes;
+    const secondsElem = seconds + this.settings.translation.time.seconds;
+
+    return daysElem + ' ' + hoursElem + ' ' + minutesElem + ' ' + secondsElem;
+  };
+
   this.formatBannerDateTime = function (duration) {
     const months = formatNumberLeadingZeros(duration.months(), 2);
     const days = formatNumberLeadingZeros(duration.days(), 2);

@@ -25,7 +25,8 @@
         "leavePopupDescription": "Are you sure you want to leave this achievement?",
         "leavePopupClose": "Close",
         "leavePopupConfirm": "Leave",
-        "progress": "Progress"
+        "progress": "Progress",
+        "endsLabel": "Ends IN"
     },
     "tournaments": {
         "label": "Tournaments",
@@ -101,7 +102,8 @@
         "singleWheelButton": "Play",
         "scratchcardsTitle": "Scratchcards",
         "scratchcardsButton": "Play",
-        "seeAll": "View all"
+        "seeAll": "View all",
+        "playTournamentLabel": "Play Tournament"
     },
     "missions": {
         "label": "Missions",

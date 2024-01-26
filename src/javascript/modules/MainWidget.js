@@ -44,11 +44,13 @@ export const MainWidget = function (options) {
     },
     achievement: {
       container: null,
-      detailsContainer: null
+      detailsContainer: null,
+      achievement: null
     },
     reward: {
       container: null,
-      detailsContainer: null
+      detailsContainer: null,
+      timerInterval: null
     },
     leaderboard: {
       defaultEmptyList: 20,
@@ -411,6 +413,7 @@ export const MainWidget = function (options) {
     const navigationItems = document.createElement('div');
 
     const mainSectionContainer = document.createElement('div');
+    const home = document.createElement('div');
 
     const preLoaderContainer = document.createElement('div');
     const preLoaderContent = document.createElement('div');
@@ -445,6 +448,8 @@ export const MainWidget = function (options) {
 
     mainSectionContainer.setAttribute('class', 'cl-main-widget-section-container' + (_this.settings.lbWidget.settings.showCopyright ? '' : ' cl-hidden-copyright'));
 
+    home.setAttribute('class', 'cl-main-widget-home');
+
     preLoaderContainer.setAttribute('class', 'cl-main-widget-pre-loader');
     preLoaderContent.setAttribute('class', 'cl-main-widget-pre-loader-content');
     preLoaderBar1.setAttribute('class', 'cl-pre-loader-bar');
@@ -464,6 +469,7 @@ export const MainWidget = function (options) {
     mainSectionContainer.appendChild(sectionDashboard);
     mainSectionContainer.appendChild(preLoaderContainer);
     mainSectionContainer.appendChild(landscapeClose);
+    mainSectionContainer.appendChild(home);
 
     // innerWrapper.appendChild(navigationContainer);
     innerWrapper.appendChild(mainSectionContainer);
@@ -1950,31 +1956,16 @@ export const MainWidget = function (options) {
     listItem.setAttribute('class', 'cl-ach-list-item cl-ach-' + ach.id);
     listItem.dataset.id = ach.id;
 
-    let isMore = false;
-    let isEnter = false;
-    let isLeave = false;
-    let isProgress = false;
-
-    if (Array.isArray(ach.constraints) && ach.constraints.includes('optinRequiredForEntrants')) {
-      if (ach.optInStatus && ach.optInStatus >= 15 && ach.optInStatus <= 35) {
-        isLeave = true;
-      } else if (!isNaN(ach.optInStatus) && (ach.optInStatus === 10 || ach.optInStatus === 0)) {
-        isProgress = true;
-      } else {
-        isEnter = true;
-      }
-    } else {
-      isMore = true;
-    }
-
     let bgImage = '';
     if (ach.iconLink) {
       bgImage = 'background-image: url(' + ach.iconLink + ')';
     }
 
     let rewardValue = '';
+    let rewardName = '';
     if (ach.reward) {
       rewardValue = this.settings.lbWidget.settings.partialFunctions.rewardFormatter(ach.reward);
+      rewardName = ach.reward.name;
     }
 
     const template = require('../templates/mainWidget/achievementItem.hbs');
@@ -1983,14 +1974,8 @@ export const MainWidget = function (options) {
       title: ach.name,
       bgImage: bgImage,
       rewardValue: rewardValue,
-      moreLabel: this.settings.lbWidget.settings.translation.achievements.more,
-      enterLabel: this.settings.lbWidget.settings.translation.achievements.listEnterBtn,
-      leaveLabel: this.settings.lbWidget.settings.translation.achievements.listLeaveBtn,
-      progressLabel: this.settings.lbWidget.settings.translation.achievements.listProgressionBtn,
-      isMore: isMore,
-      isEnter: isEnter,
-      isLeave: isLeave,
-      isProgress: isProgress
+      endsLabel: this.settings.lbWidget.settings.translation.achievements.endsLabel,
+      rewardName: rewardName
     });
 
     return listItem;
@@ -2435,14 +2420,13 @@ export const MainWidget = function (options) {
       endsValue: date.toLocaleString('en-GB', { timeZone: 'UTC', dateStyle: 'short', timeStyle: 'short' }),
       prizeLabel: this.settings.lbWidget.settings.translation.dashboard.prizeTitle,
       prizeValue: rewardValue,
-      seeMoreLabel: this.settings.lbWidget.settings.translation.dashboard.tournamentBtn
+      playTournamentLabel: this.settings.lbWidget.settings.translation.dashboard.playTournamentLabel
     });
 
     return listItem;
   };
 
   this.dashboardAwardItem = function (award) {
-    console.log('award:', award);
     const listItem = document.createElement('div');
     listItem.setAttribute('class', 'dashboard-rewards-list-item');
     listItem.setAttribute('data-id', award.id);
@@ -2452,17 +2436,31 @@ export const MainWidget = function (options) {
     const template = require('../templates/dashboard/awardItem.hbs');
     listItem.innerHTML = template({
       rewardValue: award.rewardValue,
-      rewardType: award.rewardType.uom ?? '',
+      rewardType: award.rewardType.key ?? '',
       expiresInLabel: this.settings.lbWidget.settings.translation.rewards.expiresInLabel,
-      rewardImg: rewardImg
+      rewardImg: rewardImg,
+      isPeriod: !!award.period
     });
 
     return listItem;
   };
 
+  this.dashboardAwardItemEmpty = function (award) {
+    const listItem = document.createElement('div');
+    listItem.setAttribute('class', 'dashboard-rewards-list-item-empty');
+
+    const template = require('../templates/dashboard/awardItemEmpty.hbs');
+    listItem.innerHTML = template({});
+
+    return listItem;
+  };
+
   this.loadDashboardAwards = async function (claimedAwards = [], availableAwards = [], expiredAwards = []) {
+    const _this = this;
     const awardsList = query(this.settings.section, '.cl-main-widget-dashboard-rewards-list');
     awardsList.innerHTML = '';
+
+    availableAwards = availableAwards.filter(a => a.rewardData);
 
     if (availableAwards.length) {
       availableAwards = availableAwards.slice(0, 5);
@@ -2470,7 +2468,38 @@ export const MainWidget = function (options) {
         const listItem = this.dashboardAwardItem(a);
         awardsList.appendChild(listItem);
       });
+    } else {
+      const listItem = this.dashboardAwardItemEmpty();
+      awardsList.appendChild(listItem);
     }
+
+    setTimeout(function () {
+      _this.updateDashboardRewardExpirationTime();
+    }, 1000);
+  };
+
+  this.updateDashboardRewardExpirationTime = function () {
+    const _this = this;
+
+    if (_this.settings.reward.timerInterval) {
+      clearTimeout(_this.settings.reward.timerInterval);
+    }
+
+    this.settings.lbWidget.settings.awards.availableAwards.forEach(award => {
+      if (award.period) {
+        const diff = moment(award.created).add(award.period, 'm').diff(moment());
+        const date = _this.settings.lbWidget.formatAwardDateTime(moment.duration(diff));
+        const el = document.querySelector(`.dashboard-rewards-list-item[data-id="${award.id}"]`);
+        if (!el) return;
+        const dateEl = el.querySelector('.dashboard-rewards-list-item-expires-value');
+        if (!dateEl) return;
+        dateEl.innerHTML = date;
+      }
+    });
+
+    this.settings.reward.timerInterval = setTimeout(function () {
+      _this.updateDashboardRewardExpirationTime();
+    }, 1000);
   };
 
   this.loadDashboardTournaments = async function () {
@@ -2531,9 +2560,37 @@ export const MainWidget = function (options) {
       _this.updateAchievementProgressionAndIssued(issued, progression);
     });
 
+    setTimeout(function () {
+      _this.updateDashboardAchievementExpirationTime();
+    }, 1000);
+
     if (typeof callback === 'function') {
       callback();
     }
+  };
+
+  this.updateDashboardAchievementExpirationTime = function () {
+    const _this = this;
+
+    if (_this.settings.achievement.timerInterval) {
+      clearTimeout(_this.settings.achievement.timerInterval);
+    }
+
+    this.settings.lbWidget.settings.achievements.list.forEach(ach => {
+      if (ach.scheduling.endDate) {
+        const diff = moment(ach.scheduling.endDate).diff(moment());
+        const date = _this.settings.lbWidget.formatAwardDateTime(moment.duration(diff));
+        const el = document.querySelector(`.cl-ach-list-item[data-id="${ach.id}"]`);
+        if (!el) return;
+        const dateEl = el.querySelector('.cl-ach-list-details-expires-timer');
+        if (!dateEl) return;
+        dateEl.innerHTML = date;
+      }
+    });
+
+    this.settings.achievement.timerInterval = setTimeout(function () {
+      _this.updateDashboardAchievementExpirationTime();
+    }, 1000);
   };
 
   this.rewardItem = function (rew) {
@@ -2553,7 +2610,7 @@ export const MainWidget = function (options) {
     listItem.innerHTML = template({
       isClimeBtn: isClimeBtn,
       claimBtnLabel: this.settings.lbWidget.settings.translation.rewards.claim,
-      prize: this.settings.lbWidget.settings.partialFunctions.rewardFormatter(rew.rewardData),
+      prize: rew.rewardData ? this.settings.lbWidget.settings.partialFunctions.rewardFormatter(rew.rewardData) : '',
       type: rew.rewardType.key,
       label: (labelText.length > 80) ? (labelText.substr(0, 80) + '...') : labelText,
       iconLink: iconLink

@@ -1458,6 +1458,17 @@
   padding: 0 0 0 0;
 }
 
+.cl-main-widget-wrapper .cl-main-widget-home {
+  position: absolute;
+  bottom: 8px;
+  border-radius: 100px;
+  background: #FFF;
+  width: 134px;
+  height: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-section-dashboard {
   display: none;
   position: relative;
@@ -1725,23 +1736,17 @@
   border-radius: 8px;
   overflow: hidden;
   position: relative;
-  margin-bottom: 20px;
   cursor: pointer;
   margin-right: 8px;
 }
 
-.cl-main-widget-wrapper .cl-main-widget-section-container .dashboard-tournament-item:nth-child(1) .dashboard-tournament-list-bg {
-  height: 124px;
-  background: url(../../images/dashboard-tur-1.svg) no-repeat;
+.cl-main-widget-wrapper .cl-main-widget-section-container .dashboard-tournament-list-bg {
+  height: 132px;
   background-size: cover;
-  margin-bottom: 10px;
 }
 
-.cl-main-widget-wrapper .cl-main-widget-section-container .dashboard-tournament-item:nth-child(2) .dashboard-tournament-list-bg {
-  height: 124px;
-  background: url(../../images/dashboard-tur-2.svg) no-repeat;
-  background-size: cover;
-  margin-bottom: 10px;
+.cl-main-widget-wrapper .cl-main-widget-section-container .dashboard-tournament-list-info {
+  padding: 16px;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .dashboard-tournament-list-title {
@@ -1765,18 +1770,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 36px;
-  background: #ee3ec8;
-  border-radius: 10px;
-  color: #fff;
-  font-weight: 700;
+  height: 40px;
+  border-radius: 8px;
+  background: #ffffff;
+  color: var(--Primary-Dark);
+  margin-top: 16px;
   font-size: 14px;
-  line-height: 14px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  cursor: pointer;
-  margin:  10px;
+  font-weight: 600;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .dashboard-tournament-list-ends-wrapp,
@@ -1933,12 +1933,52 @@
   background-size: contain;
 }
 
+.dashboard-rewards-list-item-empty {
+  display: flex;
+  padding: 16px;
+  margin-right: 16px;
+  border-radius: 8px;
+  border: 1px dashed rgba(255, 255, 255, 0.20);
+}
+
+.dashboard-rewards-list-item-empty-img {
+  display: flex;
+  align-items: center;
+  width: 40px;
+  flex-shrink: 0;
+}
+
+.dashboard-rewards-list-item-empty-info {
+  padding-left: 16px;
+}
+
+.dashboard-rewards-list-item-empty-title {
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 21px;
+}
+
+.dashboard-rewards-list-item-empty-description {
+  color: var(--ui-color-text-secondary);
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 18px;
+  padding-top: 8px;
+}
+
+.dashboard-rewards-list-item-empty-description a {
+  color: var(--ui-color-primary);
+  text-decoration: underline;
+}
+
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-achievements-list .cl-ach-list-item {
   display: flex;
   flex-shrink: 0;
   flex-direction: column;
   width: 288px;
-  height: 164px;
+  height: 194px;
   background: var(--card-active);
   border-radius: 8px;
   padding: 16px;
@@ -1951,86 +1991,51 @@
   position: relative;
   z-index: 1;
   padding-bottom: 14px;
-  border-bottom: solid 1px #223241;
   cursor: pointer;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-achievements-list .cl-ach-list-icon {
   flex-shrink: 0;
-  width: 74px;
-  height: 74px;
+  width: 40px;
+  height: 40px;
   position: relative;
   background-image: $lb3-achievements-default-icon;
   background-repeat: no-repeat;
   background-position: 50% 50%;
-  background-size: 40px;
-}
-
-.cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-achievements-list .cl-ach-list-icon::before {
-  content: '';
-  display: block;
-  width: 74px;
-  height: 74px;
-  background: radial-gradient(50% 50% at 50% 50%, #38ACCF 0%, rgba(56, 172, 207, 0) 100%);
-  opacity: 0.4;
-  filter: blur(12.5px);
-  border-radius: 50%;
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
-.cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-achievements-list .cl-ach-list-icon::after {
-  content: '';
-  display: block;
-  width: 74px;
-  height: 37px;
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  background: $lb3-achievements-default-icon-border no-repeat;
+  background-size: 40px 40px;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-achievements-list .cl-ach-list-actions {
   display: flex;
-  padding-top: 14px;
-  justify-content: space-between;
+  flex-direction: column;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-achievements-list .cl-ach-list-actions-reward {
-  display: inline-block;
-  text-align: left;
-  width: 100px;
-  height: 36px;
-  padding-left: 28px;
-  padding-right: 12px;
-  background: #0f1921;
-  border-radius: 10px;
-  color: var(--lb3-rewards-item-label-color);
-  font-weight: 700;
-  font-size: 14px;
-  line-height: 36px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  position: relative;
+  display: flex;
+  align-items: center;
+  height: 48px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  background: var(--widget-bg-blue);
 }
 
-.cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-achievements-list .cl-ach-list-actions-reward::before {
-  content: "";
-  display: block;
-  width: 12px;
-  height: 12px;
-  position: absolute;
-  left: 9px;
-  top: 11px;
-  background: url(../../images/award-icon.svg) no-repeat center;
-  background-size: contain;
+.cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-achievements-list .cl-ach-list-actions-reward-img {
+  width: 24px;
+  margin-right: 12px;
+}
+
+.cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-achievements-list .cl-ach-list-actions-reward-title {
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 21px;
+  padding-left: 12px;
+  border-left: solid 1px rgba(255, 255, 255, 0.08);
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-achievements-list .cl-ach-list-details-wrap {
   width: 100%;
-  padding-left: 24px;
+  padding-left: 12px;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-achievements-list .cl-ach-list-more {
@@ -2080,36 +2085,59 @@
   line-height: 16px;
 }
 
+.cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-achievements-list .cl-ach-list-details-expires {
+  color: var(--ui-color-text-secondary);
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 12px;
+  text-transform: uppercase;
+}
+
+.cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-achievements-list .cl-ach-list-details-expires-timer {
+  color: var(--ui-color-error);
+}
+
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-achievements-list .cl-ach-list-details-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   width: 100%;
-  max-width: 204px;
-  color: var(--lb3-achievements-item-label-color);
+  max-width: 168px;
+  height: 42px;
+  color: #ffffff;
   font-style: normal;
-  font-weight: 700;
+  font-weight: 600;
   font-size: 14px;
-  line-height: 14px;
-  padding-top: 9px;
-  padding-bottom: 14px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  line-height: 21px;
+  white-space-collapse: break-spaces;
+}
+
+.cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-achievements-list .cl-ach-list-details-label::after {
+  content: '';
+  display: block;
+  width: 24px;
+  height: 24px;
+  background: url(../../images/arrow-right-white.svg) no-repeat center;
+  background-size: contain;
+  margin-right: -36px;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-achievements-list .cl-ach-list-progression {
   display: flex;
+  height: 40px;
+  padding: 8px 16px;
+  margin-top: 8px;
   align-items: center;
-  justify-content: flex-end;
-  width: 100%;
-  position: relative;
+  border-radius: 8px;
+  background: var(--widget-bg-blue);
   z-index: 1;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-achievements-list .cl-ach-list-progression-cont {
-  width: 100%;
-  background: var(--lb3-achievements-progress-bg-color);
-  height: 4px;
-  border-radius: 5px;
-  background: #223241;
+  width: 172px;
+  height: 6px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.16);
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-achievements-list .cl-ach-list-progression-label {
@@ -2125,15 +2153,10 @@
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-achievements-list .cl-ach-list-progression-bar {
   float: left;
   width: 0;
-  height: 4px;
-  background: linear-gradient(90deg, #406A8C 0%, #739DBF 100%);
-  border-radius: 5px;
+  height: 6px;
+  background: var(--ui-color-primary);
+  border-radius: 99px;
   transition: all 0.3s ease;
-  font-size: 10px;
-  line-height: 12px;
-  text-align: right;
-  color: var(--lb3-achievements-progress-text-color);
-  text-transform: uppercase;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-achievements-list .cl-ach-list-progression-bar.cl-ach-complete {
@@ -4085,34 +4108,10 @@
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-section-ach .cl-ach-list-actions-reward {
-  display: inline-block;
-  text-align: left;
-  width: 100px;
-  height: 36px;
-  padding-left: 28px;
-  padding-right: 12px;
-  background: #0f1921;
-  border-radius: 10px;
-  color: var(--lb3-rewards-item-label-color);
-  font-weight: 700;
-  font-size: 14px;
-  line-height: 36px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  position: relative;
-}
-
-.cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-section-ach .cl-ach-list-actions-reward::before {
-  content: "";
-  display: block;
-  width: 12px;
-  height: 12px;
-  position: absolute;
-  left: 9px;
-  top: 11px;
-  background: url(../../images/award-icon.svg) no-repeat center;
-  background-size: contain;
+  display: flex;
+  padding: 12px 16px;
+  border-radius: 8px;
+  background: var(--widget-bg-blue);
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-section-ach .cl-ach-list-details-wrap {
