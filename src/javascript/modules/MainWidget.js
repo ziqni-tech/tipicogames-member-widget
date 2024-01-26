@@ -52,6 +52,9 @@ export const MainWidget = function (options) {
       detailsContainer: null,
       timerInterval: null
     },
+    tournament: {
+      timerInterval: null
+    },
     leaderboard: {
       defaultEmptyList: 20,
       topResultSize: 3,
@@ -2371,6 +2374,7 @@ export const MainWidget = function (options) {
     listItem.setAttribute('data-id', tournament.id);
 
     let rewardValue = '';
+    let rewardName = '';
 
     if (tournament.rewards && tournament.rewards.length) {
       const idx = tournament.rewards.findIndex(reward => {
@@ -2395,15 +2399,16 @@ export const MainWidget = function (options) {
       });
 
       if (idx !== -1) {
+        rewardName = tournament.rewards[idx].name;
         rewardValue = this.settings.lbWidget.settings.partialFunctions.rewardFormatter(tournament.rewards[idx]);
       }
     }
 
     let itemBg = '';
     if (tournament.bannerLowResolutionLink) {
-      itemBg = `background-image: url(${tournament.bannerLowResolutionLink})`;
+      itemBg = tournament.bannerLowResolutionLink;
     } else if (tournament.bannerLink) {
-      itemBg = `background-image: url(${tournament.bannerLink})`;
+      itemBg = tournament.bannerLink;
     }
 
     const endsLabel = isReadyStatus
@@ -2420,7 +2425,9 @@ export const MainWidget = function (options) {
       endsValue: date.toLocaleString('en-GB', { timeZone: 'UTC', dateStyle: 'short', timeStyle: 'short' }),
       prizeLabel: this.settings.lbWidget.settings.translation.dashboard.prizeTitle,
       prizeValue: rewardValue,
-      playTournamentLabel: this.settings.lbWidget.settings.translation.dashboard.playTournamentLabel
+      rewardName: rewardName,
+      playTournamentLabel: this.settings.lbWidget.settings.translation.dashboard.playTournamentLabel,
+      icon: tournament.iconLink ?? ''
     });
 
     return listItem;
@@ -2503,6 +2510,7 @@ export const MainWidget = function (options) {
   };
 
   this.loadDashboardTournaments = async function () {
+    const _this = this;
     const tournamentsList = query(this.settings.section, '.cl-main-widget-dashboard-tournaments-list');
     const tournamentsContainer = query(this.settings.section, '.cl-main-widget-dashboard-tournaments');
     const { activeCompetitions, readyCompetitions } = await this.settings.lbWidget.getDashboardCompetitions();
@@ -2528,6 +2536,34 @@ export const MainWidget = function (options) {
     } else {
       tournamentsContainer.classList.add('hidden');
     }
+
+    setTimeout(function () {
+      _this.updateDashboardTournamentExpirationTime();
+    }, 1000);
+  };
+
+  this.updateDashboardTournamentExpirationTime = function () {
+    const _this = this;
+
+    if (_this.settings.tournament.timerInterval) {
+      clearTimeout(_this.settings.tournament.timerInterval);
+    }
+
+    this.settings.lbWidget.settings.tournaments.activeCompetitions.forEach(comp => {
+      if (comp.scheduledEndDate) {
+        const diff = moment(comp.scheduledEndDate).diff(moment());
+        const date = _this.settings.lbWidget.formatAwardDateTime(moment.duration(diff));
+        const el = document.querySelector(`.dashboard-tournament-item[data-id="${comp.id}"]`);
+        if (!el) return;
+        const dateEl = el.querySelector('.dashboard-tournament-list-details-expires-timer');
+        if (!dateEl) return;
+        dateEl.innerHTML = date;
+      }
+    });
+
+    this.settings.tournament.timerInterval = setTimeout(function () {
+      _this.updateDashboardTournamentExpirationTime();
+    }, 1000);
   };
 
   this.loadDashboardAchievements = function (achievementData, callback) {
