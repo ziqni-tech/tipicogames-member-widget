@@ -150,13 +150,13 @@ export const MainWidget = function (options) {
 
     const availableTitle = document.createElement('div');
     const claimedTitle = document.createElement('div');
-    const expiredTitle = document.createElement('div');
-    const instantWinsTitle = document.createElement('div');
+    // const expiredTitle = document.createElement('div');
+    // const instantWinsTitle = document.createElement('div');
 
     availableTitle.setAttribute('class', 'cl-main-accordion-container-menu-item availableAwards');
     claimedTitle.setAttribute('class', 'cl-main-accordion-container-menu-item claimedAwards');
-    expiredTitle.setAttribute('class', 'cl-main-accordion-container-menu-item expiredAwards');
-    instantWinsTitle.setAttribute('class', 'cl-main-accordion-container-menu-item instantWins');
+    // expiredTitle.setAttribute('class', 'cl-main-accordion-container-menu-item expiredAwards');
+    // instantWinsTitle.setAttribute('class', 'cl-main-accordion-container-menu-item instantWins');
 
     const idx = data.findIndex(d => d.show === true);
     if (idx !== -1) {
@@ -167,32 +167,32 @@ export const MainWidget = function (options) {
         case 'claimedAwards':
           claimedTitle.classList.add('active');
           break;
-        case 'expiredAwards':
-          expiredTitle.classList.add('active');
-          break;
-        case 'instantWins':
-          if (this.settings.lbWidget.settings.instantWins.enable) {
-            instantWinsTitle.classList.add('active');
-          } else {
-            claimedTitle.classList.add('active');
-          }
-          break;
+        // case 'expiredAwards':
+        //   expiredTitle.classList.add('active');
+        //   break;
+        // case 'instantWins':
+        //   if (this.settings.lbWidget.settings.instantWins.enable) {
+        //     instantWinsTitle.classList.add('active');
+        //   } else {
+        //     claimedTitle.classList.add('active');
+        //   }
+        //   break;
       }
     }
 
     availableTitle.innerHTML = _this.settings.lbWidget.settings.translation.rewards.availableRewards;
     claimedTitle.innerHTML = _this.settings.lbWidget.settings.translation.rewards.claimed;
-    expiredTitle.innerHTML = _this.settings.lbWidget.settings.translation.rewards.expired;
-    instantWinsTitle.innerHTML = _this.settings.lbWidget.settings.translation.rewards.instantWins;
+    // expiredTitle.innerHTML = _this.settings.lbWidget.settings.translation.rewards.expired;
+    // instantWinsTitle.innerHTML = _this.settings.lbWidget.settings.translation.rewards.instantWins;
 
     statusMenu.appendChild(availableTitle);
     statusMenu.appendChild(claimedTitle);
-    if (this.settings.lbWidget.settings.awards.showExpiredAwards) {
-      statusMenu.appendChild(expiredTitle);
-    }
-    if (this.settings.lbWidget.settings.instantWins.enable) {
-      statusMenu.appendChild(instantWinsTitle);
-    }
+    // if (this.settings.lbWidget.settings.awards.showExpiredAwards) {
+    //   statusMenu.appendChild(expiredTitle);
+    // }
+    // if (this.settings.lbWidget.settings.instantWins.enable) {
+    //   statusMenu.appendChild(instantWinsTitle);
+    // }
 
     accordionWrapper.appendChild(statusMenu);
 
@@ -2629,27 +2629,22 @@ export const MainWidget = function (options) {
     }, 1000);
   };
 
-  this.rewardItem = function (rew) {
+  this.rewardItem = function (award) {
     const listItem = document.createElement('div');
-    listItem.setAttribute('class', 'cl-rew-list-item cl-rew-' + rew.id);
-    listItem.dataset.id = rew.id;
+    listItem.setAttribute('class', 'dashboard-rewards-list-item');
+    listItem.dataset.id = award.id;
 
-    let iconLink = '';
-    if (rew.rewardData && rew.rewardData.iconLink) {
-      iconLink = `background-image: url(${rew.rewardData.iconLink})`;
-    }
-
-    const labelText = stripHtml(rew.name);
-    const isClimeBtn = !rew.claimed && rew.statusCode !== 115;
+    const rewardImg = `background-image: url(${award.rewardData.iconLink ?? ''})`;
+    const isClimeBtn = !award.claimed && award.statusCode !== 115;
 
     const template = require('../templates/mainWidget/rewardItem.hbs');
     listItem.innerHTML = template({
-      isClimeBtn: isClimeBtn,
-      claimBtnLabel: this.settings.lbWidget.settings.translation.rewards.claim,
-      prize: rew.rewardData ? this.settings.lbWidget.settings.partialFunctions.rewardFormatter(rew.rewardData) : '',
-      type: rew.rewardType.key,
-      label: (labelText.length > 80) ? (labelText.substr(0, 80) + '...') : labelText,
-      iconLink: iconLink
+      rewardValue: award.rewardValue,
+      rewardType: award.rewardType.key ?? '',
+      expiresInLabel: this.settings.lbWidget.settings.translation.rewards.expiresInLabel,
+      rewardImg: rewardImg,
+      isPeriod: !!award.period,
+      isClimeBtn: isClimeBtn
     });
 
     return listItem;
@@ -2884,11 +2879,12 @@ export const MainWidget = function (options) {
     }
 
     const accordionObj = _this.awardsList(_this.settings.rewardsSection.accordionLayout, function (accordionSection, listContainer, topEntryContainer, layout, paginator) {
-      const rewardData = _this.settings.lbWidget.settings.awards[layout.type];
+      let rewardData = _this.settings.lbWidget.settings.awards[layout.type];
       if (typeof rewardData !== 'undefined') {
         if (rewardData.length === 0) {
           accordionSection.style.display = 'none';
         }
+        rewardData = rewardData.filter(a => a.rewardData);
         mapObject(rewardData, function (rew, key, count) {
           if ((count + 1) <= layout.showTopResults && query(topEntryContainer, '.cl-reward-' + rew.id) === null) {
             var topEntryContaineRlistItem = _this.rewardItem(rew);
@@ -3532,11 +3528,9 @@ export const MainWidget = function (options) {
   this.hideInstantWins = function () {
     const singleWheel = document.querySelector('.single-wheel');
     const scratchcardsGame = document.querySelector('.scratchcards-game');
-    const backBtn = document.querySelector('.cl-main-widget-reward-header-back ');
 
     singleWheel.classList.remove('cl-show');
     scratchcardsGame.classList.remove('cl-show');
-    backBtn.style.display = 'none';
   };
 
   this.closeOpenedItems = function () {
@@ -3583,9 +3577,6 @@ export const MainWidget = function (options) {
     const _this = this;
     const preLoader = _this.preloader();
 
-    const instantWinsBackIcon = query(_this.settings.container, '.cl-main-widget-reward-header-back');
-    instantWinsBackIcon.style.display = 'none';
-
     if (_this.settings.navigationSwitchInProgress && _this.settings.navigationSwitchLastAtempt + 3000 < new Date().getTime()) {
       _this.settings.navigationSwitchInProgress = false;
     }
@@ -3600,10 +3591,6 @@ export const MainWidget = function (options) {
           if (changeContainerInterval) clearTimeout(changeContainerInterval);
 
           _this.closeOpenedItems();
-
-          objectIterator(query(_this.settings.container, '.cl-main-widget-navigation-items .cl-active-nav'), function (obj) {
-            removeClass(obj, 'cl-active-nav');
-          });
 
           objectIterator(query(_this.settings.container, '.cl-main-widget-section-container .cl-main-active-section'), function (obj) {
             removeClass(obj, 'cl-main-active-section');
@@ -3676,7 +3663,7 @@ export const MainWidget = function (options) {
 
                 _this.settings.navigationSwitchInProgress = false;
               });
-            } else if (target.classList.contains('cl-main-widget-navigation-rewards') || target.closest('.cl-main-widget-navigation-rewards')) {
+            } else if (target.classList.contains('cl-main-widget-dashboard-rewards-list-more')) {
               _this.loadAwards(
                 function () {
                   const rewardsContainer = query(_this.settings.container, '.cl-main-widget-section-container .' + _this.settings.lbWidget.settings.navigation.rewards.containerClass);
@@ -3700,10 +3687,6 @@ export const MainWidget = function (options) {
               );
             }
           }, 250);
-
-          const targetBtn = target.classList.contains('cl-main-widget-navigation-item') ? target : target.closest('.cl-main-widget-navigation-item');
-
-          addClass(targetBtn, 'cl-active-nav');
         });
       } else if (typeof callback === 'function') {
         _this.settings.navigationSwitchInProgress = false;

@@ -1,12 +1,11 @@
-<div class="cl-rew-list-details-cont">
-  <div class="cl-rew-list-details-wrap">
-    <div class="cl-rew-list-details-expires"></div>
-    <div class="cl-rew-list-details-icon" style="{{ iconLink }}"></div>
-    <div class="cl-rew-list-details-label">{{ label }}</div>
-    <div class="cl-rew-list-details-type">{{ type }}</div>
-    <div class="cl-rew-list-details-prize">{{ prize }}</div>
-    {{#if isClimeBtn}}
-      <div class="cl-rew-list-details-claim">{{ claimBtnLabel }}</div>
-    {{/if}}
+<div class="dashboard-rewards-list-item-info">
+  <div class="dashboard-rewards-list-item-expires">
+    <div class="dashboard-rewards-list-item-expires-label">{{#if isPeriod}}{{ expiresInLabel }}{{/if}}</div>
+    <div class="dashboard-rewards-list-item-expires-value"></div>
+  </div>
+  <div class="dashboard-rewards-list-item-reward">
+    <div class="dashboard-rewards-list-item-reward-value">{{ rewardValue }}</div>
+    <div class="dashboard-rewards-list-item-reward-type">{{ rewardType }}</div>
   </div>
 </div>
+<div class="dashboard-rewards-list-item-img" style="{{ rewardImg }}"></div>

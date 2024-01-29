@@ -2668,6 +2668,10 @@ export const LbWidget = function (options) {
     } else if (el.closest('.cl-main-widget-navigation-items')) {
       _this.settings.mainWidget.navigationSwitch(el);
 
+      // primary widget navigation
+    } else if (el.classList.contains('navigation-item')) {
+      _this.settings.mainWidget.navigationSwitch(el);
+
       // competition list
     } else if (hasClass(el, 'cl-main-widget-lb-header-list-icon')) {
       if (_this.settings.leaderboard.refreshInterval) {
@@ -2708,7 +2712,8 @@ export const LbWidget = function (options) {
 
       // hide Instant Wins
     } else if (hasClass(el, 'cl-main-widget-reward-header-back')) {
-      _this.settings.mainWidget.hideInstantWins();
+      // _this.settings.mainWidget.hideInstantWins();
+      _this.settings.mainWidget.resetNavigation();
 
       // mini scoreboard action to open primary widget
     } else if ((hasClass(el, 'cl-widget-ms-icon-wrapper') || closest(el, '.cl-widget-ms-icon-wrapper') !== null) || (hasClass(el, 'cl-widget-ms-information-wrapper') || closest(el, '.cl-widget-ms-information-wrapper') !== null)) {

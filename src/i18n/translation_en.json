@@ -65,12 +65,12 @@
         "finished": "finished"
     },
     "rewards": {
-        "label": "Awards",
+        "label": "Rewards",
         "expiresInLabel": "Expires In",
         "claim": "Claim",
-        "claimed": "Claimed",
+        "claimed": "Past",
         "expired": "Expired",
-        "availableRewards": "Available",
+        "availableRewards": "Current",
         "instantWins": "Instant Wins",
         "rewards": "Claimed Awards",
         "expiredRewards": "Expired Awards",
