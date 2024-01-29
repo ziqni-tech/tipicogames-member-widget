@@ -1893,6 +1893,9 @@
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .dashboard-tournament-list-details-data {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   width: 100%;
   height: 54px;
   padding: 12px 8px;
@@ -1900,6 +1903,24 @@
   border-radius: 8px;
   border: 1px solid var(--ui-color-success);
   background: var(--widget-bg-blue);
+}
+
+.cl-main-widget-wrapper .cl-main-widget-section-container .dashboard-tournament-list-details-data-item {
+  text-align: center;
+  width: 74px;
+}
+.cl-main-widget-wrapper .cl-main-widget-section-container .dashboard-tournament-list-details-data-item-value {
+  color: #FFF;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 18px;
+}
+.cl-main-widget-wrapper .cl-main-widget-section-container .dashboard-tournament-list-details-data-item-label {
+  color: var(--ui-color-gray-9);
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 12px;
+  text-transform: uppercase;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .dashboard-tournament-list-btn {
