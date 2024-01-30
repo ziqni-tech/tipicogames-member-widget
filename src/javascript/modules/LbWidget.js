@@ -2621,12 +2621,13 @@ export const LbWidget = function (options) {
       });
 
       // load rewards details
-    } else if (hasClass(el, 'cl-rew-list-item') || closest(el, '.cl-rew-list-item') !== null) {
-      var awardId = (hasClass(el, 'cl-rew-list-item')) ? el.dataset.id : closest(el, '.cl-rew-list-item').dataset.id;
+    } else if (hasClass(el, 'dashboard-rewards-list-item') || closest(el, '.dashboard-rewards-list-item') !== null) {
+      const awardId = (hasClass(el, 'dashboard-rewards-list-item')) ? el.dataset.id : closest(el, '.dashboard-rewards-list-item').dataset.id;
       _this.getAward(awardId, function (data) {
         _this.settings.mainWidget.loadRewardDetails(data, function () {
         });
-      });
+      })
+        .then(() => {});
 
       // claim reward
     } else if (hasClass(el, 'cl-main-widget-reward-claim-btn')) {
@@ -2718,6 +2719,24 @@ export const LbWidget = function (options) {
       // mini scoreboard action to open primary widget
     } else if ((hasClass(el, 'cl-widget-ms-icon-wrapper') || closest(el, '.cl-widget-ms-icon-wrapper') !== null) || (hasClass(el, 'cl-widget-ms-information-wrapper') || closest(el, '.cl-widget-ms-information-wrapper') !== null)) {
       _this.clickedMiniScoreBoard();
+
+      // expand reward data
+    } else if (hasClass(el, 'cl-main-widget-reward-details-content-wrapp') || closest(el, '.cl-main-widget-reward-details-content-wrapp') !== null) {
+      const wrapper = (hasClass(el, 'cl-main-widget-reward-details-content-wrapp')) ? el : closest(el, '.cl-main-widget-reward-details-content-wrapp');
+      if (wrapper.classList.contains('expanded')) {
+        wrapper.classList.remove('expanded');
+      } else {
+        wrapper.classList.add('expanded');
+      }
+
+      // expand tc reward data
+    } else if (hasClass(el, 'cl-main-widget-reward-details-tc-wrapp') || closest(el, '.cl-main-widget-reward-details-tc-wrapp') !== null) {
+      const wrapper = (hasClass(el, 'cl-main-widget-reward-details-tc-wrapp')) ? el : closest(el, '.cl-main-widget-reward-details-tc-wrapp');
+      if (wrapper.classList.contains('expanded')) {
+        wrapper.classList.remove('expanded');
+      } else {
+        wrapper.classList.add('expanded');
+      }
 
       // accordion navigation
     } else if (hasClass(el, 'cl-accordion-label')) {

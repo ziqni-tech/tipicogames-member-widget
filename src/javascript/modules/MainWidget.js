@@ -2192,52 +2192,53 @@ export const MainWidget = function (options) {
 
   this.loadRewardDetails = function (data, callback) {
     const _this = this;
-    const label = query(_this.settings.reward.detailsContainer, '.cl-main-widget-reward-details-header-label');
-    const body = query(_this.settings.reward.detailsContainer, '.cl-main-widget-reward-details-description');
-    const image = query(_this.settings.reward.detailsContainer, '.cl-main-widget-reward-details-body-image-cont');
-    const iconWrapp = query(_this.settings.reward.detailsContainer, '.cl-main-widget-reward-winnings-icon');
-    const claimBtn = query(_this.settings.reward.detailsContainer, '.cl-main-widget-reward-claim-btn');
-    const icon = query(_this.settings.reward.detailsContainer, '.cl-main-widget-reward-winnings-icon');
-    const value = query(_this.settings.reward.detailsContainer, '.cl-main-widget-reward-winnings-value');
-
-    label.innerHTML = data.name;
-    body.innerHTML = data.description ? data.description.replace(/&lt;/g, '<').replace(/&gt;/g, '>') : '';
-    value.innerHTML = _this.settings.lbWidget.settings.partialFunctions.rewardFormatter(data);
-    claimBtn.dataset.id = data.id;
-
-    if (data.claimed) {
-      addClass(claimBtn, 'cl-claimed');
-      claimBtn.innerHTML = _this.settings.lbWidget.settings.translation.rewards.claimed;
-    } else {
-      removeClass(claimBtn, 'cl-claimed');
-      claimBtn.innerHTML = _this.settings.lbWidget.settings.translation.rewards.claim;
-    }
-
-    if (data.icon && typeof data.icon !== 'undefined') {
-      icon.innerHTML = '';
-
-      const _image = new Image();
-      iconWrapp.style.background = 'none';
-      _image.setAttribute('class', 'cl-reward-list-item-img');
-
-      _image.src = data.icon;
-      _image.alt = _this.settings.lbWidget.settings.partialFunctions.rewardFormatter(data);
-
-      icon.appendChild(_image);
-    } else {
-      icon.innerHTML = '';
-      iconWrapp.style.background = null;
-    }
-
-    objectIterator(query(body, 'img'), function (img, key, count) {
-      if (count === 0) {
-        const newImg = img.cloneNode(true);
-        image.innerHTML = '';
-        image.appendChild(newImg);
-
-        remove(img);
-      }
-    });
+    console.log('data:', data);
+    // const label = query(_this.settings.reward.detailsContainer, '.cl-main-widget-reward-details-header-label');
+    // const body = query(_this.settings.reward.detailsContainer, '.cl-main-widget-reward-details-description');
+    // const image = query(_this.settings.reward.detailsContainer, '.cl-main-widget-reward-details-body-image-cont');
+    // const iconWrapp = query(_this.settings.reward.detailsContainer, '.cl-main-widget-reward-winnings-icon');
+    // const claimBtn = query(_this.settings.reward.detailsContainer, '.cl-main-widget-reward-claim-btn');
+    // const icon = query(_this.settings.reward.detailsContainer, '.cl-main-widget-reward-winnings-icon');
+    // const value = query(_this.settings.reward.detailsContainer, '.cl-main-widget-reward-winnings-value');
+    //
+    // label.innerHTML = data.name;
+    // body.innerHTML = data.description ? data.description.replace(/&lt;/g, '<').replace(/&gt;/g, '>') : '';
+    // value.innerHTML = _this.settings.lbWidget.settings.partialFunctions.rewardFormatter(data);
+    // claimBtn.dataset.id = data.id;
+    //
+    // if (data.claimed) {
+    //   addClass(claimBtn, 'cl-claimed');
+    //   claimBtn.innerHTML = _this.settings.lbWidget.settings.translation.rewards.claimed;
+    // } else {
+    //   removeClass(claimBtn, 'cl-claimed');
+    //   claimBtn.innerHTML = _this.settings.lbWidget.settings.translation.rewards.claim;
+    // }
+    //
+    // if (data.icon && typeof data.icon !== 'undefined') {
+    //   icon.innerHTML = '';
+    //
+    //   const _image = new Image();
+    //   iconWrapp.style.background = 'none';
+    //   _image.setAttribute('class', 'cl-reward-list-item-img');
+    //
+    //   _image.src = data.icon;
+    //   _image.alt = _this.settings.lbWidget.settings.partialFunctions.rewardFormatter(data);
+    //
+    //   icon.appendChild(_image);
+    // } else {
+    //   icon.innerHTML = '';
+    //   iconWrapp.style.background = null;
+    // }
+    //
+    // objectIterator(query(body, 'img'), function (img, key, count) {
+    //   if (count === 0) {
+    //     const newImg = img.cloneNode(true);
+    //     image.innerHTML = '';
+    //     image.appendChild(newImg);
+    //
+    //     remove(img);
+    //   }
+    // });
 
     _this.settings.reward.detailsContainer.style.display = 'block';
     setTimeout(function () {
