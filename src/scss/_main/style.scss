@@ -2041,6 +2041,7 @@
 .cl-main-widget-reward-list-body-res .dashboard-rewards-list-item {
   width: 100%;
   margin-right: 0;
+  margin-bottom: 8px;
 }
 
 .dashboard-rewards-list-item-info {
@@ -2130,6 +2131,34 @@
 }
 
 .dashboard-rewards-list-item-empty-description a {
+  color: var(--ui-color-primary);
+  text-decoration: underline;
+}
+
+.rewards-list-item-empty {
+  text-align: center;
+  padding: 24px;
+}
+
+.rewards-list-item-empty-title {
+  color: #E3E3E3;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 23px;
+}
+
+.rewards-list-item-empty-content {
+  color: var(--ui-color-text-secondary);
+  text-align: center;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 21px;
+  padding-top: 8px;
+}
+
+.rewards-list-item-empty-content a {
   color: var(--ui-color-primary);
   text-decoration: underline;
 }
@@ -5385,6 +5414,7 @@
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-reward-list-body-res .cl-accordion-list {
   display: flex;
+  flex-direction: column;
   width: 100%;
 }
 

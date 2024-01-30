@@ -2650,6 +2650,16 @@ export const MainWidget = function (options) {
     return listItem;
   };
 
+  this.rewardItemEmpty = function () {
+    const listItem = document.createElement('div');
+    listItem.setAttribute('class', 'rewards-list-item-empty');
+
+    const template = require('../templates/mainWidget/rewardItemEmpty.hbs');
+    listItem.innerHTML = template({});
+
+    return listItem;
+  };
+
   this.tournamentItem = function (tournament) {
     const listItem = document.createElement('div');
     const detailsContainer = document.createElement('div');
@@ -2716,7 +2726,7 @@ export const MainWidget = function (options) {
     pageNumber = 1,
     claimedPageNumber = 1,
     expiredPageNumber = 1,
-    rewards,
+    claimedRewards,
     availableRewards,
     expiredRewards,
     paginationArr = null,
@@ -2880,7 +2890,7 @@ export const MainWidget = function (options) {
 
     const accordionObj = _this.awardsList(_this.settings.rewardsSection.accordionLayout, function (accordionSection, listContainer, topEntryContainer, layout, paginator) {
       let rewardData = _this.settings.lbWidget.settings.awards[layout.type];
-      if (typeof rewardData !== 'undefined') {
+      if (typeof rewardData !== 'undefined' && rewardData.length) {
         if (rewardData.length === 0) {
           accordionSection.style.display = 'none';
         }
@@ -2896,6 +2906,9 @@ export const MainWidget = function (options) {
             listContainer.appendChild(listItem);
           }
         });
+      } else {
+        const listItem = _this.rewardItemEmpty();
+        listContainer.appendChild(listItem);
       }
     });
 
@@ -2932,29 +2945,23 @@ export const MainWidget = function (options) {
         container.appendChild(paginatorClaimed);
       }
     }
-
-    const availableBtn = document.querySelector('.cl-main-accordion-container-menu-item.availableAwards');
-    const claimedBtn = document.querySelector('.cl-main-accordion-container-menu-item.claimedAwards');
-
-    if (!totalCount) {
-      availableBtn.classList.add('not-available');
-    } else {
-      availableBtn.classList.remove('not-available');
-    }
-
-    if (!claimedTotalCount) {
-      claimedBtn.classList.add('not-available');
-    } else {
-      claimedBtn.classList.remove('not-available');
-    }
   };
 
   this.loadAwards = function (callback, pageNumber, claimedPageNumber, expiredPageNumber, paginationArr = null, isClaimed = false, isExpired = false) {
     const _this = this;
     _this.settings.lbWidget.checkForAvailableAwards(
-      function (rewards, availableRewards, expiredRewards) {
-        // _this.settings.lbWidget.updateRewardsNavigationCounts();
-        _this.rewardsListLayout(pageNumber, claimedPageNumber, expiredPageNumber, rewards, availableRewards, expiredRewards, paginationArr, isClaimed, isExpired);
+      function (claimedRewards, availableRewards, expiredRewards) {
+        _this.rewardsListLayout(
+          pageNumber,
+          claimedPageNumber,
+          expiredPageNumber,
+          claimedRewards,
+          availableRewards,
+          expiredRewards,
+          paginationArr,
+          isClaimed,
+          isExpired
+        );
 
         if (typeof callback === 'function') {
           callback();
