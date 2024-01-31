@@ -143,6 +143,7 @@ export const LbWidget = function (options) {
       availableAwards: [],
       claimedAwards: [],
       expiredAwards: [],
+      pastAwards: [],
       rewards: [],
       totalCount: 0,
       claimedTotalCount: 0,
@@ -1146,6 +1147,7 @@ export const LbWidget = function (options) {
     this.settings.awards.availableAwards = [];
     this.settings.awards.claimedAwards = [];
     this.settings.awards.expiredAwards = [];
+    this.settings.awards.pastAwards = [];
     this.settings.awards.rewards = [];
 
     const availableAwardRequest = AwardRequest.constructFromObject({
@@ -1290,6 +1292,8 @@ export const LbWidget = function (options) {
       });
     }
 
+    this.settings.awards.pastAwards = [...this.settings.awards.claimedAwards, ...this.settings.awards.expiredAwards];
+
     if (typeof callback === 'function') {
       callback(
         this.settings.awards.claimedAwards,
@@ -1311,48 +1315,48 @@ export const LbWidget = function (options) {
     });
   };
 
-  this.animateIcon = function (entity) {
-    const _this = this;
-    let icon = null;
-    switch (entity) {
-      case 'Award':
-        icon = query(
-          this.settings.mainWidget.settings.container,
-          '.' + this.settings.navigation.rewards.navigationClass
-        );
-        break;
-      case 'Message':
-        icon = query(
-          this.settings.mainWidget.settings.container,
-          '.' + this.settings.navigation.inbox.navigationClass
-        );
-        break;
-    }
-
-    if (icon && !_this.settings.iconIntervalId) {
-      let x = 0;
-      _this.settings.iconIntervalId = setInterval(function () {
-        if (hasClass(icon, 'cl-active-nav')) {
-          if (hasClass(icon, 'decrease')) {
-            removeClass(icon, 'decrease');
-          } else {
-            addClass(icon, 'decrease');
-          }
-        } else {
-          if (hasClass(icon, 'grow')) {
-            removeClass(icon, 'grow');
-          } else {
-            addClass(icon, 'grow');
-          }
-        }
-
-        if (++x === 8) {
-          clearInterval(_this.settings.iconIntervalId);
-          _this.settings.iconIntervalId = null;
-        }
-      }, 300);
-    }
-  };
+  // this.animateIcon = function (entity) {
+  //   const _this = this;
+  //   let icon = null;
+  //   switch (entity) {
+  //     case 'Award':
+  //       icon = query(
+  //         this.settings.mainWidget.settings.container,
+  //         '.' + this.settings.navigation.rewards.navigationClass
+  //       );
+  //       break;
+  //     case 'Message':
+  //       icon = query(
+  //         this.settings.mainWidget.settings.container,
+  //         '.' + this.settings.navigation.inbox.navigationClass
+  //       );
+  //       break;
+  //   }
+  //
+  //   if (icon && !_this.settings.iconIntervalId) {
+  //     let x = 0;
+  //     _this.settings.iconIntervalId = setInterval(function () {
+  //       if (hasClass(icon, 'cl-active-nav')) {
+  //         if (hasClass(icon, 'decrease')) {
+  //           removeClass(icon, 'decrease');
+  //         } else {
+  //           addClass(icon, 'decrease');
+  //         }
+  //       } else {
+  //         if (hasClass(icon, 'grow')) {
+  //           removeClass(icon, 'grow');
+  //         } else {
+  //           addClass(icon, 'grow');
+  //         }
+  //       }
+  //
+  //       if (++x === 8) {
+  //         clearInterval(_this.settings.iconIntervalId);
+  //         _this.settings.iconIntervalId = null;
+  //       }
+  //     }, 300);
+  //   }
+  // };
 
   this.checkForAvailableRewards = function (pageNumber, callback) {
     this.settings.rewards.rewards = [];
@@ -2395,13 +2399,13 @@ export const LbWidget = function (options) {
     } else if (hasClass(el, 'cl-main-widget-dashboard-achievements-list-more')) {
       const preLoader = _this.settings.mainWidget.preloader();
       const dashboard = document.querySelector('.cl-main-widget-section-dashboard');
-      const dashboardIcon = document.querySelector('.cl-main-widget-navigation-dashboard');
-      const achIcon = document.querySelector('.cl-main-widget-navigation-ach');
+      // const dashboardIcon = document.querySelector('.cl-main-widget-navigation-dashboard');
+      // const achIcon = document.querySelector('.cl-main-widget-navigation-ach');
 
       preLoader.show(function () {
-        achIcon.classList.add('cl-active-nav');
+        // achIcon.classList.add('cl-active-nav');
         dashboard.style.display = 'none';
-        dashboardIcon.classList.remove('cl-active-nav');
+        // dashboardIcon.classList.remove('cl-active-nav');
 
         _this.settings.mainWidget.loadAchievements(1, function () {
           const achContainer = query(_this.settings.mainWidget.settings.container, '.cl-main-widget-section-container .' + _this.settings.navigation.achievements.containerClass);
@@ -2421,13 +2425,13 @@ export const LbWidget = function (options) {
     } else if (hasClass(el, 'cl-main-widget-dashboard-tournaments-list-more')) {
       const preLoader = _this.settings.mainWidget.preloader();
       const dashboard = document.querySelector('.cl-main-widget-section-dashboard');
-      const dashboardIcon = document.querySelector('.cl-main-widget-navigation-dashboard');
-      const compIcon = document.querySelector('.cl-main-widget-navigation-lb');
+      // const dashboardIcon = document.querySelector('.cl-main-widget-navigation-dashboard');
+      // const compIcon = document.querySelector('.cl-main-widget-navigation-lb');
 
       preLoader.show(function () {
-        compIcon.classList.add('cl-active-nav');
+        // compIcon.classList.add('cl-active-nav');
         dashboard.style.display = 'none';
-        dashboardIcon.classList.remove('cl-active-nav');
+        // dashboardIcon.classList.remove('cl-active-nav');
 
         _this.checkForAvailableRewards(1);
         _this.settings.mainWidget.loadLeaderboard(function () {
@@ -2448,13 +2452,13 @@ export const LbWidget = function (options) {
 
       if (closest(el, '.cl-main-widget-dashboard-achievements-list')) {
         const dashboard = document.querySelector('.cl-main-widget-section-dashboard');
-        const dashboardIcon = document.querySelector('.cl-main-widget-navigation-dashboard');
-        const achIcon = document.querySelector('.cl-main-widget-navigation-ach');
+        // const dashboardIcon = document.querySelector('.cl-main-widget-navigation-dashboard');
+        // const achIcon = document.querySelector('.cl-main-widget-navigation-ach');
         const detailsContainer = document.querySelector('.cl-main-widget-ach-details-container');
 
         dashboard.style.display = 'none';
-        dashboardIcon.classList.remove('cl-active-nav');
-        achIcon.classList.add('cl-active-nav');
+        // dashboardIcon.classList.remove('cl-active-nav');
+        // achIcon.classList.add('cl-active-nav');
         detailsContainer.classList.add('cl-show');
         detailsContainer.style.display = 'block';
 
@@ -2483,12 +2487,12 @@ export const LbWidget = function (options) {
       // dashboard wheel button
     } else if (hasClass(el, 'cl-main-widget-dashboard-instant-wins-wheel-button')) {
       const dashboard = document.querySelector('.cl-main-widget-section-dashboard');
-      const dashboardIcon = document.querySelector('.cl-main-widget-navigation-dashboard');
-      const awardsIcon = document.querySelector('.cl-main-widget-navigation-rewards');
+      // const dashboardIcon = document.querySelector('.cl-main-widget-navigation-dashboard');
+      // const awardsIcon = document.querySelector('.cl-main-widget-navigation-rewards');
 
       dashboard.style.display = 'none';
-      dashboardIcon.classList.remove('cl-active-nav');
-      awardsIcon.classList.add('cl-active-nav');
+      // dashboardIcon.classList.remove('cl-active-nav');
+      // awardsIcon.classList.add('cl-active-nav');
 
       const rewardsContainer = query(_this.settings.mainWidget.settings.container, '.cl-main-widget-section-container .' + _this.settings.navigation.rewards.containerClass);
       rewardsContainer.style.display = 'flex';
@@ -2512,12 +2516,12 @@ export const LbWidget = function (options) {
       // dashboard scratchcards button
     } else if (hasClass(el, 'cl-main-widget-dashboard-instant-wins-cards-button')) {
       const dashboard = document.querySelector('.cl-main-widget-section-dashboard');
-      const dashboardIcon = document.querySelector('.cl-main-widget-navigation-dashboard');
-      const awardsIcon = document.querySelector('.cl-main-widget-navigation-rewards');
+      // const dashboardIcon = document.querySelector('.cl-main-widget-navigation-dashboard');
+      // const awardsIcon = document.querySelector('.cl-main-widget-navigation-rewards');
 
       dashboard.style.display = 'none';
-      dashboardIcon.classList.remove('cl-active-nav');
-      awardsIcon.classList.add('cl-active-nav');
+      // dashboardIcon.classList.remove('cl-active-nav');
+      // awardsIcon.classList.add('cl-active-nav');
 
       const rewardsContainer = query(_this.settings.mainWidget.settings.container, '.cl-main-widget-section-container .' + _this.settings.navigation.rewards.containerClass);
       rewardsContainer.style.display = 'flex';
@@ -2542,12 +2546,12 @@ export const LbWidget = function (options) {
         ? el.dataset.id
         : closest(el, '.dashboard-tournament-item').dataset.id;
       const dashboard = document.querySelector('.cl-main-widget-section-dashboard');
-      const dashboardIcon = document.querySelector('.cl-main-widget-navigation-dashboard');
-      const lbIcon = document.querySelector('.cl-main-widget-navigation-lb');
+      // const dashboardIcon = document.querySelector('.cl-main-widget-navigation-dashboard');
+      // const lbIcon = document.querySelector('.cl-main-widget-navigation-lb');
 
       dashboard.style.display = 'none';
-      dashboardIcon.classList.remove('cl-active-nav');
-      lbIcon.classList.add('cl-active-nav');
+      // dashboardIcon.classList.remove('cl-active-nav');
+      // lbIcon.classList.add('cl-active-nav');
       const preLoader = _this.settings.mainWidget.preloader();
 
       preLoader.show(function () {
@@ -2623,11 +2627,14 @@ export const LbWidget = function (options) {
       // load rewards details
     } else if (hasClass(el, 'dashboard-rewards-list-item') || closest(el, '.dashboard-rewards-list-item') !== null) {
       const awardId = (hasClass(el, 'dashboard-rewards-list-item')) ? el.dataset.id : closest(el, '.dashboard-rewards-list-item').dataset.id;
-      _this.getAward(awardId, function (data) {
-        _this.settings.mainWidget.loadRewardDetails(data, function () {
-        });
-      })
-        .then(() => {});
+      const preLoader = _this.settings.mainWidget.preloader();
+      preLoader.show(function () {
+        _this.getAward(awardId, function (data) {
+          _this.settings.mainWidget.loadRewardDetails(data, function () {
+          });
+        })
+          .then(() => { preLoader.hide(); });
+      });
 
       // claim reward
     } else if (hasClass(el, 'cl-main-widget-reward-claim-btn')) {
@@ -2732,6 +2739,15 @@ export const LbWidget = function (options) {
       // expand tc reward data
     } else if (hasClass(el, 'cl-main-widget-reward-details-tc-wrapp') || closest(el, '.cl-main-widget-reward-details-tc-wrapp') !== null) {
       const wrapper = (hasClass(el, 'cl-main-widget-reward-details-tc-wrapp')) ? el : closest(el, '.cl-main-widget-reward-details-tc-wrapp');
+      if (wrapper.classList.contains('expanded')) {
+        wrapper.classList.remove('expanded');
+      } else {
+        wrapper.classList.add('expanded');
+      }
+
+      // expand past reward data
+    } else if (hasClass(el, 'rewards-list-item-past') || closest(el, '.rewards-list-item-past') !== null) {
+      const wrapper = (hasClass(el, 'rewards-list-item-past')) ? el : closest(el, '.rewards-list-item-past');
       if (wrapper.classList.contains('expanded')) {
         wrapper.classList.remove('expanded');
       } else {
@@ -2992,7 +3008,7 @@ export const LbWidget = function (options) {
         if (json && json.entityType === 'Award') {
           _this.settings.mainWidget.loadAwards(
             function () {
-              _this.animateIcon('Award');
+              // _this.animateIcon('Award');
             },
             1
           );

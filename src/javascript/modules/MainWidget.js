@@ -96,23 +96,29 @@ export const MainWidget = function (options) {
           showTopResults: 1
         },
         {
-          label: 'Claimed Awards',
-          type: 'claimedAwards',
-          show: false,
-          showTopResults: 1
-        },
-        {
-          label: 'Expired Awards',
-          type: 'expiredAwards',
-          show: false,
-          showTopResults: 1
-        },
-        {
-          label: 'Instant Wins',
-          type: 'instantWins',
+          label: 'Past Awards',
+          type: 'pastAwards',
           show: false,
           showTopResults: 1
         }
+        // {
+        //   label: 'Claimed Awards',
+        //   type: 'claimedAwards',
+        //   show: false,
+        //   showTopResults: 1
+        // },
+        // {
+        //   label: 'Expired Awards',
+        //   type: 'expiredAwards',
+        //   show: false,
+        //   showTopResults: 1
+        // },
+        // {
+        //   label: 'Instant Wins',
+        //   type: 'instantWins',
+        //   show: false,
+        //   showTopResults: 1
+        // }
       ]
     },
     active: false,
@@ -164,7 +170,7 @@ export const MainWidget = function (options) {
         case 'availableAwards':
           availableTitle.classList.add('active');
           break;
-        case 'claimedAwards':
+        case 'pastAwards':
           claimedTitle.classList.add('active');
           break;
         // case 'expiredAwards':
@@ -337,17 +343,17 @@ export const MainWidget = function (options) {
       availableContainer.classList.add('cl-shown');
     }
     if (element.classList.contains('claimedAwards')) {
-      const claimedContainer = container.querySelector('.cl-accordion.claimedAwards');
+      const claimedContainer = container.querySelector('.cl-accordion.pastAwards');
       claimedContainer.classList.add('cl-shown');
     }
-    if (element.classList.contains('expiredAwards')) {
-      const expiredContainer = container.querySelector('.cl-accordion.expiredAwards');
-      expiredContainer.classList.add('cl-shown');
-    }
-    if (element.classList.contains('instantWins')) {
-      const instantWinsContainer = container.querySelector('.cl-accordion.instantWins');
-      instantWinsContainer.classList.add('cl-shown');
-    }
+    // if (element.classList.contains('expiredAwards')) {
+    //   const expiredContainer = container.querySelector('.cl-accordion.expiredAwards');
+    //   expiredContainer.classList.add('cl-shown');
+    // }
+    // if (element.classList.contains('instantWins')) {
+    //   const instantWinsContainer = container.querySelector('.cl-accordion.instantWins');
+    //   instantWinsContainer.classList.add('cl-shown');
+    // }
   };
 
   this.accordionNavigation = function (element) {
@@ -2661,6 +2667,16 @@ export const MainWidget = function (options) {
     return listItem;
   };
 
+  this.rewardItemPast = function () {
+    const listItem = document.createElement('div');
+    listItem.setAttribute('class', 'rewards-list-item-past');
+
+    const template = require('../templates/mainWidget/rewardItemPast.hbs');
+    listItem.innerHTML = template({});
+
+    return listItem;
+  };
+
   this.tournamentItem = function (tournament) {
     const listItem = document.createElement('div');
     const detailsContainer = document.createElement('div');
@@ -2816,96 +2832,101 @@ export const MainWidget = function (options) {
       paginatorClaimed.appendChild(next);
     }
 
-    if (isClaimed) {
-      _this.settings.rewardsSection.accordionLayout.map(t => {
-        if (t.type === 'claimedAwards') {
-          t.show = true;
-          if (paginationArr && paginationArr.length) {
-            let page = '';
-            for (const i in paginationArr) {
-              page += '<span class="paginator-item" data-page=' + paginationArr[i] + '\>' + paginationArr[i] + '</span>';
-            }
-            paginatorClaimed.innerHTML = page;
+    // if (isClaimed) {
+    //   _this.settings.rewardsSection.accordionLayout.map(t => {
+    //     if (t.type === 'claimedAwards') {
+    //       t.show = true;
+    //       if (paginationArr && paginationArr.length) {
+    //         let page = '';
+    //         for (const i in paginationArr) {
+    //           page += '<span class="paginator-item" data-page=' + paginationArr[i] + '\>' + paginationArr[i] + '</span>';
+    //         }
+    //         paginatorClaimed.innerHTML = page;
+    //
+    //         paginatorClaimed.prepend(prev);
+    //         paginatorClaimed.appendChild(next);
+    //       }
+    //     } else {
+    //       t.show = false;
+    //     }
+    //   });
+    // } else {
+    //   _this.settings.rewardsSection.accordionLayout.map(t => {
+    //     if (t.type === 'pastAwards') {
+    //       t.show = true;
+    //       if (paginationArr && paginationArr.length) {
+    //         let page = '';
+    //         for (const i in paginationArr) {
+    //           page += '<span class="paginator-item" data-page=' + paginationArr[i] + '\>' + paginationArr[i] + '</span>';
+    //         }
+    //         paginator.innerHTML = page;
+    //
+    //         paginator.prepend(prev);
+    //         paginator.appendChild(next);
+    //       }
+    //     } else {
+    //       t.show = false;
+    //     }
+    //   });
+    // }
 
-            paginatorClaimed.prepend(prev);
-            paginatorClaimed.appendChild(next);
-          }
-        } else {
-          t.show = false;
-        }
-      });
-    } else {
-      _this.settings.rewardsSection.accordionLayout.map(t => {
-        if (t.type === 'availableAwards') {
-          t.show = true;
-          if (paginationArr && paginationArr.length) {
-            let page = '';
-            for (const i in paginationArr) {
-              page += '<span class="paginator-item" data-page=' + paginationArr[i] + '\>' + paginationArr[i] + '</span>';
-            }
-            paginator.innerHTML = page;
-
-            paginator.prepend(prev);
-            paginator.appendChild(next);
-          }
-        } else {
-          t.show = false;
-        }
-      });
-    }
-
-    if (!totalCount) {
-      if (claimedTotalCount) {
-        _this.settings.rewardsSection.accordionLayout.map(t => {
-          switch (t.type) {
-            case 'availableAwards':
-              t.show = false;
-              break;
-            case 'claimedAwards':
-              t.show = true;
-              break;
-          }
-        });
-      } else {
-        _this.settings.rewardsSection.accordionLayout.map(t => {
-          switch (t.type) {
-            case 'availableAwards':
-              t.show = false;
-              break;
-            case 'claimedAwards':
-              if (this.settings.lbWidget.settings.instantWins.enable) {
-                t.show = false;
-              } else {
-                t.show = true;
-              }
-              break;
-            case 'instantWins':
-              if (this.settings.lbWidget.settings.instantWins.enable) {
-                t.show = true;
-              }
-              break;
-          }
-        });
-      }
-    }
+    // if (!totalCount) {
+    //   if (claimedTotalCount) {
+    //     _this.settings.rewardsSection.accordionLayout.map(t => {
+    //       switch (t.type) {
+    //         case 'availableAwards':
+    //           t.show = false;
+    //           break;
+    //         case 'claimedAwards':
+    //           t.show = true;
+    //           break;
+    //       }
+    //     });
+    //   } else {
+    //     _this.settings.rewardsSection.accordionLayout.map(t => {
+    //       switch (t.type) {
+    //         case 'availableAwards':
+    //           t.show = false;
+    //           break;
+    //         case 'claimedAwards':
+    //           if (this.settings.lbWidget.settings.instantWins.enable) {
+    //             t.show = false;
+    //           } else {
+    //             t.show = true;
+    //           }
+    //           break;
+    //         case 'instantWins':
+    //           if (this.settings.lbWidget.settings.instantWins.enable) {
+    //             t.show = true;
+    //           }
+    //           break;
+    //       }
+    //     });
+    //   }
+    // }
 
     const accordionObj = _this.awardsList(_this.settings.rewardsSection.accordionLayout, function (accordionSection, listContainer, topEntryContainer, layout, paginator) {
       let rewardData = _this.settings.lbWidget.settings.awards[layout.type];
-      if (typeof rewardData !== 'undefined' && rewardData.length) {
+      if (typeof rewardData !== 'undefined' && rewardData.length && layout.type === 'availableAwards') {
         if (rewardData.length === 0) {
           accordionSection.style.display = 'none';
         }
         rewardData = rewardData.filter(a => a.rewardData);
         mapObject(rewardData, function (rew, key, count) {
-          if ((count + 1) <= layout.showTopResults && query(topEntryContainer, '.cl-reward-' + rew.id) === null) {
-            var topEntryContaineRlistItem = _this.rewardItem(rew);
-            topEntryContainer.appendChild(topEntryContaineRlistItem);
-          }
+          // if ((count + 1) <= layout.showTopResults && query(topEntryContainer, '.cl-reward-' + rew.id) === null) {
+          //   var topEntryContaineRlistItem = _this.rewardItem(rew);
+          //   topEntryContainer.appendChild(topEntryContaineRlistItem);
+          // }
 
           if (query(listContainer, '.cl-reward-' + rew.id) === null) {
-            var listItem = _this.rewardItem(rew);
+            const listItem = _this.rewardItem(rew);
             listContainer.appendChild(listItem);
           }
+        });
+      } else if (typeof rewardData !== 'undefined' && rewardData.length && layout.type === 'pastAwards') {
+        mapObject(rewardData, function (rew) {
+          const listItem = _this.rewardItemPast(rew);
+          listContainer.appendChild(listItem);
         });
       } else {
         const listItem = _this.rewardItemEmpty();
@@ -2968,7 +2989,7 @@ export const MainWidget = function (options) {
           callback();
         }
 
-        _this.loadInstantWins();
+        // _this.loadInstantWins();
       },
       pageNumber,
       claimedPageNumber

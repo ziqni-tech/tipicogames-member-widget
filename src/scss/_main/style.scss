@@ -2163,6 +2163,83 @@
   text-decoration: underline;
 }
 
+.rewards-list-item-past {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-bottom: 8px;
+  border-radius: 8px;
+  background: var(--card-active);
+}
+
+.rewards-list-item-past-info-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 8px 16px 16px;
+  height: 70px;
+  border-radius: 8px;
+}
+
+.rewards-list-item-past-info-data {
+  color: var(--ui-color-text-secondary);
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 12px;
+  text-transform: uppercase;
+}
+
+.rewards-list-item-past-info-title {
+  color: var(--Primary-White);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 21px;
+}
+
+.rewards-list-item-past-info-data-status {
+  color: var(--ui-color-primary);
+}
+
+.rewards-list-item-past-info-body {
+  flex-direction: column;
+  padding: 0 16px 24px 16px;
+  display: none;
+  height: 0;
+  transition: all .3s ease;
+}
+
+.rewards-list-item-past.expanded {
+  .rewards-list-item-past-info-body {
+    display: flex;
+    height: auto;
+  }
+}
+
+.rewards-list-item-past-info-body-item {
+  display: flex;
+  justify-content: space-between;
+  height: 40px;
+  align-items: center;
+  border-bottom: solid 1px rgba(255,255,255,.1);
+}
+
+.rewards-list-item-past-info-body-item-label {
+  color: var(--ui-color-text-secondary);
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 18px;
+  text-transform: uppercase;
+}
+
+.rewards-list-item-past-info-body-item-value {
+  color: #fff;
+  text-align: right;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 21px;
+}
+
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-achievements-list .cl-ach-list-item {
   display: flex;
   flex-shrink: 0;
