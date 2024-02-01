@@ -952,7 +952,12 @@ export const LbWidget = function (options) {
         });
       }
 
-      if (typeof callback === 'function') callback(_this.settings.achievements.list);
+      const list = {
+        current: _this.settings.achievements.list,
+        past: []
+      };
+
+      if (typeof callback === 'function') callback(list);
     });
   };
 
@@ -2719,7 +2724,7 @@ export const LbWidget = function (options) {
       _this.settings.mainWidget.hideCompetitionList();
 
       // hide Instant Wins
-    } else if (hasClass(el, 'cl-main-widget-reward-header-back')) {
+    } else if (hasClass(el, 'cl-main-widget-reward-header-back') || hasClass(el, 'cl-main-widget-ach-header-back')) {
       // _this.settings.mainWidget.hideInstantWins();
       _this.settings.mainWidget.resetNavigation();
 

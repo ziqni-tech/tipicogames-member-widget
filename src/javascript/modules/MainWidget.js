@@ -121,6 +121,22 @@ export const MainWidget = function (options) {
         // }
       ]
     },
+    achievementSection: {
+      accordionLayout: [
+        {
+          label: 'Current',
+          type: 'current',
+          show: true,
+          showTopResults: 1
+        },
+        {
+          label: 'Past',
+          type: 'past',
+          show: false,
+          showTopResults: 1
+        }
+      ]
+    },
     active: false,
     navigationSwitchLastAtempt: new Date().getTime(),
     navigationSwitchInProgress: false
@@ -338,12 +354,22 @@ export const MainWidget = function (options) {
       const readyContainer = container.querySelector('.readyCompetitions');
       readyContainer.classList.add('cl-shown');
     }
+
     if (element.classList.contains('availableAwards')) {
       const availableContainer = container.querySelector('.cl-accordion.availableAwards');
       availableContainer.classList.add('cl-shown');
     }
     if (element.classList.contains('claimedAwards')) {
       const claimedContainer = container.querySelector('.cl-accordion.pastAwards');
+      claimedContainer.classList.add('cl-shown');
+    }
+
+    if (element.classList.contains('currentAchievements')) {
+      const availableContainer = container.querySelector('.cl-accordion.current');
+      availableContainer.classList.add('cl-shown');
+    }
+    if (element.classList.contains('pastAchievements')) {
+      const claimedContainer = container.querySelector('.cl-accordion.past');
       claimedContainer.classList.add('cl-shown');
     }
     // if (element.classList.contains('expiredAwards')) {
@@ -1990,6 +2016,13 @@ export const MainWidget = function (options) {
     return listItem;
   };
 
+  this.achievementItemEmpty = function () {
+    const listItem = document.createElement('div');
+    listItem.setAttribute('class', 'cl-ach-list-item');
+
+    return listItem;
+  };
+
   this.achievementItemUpdateProgression = function (id, percentageComplete) {
     const achList = query(
       this.settings.section,
@@ -2019,79 +2052,157 @@ export const MainWidget = function (options) {
     barLabel.innerHTML = percentageComplete + '/100';
   };
 
+  this.achievementList = function (data, onLayout) {
+    const _this = this;
+    const accordionWrapper = document.createElement('div');
+
+    accordionWrapper.setAttribute('class', 'cl-main-accordion-container');
+
+    const statusMenu = document.createElement('div');
+    statusMenu.setAttribute('class', 'cl-main-accordion-container-menu');
+
+    const availableTitle = document.createElement('div');
+    const claimedTitle = document.createElement('div');
+
+    availableTitle.setAttribute('class', 'cl-main-accordion-container-menu-item currentAchievements');
+    claimedTitle.setAttribute('class', 'cl-main-accordion-container-menu-item pastAchievements');
+
+    const idx = data.findIndex(d => d.show === true);
+    if (idx !== -1) {
+      switch (data[idx].type) {
+        case 'current':
+          availableTitle.classList.add('active');
+          break;
+        case 'past':
+          claimedTitle.classList.add('active');
+          break;
+      }
+    }
+
+    availableTitle.innerHTML = _this.settings.lbWidget.settings.translation.rewards.availableRewards;
+    claimedTitle.innerHTML = _this.settings.lbWidget.settings.translation.rewards.claimed;
+
+    statusMenu.appendChild(availableTitle);
+    statusMenu.appendChild(claimedTitle);
+
+    accordionWrapper.appendChild(statusMenu);
+
+    mapObject(data, function (entry) {
+      const accordionSection = document.createElement('div');
+      const topShownEntry = document.createElement('div');
+      const accordionListContainer = document.createElement('div');
+      const accordionList = document.createElement('div');
+
+      accordionSection.setAttribute('class', 'cl-accordion ' + entry.type + ((typeof entry.show === 'boolean' && entry.show) ? ' cl-shown' : ''));
+      topShownEntry.setAttribute('class', 'cl-accordion-entry');
+      accordionListContainer.setAttribute('class', 'cl-accordion-list-container');
+      accordionList.setAttribute('class', 'cl-accordion-list');
+
+      if (typeof onLayout === 'function') {
+        onLayout(accordionSection, accordionList, topShownEntry, entry);
+      }
+
+      accordionListContainer.appendChild(accordionList);
+
+      accordionSection.appendChild(accordionListContainer);
+
+      accordionWrapper.appendChild(accordionSection);
+    });
+
+    return accordionWrapper;
+  };
+
   this.achievementListLayout = function (pageNumber, achievementData, paginationArr = null) {
     const _this = this;
     const achList = query(_this.settings.section, '.' + _this.settings.lbWidget.settings.navigation.achievements.containerClass + ' .cl-main-widget-ach-list-body-res');
-    const totalCount = _this.settings.lbWidget.settings.achievements.totalCount;
-    const itemsPerPage = _this.settings.lbWidget.settings.itemsPerPage;
-    let paginator = query(achList, '.paginator');
+    // const totalCount = _this.settings.lbWidget.settings.achievements.totalCount;
+    // const itemsPerPage = _this.settings.lbWidget.settings.itemsPerPage;
+    // let paginator = query(achList, '.paginator');
+    // const prev = document.createElement('span');
+    // prev.setAttribute('class', 'paginator-item prev');
+    // const next = document.createElement('span');
+    // next.setAttribute('class', 'paginator-item next');
 
-    const prev = document.createElement('span');
-    prev.setAttribute('class', 'paginator-item prev');
-    const next = document.createElement('span');
-    next.setAttribute('class', 'paginator-item next');
-
-    achList.innerHTML = '';
-
-    if (paginationArr && paginationArr.length) {
-      let page = '';
-      for (const i in paginationArr) {
-        page += '<span class="paginator-item" data-page=' + paginationArr[i] + '\>' + paginationArr[i] + '</span>';
-      }
-      paginator.innerHTML = page;
-
-      paginator.prepend(prev);
-      paginator.appendChild(next);
-    }
-
-    if (!paginator && totalCount > itemsPerPage) {
-      const pagesCount = Math.ceil(totalCount / 6);
-      paginator = document.createElement('div');
-      paginator.setAttribute('class', 'paginator');
-
-      let page = '';
-      const isEllipsis = pagesCount > 7;
-
-      if (isEllipsis) {
-        for (let i = 0; i < 7; i++) {
-          if (i === 5) {
-            page += '<span class="paginator-item" data-page="..."\>...</span>';
-          } else if (i === 6) {
-            page += '<span class="paginator-item" data-page=' + pagesCount + '\>' + pagesCount + '</span>';
-          } else {
-            page += '<span class="paginator-item" data-page=' + (i + 1) + '\>' + (i + 1) + '</span>';
-          }
-        }
+    const accordionObj = _this.achievementList(_this.settings.achievementSection.accordionLayout, function (accordionSection, listContainer, topEntryContainer, layout) {
+      const data = achievementData[layout.type];
+      if (typeof data !== 'undefined' && data.length && layout.type === 'current') {
+        mapObject(data, function (rew) {
+          const listItem = _this.achievementItem(rew);
+          listContainer.appendChild(listItem);
+        });
+      } else if (typeof data !== 'undefined' && data.length && layout.type === 'past') {
+        mapObject(data, function (rew) {
+          const listItem = _this.achievementItem(rew);
+          listContainer.appendChild(listItem);
+        });
       } else {
-        for (let i = 0; i < pagesCount; i++) {
-          page += '<span class="paginator-item" data-page=' + (i + 1) + '\>' + (i + 1) + '</span>';
-        }
-      }
-
-      paginator.innerHTML = page;
-
-      paginator.prepend(prev);
-      paginator.appendChild(next);
-    }
-
-    mapObject(achievementData, function (ach) {
-      if (query(achList, '.cl-ach-' + ach.id) === null) {
-        const listItem = _this.achievementItem(ach);
-        achList.appendChild(listItem);
+        const listItem = _this.achievementItemEmpty();
+        listContainer.appendChild(listItem);
       }
     });
 
-    if (paginator) {
-      const paginatorItems = query(paginator, '.paginator-item');
-      paginatorItems.forEach(item => {
-        removeClass(item, 'active');
-        if (Number(item.dataset.page) === Number(pageNumber)) {
-          addClass(item, 'active');
-        }
-      });
+    achList.innerHTML = '';
+    achList.appendChild(accordionObj);
 
-      achList.appendChild(paginator);
-    }
+    // mapObject(achievementData, function (ach) {
+    //   if (query(achList, '.cl-ach-' + ach.id) === null) {
+    //     const listItem = _this.achievementItem(ach);
+    //     achList.appendChild(listItem);
+    //   }
+    // });
+
+    // if (paginationArr && paginationArr.length) {
+    //   let page = '';
+    //   for (const i in paginationArr) {
+    //     page += '<span class="paginator-item" data-page=' + paginationArr[i] + '\>' + paginationArr[i] + '</span>';
+    //   }
+    //   paginator.innerHTML = page;
+    //
+    //   paginator.prepend(prev);
+    //   paginator.appendChild(next);
+    // }
+    //
+    // if (!paginator && totalCount > itemsPerPage) {
+    //   const pagesCount = Math.ceil(totalCount / 6);
+    //   paginator = document.createElement('div');
+    //   paginator.setAttribute('class', 'paginator');
+    //
+    //   let page = '';
+    //   const isEllipsis = pagesCount > 7;
+    //
+    //   if (isEllipsis) {
+    //     for (let i = 0; i < 7; i++) {
+    //       if (i === 5) {
+    //         page += '<span class="paginator-item" data-page="..."\>...</span>';
+    //       } else if (i === 6) {
+    //         page += '<span class="paginator-item" data-page=' + pagesCount + '\>' + pagesCount + '</span>';
+    //       } else {
+    //         page += '<span class="paginator-item" data-page=' + (i + 1) + '\>' + (i + 1) + '</span>';
+    //       }
+    //     }
+    //   } else {
+    //     for (let i = 0; i < pagesCount; i++) {
+    //       page += '<span class="paginator-item" data-page=' + (i + 1) + '\>' + (i + 1) + '</span>';
+    //     }
+    //   }
+    //
+    //   paginator.innerHTML = page;
+    //
+    //   paginator.prepend(prev);
+    //   paginator.appendChild(next);
+    // }
+
+    // if (paginator) {
+    //   const paginatorItems = query(paginator, '.paginator-item');
+    //   paginatorItems.forEach(item => {
+    //     removeClass(item, 'active');
+    //     if (Number(item.dataset.page) === Number(pageNumber)) {
+    //       addClass(item, 'active');
+    //     }
+    //   });
+    //
+    //   achList.appendChild(paginator);
+    // }
   };
 
   this.loadAchievementDetails = async function (data, callback) {
@@ -2281,7 +2392,7 @@ export const MainWidget = function (options) {
         }
       });
 
-      if (ach !== null) {
+      if (ach.dataset.id) {
         const bar = query(ach, '.cl-ach-list-progression-bar');
         const barLabel = query(ach, '.cl-ach-list-progression-label');
 
@@ -2503,11 +2614,22 @@ export const MainWidget = function (options) {
       if (award.period) {
         const diff = moment(award.created).add(award.period, 'm').diff(moment());
         const date = _this.settings.lbWidget.formatAwardDateTime(moment.duration(diff));
-        const el = document.querySelector(`.dashboard-rewards-list-item[data-id="${award.id}"]`);
-        if (!el) return;
-        const dateEl = el.querySelector('.dashboard-rewards-list-item-expires-value');
-        if (!dateEl) return;
-        dateEl.innerHTML = date;
+        const container = document.querySelector('.cl-main-widget-dashboard-rewards-list');
+        const listContainer = document.querySelector('.cl-accordion.availableAwards');
+        if (container) {
+          const el = container.querySelector(`.dashboard-rewards-list-item[data-id="${award.id}"]`);
+          if (!el) return;
+          const dateEl = el.querySelector('.dashboard-rewards-list-item-expires-value');
+          if (!dateEl) return;
+          dateEl.innerHTML = date;
+        }
+        if (listContainer) {
+          const el = listContainer.querySelector(`.dashboard-rewards-list-item[data-id="${award.id}"]`);
+          if (!el) return;
+          const dateEl = el.querySelector('.dashboard-rewards-list-item-expires-value');
+          if (!dateEl) return;
+          dateEl.innerHTML = date;
+        }
       }
     });
 
@@ -2907,11 +3029,13 @@ export const MainWidget = function (options) {
 
     const accordionObj = _this.awardsList(_this.settings.rewardsSection.accordionLayout, function (accordionSection, listContainer, topEntryContainer, layout, paginator) {
       let rewardData = _this.settings.lbWidget.settings.awards[layout.type];
+      if (rewardData && rewardData.length) {
+        rewardData = rewardData.filter(a => a.rewardData);
+      }
       if (typeof rewardData !== 'undefined' && rewardData.length && layout.type === 'availableAwards') {
         if (rewardData.length === 0) {
           accordionSection.style.display = 'none';
         }
-        rewardData = rewardData.filter(a => a.rewardData);
         mapObject(rewardData, function (rew, key, count) {
           // if ((count + 1) <= layout.showTopResults && query(topEntryContainer, '.cl-reward-' + rew.id) === null) {
           //   var topEntryContaineRlistItem = _this.rewardItem(rew);
@@ -3581,7 +3705,7 @@ export const MainWidget = function (options) {
 
     if (this.settings.lbWidget.settings.navigation.achievements.enable) {
       this.settings.lbWidget.checkForAvailableAchievements(1, function (achievementData) {
-        _this.loadDashboardAchievements(achievementData);
+        _this.loadDashboardAchievements(achievementData.current);
       });
     }
 
