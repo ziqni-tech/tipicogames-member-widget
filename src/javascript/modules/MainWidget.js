@@ -2016,6 +2016,36 @@ export const MainWidget = function (options) {
     return listItem;
   };
 
+  this.achievementItemPast = function (ach) {
+    const listItem = document.createElement('div');
+    listItem.setAttribute('class', 'past cl-ach-list-item cl-ach-' + ach.id);
+    listItem.dataset.id = ach.id;
+
+    let bgImage = '';
+    if (ach.iconLink) {
+      bgImage = 'background-image: url(' + ach.iconLink + ')';
+    }
+
+    let rewardValue = '';
+    let rewardName = '';
+    if (ach.reward) {
+      rewardValue = this.settings.lbWidget.settings.partialFunctions.rewardFormatter(ach.reward);
+      rewardName = ach.reward.name;
+    }
+
+    const template = require('../templates/mainWidget/achievementItemPast.hbs');
+    listItem.innerHTML = template({
+      id: ach.id,
+      title: ach.name,
+      bgImage: bgImage,
+      rewardValue: rewardValue,
+      endsLabel: this.settings.lbWidget.settings.translation.achievements.endsLabel,
+      rewardName: rewardName
+    });
+
+    return listItem;
+  };
+
   this.achievementItemEmpty = function () {
     const listItem = document.createElement('div');
     listItem.setAttribute('class', 'cl-ach-list-item');
@@ -2115,13 +2145,6 @@ export const MainWidget = function (options) {
   this.achievementListLayout = function (pageNumber, achievementData, paginationArr = null) {
     const _this = this;
     const achList = query(_this.settings.section, '.' + _this.settings.lbWidget.settings.navigation.achievements.containerClass + ' .cl-main-widget-ach-list-body-res');
-    // const totalCount = _this.settings.lbWidget.settings.achievements.totalCount;
-    // const itemsPerPage = _this.settings.lbWidget.settings.itemsPerPage;
-    // let paginator = query(achList, '.paginator');
-    // const prev = document.createElement('span');
-    // prev.setAttribute('class', 'paginator-item prev');
-    // const next = document.createElement('span');
-    // next.setAttribute('class', 'paginator-item next');
 
     const accordionObj = _this.achievementList(_this.settings.achievementSection.accordionLayout, function (accordionSection, listContainer, topEntryContainer, layout) {
       const data = achievementData[layout.type];
@@ -2132,7 +2155,7 @@ export const MainWidget = function (options) {
         });
       } else if (typeof data !== 'undefined' && data.length && layout.type === 'past') {
         mapObject(data, function (rew) {
-          const listItem = _this.achievementItem(rew);
+          const listItem = _this.achievementItemPast(rew);
           listContainer.appendChild(listItem);
         });
       } else {
@@ -2143,66 +2166,6 @@ export const MainWidget = function (options) {
 
     achList.innerHTML = '';
     achList.appendChild(accordionObj);
-
-    // mapObject(achievementData, function (ach) {
-    //   if (query(achList, '.cl-ach-' + ach.id) === null) {
-    //     const listItem = _this.achievementItem(ach);
-    //     achList.appendChild(listItem);
-    //   }
-    // });
-
-    // if (paginationArr && paginationArr.length) {
-    //   let page = '';
-    //   for (const i in paginationArr) {
-    //     page += '<span class="paginator-item" data-page=' + paginationArr[i] + '\>' + paginationArr[i] + '</span>';
-    //   }
-    //   paginator.innerHTML = page;
-    //
-    //   paginator.prepend(prev);
-    //   paginator.appendChild(next);
-    // }
-    //
-    // if (!paginator && totalCount > itemsPerPage) {
-    //   const pagesCount = Math.ceil(totalCount / 6);
-    //   paginator = document.createElement('div');
-    //   paginator.setAttribute('class', 'paginator');
-    //
-    //   let page = '';
-    //   const isEllipsis = pagesCount > 7;
-    //
-    //   if (isEllipsis) {
-    //     for (let i = 0; i < 7; i++) {
-    //       if (i === 5) {
-    //         page += '<span class="paginator-item" data-page="..."\>...</span>';
-    //       } else if (i === 6) {
-    //         page += '<span class="paginator-item" data-page=' + pagesCount + '\>' + pagesCount + '</span>';
-    //       } else {
-    //         page += '<span class="paginator-item" data-page=' + (i + 1) + '\>' + (i + 1) + '</span>';
-    //       }
-    //     }
-    //   } else {
-    //     for (let i = 0; i < pagesCount; i++) {
-    //       page += '<span class="paginator-item" data-page=' + (i + 1) + '\>' + (i + 1) + '</span>';
-    //     }
-    //   }
-    //
-    //   paginator.innerHTML = page;
-    //
-    //   paginator.prepend(prev);
-    //   paginator.appendChild(next);
-    // }
-
-    // if (paginator) {
-    //   const paginatorItems = query(paginator, '.paginator-item');
-    //   paginatorItems.forEach(item => {
-    //     removeClass(item, 'active');
-    //     if (Number(item.dataset.page) === Number(pageNumber)) {
-    //       addClass(item, 'active');
-    //     }
-    //   });
-    //
-    //   achList.appendChild(paginator);
-    // }
   };
 
   this.loadAchievementDetails = async function (data, callback) {
@@ -2395,15 +2358,16 @@ export const MainWidget = function (options) {
       if (ach.dataset.id) {
         const bar = query(ach, '.cl-ach-list-progression-bar');
         const barLabel = query(ach, '.cl-ach-list-progression-label');
-
-        if (issuedStatus) {
-          addClass(bar, 'cl-ach-complete');
-          barLabel.innerHTML = '100/100';
-          bar.style.width = '100%';
-        } else {
-          const percValue = ((perc > 1 || perc === 0) ? perc : 1) + '%';
-          barLabel.innerHTML = perc + '/100';
-          bar.style.width = percValue;
+        if (bar) {
+          if (issuedStatus) {
+            addClass(bar, 'cl-ach-complete');
+            barLabel.innerHTML = '100/100';
+            bar.style.width = '100%';
+          } else {
+            const percValue = ((perc > 1 || perc === 0) ? perc : 1) + '%';
+            barLabel.innerHTML = perc + '/100';
+            bar.style.width = percValue;
+          }
         }
       }
     });

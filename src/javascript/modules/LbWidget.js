@@ -127,7 +127,9 @@ export const LbWidget = function (options) {
       activeAchievementId: null,
       limit: 100,
       totalCount: 0,
+      pastTotalCount: 0,
       list: [],
+      pastList: [],
       availableRewards: [],
       rewards: [],
       expiredRewards: [],
@@ -872,13 +874,7 @@ export const LbWidget = function (options) {
     }
   };
 
-  this.checkForAvailableAchievements = function (pageNumber, callback) {
-    const _this = this;
-
-    if (!this.settings.apiWs.achievementsApiWsClient) {
-      this.settings.apiWs.achievementsApiWsClient = new AchievementsApiWs(this.apiClientStomp);
-    }
-
+  this.checkForAvailableAchievements = async function (pageNumber, callback) {
     const moreValue = this.settings.navigation.achievements.showReadyAchievements ? 10 : 20;
 
     const achievementRequest = AchievementRequest.constructFromObject({
@@ -897,68 +893,116 @@ export const LbWidget = function (options) {
           queryField: 'created',
           order: 'Desc'
         }],
-        skip: (pageNumber - 1) * 6,
-        limit: 6,
+        skip: (pageNumber - 1) * 20,
+        limit: 20,
         constraints: []
       }
     }, null);
 
-    this.settings.apiWs.achievementsApiWsClient.getAchievements(achievementRequest, async (json) => {
-      _this.settings.achievements.list = json.data;
-      _this.settings.achievements.totalCount = json.meta.totalRecordsFound || 0;
-      const optInAchievements = json.data.filter(a => a.constraints && a.constraints.includes('optinRequiredForEntrants'));
-      let optInIds = [];
-      if (optInAchievements.length) {
-        optInIds = optInAchievements.map(a => {
-          if (a.constraints && a.constraints.includes('optinRequiredForEntrants')) {
-            return a.id;
-          }
-        });
+    const pastAchievementRequest = AchievementRequest.constructFromObject({
+      languageKey: this.settings.language,
+      achievementFilter: {
+        productTags: [],
+        tags: [],
+        startDate: null,
+        endDate: null,
+        ids: [],
+        statusCode: {
+          moreThan: 30,
+          lessThan: 40
+        },
+        sortBy: [{
+          queryField: 'created',
+          order: 'Desc'
+        }],
+        skip: (pageNumber - 1) * 20,
+        limit: 20,
+        constraints: []
       }
+    }, null);
 
-      if (optInIds.length) {
-        const statuses = await _this.getMemberAchievementsOptInStatuses(optInIds);
-        if (statuses.length) {
-          statuses.forEach(s => {
-            const idx = _this.settings.achievements.list.findIndex(a => a.id === s.entityId);
-            if (idx !== -1) {
-              _this.settings.achievements.list[idx].optInStatus = s.statusCode;
-            }
-          });
+    const json = await this.getAchievements(achievementRequest);
+    this.settings.achievements.list = json.data;
+    this.settings.achievements.totalCount = json.meta.totalRecordsFound || 0;
+    const optInAchievements = json.data.filter(a => a.constraints && a.constraints.includes('optinRequiredForEntrants'));
+    let optInIds = [];
+    if (optInAchievements.length) {
+      optInIds = optInAchievements.map(a => {
+        if (a.constraints && a.constraints.includes('optinRequiredForEntrants')) {
+          return a.id;
         }
-      }
+      });
+    }
 
-      if (_this.settings.achievements.list.length) {
-        const ids = _this.settings.achievements.list.map(a => a.id);
-        const rewardRequest = {
-          entityFilter: [{
-            entityType: 'Achievement',
-            entityIds: ids
-          }],
-          currencyKey: this.settings.currency,
-          skip: 0,
-          limit: 20
-        };
-        const rewards = await this.getRewardsApi(rewardRequest);
-        const rewardsData = rewards.data;
-
-        _this.settings.achievements.list = _this.settings.achievements.list.map(achievement => {
-          const idx = rewardsData.findIndex(r => r.entityId === achievement.id);
+    if (optInIds.length) {
+      const statuses = await this.getMemberAchievementsOptInStatuses(optInIds);
+      if (statuses.length) {
+        statuses.forEach(s => {
+          const idx = this.settings.achievements.list.findIndex(a => a.id === s.entityId);
           if (idx !== -1) {
-            achievement.reward = rewardsData[idx];
+            this.settings.achievements.list[idx].optInStatus = s.statusCode;
           }
-
-          return achievement;
         });
       }
+    }
 
-      const list = {
-        current: _this.settings.achievements.list,
-        past: []
+    if (this.settings.achievements.list.length) {
+      const ids = this.settings.achievements.list.map(a => a.id);
+      const rewardRequest = {
+        entityFilter: [{
+          entityType: 'Achievement',
+          entityIds: ids
+        }],
+        currencyKey: this.settings.currency,
+        skip: 0,
+        limit: 20
       };
+      const rewards = await this.getRewardsApi(rewardRequest);
+      const rewardsData = rewards.data;
 
-      if (typeof callback === 'function') callback(list);
-    });
+      this.settings.achievements.list = this.settings.achievements.list.map(achievement => {
+        const idx = rewardsData.findIndex(r => r.entityId === achievement.id);
+        if (idx !== -1) {
+          achievement.reward = rewardsData[idx];
+        }
+
+        return achievement;
+      });
+    }
+
+    const jsonPast = await this.getAchievements(pastAchievementRequest);
+    this.settings.achievements.pastList = jsonPast.data;
+    this.settings.achievements.pastTotalCount = jsonPast.meta.totalRecordsFound || 0;
+    if (this.settings.achievements.pastList.length) {
+      const ids = this.settings.achievements.pastList.map(a => a.id);
+      const rewardRequest = {
+        entityFilter: [{
+          entityType: 'Achievement',
+          entityIds: ids
+        }],
+        currencyKey: this.settings.currency,
+        skip: 0,
+        limit: 20
+      };
+      const rewards = await this.getRewardsApi(rewardRequest);
+      const rewardsData = rewards.data;
+
+      this.settings.achievements.pastList = this.settings.achievements.pastList.map(achievement => {
+        const idx = rewardsData.findIndex(r => r.entityId === achievement.id);
+        if (idx !== -1) {
+          achievement.reward = rewardsData[idx];
+        }
+
+        return achievement;
+      });
+    }
+
+    const list = {
+      current: this.settings.achievements.list,
+      past: this.settings.achievements.pastList
+    };
+
+    if (typeof callback === 'function') callback(list);
   };
 
   this.playInstantWin = async function () {
@@ -995,6 +1039,18 @@ export const LbWidget = function (options) {
     if (typeof callback === 'function' && achievementData.length) {
       callback(achievementData[0]);
     }
+  };
+
+  this.getAchievements = async function (achievementRequest) {
+    if (!this.settings.apiWs.achievementsApiWsClient) {
+      this.settings.apiWs.achievementsApiWsClient = new AchievementsApiWs(this.apiClientStomp);
+    }
+
+    return new Promise((resolve, reject) => {
+      this.settings.apiWs.achievementsApiWsClient.getAchievements(achievementRequest, (json) => {
+        resolve(json);
+      });
+    });
   };
 
   this.getAchievementsByIds = async function (achievementIds) {
@@ -2452,7 +2508,7 @@ export const LbWidget = function (options) {
       });
 
       // load achievement details
-    } else if (hasClass(el, 'cl-ach-list-more') || closest(el, '.cl-ach-list-details-cont') !== null) {
+    } else if ((hasClass(el, 'cl-ach-list-more') || closest(el, '.cl-ach-list-details-cont') !== null) && !closest(el, '.past')) {
       const id = closest(el, '.cl-ach-list-item').dataset.id;
 
       if (closest(el, '.cl-main-widget-dashboard-achievements-list')) {
@@ -2757,6 +2813,17 @@ export const LbWidget = function (options) {
         wrapper.classList.remove('expanded');
       } else {
         wrapper.classList.add('expanded');
+      }
+
+      // expand past mission data
+    } else if (hasClass(el, 'cl-ach-list-details-cont') || closest(el, '.cl-ach-list-details-cont') !== null) {
+      const wrapper = closest(el, '.past');
+      if (wrapper) {
+        if (wrapper.classList.contains('expanded')) {
+          wrapper.classList.remove('expanded');
+        } else {
+          wrapper.classList.add('expanded');
+        }
       }
 
       // accordion navigation
