@@ -2188,7 +2188,6 @@ export const LbWidget = function (options) {
       !_this.settings.leaderboard.layoutSettings.titleLinkToDetailsPage &&
       (
         hasClass(el, 'cl-main-widget-lb-details-description-close') ||
-        hasClass(el, 'cl-main-widget-lb-header-back-icon') ||
         hasClass(el, 'cl-main-widget-lb-details-description-header-back')
       )
     ) {
@@ -2484,28 +2483,42 @@ export const LbWidget = function (options) {
 
       // load dashboard competitions
     } else if (hasClass(el, 'cl-main-widget-dashboard-tournaments-list-more')) {
-      const preLoader = _this.settings.mainWidget.preloader();
+      if (_this.settings.leaderboard.refreshInterval) {
+        clearTimeout(_this.settings.leaderboard.refreshInterval);
+      }
       const dashboard = document.querySelector('.cl-main-widget-section-dashboard');
-      // const dashboardIcon = document.querySelector('.cl-main-widget-navigation-dashboard');
-      // const compIcon = document.querySelector('.cl-main-widget-navigation-lb');
-
-      preLoader.show(function () {
-        // compIcon.classList.add('cl-active-nav');
-        dashboard.style.display = 'none';
-        // dashboardIcon.classList.remove('cl-active-nav');
-
-        _this.checkForAvailableRewards(1);
-        _this.settings.mainWidget.loadLeaderboard(function () {
-          const lbContainer = query(_this.settings.mainWidget.settings.container, '.cl-main-widget-section-container .' + _this.settings.navigation.tournaments.containerClass);
-
-          lbContainer.style.display = 'flex';
-          setTimeout(function () {
-            addClass(lbContainer, 'cl-main-active-section');
-          }, 30);
-
-          preLoader.hide();
-        }, true);
+      dashboard.style.display = 'none';
+      const lbContainer = query(_this.settings.mainWidget.settings.container, '.cl-main-widget-section-container .' + _this.settings.navigation.tournaments.containerClass);
+      lbContainer.style.display = 'flex';
+      setTimeout(function () {
+        addClass(lbContainer, 'cl-main-active-section');
+      }, 30);
+      _this.checkForAvailableCompetitions(function () {
+        _this.settings.mainWidget.loadCompetitionList();
       });
+
+      // const preLoader = _this.settings.mainWidget.preloader();
+      // const dashboard = document.querySelector('.cl-main-widget-section-dashboard');
+      // // const dashboardIcon = document.querySelector('.cl-main-widget-navigation-dashboard');
+      // // const compIcon = document.querySelector('.cl-main-widget-navigation-lb');
+      //
+      // preLoader.show(function () {
+      //   // compIcon.classList.add('cl-active-nav');
+      //   dashboard.style.display = 'none';
+      //   // dashboardIcon.classList.remove('cl-active-nav');
+      //
+      //   _this.checkForAvailableRewards(1);
+      //   _this.settings.mainWidget.loadLeaderboard(function () {
+      //     const lbContainer = query(_this.settings.mainWidget.settings.container, '.cl-main-widget-section-container .' + _this.settings.navigation.tournaments.containerClass);
+      //
+      //     lbContainer.style.display = 'flex';
+      //     setTimeout(function () {
+      //       addClass(lbContainer, 'cl-main-active-section');
+      //     }, 30);
+      //
+      //     preLoader.hide();
+      //   }, true);
+      // });
 
       // load achievement details
     } else if ((hasClass(el, 'cl-ach-list-more') || closest(el, '.cl-ach-list-details-cont') !== null) && !closest(el, '.past')) {
@@ -2777,7 +2790,8 @@ export const LbWidget = function (options) {
 
       // hide competition list view
     } else if (hasClass(el, 'cl-main-widget-tournaments-back-btn') || hasClass(el, 'cl-main-widget-lb-header-back-icon')) {
-      _this.settings.mainWidget.hideCompetitionList();
+      // _this.settings.mainWidget.hideCompetitionList();
+      _this.settings.mainWidget.resetNavigation();
 
       // hide Instant Wins
     } else if (hasClass(el, 'cl-main-widget-reward-header-back') || hasClass(el, 'cl-main-widget-ach-header-back')) {
@@ -2818,6 +2832,20 @@ export const LbWidget = function (options) {
       // expand past mission data
     } else if (hasClass(el, 'cl-ach-list-details-cont') || closest(el, '.cl-ach-list-details-cont') !== null) {
       const wrapper = closest(el, '.past');
+      if (wrapper) {
+        if (wrapper.classList.contains('expanded')) {
+          wrapper.classList.remove('expanded');
+        } else {
+          wrapper.classList.add('expanded');
+        }
+      }
+
+      // expand past mission data
+    } else if (
+      (hasClass(el, 'dashboard-tournament-list-cont') || closest(el, '.dashboard-tournament-list-cont') !== null) &&
+      closest(el, '.tournament-result-item')
+    ) {
+      const wrapper = closest(el, '.tournament-result-item');
       if (wrapper) {
         if (wrapper.classList.contains('expanded')) {
           wrapper.classList.remove('expanded');

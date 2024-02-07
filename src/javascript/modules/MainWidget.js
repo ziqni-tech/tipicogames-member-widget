@@ -10,6 +10,7 @@ import remove from '../utils/remove';
 import appendNext from '../utils/appendNext';
 import stripHtml from '../utils/stripHtml';
 import tournamentBrackets from './TournamentBrackets';
+import { ContestRequest } from '@ziqni-tech/member-api-client';
 
 /**
  * MainWidget
@@ -254,11 +255,11 @@ export const MainWidget = function (options) {
 
     const finishedTitle = document.createElement('div');
     const activeTitle = document.createElement('div');
-    const readyTitle = document.createElement('div');
+    // const readyTitle = document.createElement('div');
 
     finishedTitle.setAttribute('class', 'cl-main-accordion-container-menu-item finishedTournaments');
     activeTitle.setAttribute('class', 'cl-main-accordion-container-menu-item activeTournaments');
-    readyTitle.setAttribute('class', 'cl-main-accordion-container-menu-item readyTournaments');
+    // readyTitle.setAttribute('class', 'cl-main-accordion-container-menu-item readyTournaments');
 
     const idx = data.findIndex(d => d.show === true);
     if (idx !== -1) {
@@ -269,19 +270,19 @@ export const MainWidget = function (options) {
         case 'finishedCompetitions':
           finishedTitle.classList.add('active');
           break;
-        case 'readyCompetitions':
-          readyTitle.classList.add('active');
-          break;
+        // case 'readyCompetitions':
+        //   readyTitle.classList.add('active');
+        //   break;
       }
     }
 
     finishedTitle.innerHTML = _this.settings.lbWidget.settings.translation.tournaments.finishedCompetitions;
     activeTitle.innerHTML = _this.settings.lbWidget.settings.translation.tournaments.activeCompetitions;
-    readyTitle.innerHTML = _this.settings.lbWidget.settings.translation.tournaments.readyCompetitions;
+    // readyTitle.innerHTML = _this.settings.lbWidget.settings.translation.tournaments.readyCompetitions;
 
-    statusMenu.appendChild(finishedTitle);
     statusMenu.appendChild(activeTitle);
-    statusMenu.appendChild(readyTitle);
+    statusMenu.appendChild(finishedTitle);
+    // statusMenu.appendChild(readyTitle);
 
     accordionWrapper.appendChild(statusMenu);
 
@@ -290,36 +291,36 @@ export const MainWidget = function (options) {
       const accordionLabel = document.createElement('div');
       const topShownEntry = document.createElement('div');
       const accordionListContainer = document.createElement('div');
-      const header = document.createElement('div');
-      const headerLabel = document.createElement('div');
-      const headerDate = document.createElement('div');
-      const headerPrize = document.createElement('div');
+      // const header = document.createElement('div');
+      // const headerLabel = document.createElement('div');
+      // const headerDate = document.createElement('div');
+      // const headerPrize = document.createElement('div');
       const accordionList = document.createElement('div');
 
       accordionSection.setAttribute('class', 'cl-accordion ' + entry.type + ((typeof entry.show === 'boolean' && entry.show) ? ' cl-shown' : ''));
       topShownEntry.setAttribute('class', 'cl-accordion-entry');
       accordionListContainer.setAttribute('class', 'cl-accordion-list-container');
-      header.setAttribute('class', 'cl-accordion-list-container-header');
-      headerLabel.setAttribute('class', 'cl-accordion-list-container-header-label');
-      headerDate.setAttribute('class', 'cl-accordion-list-container-header-date');
-      headerPrize.setAttribute('class', 'cl-accordion-list-container-header-prize');
+      // header.setAttribute('class', 'cl-accordion-list-container-header');
+      // headerLabel.setAttribute('class', 'cl-accordion-list-container-header-label');
+      // headerDate.setAttribute('class', 'cl-accordion-list-container-header-date');
+      // headerPrize.setAttribute('class', 'cl-accordion-list-container-header-prize');
       accordionList.setAttribute('class', 'cl-accordion-list');
 
-      headerLabel.innerHTML = _this.settings.lbWidget.settings.translation.tournaments.label;
-      headerDate.innerHTML = _this.settings.lbWidget.settings.translation.tournaments.date;
-      headerPrize.innerHTML = _this.settings.lbWidget.settings.translation.leaderboard.prize;
+      // headerLabel.innerHTML = _this.settings.lbWidget.settings.translation.tournaments.label;
+      // headerDate.innerHTML = _this.settings.lbWidget.settings.translation.tournaments.date;
+      // headerPrize.innerHTML = _this.settings.lbWidget.settings.translation.leaderboard.prize;
 
       if (typeof onLayout === 'function') {
         onLayout(accordionSection, accordionList, topShownEntry, entry);
       }
 
-      header.appendChild(headerLabel);
-      header.appendChild(headerDate);
-      if (_this.settings.lbWidget.settings.tournaments.showTournamentsMenuPrizeColumn) {
-        header.appendChild(headerPrize);
-      }
+      // header.appendChild(headerLabel);
+      // header.appendChild(headerDate);
+      // if (_this.settings.lbWidget.settings.tournaments.showTournamentsMenuPrizeColumn) {
+      //   header.appendChild(headerPrize);
+      // }
 
-      accordionListContainer.appendChild(header);
+      // accordionListContainer.appendChild(header);
       accordionListContainer.appendChild(accordionList);
 
       accordionSection.appendChild(accordionLabel);
@@ -1237,11 +1238,11 @@ export const MainWidget = function (options) {
   };
 
   this.showEmbeddedCompetitionDetailsContent = async function (callback) {
-    const listIcon = query(this.settings.container, '.cl-main-widget-lb-header-list-icon');
-    const backIcon = query(this.settings.container, '.cl-main-widget-lb-header-back-icon');
+    // const listIcon = query(this.settings.container, '.cl-main-widget-lb-header-list-icon');
+    // const backIcon = query(this.settings.container, '.cl-main-widget-lb-header-back-icon');
 
-    listIcon.style.display = 'none';
-    backIcon.style.display = 'block';
+    // listIcon.style.display = 'none';
+    // backIcon.style.display = 'block';
 
     if (!hasClass(this.settings.section, 'cl-main-active-embedded-description')) {
       addClass(this.settings.section, 'cl-main-active-embedded-description');
@@ -1259,16 +1260,16 @@ export const MainWidget = function (options) {
   };
 
   this.hideEmbeddedCompetitionDetailsContent = function (callback) {
-    const listIcon = query(this.settings.container, '.cl-main-widget-lb-header-list-icon');
-    const backIcon = query(this.settings.container, '.cl-main-widget-lb-header-back-icon');
+    // const listIcon = query(this.settings.container, '.cl-main-widget-lb-header-list-icon');
+    // const backIcon = query(this.settings.container, '.cl-main-widget-lb-header-back-icon');
     const missingMember = document.querySelector('.cl-main-widget-lb-missing-member-details');
 
     if (missingMember) {
       missingMember.style.display = 'none';
     }
 
-    listIcon.style.display = 'block';
-    backIcon.style.display = 'none';
+    // listIcon.style.display = 'block';
+    // backIcon.style.display = 'none';
 
     removeClass(this.settings.section, 'cl-main-active-embedded-description');
     if (typeof callback === 'function') callback();
@@ -1626,11 +1627,11 @@ export const MainWidget = function (options) {
     const label = query(_this.settings.detailsContainer, '.cl-main-widget-lb-details-header-label');
     const body = query(_this.settings.detailsContainer, '.cl-main-widget-lb-details-body');
     const image = query(_this.settings.detailsContainer, '.cl-main-widget-lb-details-body-image-cont');
-    const listIcon = query(this.settings.container, '.cl-main-widget-lb-header-list-icon');
-    const backIcon = query(this.settings.container, '.cl-main-widget-lb-header-back-icon');
+    // const listIcon = query(this.settings.container, '.cl-main-widget-lb-header-list-icon');
+    // const backIcon = query(this.settings.container, '.cl-main-widget-lb-header-back-icon');
 
-    listIcon.style.display = 'none';
-    backIcon.style.display = 'block';
+    // listIcon.style.display = 'none';
+    // backIcon.style.display = 'block';
 
     image.innerHTML = '';
     label.innerHTML = (_this.settings.lbWidget.settings.competition.activeContest.label.length > 0) ? _this.settings.lbWidget.settings.competition.activeContest.label : _this.settings.lbWidget.settings.competition.activeCompetition.label;
@@ -1659,8 +1660,8 @@ export const MainWidget = function (options) {
   ) {
     const _this = this;
     const listResContainer = query(_this.settings.tournamentListContainer, '.cl-main-widget-tournaments-list-body-res');
-    const listIcon = query(_this.settings.container, '.cl-main-widget-lb-header-list-icon');
-    const backIcon = query(_this.settings.container, '.cl-main-widget-lb-header-back-icon');
+    // const listIcon = query(_this.settings.container, '.cl-main-widget-lb-header-list-icon');
+    // const backIcon = query(_this.settings.container, '.cl-main-widget-lb-header-back-icon');
     const preLoader = _this.preloader();
 
     const totalCount = _this.settings.lbWidget.settings.tournaments.totalCount;
@@ -1832,8 +1833,8 @@ export const MainWidget = function (options) {
     }
 
     preLoader.show(function () {
-      listIcon.style.display = 'none';
-      backIcon.style.display = 'block';
+      // listIcon.style.display = 'none';
+      // backIcon.style.display = 'block';
       const accordionObj = _this.tournamentsList(_this.settings.tournamentsSection.accordionLayout, function (accordionSection, listContainer, topEntryContainer, layout) {
         const tournamentData = _this.settings.lbWidget.settings.tournaments[layout.type];
 
@@ -1841,17 +1842,17 @@ export const MainWidget = function (options) {
           if (tournamentData.length === 0) {
             accordionSection.style.display = 'none';
           }
-          mapObject(tournamentData, function (tournament, key, count) {
-            if ((count + 1) <= layout.showTopResults && query(topEntryContainer, '.cl-tournament-' + tournament.id) === null) {
-              const topEntryContaineRlistItem = _this.tournamentItem(tournament);
-              topEntryContainer.appendChild(topEntryContaineRlistItem);
-            }
-
-            if (query(listContainer, '.cl-tournament-' + tournament.id) === null) {
-              const listItem = _this.tournamentItem(tournament);
+          if (layout.type === 'activeCompetitions') {
+            mapObject(tournamentData, async function (tournament, key, count) {
+              const listItem = await _this.dashboardTournamentItem(tournament);
               listContainer.appendChild(listItem);
-            }
-          });
+            });
+          } else if (layout.type === 'finishedCompetitions') {
+            mapObject(tournamentData, async function (tournament, key, count) {
+              const listItem = await _this.tournamentResultItem(tournament);
+              listContainer.appendChild(listItem);
+            });
+          }
         }
       });
 
@@ -1957,11 +1958,11 @@ export const MainWidget = function (options) {
 
   this.hideCompetitionList = function (callback) {
     const _this = this;
-    const listIcon = query(_this.settings.container, '.cl-main-widget-lb-header-list-icon');
-    const backIcon = query(_this.settings.container, '.cl-main-widget-lb-header-back-icon');
+    // const listIcon = query(_this.settings.container, '.cl-main-widget-lb-header-list-icon');
+    // const backIcon = query(_this.settings.container, '.cl-main-widget-lb-header-back-icon');
 
-    listIcon.style.display = 'block';
-    backIcon.style.display = 'none';
+    // listIcon.style.display = 'block';
+    // backIcon.style.display = 'none';
     _this.hideEmbeddedCompetitionDetailsContent();
     _this.missingMemberReset();
 
@@ -2450,16 +2451,44 @@ export const MainWidget = function (options) {
     confirm.addEventListener('click', leaveAchievement);
   };
 
-  this.dashboardTournamentItem = function (tournament, isReadyStatus = false) {
+  this.dashboardTournamentItem = async function (tournament, isReadyStatus = false) {
     const listItem = document.createElement('div');
     listItem.setAttribute('class', 'dashboard-tournament-item');
+    const contestRequest = ContestRequest.constructFromObject({
+      languageKey: this.settings.language,
+      contestFilter: {
+        competitionIds: [tournament.id],
+        statusCode: {
+          moreThan: 0,
+          lessThan: 100
+        },
+        limit: 20,
+        skip: 0
+      }
+    }, null);
+
+    const contests = await this.settings.lbWidget.getContests(contestRequest);
+    const contest = contests[0];
+    const rewardRequest = {
+      entityFilter: [{
+        entityType: 'Contest',
+        entityIds: [contest.id]
+      }],
+      currencyKey: this.settings.currency,
+      skip: 0,
+      limit: 20
+    };
+    const rewards = await this.settings.lbWidget.getRewardsApi(rewardRequest);
+    const rewardsData = rewards.data;
+
     listItem.setAttribute('data-id', tournament.id);
+    listItem.setAttribute('data-contest-id', contest.id);
 
     let rewardValue = '';
     let rewardName = '';
 
-    if (tournament.rewards && tournament.rewards.length) {
-      const idx = tournament.rewards.findIndex(reward => {
+    if (rewardsData && rewardsData.length) {
+      const idx = rewardsData.findIndex(reward => {
         if (reward.rewardRank.indexOf('-') !== -1 || reward.rewardRank.indexOf(',') !== -1) {
           const rewardRankArr = reward.rewardRank.split(',');
           rewardRankArr.forEach(r => {
@@ -2481,8 +2510,8 @@ export const MainWidget = function (options) {
       });
 
       if (idx !== -1) {
-        rewardName = tournament.rewards[idx].name;
-        rewardValue = this.settings.lbWidget.settings.partialFunctions.rewardFormatter(tournament.rewards[idx]);
+        rewardName = rewardsData[idx].name;
+        rewardValue = this.settings.lbWidget.settings.partialFunctions.rewardFormatter(rewardsData[idx]);
       }
     }
 
@@ -2497,11 +2526,10 @@ export const MainWidget = function (options) {
       ? this.settings.lbWidget.settings.translation.dashboard.startsTitle
       : this.settings.lbWidget.settings.translation.dashboard.endsTitle;
 
-    const date = isReadyStatus ? new Date(tournament.scheduledStartDate) : new Date(tournament.scheduledEndDate);
-
+    const date = isReadyStatus ? new Date(contest.scheduledStartDate) : new Date(contest.scheduledEndDate);
     const template = require('../templates/dashboard/tournamentItem.hbs');
     listItem.innerHTML = template({
-      title: tournament.name,
+      title: contest.name,
       itemBg: itemBg,
       endsLabel: endsLabel,
       endsValue: date.toLocaleString('en-GB', { timeZone: 'UTC', dateStyle: 'short', timeStyle: 'short' }),
@@ -2509,7 +2537,97 @@ export const MainWidget = function (options) {
       prizeValue: rewardValue,
       rewardName: rewardName,
       playTournamentLabel: this.settings.lbWidget.settings.translation.dashboard.playTournamentLabel,
-      icon: tournament.iconLink ?? ''
+      icon: contest.iconLink ?? ''
+    });
+
+    return listItem;
+  };
+
+  this.tournamentResultItem = async function (tournament) {
+    const listItem = document.createElement('div');
+    listItem.setAttribute('class', 'tournament-result-item');
+    const contestRequest = ContestRequest.constructFromObject({
+      languageKey: this.settings.language,
+      contestFilter: {
+        competitionIds: [tournament.id],
+        statusCode: {
+          moreThan: 0,
+          lessThan: 100
+        },
+        limit: 20,
+        skip: 0
+      }
+    }, null);
+
+    const contests = await this.settings.lbWidget.getContests(contestRequest);
+    const contest = contests[0];
+    const rewardRequest = {
+      entityFilter: [{
+        entityType: 'Contest',
+        entityIds: [contest.id]
+      }],
+      currencyKey: this.settings.currency,
+      skip: 0,
+      limit: 20
+    };
+    const rewards = await this.settings.lbWidget.getRewardsApi(rewardRequest);
+    const rewardsData = rewards.data;
+
+    listItem.setAttribute('data-id', tournament.id);
+    listItem.setAttribute('data-contest-id', contest.id);
+
+    let rewardValue = '';
+    let rewardName = '';
+
+    if (rewardsData && rewardsData.length) {
+      const idx = rewardsData.findIndex(reward => {
+        if (reward.rewardRank.indexOf('-') !== -1 || reward.rewardRank.indexOf(',') !== -1) {
+          const rewardRankArr = reward.rewardRank.split(',');
+          rewardRankArr.forEach(r => {
+            const idx = r.indexOf('-');
+            if (idx !== -1) {
+              const start = parseInt(r);
+              if (start === 1) {
+                return true;
+              }
+            } else if (parseInt(r) === 1) {
+              return true;
+            }
+            return false;
+          });
+        } else if (parseInt(reward.rewardRank) === 1) {
+          return true;
+        }
+        return false;
+      });
+
+      if (idx !== -1) {
+        rewardName = rewardsData[idx].name;
+        rewardValue = this.settings.lbWidget.settings.partialFunctions.rewardFormatter(rewardsData[idx]);
+      }
+    }
+
+    let itemBg = '';
+    if (tournament.bannerLowResolutionLink) {
+      itemBg = tournament.bannerLowResolutionLink;
+    } else if (tournament.bannerLink) {
+      itemBg = tournament.bannerLink;
+    }
+
+    const endsLabel = this.settings.lbWidget.settings.translation.dashboard.endsTitle;
+
+    const date = new Date(contest.scheduledEndDate);
+    const template = require('../templates/mainWidget/tournamentResultItem.hbs');
+    listItem.innerHTML = template({
+      title: contest.name,
+      itemBg: itemBg,
+      endsLabel: endsLabel,
+      endsValue: date.toLocaleString('en-GB', { timeZone: 'UTC', dateStyle: 'short', timeStyle: 'short' }),
+      prizeLabel: this.settings.lbWidget.settings.translation.dashboard.prizeTitle,
+      prizeValue: rewardValue,
+      rewardName: rewardName,
+      playTournamentLabel: this.settings.lbWidget.settings.translation.dashboard.playTournamentLabel,
+      icon: contest.iconLink ?? ''
     });
 
     return listItem;
@@ -2614,18 +2732,18 @@ export const MainWidget = function (options) {
       tournamentsContainer.classList.remove('hidden');
       const title = document.querySelector('.cl-main-widget-dashboard-tournaments-title');
       title.innerHTML = this.settings.lbWidget.settings.translation.dashboard.tournamentsTitle;
-      activeCompetitions.forEach(t => {
-        const listItem = this.dashboardTournamentItem(t);
+      for (const comp of activeCompetitions) {
+        const listItem = await this.dashboardTournamentItem(comp);
         tournamentsList.appendChild(listItem);
-      });
+      }
     } else if (readyCompetitions && readyCompetitions.length) {
       tournamentsContainer.classList.remove('hidden');
       const title = document.querySelector('.cl-main-widget-dashboard-tournaments-title');
       title.innerHTML = this.settings.lbWidget.settings.translation.dashboard.upcomingTournamentsTitle;
-      readyCompetitions.forEach(t => {
-        const listItem = this.dashboardTournamentItem(t, true);
+      for (const comp of readyCompetitions) {
+        const listItem = await this.dashboardTournamentItem(comp);
         tournamentsList.appendChild(listItem);
-      });
+      }
     } else {
       tournamentsContainer.classList.add('hidden');
     }
@@ -2763,31 +2881,15 @@ export const MainWidget = function (options) {
     return listItem;
   };
 
-  this.tournamentItem = function (tournament) {
+  this.tournamentItem = function (tournament, isReadyStatus = false) {
     const listItem = document.createElement('div');
-    const detailsContainer = document.createElement('div');
-    const label = document.createElement('div');
-    const labelIcon = document.createElement('div');
-    const period = document.createElement('div');
-    const prize = document.createElement('div');
+    listItem.setAttribute('class', 'dashboard-tournament-item');
+    listItem.setAttribute('data-id', tournament.id);
 
-    let startDate = new Date(tournament.actualStartDate ?? tournament.scheduledStartDate);
-    let endDate = new Date(tournament.actualEndDate ?? tournament.scheduledEndDate);
-    startDate = startDate.toLocaleString('en-GB', { timeZone: 'UTC', dateStyle: 'short', timeStyle: 'short' });
-    endDate = endDate.toLocaleString('en-GB', { timeZone: 'UTC', dateStyle: 'short', timeStyle: 'short' });
+    let rewardValue = '';
+    let rewardName = '';
 
-    listItem.setAttribute('class', 'cl-tour-list-item cl-tour-' + tournament.id);
-    detailsContainer.setAttribute('class', 'cl-tour-list-details-cont');
-    label.setAttribute('class', 'cl-tour-list-details-label');
-    labelIcon.setAttribute('class', 'cl-tour-list-details-label-icon');
-    period.setAttribute('class', 'cl-tour-list-details-period');
-    prize.setAttribute('class', 'cl-tour-list-details-prize');
-
-    listItem.dataset.id = tournament.id;
-    label.innerHTML = tournament.name ?? '';
-    period.innerHTML = startDate + ' - ' + endDate;
-
-    if (this.settings.lbWidget.settings.tournaments.showTournamentsMenuPrizeColumn && tournament.rewards && tournament.rewards.length) {
+    if (tournament.rewards && tournament.rewards.length) {
       const idx = tournament.rewards.findIndex(reward => {
         if (reward.rewardRank.indexOf('-') !== -1 || reward.rewardRank.indexOf(',') !== -1) {
           const rewardRankArr = reward.rewardRank.split(',');
@@ -2810,17 +2912,36 @@ export const MainWidget = function (options) {
       });
 
       if (idx !== -1) {
-        prize.innerHTML = this.settings.lbWidget.settings.partialFunctions.rewardFormatter(tournament.rewards[idx]);
+        rewardName = tournament.rewards[idx].name;
+        rewardValue = this.settings.lbWidget.settings.partialFunctions.rewardFormatter(tournament.rewards[idx]);
       }
     }
 
-    detailsContainer.appendChild(labelIcon);
-    detailsContainer.appendChild(label);
-    detailsContainer.appendChild(period);
-    if (this.settings.lbWidget.settings.tournaments.showTournamentsMenuPrizeColumn) {
-      detailsContainer.appendChild(prize);
+    let itemBg = '';
+    if (tournament.bannerLowResolutionLink) {
+      itemBg = tournament.bannerLowResolutionLink;
+    } else if (tournament.bannerLink) {
+      itemBg = tournament.bannerLink;
     }
-    listItem.appendChild(detailsContainer);
+
+    const endsLabel = isReadyStatus
+      ? this.settings.lbWidget.settings.translation.dashboard.startsTitle
+      : this.settings.lbWidget.settings.translation.dashboard.endsTitle;
+
+    const date = isReadyStatus ? new Date(tournament.scheduledStartDate) : new Date(tournament.scheduledEndDate);
+
+    const template = require('../templates/dashboard/tournamentItem.hbs');
+    listItem.innerHTML = template({
+      title: tournament.name,
+      itemBg: itemBg,
+      endsLabel: endsLabel,
+      endsValue: date.toLocaleString('en-GB', { timeZone: 'UTC', dateStyle: 'short', timeStyle: 'short' }),
+      prizeLabel: this.settings.lbWidget.settings.translation.dashboard.prizeTitle,
+      prizeValue: rewardValue,
+      rewardName: rewardName,
+      playTournamentLabel: this.settings.lbWidget.settings.translation.dashboard.playTournamentLabel,
+      icon: tournament.iconLink ?? ''
+    });
 
     return listItem;
   };
@@ -3814,8 +3935,8 @@ export const MainWidget = function (options) {
 
   this.resetNavigation = function (callback) {
     const _this = this;
-    const listIcon = query(_this.settings.container, '.cl-main-widget-lb-header-list-icon');
-    const backIcon = query(_this.settings.container, '.cl-main-widget-lb-header-back-icon');
+    // const listIcon = query(_this.settings.container, '.cl-main-widget-lb-header-list-icon');
+    // const backIcon = query(_this.settings.container, '.cl-main-widget-lb-header-back-icon');
 
     objectIterator(query(_this.settings.container, '.cl-main-widget-navigation-items .cl-active-nav'), function (obj) {
       removeClass(obj, 'cl-active-nav');
@@ -3836,8 +3957,8 @@ export const MainWidget = function (options) {
       }
     });
 
-    listIcon.style.display = 'block';
-    backIcon.style.display = 'none';
+    // listIcon.style.display = 'block';
+    // backIcon.style.display = 'none';
     _this.hideEmbeddedCompetitionDetailsContent();
     _this.hideCompetitionList();
 
