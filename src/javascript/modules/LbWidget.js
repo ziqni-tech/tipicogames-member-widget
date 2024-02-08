@@ -2840,7 +2840,7 @@ export const LbWidget = function (options) {
         }
       }
 
-      // expand past mission data
+      // expand contest data
     } else if (
       (hasClass(el, 'dashboard-tournament-list-cont') || closest(el, '.dashboard-tournament-list-cont') !== null) &&
       closest(el, '.tournament-result-item')
@@ -2852,6 +2852,15 @@ export const LbWidget = function (options) {
         } else {
           wrapper.classList.add('expanded');
         }
+      }
+
+      // expand mission ts
+    } else if (hasClass(el, 'cl-main-widget-ach-details-body-description-tc-header') || closest(el, '.cl-main-widget-ach-details-body-description-tc-header') !== null) {
+      const wrapper = closest(el, '.cl-main-widget-ach-details-body-description-tc');
+      if (wrapper.classList.contains('expanded')) {
+        wrapper.classList.remove('expanded');
+      } else {
+        wrapper.classList.add('expanded');
       }
 
       // accordion navigation

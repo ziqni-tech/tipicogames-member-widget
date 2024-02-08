@@ -2172,24 +2172,16 @@ export const MainWidget = function (options) {
   this.loadAchievementDetails = async function (data, callback) {
     const _this = this;
     const label = query(_this.settings.achievement.detailsContainer, '.cl-main-widget-ach-details-header-label');
-    const body = query(_this.settings.achievement.detailsContainer, '.cl-main-widget-ach-details-body');
-    const descriptionLabel = query(_this.settings.achievement.detailsContainer, '.cl-main-widget-ach-details-body-description-title');
     const tc = query(_this.settings.achievement.detailsContainer, '.cl-main-widget-ach-details-tc');
-    const tcLabel = query(_this.settings.achievement.detailsContainer, '.cl-main-widget-ach-details-body-description-tc-title');
     const image = query(_this.settings.achievement.detailsContainer, '.cl-main-widget-ach-details-body-image-cont');
-    const pregressBar = query(_this.settings.achievement.detailsContainer, '.cl-main-widget-ach-details-body-progress-bar');
-    const pregressLabel = query(_this.settings.achievement.detailsContainer, '.cl-main-widget-ach-details-body-progress-label');
-    const reward = query(_this.settings.achievement.detailsContainer, '.cl-main-widget-ach-details-reward');
-
-    tcLabel.style.display = 'none';
-    tc.style.display = 'none';
-    descriptionLabel.style.display = 'block';
-    body.style.display = 'block';
+    const pregressBar = query(_this.settings.achievement.detailsContainer, '.cl-ach-list-progression-bar');
+    const pregressLabel = query(_this.settings.achievement.detailsContainer, '.cl-ach-list-progression-label');
+    const rewardTitle = query(_this.settings.achievement.detailsContainer, '.cl-ach-list-actions-reward-title');
 
     if (data.reward) {
-      reward.innerHTML = this.settings.lbWidget.settings.partialFunctions.rewardFormatter(data.reward);
+      rewardTitle.innerHTML = data.reward.name;
     } else {
-      reward.innerHTML = '';
+      rewardTitle.innerHTML = '';
     }
 
     let optinRequiredForEntrants = false;
@@ -2231,7 +2223,6 @@ export const MainWidget = function (options) {
     }
 
     label.innerHTML = data.name;
-    body.innerHTML = data.description ? data.description.replace(/&lt;/g, '<').replace(/&gt;/g, '>') : _this.settings.lbWidget.settings.translation.global.descriptionEmpty;
     tc.innerHTML = data.termsAndConditions
       ? data.termsAndConditions.replace(/&lt;/g, '<').replace(/&gt;/g, '>')
       : this.settings.lbWidget.settings.translation.global.tAndCEmpty;
