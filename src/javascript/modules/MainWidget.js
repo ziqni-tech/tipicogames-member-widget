@@ -1992,6 +1992,22 @@ export const MainWidget = function (options) {
     listItem.setAttribute('class', 'cl-ach-list-item cl-ach-' + ach.id);
     listItem.dataset.id = ach.id;
 
+    let isOptedIn = true;
+
+    if (Array.isArray(ach.constraints) && ach.constraints.includes('optinRequiredForEntrants')) {
+      if (ach.optInStatus && ach.optInStatus >= 15 && ach.optInStatus <= 35) {
+        isOptedIn = true;
+      } else if (!isNaN(ach.optInStatus) && (ach.optInStatus === 10 || ach.optInStatus === 0)) {
+        isOptedIn = true;
+      } else {
+        isOptedIn = false;
+      }
+    } else {
+      isOptedIn = true;
+    }
+
+    if (!isOptedIn) listItem.classList.add('optin-required');
+
     let bgImage = '';
     if (ach.iconLink) {
       bgImage = 'background-image: url(' + ach.iconLink + ')';
@@ -2011,7 +2027,9 @@ export const MainWidget = function (options) {
       bgImage: bgImage,
       rewardValue: rewardValue,
       endsLabel: this.settings.lbWidget.settings.translation.achievements.endsLabel,
-      rewardName: rewardName
+      rewardName: rewardName,
+      isOptedIn: isOptedIn,
+      enterLabel: this.settings.lbWidget.settings.translation.achievements.enter
     });
 
     return listItem;
@@ -2177,6 +2195,15 @@ export const MainWidget = function (options) {
     const pregressBar = query(_this.settings.achievement.detailsContainer, '.cl-ach-list-progression-bar');
     const pregressLabel = query(_this.settings.achievement.detailsContainer, '.cl-ach-list-progression-label');
     const rewardTitle = query(_this.settings.achievement.detailsContainer, '.cl-ach-list-actions-reward-title');
+    const pickUpBtn = query(_this.settings.achievement.detailsContainer, '.cl-main-widget-ach-details-body-cta-ends-btn-pick');
+    const abortBtn = query(_this.settings.achievement.detailsContainer, '.cl-main-widget-ach-details-body-abort');
+    const progress = query(_this.settings.achievement.detailsContainer, '.cl-ach-list-progression');
+
+    const headerActions = query(_this.settings.achievement.detailsContainer, '.cl-ach-list-actions');
+    const footerActions = query(_this.settings.achievement.detailsContainer, '.cl-main-widget-ach-details-body-cta');
+
+    const optInHeader = query(headerActions, '.cl-main-widget-ach-details-optin-action');
+    const optInFooter = query(footerActions, '.cl-main-widget-ach-details-optin-action');
 
     if (data.reward) {
       rewardTitle.innerHTML = data.reward.name;
@@ -2190,8 +2217,6 @@ export const MainWidget = function (options) {
       optinRequiredForEntrants = data.constraints.includes('optinRequiredForEntrants');
     }
 
-    const optIn = query(_this.settings.achievement.detailsContainer, '.cl-main-widget-ach-details-optin-action');
-
     const memberAchievementOptInStatus = await _this.settings.lbWidget.getMemberAchievementOptInStatus(data.id);
 
     if (optinRequiredForEntrants) {
@@ -2200,26 +2225,51 @@ export const MainWidget = function (options) {
         memberAchievementOptInStatus[0].statusCode >= 15 &&
         memberAchievementOptInStatus[0].statusCode <= 35
       ) {
-        optIn.innerHTML = _this.settings.lbWidget.settings.translation.achievements.leave;
-        removeClass(optIn, 'cl-disabled');
-        addClass(optIn, 'leave-achievement');
-        optIn.style.display = 'block';
+        optInHeader.innerHTML = _this.settings.lbWidget.settings.translation.achievements.leave;
+        optInFooter.innerHTML = _this.settings.lbWidget.settings.translation.achievements.leave;
+        removeClass(optInHeader, 'cl-disabled');
+        removeClass(optInFooter, 'cl-disabled');
+        addClass(optInHeader, 'leave-achievement');
+        addClass(optInFooter, 'leave-achievement');
+        optInHeader.style.display = 'none';
+        optInFooter.style.display = 'none';
+        pickUpBtn.style.display = 'flex';
+        progress.style.display = 'flex';
+        abortBtn.style.display = 'block';
       } else if (
         memberAchievementOptInStatus.length &&
         (memberAchievementOptInStatus[0].statusCode === 10 || memberAchievementOptInStatus[0].statusCode === 0)
       ) {
-        optIn.innerHTML = _this.settings.lbWidget.settings.translation.achievements.listProgressionBtn;
-        removeClass(optIn, 'cl-disabled');
-        addClass(optIn, 'leave-achievement');
-        optIn.style.display = 'block';
+        optInHeader.innerHTML = _this.settings.lbWidget.settings.translation.achievements.listProgressionBtn;
+        optInFooter.innerHTML = _this.settings.lbWidget.settings.translation.achievements.listProgressionBtn;
+        removeClass(optInHeader, 'cl-disabled');
+        removeClass(optInFooter, 'cl-disabled');
+        addClass(optInHeader, 'leave-achievement');
+        addClass(optInFooter, 'leave-achievement');
+        optInHeader.style.display = 'flex';
+        optInFooter.style.display = 'flex';
+        pickUpBtn.style.display = 'none';
+        abortBtn.style.display = 'none';
+        progress.style.display = 'none';
       } else {
-        optIn.innerHTML = _this.settings.lbWidget.settings.translation.achievements.enter;
-        removeClass(optIn, 'cl-disabled');
-        optIn.style.display = 'block';
+        optInHeader.innerHTML = _this.settings.lbWidget.settings.translation.achievements.enter;
+        optInFooter.innerHTML = _this.settings.lbWidget.settings.translation.achievements.enter;
+        removeClass(optInHeader, 'cl-disabled');
+        removeClass(optInFooter, 'cl-disabled');
+        optInHeader.style.display = 'flex';
+        optInFooter.style.display = 'flex';
+        pickUpBtn.style.display = 'none';
+        abortBtn.style.display = 'none';
+        progress.style.display = 'none';
       }
     } else {
-      addClass(optIn, 'cl-disabled');
-      optIn.style.display = 'none';
+      addClass(optInHeader, 'cl-disabled');
+      addClass(optInFooter, 'cl-disabled');
+      optInHeader.style.display = 'none';
+      optInFooter.style.display = 'none';
+      pickUpBtn.style.display = 'flex';
+      progress.style.display = 'flex';
+      abortBtn.style.display = 'block';
     }
 
     label.innerHTML = data.name;
@@ -2384,9 +2434,11 @@ export const MainWidget = function (options) {
           barLabel.innerHTML = '100/100';
           bar.style.width = '100%';
         } else {
-          const percValue = ((perc > 1 || perc === 0) ? perc : 1) + '%';
-          barLabel.innerHTML = perc + '/100';
-          bar.style.width = percValue;
+          if (bar) {
+            const percValue = ((perc > 1 || perc === 0) ? perc : 1) + '%';
+            barLabel.innerHTML = perc + '/100';
+            bar.style.width = percValue;
+          }
         }
       }
     });
@@ -3834,7 +3886,7 @@ export const MainWidget = function (options) {
 
               if (_this.settings.lbWidget.settings.navigation.achievements.enable) {
                 _this.settings.lbWidget.checkForAvailableAchievements(1, function (achievementData) {
-                  _this.loadDashboardAchievements(achievementData);
+                  _this.loadDashboardAchievements(achievementData.current);
                 });
               }
 

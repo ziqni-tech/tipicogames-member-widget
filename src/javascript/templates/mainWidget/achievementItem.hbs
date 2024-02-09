@@ -17,10 +17,14 @@
     </svg>
     <div class="cl-ach-list-actions-reward-title">{{ rewardName }}</div>
   </div>
+  {{#if isOptedIn}}
   <div class="cl-ach-list-progression">
     <div class="cl-ach-list-progression-cont">
       <div class="cl-ach-list-progression-bar" style="width: 0;"></div>
     </div>
     <div class="cl-ach-list-progression-label">0/100</div>
   </div>
+  {{else}}
+    <a class="cl-ach-list-enter" data-id="{{ id }}" href="javascript:void(0);">{{ enterLabel }}</a>
+  {{/if}}
 </div>

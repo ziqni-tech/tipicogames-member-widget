@@ -1095,7 +1095,7 @@ export const LbWidget = function (options) {
         setTimeout(function () {
           if (isDashboard) {
             _this.checkForAvailableAchievements(1, function (achievementData) {
-              _this.settings.mainWidget.loadDashboardAchievements(achievementData, function () {
+              _this.settings.mainWidget.loadDashboardAchievements(achievementData.current, function () {
                 preLoader.hide();
               });
             });
@@ -2031,6 +2031,33 @@ export const LbWidget = function (options) {
         });
       }
 
+      // Achievement details opt-out action
+    } else if (hasClass(el, 'cl-main-widget-ach-details-body-abort')) {
+      if (_this.settings.achievements.activeAchievementId) {
+        if (!this.settings.apiWs.optInApiWsClient) {
+          this.settings.apiWs.optInApiWsClient = new OptInApiWs(this.apiClientStomp);
+        }
+
+        const optInRequest = ManageOptinRequest.constructFromObject({
+          entityId: _this.settings.achievements.activeAchievementId,
+          entityType: 'Achievement',
+          action: 'leave'
+        }, null);
+
+        const preLoader = _this.settings.mainWidget.preloader();
+
+        preLoader.show(async function () {
+          await _this.settings.apiWs.optInApiWsClient.manageOptin(optInRequest, (json) => {
+            setTimeout(function () {
+              preLoader.hide();
+              _this.settings.mainWidget.hideAchievementDetails(
+                _this.checkForAvailableAchievements(1)
+              );
+            }, 2000);
+          });
+        });
+      }
+
       // Achievement list opt-in action
     } else if (hasClass(el, 'cl-ach-list-enter')) {
       addClass(el, 'checking');
@@ -2053,7 +2080,7 @@ export const LbWidget = function (options) {
           setTimeout(function () {
             if (isDashboard) {
               _this.checkForAvailableAchievements(1, function (achievementData) {
-                _this.settings.mainWidget.loadDashboardAchievements(achievementData, function () {
+                _this.settings.mainWidget.loadDashboardAchievements(achievementData.current, function () {
                   preLoader.hide();
                 });
               });
