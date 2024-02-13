@@ -2661,11 +2661,7 @@ export const LbWidget = function (options) {
         _this.settings.tournaments.activeCompetitionId = tournamentId;
         _this.activeDataRefresh(function () {
           _this.settings.mainWidget.hideCompetitionList(async function () {
-            if (!_this.settings.leaderboard.layoutSettings.titleLinkToDetailsPage) {
-              await _this.settings.mainWidget.showEmbeddedCompetitionDetailsContent(function () {});
-            } else if (_this.settings.competition.activeContest !== null) {
-              _this.settings.mainWidget.loadCompetitionDetails(function () {});
-            }
+            await _this.settings.mainWidget.showEmbeddedCompetitionDetailsContent(function () {});
 
             const lbContainer = query(_this.settings.mainWidget.settings.container, '.cl-main-widget-section-container .' + _this.settings.navigation.tournaments.containerClass);
             lbContainer.style.display = 'flex';

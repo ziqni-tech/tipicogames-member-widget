@@ -9,7 +9,7 @@ import addClass from '../utils/addClass';
 import remove from '../utils/remove';
 import appendNext from '../utils/appendNext';
 import stripHtml from '../utils/stripHtml';
-import tournamentBrackets from './TournamentBrackets';
+// import tournamentBrackets from './TournamentBrackets';
 import { ContestRequest } from '@ziqni-tech/member-api-client';
 
 /**
@@ -835,6 +835,35 @@ export const MainWidget = function (options) {
     });
   };
 
+  this.getRewardData = function (rank) {
+    const _this = this;
+    const rewardResponse = [];
+
+    if (typeof _this.settings.lbWidget.settings.competition.activeContest !== 'undefined' && _this.settings.lbWidget.settings.competition.activeContest !== null) {
+      mapObject(_this.settings.lbWidget.settings.competition.activeContest.rewards, function (reward) {
+        if (reward.rewardRank.indexOf('-') !== -1 || reward.rewardRank.indexOf(',') !== -1) {
+          const rewardRankArr = reward.rewardRank.split(',');
+          rewardRankArr.forEach(r => {
+            const idx = r.indexOf('-');
+            if (idx !== -1) {
+              const start = parseInt(r);
+              const end = parseInt(r.substring(idx + 1));
+              if (rank >= start && rank <= end) {
+                rewardResponse.push(reward);
+              }
+            } else if (parseInt(r) === rank) {
+              rewardResponse.push(reward);
+            }
+          });
+        } else if (rank !== 0 && parseInt(reward.rewardRank) === rank) {
+          rewardResponse.push(reward);
+        }
+      });
+    }
+
+    return rewardResponse;
+  };
+
   this.getReward = function (rank) {
     const _this = this;
     const rewardResponse = [];
@@ -1121,6 +1150,29 @@ export const MainWidget = function (options) {
     return name;
   };
 
+  this.getActiveContestIcon = function () {
+    let iconUrl = '';
+
+    if (this.settings.lbWidget.settings.competition.activeContest) {
+      iconUrl = this.settings.lbWidget.settings.competition.activeContest.iconLink;
+    }
+
+    return iconUrl;
+  };
+
+  this.getActiveContestRewardTitle = function () {
+    let rewardTitle = '';
+
+    if (this.settings.lbWidget.settings.competition.activeContest) {
+      const reward = this.getRewardData(1);
+      if (reward && reward.length) {
+        rewardTitle = reward[0].name;
+      }
+    }
+
+    return rewardTitle;
+  };
+
   this.getActiveCompetitionBanner = function () {
     let bannerImage = '';
 
@@ -1174,59 +1226,64 @@ export const MainWidget = function (options) {
   this.leaderboardDetailsUpdate = function () {
     const _this = this;
     const mainLabel = query(_this.settings.section, '.cl-main-widget-lb-details-content-label-text');
-    let body = null;
-    let tc = null;
+    // let body = null;
+    // let tc = null;
     let title = null;
-    let bannerTitle = null;
-    let bannerImage = null;
-    let lbBannerImage = null;
+    // let bannerTitle = null;
+    // let bannerImage = null;
+    // let lbBannerImage = null;
+    let icon = null;
+    const rewardTitle = query(_this.settings.section, '.cl-main-widget-lb-details-reward-title');
 
-    _this.settings.descriptionDate = query(_this.settings.container, '.cl-main-widget-lb-details-description-date');
+    // _this.settings.descriptionDate = query(_this.settings.container, '.cl-main-widget-lb-details-description-date');
 
-    if (!_this.settings.lbWidget.settings.leaderboard.layoutSettings.titleLinkToDetailsPage) {
-      body = query(_this.settings.section, '.cl-main-widget-lb-details-description');
-      tc = query(_this.settings.section, '.cl-main-widget-lb-details-tc');
-      title = query(_this.settings.section, '.cl-main-widget-lb-details-description-header-title');
-      bannerTitle = query(_this.settings.section, '.cl-main-widget-lb-details-description-label-text');
-      bannerImage = query(_this.settings.section, '.cl-main-widget-lb-details-description-banner');
-      lbBannerImage = query(_this.settings.section, '.cl-main-widget-lb-details');
-      if (!body) return;
+    // body = query(_this.settings.section, '.cl-main-widget-lb-details-description');
+    // tc = query(_this.settings.section, '.cl-main-widget-lb-details-tc');
+    title = query(_this.settings.section, '.cl-main-widget-lb-details-header-title');
+    // bannerTitle = query(_this.settings.section, '.cl-main-widget-lb-details-description-label-text');
+    // bannerImage = query(_this.settings.section, '.cl-main-widget-lb-details-description-banner');
+    // lbBannerImage = query(_this.settings.section, '.cl-main-widget-lb-details');
+    icon = query(_this.settings.section, '.cl-main-widget-lb-details-image-cont');
 
-      const bodyInnerHTML = body.innerHTML;
-      if (!bodyInnerHTML || bodyInnerHTML !== _this.getActiveCompetitionDescription()) {
-        body.innerHTML = _this.getActiveCompetitionDescription();
-      }
+    if (!title) return;
 
-      if (!bannerImage.style || !bannerImage.style.backgroundImage || bannerImage.style.backgroundImage !== this.getActiveCompetitionBanner()) {
-        const link = this.getActiveCompetitionBanner();
-        if (link) {
-          bannerImage.setAttribute('style', `background-image: url(${link})`);
-        } else {
-          bannerImage.setAttribute('style', '');
-        }
-      }
+    // const bodyInnerHTML = body.innerHTML;
+    // if (!bodyInnerHTML || bodyInnerHTML !== _this.getActiveCompetitionDescription()) {
+    //   body.innerHTML = _this.getActiveCompetitionDescription();
+    // }
 
-      if (!lbBannerImage.style || !lbBannerImage.style.backgroundImage || lbBannerImage.style.backgroundImage !== this.getActiveCompetitionBanner()) {
-        const link = this.getActiveCompetitionBanner();
-        const lbBannerContent = query(_this.settings.section, '.cl-main-widget-lb-details-content');
-        if (link) {
-          lbBannerImage.setAttribute('style', `background-image: url(${link})`);
-          lbBannerContent.classList.add('no-gradient');
-        } else {
-          lbBannerImage.setAttribute('style', '');
-          lbBannerContent.classList.remove('no-gradient');
-        }
-      }
+    // if (!bannerImage.style || !bannerImage.style.backgroundImage || bannerImage.style.backgroundImage !== this.getActiveCompetitionBanner()) {
+    //  const link = this.getActiveCompetitionBanner();
+    //   if (link) {
+    //     bannerImage.setAttribute('style', `background-image: url(${link})`);
+    //   } else {
+    //     bannerImage.setAttribute('style', '');
+    //   }
+    // }
 
-      tc.innerHTML = _this.getActiveCompetitionTAndC();
-      title.innerHTML = _this.getActiveContestTitle();
-      bannerTitle.innerHTML = _this.getActiveContestTitle();
-    }
+    // if (!lbBannerImage.style || !lbBannerImage.style.backgroundImage || lbBannerImage.style.backgroundImage !== this.getActiveCompetitionBanner()) {
+    //   const link = this.getActiveCompetitionBanner();
+    //   const lbBannerContent = query(_this.settings.section, '.cl-main-widget-lb-details-content');
+    //   if (link) {
+    //     lbBannerImage.setAttribute('style', `background-image: url(${link})`);
+    //     lbBannerContent.classList.add('no-gradient');
+    //   } else {
+    //     lbBannerImage.setAttribute('style', '');
+    //     lbBannerContent.classList.remove('no-gradient');
+    //   }
+    // }
 
-    if (body === null) {
-      body = document.createElement('div');
-      body.innerHTML = _this.getActiveCompetitionDescription();
-    }
+    // tc.innerHTML = _this.getActiveCompetitionTAndC();
+    title.innerHTML = _this.getActiveContestTitle();
+    const iconUrl = _this.getActiveContestIcon();
+    icon.style = `background-image: url(${iconUrl})`;
+    rewardTitle.innerHTML = _this.getActiveContestRewardTitle();
+    // bannerTitle.innerHTML = _this.getActiveContestTitle();
+
+    // if (body === null) {
+    //   body = document.createElement('div');
+    //   body.innerHTML = _this.getActiveCompetitionDescription();
+    // }
 
     if (this.settings.lbWidget.settings.competition.activeCompetition && this.settings.lbWidget.settings.competition.activeCompetition.statusCode === 15) {
       mainLabel.innerHTML = this.settings.lbWidget.settings.competition.activeCompetition.name;
@@ -1248,13 +1305,13 @@ export const MainWidget = function (options) {
       addClass(this.settings.section, 'cl-main-active-embedded-description');
     }
 
-    await tournamentBrackets(
-      this.settings.lbWidget.apiClientStomp,
-      this.settings.lbWidget.settings.tournaments.activeCompetitionId,
-      this.settings.lbWidget.settings.language,
-      this.settings.lbWidget.settings.translation,
-      this.settings.lbWidget.settings.competition.activeContestId
-    );
+    // await tournamentBrackets(
+    //   this.settings.lbWidget.apiClientStomp,
+    //   this.settings.lbWidget.settings.tournaments.activeCompetitionId,
+    //   this.settings.lbWidget.settings.language,
+    //   this.settings.lbWidget.settings.translation,
+    //   this.settings.lbWidget.settings.competition.activeContestId
+    // );
 
     if (typeof callback === 'function') callback();
   };
@@ -1395,17 +1452,17 @@ export const MainWidget = function (options) {
     _this.leaderboardDetailsUpdate();
     _this.updateLeaderboard();
 
-    if (
-      _this.settings.lbWidget.settings.competition.activeContest !== null ||
-      (this.settings.lbWidget.settings.competition.activeCompetition && this.settings.lbWidget.settings.competition.activeCompetition.statusCode === 15)
-    ) {
-      if (isTimeReload) {
-        _this.updateLeaderboardTime();
-      }
-    } else {
-      _this.settings.labelDateHeaders.display = 'none';
-      _this.settings.detailsDateHeaders.display = 'none';
-    }
+    // if (
+    //   _this.settings.lbWidget.settings.competition.activeContest !== null ||
+    //   (this.settings.lbWidget.settings.competition.activeCompetition && this.settings.lbWidget.settings.competition.activeCompetition.statusCode === 15)
+    // ) {
+    //   if (isTimeReload) {
+    //     _this.updateLeaderboardTime();
+    //   }
+    // } else {
+    //   _this.settings.labelDateHeaders.display = 'none';
+    //   _this.settings.detailsDateHeaders.display = 'none';
+    // }
 
     if (typeof callback === 'function') {
       callback();
