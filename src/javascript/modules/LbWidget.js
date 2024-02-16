@@ -1512,6 +1512,24 @@ export const LbWidget = function (options) {
     });
   };
 
+  this.optOutMemberToActiveCompetition = async function (callback) {
+    if (!this.settings.apiWs.optInApiWsClient) {
+      this.settings.apiWs.optInApiWsClient = new OptInApiWs(this.apiClientStomp);
+    }
+
+    const optInRequest = ManageOptinRequest.constructFromObject({
+      entityId: this.settings.competition.activeCompetition.id,
+      entityType: 'Competition',
+      action: 'leave'
+    }, null);
+
+    await this.settings.apiWs.optInApiWsClient.manageOptin(optInRequest, (json) => {
+      if (typeof callback === 'function') {
+        callback();
+      }
+    });
+  };
+
   var revalidationCount = 0;
   this.revalidateIfSuccessfullOptIn = function (callback) {
     var _this = this;
@@ -1989,6 +2007,20 @@ export const LbWidget = function (options) {
       const preLoader = _this.settings.mainWidget.preloader();
       preLoader.show(async function () {
         await _this.optInMemberToActiveCompetition(function () {
+          setTimeout(function () {
+            preLoader.hide();
+            _this.settings.mainWidget.loadLeaderboard(() => {}, true);
+          }, 2000);
+        });
+      });
+
+      // Leaderboard details opt-out action
+    } else if (hasClass(el, 'cl-main-widget-tournament-details-body-abort') && !hasClass(el, 'checking')) {
+      addClass(el, 'checking');
+
+      const preLoader = _this.settings.mainWidget.preloader();
+      preLoader.show(async function () {
+        await _this.optOutMemberToActiveCompetition(function () {
           setTimeout(function () {
             preLoader.hide();
             _this.settings.mainWidget.loadLeaderboard(() => {}, true);
@@ -2885,6 +2917,39 @@ export const LbWidget = function (options) {
       } else {
         wrapper.classList.add('expanded');
       }
+
+      // expand tournament ts
+    } else if (hasClass(el, 'cl-main-widget-tournament-details-body-description-tc-header') || closest(el, '.cl-main-widget-tournament-details-body-description-tc-header') !== null) {
+      const wrapper = closest(el, '.cl-main-widget-tournament-details-body-description-tc');
+      if (wrapper.classList.contains('expanded')) {
+        wrapper.classList.remove('expanded');
+      } else {
+        wrapper.classList.add('expanded');
+      }
+
+      // expand tournament ts
+    } else if (hasClass(el, 'cl-main-widget-lb-details-menu-item')) {
+      const body = document.querySelector('.cl-main-widget-tournament-details-body');
+      const leaderBoard = document.querySelector('.cl-main-widget-lb-leaderboard');
+      const menuItems = document.querySelectorAll('.cl-main-widget-lb-details-menu-item');
+
+      menuItems.forEach(item => item.classList.remove('active'));
+
+      if (hasClass(el, 'info')) {
+        el.classList.add('active');
+        body.style.display = 'block';
+        leaderBoard.style.display = 'none';
+      } else {
+        el.classList.add('active');
+        body.style.display = 'none';
+        leaderBoard.style.display = 'flex';
+      }
+
+      _this.checkForAvailableRewards(1, function () {
+        if (_this.settings.mainWidget.settings.active) {
+          _this.settings.mainWidget.updateLeaderboard();
+        }
+      });
 
       // accordion navigation
     } else if (hasClass(el, 'cl-accordion-label')) {

@@ -675,9 +675,7 @@ export const MainWidget = function (options) {
       onMissing(rank, name ? name[0] : '', name, change, growth, points, reward, count, memberFound);
     } else {
       const rankCel = query(cellRow, '.cl-rank-col-value');
-      const iconCel = query(cellRow, '.cl-icon-col-img');
-      const nameCel = query(cellRow, '.cl-name-col');
-      const growthCel = query(cellRow, '.cl-growth-col');
+      const nameCel = query(cellRow, '.lb-name');
       const pointsCel = query(cellRow, '.cl-points-col');
       const memberFoundClass = 'cl-lb-member-row';
       const rowHasClass = hasClass(cellRow, memberFoundClass);
@@ -693,22 +691,16 @@ export const MainWidget = function (options) {
       }
 
       cellRow.dataset.rank = rank;
-
       rankCel.innerHTML = rank;
       nameCel.innerHTML = name;
-
-      growthCel.dataset.growth = (change < 0) ? 'down' : (change > 0 ? 'up' : 'same');
-      growthCel.dataset.change = change;
-      growthCel.innerHTML = growth;
-
       pointsCel.innerHTML = points;
 
-      iconCel.innerText = name ? name[0] : '';
-
       if (typeof _this.settings.lbWidget.settings.competition.activeContest !== 'undefined' && _this.settings.lbWidget.settings.competition.activeContest !== null && typeof _this.settings.lbWidget.settings.competition.activeContest.rewards !== 'undefined' && _this.settings.lbWidget.settings.competition.activeContest.rewards.length > 0) {
-        const rewardCel = query(cellRow, '.cl-reward-col');
+        const rewardCel = query(cellRow, '.lb-reward');
         if (rewardCel !== null) {
-          rewardCel.innerHTML = (typeof reward !== 'undefined' && reward !== null) ? reward : '';
+          rewardCel.innerHTML = (typeof reward !== 'undefined' && reward.length)
+            ? `<span class='lb-reward-value'>${reward[0].rewardValue}</span> ${reward[0].rewardType.key}`
+            : '';
         }
       } else {
         const rewardCel = query(cellRow, '.cl-reward-col');
@@ -727,9 +719,9 @@ export const MainWidget = function (options) {
       const rank = i + 1;
 
       topResults.push({
-        name: '--',
+        name: '-',
         rank: rank,
-        score: '--',
+        score: '-',
         memberId: '',
         memberRefId: ''
       });
@@ -745,9 +737,9 @@ export const MainWidget = function (options) {
       const rank = s + 1;
 
       remainingResults.push({
-        name: '--',
+        name: '-',
         rank: rank,
-        score: '--',
+        score: '-',
         memberId: '',
         memberRefId: ''
       });
@@ -791,7 +783,7 @@ export const MainWidget = function (options) {
 
       let memberName = (memberFound) ? _this.settings.lbWidget.settings.translation.leaderboard.you : memberLbName;
       const memberNameLength = _this.settings.lbWidget.settings.memberNameLength;
-      const reward = clearPrize ? '' : _this.getReward(lb.rank);
+      const reward = clearPrize ? '' : _this.getRewardData(lb.rank);
       const change = (typeof lb.change === 'undefined') ? 0 : lb.change;
       const growthType = (change < 0) ? 'down' : (change > 0 ? 'up' : 'same');
       const growthIcon = "<span class='cl-growth-icon cl-growth-" + growthType + "'></span>";
@@ -927,7 +919,7 @@ export const MainWidget = function (options) {
       const memberFound = lb.members && lb.members.findIndex(m => m.memberRefId === _this.settings.lbWidget.settings.member.memberRefId) !== -1;
       let memberName = (memberFound) ? _this.settings.lbWidget.settings.translation.leaderboard.you : memberLbName;
       const memberNameLength = _this.settings.lbWidget.settings.memberNameLength;
-      const reward = clearPrize ? '' : _this.getReward(lb.rank);
+      const reward = clearPrize ? '' : _this.getRewardData(lb.rank);
       const change = (typeof lb.change === 'undefined') ? 0 : lb.change;
       const growthType = (change < 0) ? 'down' : (change > 0 ? 'up' : 'same');
       const growthIcon = "<span class='cl-growth-icon cl-growth-" + growthType + "'></span>";
@@ -991,8 +983,10 @@ export const MainWidget = function (options) {
 
     const member = query(_this.settings.leaderboard.resultContainer, '.cl-lb-member-row');
 
+    const detailsContainer = document.querySelector('.cl-main-widget-lb-details-description-container');
+
     if (member !== null) {
-      _this.missingMember(_this.isElementVisibleInView(member, _this.settings.leaderboard.resultContainer));
+      _this.missingMember(_this.isElementVisibleInView(member, detailsContainer));
     } else {
       _this.missingMemberReset();
     }
@@ -1173,6 +1167,33 @@ export const MainWidget = function (options) {
     return rewardTitle;
   };
 
+  this.getActiveContestDuration = function () {
+    let duration = '';
+
+    if (this.settings.lbWidget.settings.competition.activeContest) {
+      const diff = moment(this.settings.lbWidget.settings.competition.activeContest.scheduledEndDate)
+        .diff(moment(this.settings.lbWidget.settings.competition.activeContest.scheduledStartDate));
+
+      duration = moment.duration(diff).humanize();
+    }
+
+    return duration;
+  };
+
+  this.getActiveContestDate = function () {
+    let date = '-';
+
+    if (this.settings.lbWidget.settings.competition.activeContest) {
+      // const diff = moment(this.settings.lbWidget.settings.competition.activeContest.scheduledEndDate)
+      //   .diff(moment());
+      //
+      // date = moment.duration(diff, 'hours').humanize(true);
+      date = new Date(this.settings.lbWidget.settings.competition.activeContest.scheduledEndDate).toLocaleString();
+    }
+
+    return date;
+  };
+
   this.getActiveCompetitionBanner = function () {
     let bannerImage = '';
 
@@ -1227,18 +1248,20 @@ export const MainWidget = function (options) {
     const _this = this;
     const mainLabel = query(_this.settings.section, '.cl-main-widget-lb-details-content-label-text');
     // let body = null;
-    // let tc = null;
+    let tc = null;
     let title = null;
     // let bannerTitle = null;
     // let bannerImage = null;
     // let lbBannerImage = null;
     let icon = null;
     const rewardTitle = query(_this.settings.section, '.cl-main-widget-lb-details-reward-title');
+    const duration = query(_this.settings.section, '.cl-main-widget-lb-details-duration');
+    const actionsDate = query(this.settings.section, '.cl-main-widget-lb-details-body-cta-ends-date');
 
     // _this.settings.descriptionDate = query(_this.settings.container, '.cl-main-widget-lb-details-description-date');
 
     // body = query(_this.settings.section, '.cl-main-widget-lb-details-description');
-    // tc = query(_this.settings.section, '.cl-main-widget-lb-details-tc');
+    tc = query(_this.settings.section, '.cl-main-widget-tournament-details-tc');
     title = query(_this.settings.section, '.cl-main-widget-lb-details-header-title');
     // bannerTitle = query(_this.settings.section, '.cl-main-widget-lb-details-description-label-text');
     // bannerImage = query(_this.settings.section, '.cl-main-widget-lb-details-description-banner');
@@ -1273,11 +1296,13 @@ export const MainWidget = function (options) {
     //   }
     // }
 
-    // tc.innerHTML = _this.getActiveCompetitionTAndC();
+    tc.innerHTML = _this.getActiveCompetitionTAndC();
     title.innerHTML = _this.getActiveContestTitle();
     const iconUrl = _this.getActiveContestIcon();
     icon.style = `background-image: url(${iconUrl})`;
     rewardTitle.innerHTML = _this.getActiveContestRewardTitle();
+    duration.innerHTML = _this.getActiveContestDuration();
+    actionsDate.innerHTML = _this.getActiveContestDate();
     // bannerTitle.innerHTML = _this.getActiveContestTitle();
 
     // if (body === null) {
@@ -1334,6 +1359,9 @@ export const MainWidget = function (options) {
 
   this.leaderboardOptInCheck = async function () {
     const optIn = query(this.settings.section, '.cl-main-widget-lb-optin-action');
+    const pickBtn = query(this.settings.section, '.cl-main-widget-lb-details-body-cta-ends-btn-pick');
+    const abortBtn = query(this.settings.section, '.cl-main-widget-tournament-details-body-abort');
+    const detailsData = query(this.settings.section, '.cl-main-widget-lb-details-data');
 
     if (
       typeof this.settings.lbWidget.settings.competition.activeCompetition !== 'undefined' &&
@@ -1347,17 +1375,29 @@ export const MainWidget = function (options) {
 
       if (optInStatus.length && optInStatus[0].statusCode >= 15 && optInStatus[0].statusCode <= 35) {
         optIn.parentNode.style.display = 'none';
+        pickBtn.style.display = 'flex';
+        abortBtn.style.display = 'block';
+        detailsData.style.display = 'flex';
       } else if (optInStatus.length && (optInStatus[0].statusCode === 10 || optInStatus[0].statusCode === 0)) {
         optIn.innerHTML = this.settings.lbWidget.settings.translation.tournaments.processing;
         addClass(optIn, 'checking');
         optIn.parentNode.style.display = 'flex';
+        pickBtn.style.display = 'none';
+        abortBtn.style.display = 'none';
+        detailsData.style.display = 'none';
       } else {
         optIn.innerHTML = this.settings.lbWidget.settings.translation.tournaments.enter;
         optIn.parentNode.style.display = 'flex';
         removeClass(optIn, 'checking');
+        pickBtn.style.display = 'none';
+        abortBtn.style.display = 'none';
+        detailsData.style.display = 'none';
       }
     } else {
       optIn.parentNode.style.display = 'none';
+      pickBtn.style.display = 'flex';
+      abortBtn.style.display = 'block';
+      detailsData.style.display = 'flex';
     }
   };
 
@@ -1508,7 +1548,9 @@ export const MainWidget = function (options) {
     const area = query(_this.settings.container, '.cl-main-widget-lb-missing-member');
     const areaDetails = query(_this.settings.container, '.cl-main-widget-lb-missing-member-details');
     let member = query(_this.settings.leaderboard.list, '.cl-lb-member-row');
-    const sectionContainer = query(_this.settings.container, '.cl-main-widget-section-container');
+    const detailsBody = document.querySelector('.cl-main-widget-tournament-details-body');
+    const detailsData = detailsBody.querySelector('.cl-main-widget-lb-details-data');
+    // const sectionContainer = query(_this.settings.container, '.cl-main-widget-section-container');
 
     if (!member) {
       member = query(_this.settings.leaderboard.topResults, '.cl-lb-member-row');
@@ -1516,6 +1558,16 @@ export const MainWidget = function (options) {
 
     if (Array.isArray(member)) {
       member = member[0];
+    }
+
+    if (member) {
+      const memberRank = member.querySelector('.cl-rank-col-value').innerHTML;
+      const memberPoins = member.querySelector('.cl-points-col').innerHTML;
+      const rankEl = detailsData.querySelector('.dashboard-tournament-list-details-position-value');
+      const pointsEl = detailsData.querySelector('.dashboard-tournament-list-details-points-value');
+
+      rankEl.innerHTML = memberRank;
+      pointsEl.innerHTML = memberPoins;
     }
 
     if (area !== null && member !== null) {
@@ -1526,28 +1578,38 @@ export const MainWidget = function (options) {
       areaDetails.innerHTML = member.innerHTML;
     }
 
-    if (!isVisible) {
+    if (isVisible) {
       if (area !== null && member !== null) {
-        area.style.display = 'flex';
-      } else {
         area.style.display = 'none';
       }
-
-      if (areaDetails !== null && member !== null && sectionContainer.classList.contains('cl-main-active-embedded-description')) {
-        areaDetails.style.display = 'flex';
-      } else {
-        areaDetails.style.display = 'none';
-      }
-    } else if (sectionContainer.classList.contains('cl-main-active-embedded-description')) {
-      if (areaDetails !== null && member !== null) {
-        areaDetails.style.display = 'flex';
-      } else {
-        areaDetails.style.display = 'none';
-      }
     } else {
-      area.style.display = 'none';
-      areaDetails.style.display = 'none';
+      if (area !== null && member !== null) {
+        area.style.display = 'flex';
+      }
     }
+
+    // if (!isVisible) {
+    //   if (area !== null && member !== null) {
+    //     area.style.display = 'flex';
+    //   } else {
+    //     area.style.display = 'none';
+    //   }
+    //
+    //   if (areaDetails !== null && member !== null && sectionContainer.classList.contains('cl-main-active-embedded-description')) {
+    //     areaDetails.style.display = 'flex';
+    //   } else {
+    //     areaDetails.style.display = 'none';
+    //   }
+    // } else if (sectionContainer.classList.contains('cl-main-active-embedded-description')) {
+    //   if (areaDetails !== null && member !== null) {
+    //     areaDetails.style.display = 'flex';
+    //   } else {
+    //     areaDetails.style.display = 'none';
+    //   }
+    // } else {
+    //   area.style.display = 'none';
+    //   areaDetails.style.display = 'none';
+    // }
   };
 
   this.missingMemberReset = function () {
@@ -1567,17 +1629,7 @@ export const MainWidget = function (options) {
     const elemTop = position.top;
     const elemBottom = position.bottom;
     const elemHeight = position.height;
-    const topThree = document.querySelector('.cl-main-widget-lb-leaderboard-header-top-res');
-    let indentation = 110;
-
-    if (topThree) {
-      const topThreeStyle = window.getComputedStyle(topThree);
-      if (topThreeStyle.position && topThreeStyle.position === 'relative') {
-        indentation = 0;
-      } else if (topThree.querySelector('.cl-lb-member-row')) {
-        return true;
-      }
-    }
+    const indentation = 80;
 
     return (elemTop - indentation) <= elemContainer.top
       ? elemContainer.top - (elemTop - indentation) <= elemHeight : elemBottom - elemContainer.bottom <= elemHeight;
@@ -1598,26 +1650,29 @@ export const MainWidget = function (options) {
     const _this = this;
 
     // unique solution to support horizontal mobile orientation
-    if (_this.settings.leaderboard.resultContainer !== null && _this.settings.leaderboard.resultContainer.onscroll === null) {
-      _this.settings.leaderboard.resultContainer.onscroll = function (evt) {
-        evt.preventDefault();
-        const member = query(_this.settings.leaderboard.resultContainer, '.cl-lb-member-row');
-
-        if (member !== null) {
-          _this.missingMember(_this.isElementVisibleInView(member, evt.target));
-        }
-      };
-    }
+    // if (_this.settings.leaderboard.resultContainer !== null && _this.settings.leaderboard.resultContainer.onscroll === null) {
+    //   _this.settings.leaderboard.resultContainer.onscroll = function (evt) {
+    //     evt.preventDefault();
+    //     const member = query(_this.settings.leaderboard.resultContainer, '.cl-lb-member-row');
+    //
+    //     if (member !== null) {
+    //       _this.missingMember(_this.isElementVisibleInView(member, evt.target));
+    //     }
+    //   };
+    // }
 
     if (_this.settings.leaderboard.list !== null && _this.settings.leaderboard.list.parentNode.onscroll === null) {
-      _this.settings.leaderboard.list.parentNode.onscroll = function (evt) {
-        evt.preventDefault();
-        const member = query(_this.settings.leaderboard.resultContainer, '.cl-lb-member-row');
+      const detailsContainer = _this.settings.leaderboard.list.closest('.cl-main-widget-lb-details-description-container');
+      if (detailsContainer.onscroll === null) {
+        detailsContainer.onscroll = function (evt) {
+          evt.preventDefault();
+          const member = query(_this.settings.leaderboard.resultContainer, '.cl-lb-member-row');
 
-        if (member !== null) {
-          _this.missingMember(_this.isElementVisibleInView(member, evt.target));
-        }
-      };
+          if (member !== null) {
+            _this.missingMember(_this.isElementVisibleInView(member, evt.target));
+          }
+        };
+      }
     }
 
     if (!onresizeInitialised) {

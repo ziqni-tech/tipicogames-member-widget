@@ -30,7 +30,7 @@
     },
     "tournaments": {
         "label": "Tournaments",
-        "enter": "Enter Tournament",
+        "enter": "Join Tournament",
         "processing": "Processing...",
         "readyCompetitions": "Upcoming",
         "activeCompetitions": "Current",
@@ -42,10 +42,10 @@
         "date": "Date"
     },
     "leaderboard": {
-        "rank": "Rank",
-        "name": "Name",
-        "points": "Points",
-        "prize": "Prize",
+        "rank": "Pos.",
+        "name": "Player",
+        "points": "PTS.",
+        "prize": "Reward",
         "you": "You"
     },
     "brackets": {
