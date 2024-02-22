@@ -26,7 +26,7 @@
         "leavePopupClose": "Close",
         "leavePopupConfirm": "Leave",
         "progress": "Progress",
-        "endsLabel": "Ends IN"
+        "endsLabel": "Ends"
     },
     "tournaments": {
         "label": "Tournaments",
@@ -95,7 +95,7 @@
         "tournamentsTitle": "Tournaments",
         "upcomingTournamentsTitle": "Upcoming Tournaments",
         "tournamentBtn": "See more",
-        "endsTitle": "Ends In",
+        "endsTitle": "Ends",
         "startsTitle": "Starts",
         "prizeTitle": "Prize",
         "singleWheelTitle": "The Single Wheel",
@@ -103,7 +103,8 @@
         "scratchcardsTitle": "Scratchcards",
         "scratchcardsButton": "Play",
         "seeAll": "View all",
-        "playTournamentLabel": "Play Tournament"
+        "playTournamentLabel": "Play Tournament",
+        "optInTournamentLabel": "Join Tournament"
     },
     "missions": {
         "label": "Missions",

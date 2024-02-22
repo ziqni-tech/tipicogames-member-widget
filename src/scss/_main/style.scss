@@ -1,4 +1,4 @@
-@import url('https://fonts.google.com/share?selection.family=Inter');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
 
 #cy {
   width: 100%;
@@ -2035,6 +2035,19 @@
   border-radius: 8px;
   background: #ffffff;
   color: var(--Primary-Dark);
+  margin-top: 16px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.cl-main-widget-wrapper .cl-main-widget-section-container .dashboard-tournament-list-opt-in-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  border-radius: 8px;
+  color: var(--Primary-White);
+  border: solid 1px var(--Primary-White);
   margin-top: 16px;
   font-size: 14px;
   font-weight: 600;

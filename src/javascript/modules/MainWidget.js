@@ -1188,7 +1188,8 @@ export const MainWidget = function (options) {
       //   .diff(moment());
       //
       // date = moment.duration(diff, 'hours').humanize(true);
-      date = new Date(this.settings.lbWidget.settings.competition.activeContest.scheduledEndDate).toLocaleString();
+      date = new Date(this.settings.lbWidget.settings.competition.activeContest.scheduledEndDate)
+        .toLocaleString('en-GB', { timeZone: 'UTC', dateStyle: 'short', timeStyle: 'short' });
     }
 
     return date;
@@ -2139,6 +2140,7 @@ export const MainWidget = function (options) {
       bgImage: bgImage,
       rewardValue: rewardValue,
       endsLabel: this.settings.lbWidget.settings.translation.achievements.endsLabel,
+      endsValue: new Date(ach.scheduling.endDate).toLocaleString('en-GB', { timeZone: 'UTC', dateStyle: 'short', timeStyle: 'short' }),
       rewardName: rewardName,
       isOptedIn: isOptedIn,
       enterLabel: this.settings.lbWidget.settings.translation.achievements.enter
@@ -2624,6 +2626,20 @@ export const MainWidget = function (options) {
 
     const contests = await this.settings.lbWidget.getContests(contestRequest);
     const contest = contests[0];
+
+    let isOptIn = false;
+
+    if (tournament.constraints.includes('optinRequiredForEntrants')) {
+      const optInStatus = await this.settings.lbWidget.getCompetitionOptInStatus(tournament.id);
+      if (optInStatus.length) {
+        if (optInStatus[0].statusCode === 5) {
+          isOptIn = true;
+        }
+      } else {
+        isOptIn = true;
+      }
+    }
+
     const rewardRequest = {
       entityFilter: [{
         entityType: 'Contest',
@@ -2692,7 +2708,9 @@ export const MainWidget = function (options) {
       prizeValue: rewardValue,
       rewardName: rewardName,
       playTournamentLabel: this.settings.lbWidget.settings.translation.dashboard.playTournamentLabel,
-      icon: contest.iconLink ?? ''
+      icon: contest.iconLink ?? '',
+      isOptIn: isOptIn,
+      optInLabel: this.settings.lbWidget.settings.translation.dashboard.optInTournamentLabel
     });
 
     return listItem;
@@ -2876,7 +2894,7 @@ export const MainWidget = function (options) {
   };
 
   this.loadDashboardTournaments = async function () {
-    const _this = this;
+    // const _this = this;
     const tournamentsList = query(this.settings.section, '.cl-main-widget-dashboard-tournaments-list');
     const tournamentsContainer = query(this.settings.section, '.cl-main-widget-dashboard-tournaments');
     const { activeCompetitions, readyCompetitions } = await this.settings.lbWidget.getDashboardCompetitions();
@@ -2903,34 +2921,34 @@ export const MainWidget = function (options) {
       tournamentsContainer.classList.add('hidden');
     }
 
-    setTimeout(function () {
-      _this.updateDashboardTournamentExpirationTime();
-    }, 1000);
+    // setTimeout(function () {
+    //   _this.updateDashboardTournamentExpirationTime();
+    // }, 1000);
   };
 
-  this.updateDashboardTournamentExpirationTime = function () {
-    const _this = this;
-
-    if (_this.settings.tournament.timerInterval) {
-      clearTimeout(_this.settings.tournament.timerInterval);
-    }
-
-    this.settings.lbWidget.settings.tournaments.activeCompetitions.forEach(comp => {
-      if (comp.scheduledEndDate) {
-        const diff = moment(comp.scheduledEndDate).diff(moment());
-        const date = _this.settings.lbWidget.formatAwardDateTime(moment.duration(diff));
-        const el = document.querySelector(`.dashboard-tournament-item[data-id="${comp.id}"]`);
-        if (!el) return;
-        const dateEl = el.querySelector('.dashboard-tournament-list-details-expires-timer');
-        if (!dateEl) return;
-        dateEl.innerHTML = date;
-      }
-    });
-
-    this.settings.tournament.timerInterval = setTimeout(function () {
-      _this.updateDashboardTournamentExpirationTime();
-    }, 1000);
-  };
+  // this.updateDashboardTournamentExpirationTime = function () {
+  //   const _this = this;
+  //
+  //   if (_this.settings.tournament.timerInterval) {
+  //     clearTimeout(_this.settings.tournament.timerInterval);
+  //   }
+  //
+  //   this.settings.lbWidget.settings.tournaments.activeCompetitions.forEach(comp => {
+  //     if (comp.scheduledEndDate) {
+  //       const diff = moment(comp.scheduledEndDate).diff(moment());
+  //       const date = _this.settings.lbWidget.formatAwardDateTime(moment.duration(diff));
+  //       const el = document.querySelector(`.dashboard-tournament-item[data-id="${comp.id}"]`);
+  //       if (!el) return;
+  //       const dateEl = el.querySelector('.dashboard-tournament-list-details-expires-timer');
+  //       if (!dateEl) return;
+  //       dateEl.innerHTML = date;
+  //     }
+  //   });
+  //
+  //   this.settings.tournament.timerInterval = setTimeout(function () {
+  //     _this.updateDashboardTournamentExpirationTime();
+  //   }, 1000);
+  // };
 
   this.loadDashboardAchievements = function (achievementData, callback) {
     const _this = this;
@@ -2945,8 +2963,8 @@ export const MainWidget = function (options) {
 
     achContainer.classList.remove('hidden');
 
-    if (achievementData.length > 2) {
-      achievementData = achievementData.slice(0, 2);
+    if (achievementData.length > 3) {
+      achievementData = achievementData.slice(0, 3);
     }
 
     mapObject(achievementData, function (ach) {
@@ -2962,38 +2980,38 @@ export const MainWidget = function (options) {
       _this.updateAchievementProgressionAndIssued(issued, progression);
     });
 
-    setTimeout(function () {
-      _this.updateDashboardAchievementExpirationTime();
-    }, 1000);
+    // setTimeout(function () {
+    //   _this.updateDashboardAchievementExpirationTime();
+    // }, 1000);
 
     if (typeof callback === 'function') {
       callback();
     }
   };
 
-  this.updateDashboardAchievementExpirationTime = function () {
-    const _this = this;
-
-    if (_this.settings.achievement.timerInterval) {
-      clearTimeout(_this.settings.achievement.timerInterval);
-    }
-
-    this.settings.lbWidget.settings.achievements.list.forEach(ach => {
-      if (ach.scheduling.endDate) {
-        const diff = moment(ach.scheduling.endDate).diff(moment());
-        const date = _this.settings.lbWidget.formatAwardDateTime(moment.duration(diff));
-        const el = document.querySelector(`.cl-ach-list-item[data-id="${ach.id}"]`);
-        if (!el) return;
-        const dateEl = el.querySelector('.cl-ach-list-details-expires-timer');
-        if (!dateEl) return;
-        dateEl.innerHTML = date;
-      }
-    });
-
-    this.settings.achievement.timerInterval = setTimeout(function () {
-      _this.updateDashboardAchievementExpirationTime();
-    }, 1000);
-  };
+  // this.updateDashboardAchievementExpirationTime = function () {
+  //   const _this = this;
+  //
+  //   if (_this.settings.achievement.timerInterval) {
+  //     clearTimeout(_this.settings.achievement.timerInterval);
+  //   }
+  //
+  //   this.settings.lbWidget.settings.achievements.list.forEach(ach => {
+  //     if (ach.scheduling.endDate) {
+  //       const diff = moment(ach.scheduling.endDate).diff(moment());
+  //       const date = _this.settings.lbWidget.formatAwardDateTime(moment.duration(diff));
+  //       const el = document.querySelector(`.cl-ach-list-item[data-id="${ach.id}"]`);
+  //       if (!el) return;
+  //       const dateEl = el.querySelector('.cl-ach-list-details-expires-timer');
+  //       if (!dateEl) return;
+  //       dateEl.innerHTML = date;
+  //     }
+  //   });
+  //
+  //   this.settings.achievement.timerInterval = setTimeout(function () {
+  //     _this.updateDashboardAchievementExpirationTime();
+  //   }, 1000);
+  // };
 
   this.rewardItem = function (award) {
     const listItem = document.createElement('div');

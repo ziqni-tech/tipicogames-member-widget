@@ -370,7 +370,7 @@ export const LbWidget = function (options) {
           queryField: 'created',
           order: 'Desc'
         }],
-        limit: 2,
+        limit: 3,
         skip: 0
       }
     }, null);
@@ -1512,6 +1512,24 @@ export const LbWidget = function (options) {
     });
   };
 
+  this.optInMemberToActiveCompetitionById = async function (tournamentId, callback) {
+    if (!this.settings.apiWs.optInApiWsClient) {
+      this.settings.apiWs.optInApiWsClient = new OptInApiWs(this.apiClientStomp);
+    }
+
+    const optInRequest = ManageOptinRequest.constructFromObject({
+      entityId: tournamentId,
+      entityType: 'Competition',
+      action: 'join'
+    }, null);
+
+    await this.settings.apiWs.optInApiWsClient.manageOptin(optInRequest, (json) => {
+      if (typeof callback === 'function') {
+        callback();
+      }
+    });
+  };
+
   this.optOutMemberToActiveCompetition = async function (callback) {
     if (!this.settings.apiWs.optInApiWsClient) {
       this.settings.apiWs.optInApiWsClient = new OptInApiWs(this.apiClientStomp);
@@ -2010,6 +2028,29 @@ export const LbWidget = function (options) {
           setTimeout(function () {
             preLoader.hide();
             _this.settings.mainWidget.loadLeaderboard(() => {}, true);
+          }, 2000);
+        });
+      });
+
+      // Tournament list opt-in action
+    } else if (hasClass(el, 'dashboard-tournament-list-opt-in-btn') && !hasClass(el, 'checking')) {
+      addClass(el, 'checking');
+
+      const tournamentId = closest(el, '.dashboard-tournament-item').dataset.id;
+      const isDashboard = !!closest(el, 'cl-main-widget-section-dashboard');
+
+      const preLoader = _this.settings.mainWidget.preloader();
+      preLoader.show(async function () {
+        await _this.optInMemberToActiveCompetitionById(tournamentId, function () {
+          setTimeout(function () {
+            preLoader.hide();
+            if (isDashboard) {
+              _this.init();
+            } else {
+              _this.checkForAvailableCompetitions(function () {
+                _this.settings.mainWidget.loadCompetitionList();
+              });
+            }
           }, 2000);
         });
       });

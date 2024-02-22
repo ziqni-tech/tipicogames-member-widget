@@ -7,7 +7,7 @@
   <div class="dashboard-tournament-list-cont">
     <div class="dashboard-tournament-list-icon" style="background-image: url({{ icon }})"></div>
     <div class="dashboard-tournament-list-details-wrap">
-      <div class="dashboard-tournament-list-details-expires">{{ endsLabel }} <span class="dashboard-tournament-list-details-expires-timer"></span></div>
+      <div class="dashboard-tournament-list-details-expires">{{ endsLabel }} <span class="dashboard-tournament-list-details-expires-timer">{{ endsValue }}</span></div>
       <div class="dashboard-tournament-list-details-label">{{ title }}</div>
     </div>
   </div>
@@ -37,5 +37,9 @@
       <div class="dashboard-tournament-list-details-data-item-label dashboard-tournament-list-details-points-label">Points</div>
     </div>
   </div>
-  <div class="dashboard-tournament-list-btn">{{ playTournamentLabel }}</div>
+  {{#if isOptIn}}
+    <div class="dashboard-tournament-list-opt-in-btn">{{ optInLabel }}</div>
+  {{else}}
+    <div class="dashboard-tournament-list-btn">{{ playTournamentLabel }}</div>
+  {{/if}}
 </div>
