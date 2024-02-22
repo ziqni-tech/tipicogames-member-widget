@@ -1831,6 +1831,53 @@
   padding-bottom: 18px;
 }
 
+.cl-main-widget-wrapper .cl-main-widget-section-container .dashboard-tournament-list-statuses {
+  position: absolute;
+  top: 0;
+  right: 8px;
+  z-index: 2;
+}
+
+.cl-main-widget-wrapper .cl-main-widget-section-container .dashboard-tournament-list-joined {
+  background: var(--Primary-White);
+  color: var(--Primary-Dark);
+  height: 18px;
+  padding: 2px 6px;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 12px;
+  border-radius: 99px;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.cl-main-widget-wrapper .cl-main-widget-section-container .dashboard-tournament-list-live {
+  background: #4C4C4C;
+  color: var(--Primary-White);
+  height: 18px;
+  padding: 2px 6px;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 12px;
+  border-radius: 99px;
+  text-transform: uppercase;
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+}
+
+.cl-main-widget-wrapper .cl-main-widget-section-container .dashboard-tournament-list-live::before {
+  content: '';
+  display: block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ui-color-success);
+  margin-right: 4px;
+}
+
 .cl-main-widget-wrapper .cl-main-widget-section-container .dashboard-tournament-list-bg {
   height: 132px;
   background-size: 300%;

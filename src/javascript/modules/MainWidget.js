@@ -2710,7 +2710,8 @@ export const MainWidget = function (options) {
       playTournamentLabel: this.settings.lbWidget.settings.translation.dashboard.playTournamentLabel,
       icon: contest.iconLink ?? '',
       isOptIn: isOptIn,
-      optInLabel: this.settings.lbWidget.settings.translation.dashboard.optInTournamentLabel
+      optInLabel: this.settings.lbWidget.settings.translation.dashboard.optInTournamentLabel,
+      isLive: contest.status === 'Active'
     });
 
     return listItem;
