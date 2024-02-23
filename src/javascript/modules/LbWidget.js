@@ -2056,9 +2056,7 @@ export const LbWidget = function (options) {
       });
 
       // Leaderboard details opt-out action
-    } else if (hasClass(el, 'cl-main-widget-tournament-details-body-abort') && !hasClass(el, 'checking')) {
-      addClass(el, 'checking');
-
+    } else if (hasClass(el, 'cl-main-widget-tournament-details-body-abort')) {
       const preLoader = _this.settings.mainWidget.preloader();
       preLoader.show(async function () {
         await _this.optOutMemberToActiveCompetition(function () {
