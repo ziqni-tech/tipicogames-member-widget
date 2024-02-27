@@ -3375,6 +3375,8 @@ export const LbWidget = function (options) {
             if (typeof this.settings.callbacks.onLoadComplete === 'function') {
               this.settings.callbacks.onLoadComplete();
             }
+
+            this.clickedMiniScoreBoard();
           });
         });
       });
