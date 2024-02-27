@@ -2,18 +2,18 @@
   <div class="dashboard-tournament-list-cont">
     <div class="dashboard-tournament-list-icon" style="background-image: url({{ icon }})"></div>
     <div class="dashboard-tournament-list-details-wrap">
-      <div class="dashboard-tournament-list-details-expires">{{ endsLabel }} <span class="dashboard-tournament-list-details-expires-timer"></span></div>
+      <div class="dashboard-tournament-list-details-expires"><span class="dashboard-tournament-list-details-expires-timer">{{ endedValue }} -</span> {{ endedLabel }}</div>
       <div class="dashboard-tournament-list-details-label">{{ title }}</div>
     </div>
   </div>
   <div class="tournament-result-item-data">
     <div class="tournament-result-item-data-item">
-      <div class="tournament-result-item-data-label">Started</div>
-      <div class="tournament-result-item-data-value">05.12.23 / 19:00</div>
+      <div class="tournament-result-item-data-label">{{ startedLabel }}</div>
+      <div class="tournament-result-item-data-value">{{ startedValue }}</div>
     </div>
     <div class="tournament-result-item-data-item">
-      <div class="tournament-result-item-data-label">Ended</div>
-      <div class="tournament-result-item-data-value">05.12.23 / 19:55</div>
+      <div class="tournament-result-item-data-label">{{ endedLabel }}</div>
+      <div class="tournament-result-item-data-value">{{ detailsEndedValue }}</div>
     </div>
     <div class="tournament-result-item-data-tc">
       Terms and Conditions
@@ -33,16 +33,16 @@
   </div>
   <div class="dashboard-tournament-list-details-data">
     <div class="dashboard-tournament-list-details-data-item dashboard-tournament-list-details-position">
-      <div class="dashboard-tournament-list-details-data-item-value dashboard-tournament-list-details-position-value">4</div>
-      <div class="dashboard-tournament-list-details-data-item-label dashboard-tournament-list-details-position-label">Position</div>
+      <div class="dashboard-tournament-list-details-data-item-value dashboard-tournament-list-details-position-value">-</div>
+      <div class="dashboard-tournament-list-details-data-item-label dashboard-tournament-list-details-position-label">{{ positionLabel }}</div>
     </div>
     <div class="dashboard-tournament-list-details-data-item dashboard-tournament-list-details-left">
-      <div class="dashboard-tournament-list-details-data-item-value dashboard-tournament-list-details-left-value">134</div>
-      <div class="dashboard-tournament-list-details-data-item-label dashboard-tournament-list-details-left-label">Spins left</div>
+      <div class="dashboard-tournament-list-details-data-item-value dashboard-tournament-list-details-left-value">-</div>
+      <div class="dashboard-tournament-list-details-data-item-label dashboard-tournament-list-details-left-label">{{ spinsLeftLabel }}</div>
     </div>
     <div class="dashboard-tournament-list-details-data-item dashboard-tournament-list-details-points">
-      <div class="dashboard-tournament-list-details-data-item-value dashboard-tournament-list-details-points-value">2340</div>
-      <div class="dashboard-tournament-list-details-data-item-label dashboard-tournament-list-details-points-label">Points</div>
+      <div class="dashboard-tournament-list-details-data-item-value dashboard-tournament-list-details-points-value">-</div>
+      <div class="dashboard-tournament-list-details-data-item-label dashboard-tournament-list-details-points-label">{{ pointsLabel }}</div>
     </div>
   </div>
 </div>

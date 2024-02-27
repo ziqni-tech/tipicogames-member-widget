@@ -497,8 +497,8 @@ export const LbWidget = function (options) {
           lessThan: 50
         },
         endDateRange: {
-          before: finishedDateFilter.toISOString(),
-          after: (new Date()).toISOString()
+          before: (new Date()).toISOString(),
+          after: finishedDateFilter.toISOString()
         },
         sortBy: [{
           queryField: 'created',

@@ -39,7 +39,12 @@
         "finished": "Finished",
         "registered": "Registered",
         "noAvailableCompetitions": "No available competition",
-        "date": "Date"
+        "date": "Date",
+        "endedLabel": "Ended",
+        "startedLabel": "Started",
+        "positionLabel" : "Position",
+        "spinsLeftLabel" : "Spins left",
+        "pointsLabel" : "Points"
     },
     "leaderboard": {
         "rank": "Pos.",

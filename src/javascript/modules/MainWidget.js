@@ -2788,20 +2788,30 @@ export const MainWidget = function (options) {
       itemBg = tournament.bannerLink;
     }
 
-    const endsLabel = this.settings.lbWidget.settings.translation.dashboard.endsTitle;
-
     const date = new Date(contest.scheduledEndDate);
+    const startedDate = new Date(contest.scheduledStartDate);
+
     const template = require('../templates/mainWidget/tournamentResultItem.hbs');
     listItem.innerHTML = template({
       title: contest.name,
       itemBg: itemBg,
-      endsLabel: endsLabel,
-      endsValue: date.toLocaleString('en-GB', { timeZone: 'UTC', dateStyle: 'short', timeStyle: 'short' }),
+      endedLabel: this.settings.lbWidget.settings.translation.tournaments.endedLabel,
+      startedLabel: this.settings.lbWidget.settings.translation.tournaments.startedLabel,
+      endedValue: date.toLocaleDateString('fr-CH', { timeZone: 'UTC', year: '2-digit', month: '2-digit', day: '2-digit' }),
+      detailsEndedValue: date.toLocaleDateString('fr-CH', {
+        timeZone: 'UTC', year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'
+      }),
+      startedValue: startedDate.toLocaleDateString('fr-CH', {
+        timeZone: 'UTC', year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'
+      }),
       prizeLabel: this.settings.lbWidget.settings.translation.dashboard.prizeTitle,
       prizeValue: rewardValue,
       rewardName: rewardName,
       playTournamentLabel: this.settings.lbWidget.settings.translation.dashboard.playTournamentLabel,
-      icon: contest.iconLink ?? ''
+      icon: contest.iconLink ?? '',
+      positionLabel: this.settings.lbWidget.settings.translation.tournaments.positionLabel,
+      spinsLeftLabel: this.settings.lbWidget.settings.translation.tournaments.spinsLeftLabel,
+      pointsLabel: this.settings.lbWidget.settings.translation.tournaments.pointsLabel
     });
 
     return listItem;

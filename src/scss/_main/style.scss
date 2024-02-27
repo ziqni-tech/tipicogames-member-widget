@@ -1956,6 +1956,15 @@
   color: var(--ui-color-error);
 }
 
+.cl-main-widget-wrapper .cl-main-widget-section-container .tournament-result-item .dashboard-tournament-list-details-expires {
+  color: var(--ui-color-success);
+}
+
+.cl-main-widget-wrapper .cl-main-widget-section-container .tournament-result-item .dashboard-tournament-list-details-expires-timer {
+  color: var(--ui-color-gray-9);
+}
+
+
 .cl-main-widget-wrapper .cl-main-widget-section-container .dashboard-tournament-list-details-label {
   display: flex;
   align-items: center;
