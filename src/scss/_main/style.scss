@@ -2607,7 +2607,7 @@
   float: left;
   width: 0;
   height: 6px;
-  background: var(--ui-color-primary);
+  background: linear-gradient(90deg, #FFFFFF 0%, #5EDAFF 100%);
   border-radius: 99px;
   transition: all 0.3s ease;
 }
@@ -4960,9 +4960,9 @@
   float: left;
   width: 0;
   height: 6px;
-  background: var(--ui-color-primary);
   border-radius: 99px;
   transition: all .3s ease;
+  background: linear-gradient(90deg, #FFFFFF 0%, #5EDAFF 100%);
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-section-ach .cl-ach-list-progression-bar.cl-ach-complete {
