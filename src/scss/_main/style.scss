@@ -2464,6 +2464,14 @@
   background: var(--widget-bg-blue);
 }
 
+.cl-main-widget-wrapper .cl-main-widget-section-container .cl-ach-list-actions-reward.issued::after {
+  content: '';
+  display: block;
+  width: 20px;
+  height: 20px;
+  background: url(../../images/issued.svg) no-repeat center;
+}
+
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-achievements-list .cl-ach-list-actions-reward-img {
   width: 24px;
   margin-right: 12px;
@@ -2555,6 +2563,18 @@
   font-weight: 600;
   line-height: 12px;
   text-transform: uppercase;
+}
+
+.cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-section-ach .cl-ach-list-details-expires.completed{
+  color: var(--ui-color-success);
+}
+
+.cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-section-ach .cl-ach-list-details-expires.expired{
+  color: var(--ui-color-error);
+}
+
+.cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-section-ach .cl-ach-list-details-expires.aborted{
+  color: var(--ui-color-aborted);
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-achievements-list .cl-ach-list-details-expires-timer {
@@ -4816,6 +4836,10 @@
   color: var(--ui-color-error);
 }
 
+.cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-section-ach .past .cl-ach-list-details-expires-timer {
+  color: var(--ui-color-gray-9);
+}
+
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-section-ach .cl-ach-list-details-cont {
   display: flex;
   width: 100%;
@@ -4944,6 +4968,7 @@
   line-height: 21px;
   padding-left: 12px;
   border-left: solid 1px rgba(255,255,255,.08);
+  flex-grow: 1;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-section-ach .cl-ach-list-progression-label {

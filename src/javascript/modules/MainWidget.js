@@ -2149,7 +2149,7 @@ export const MainWidget = function (options) {
     return listItem;
   };
 
-  this.achievementItemPast = function (ach) {
+  this.achievementItemPast = async function (ach) {
     const listItem = document.createElement('div');
     listItem.setAttribute('class', 'past cl-ach-list-item cl-ach-' + ach.id);
     listItem.dataset.id = ach.id;
@@ -2166,14 +2166,40 @@ export const MainWidget = function (options) {
       rewardName = ach.reward.name;
     }
 
+    const startDate = new Date(ach.scheduling.startDate);
+    let endsValue = '-';
+    if (ach.scheduling.endDate) {
+      endsValue = new Date(ach.scheduling.endDate).toLocaleString('fr-CH', { timeZone: 'UTC', year: '2-digit', month: '2-digit', day: '2-digit' });
+    }
+
+    const statuses = await this.settings.lbWidget.getMemberAchievementsOptInStatuses([ach.id]);
+
+    let isCompleted = false;
+    let isEntrant = false;
+    const percentageComplete = statuses[0].percentageComplete;
+    if (statuses[0].status === 'Completed') { isCompleted = true; isEntrant = true; };
+    if (statuses[0].status === 'Entrant') isEntrant = true;
+
     const template = require('../templates/mainWidget/achievementItemPast.hbs');
     listItem.innerHTML = template({
       id: ach.id,
       title: ach.name,
       bgImage: bgImage,
+      isCompleted: isCompleted,
+      isEntrant: isEntrant,
+      percentageComplete: percentageComplete,
       rewardValue: rewardValue,
-      endsLabel: this.settings.lbWidget.settings.translation.achievements.endsLabel,
-      rewardName: rewardName
+      completedLabel: this.settings.lbWidget.settings.translation.achievements.completedLabel,
+      expiredLabel: this.settings.lbWidget.settings.translation.achievements.expiredLabel,
+      abortedLabel: this.settings.lbWidget.settings.translation.achievements.abortedLabel,
+      startsOnLabel: this.settings.lbWidget.settings.translation.achievements.startsOnLabel,
+      endsOnLabel: this.settings.lbWidget.settings.translation.achievements.endsOnLabel,
+      freeSpinLabel: this.settings.lbWidget.settings.translation.achievements.freeSpinLabel,
+      rewardLabel: this.settings.lbWidget.settings.translation.achievements.rewardLabel,
+      tAndCLabel: this.settings.lbWidget.settings.translation.global.tAndCLabel,
+      rewardName: rewardName,
+      startsValue: startDate.toLocaleDateString('fr-CH', { timeZone: 'UTC', year: '2-digit', month: '2-digit', day: '2-digit' }),
+      endsValue: endsValue
     });
 
     return listItem;
@@ -2288,8 +2314,10 @@ export const MainWidget = function (options) {
         });
       } else if (typeof data !== 'undefined' && data.length && layout.type === 'past') {
         mapObject(data, function (rew) {
-          const listItem = _this.achievementItemPast(rew);
-          listContainer.appendChild(listItem);
+          // const listItem =  _this.achievementItemPast(rew);
+          // listContainer.appendChild(listItem);
+          _this.achievementItemPast(rew)
+            .then((listItem) => listContainer.appendChild(listItem));
         });
       } else {
         const listItem = _this.achievementItemEmpty();
@@ -2519,6 +2547,10 @@ export const MainWidget = function (options) {
             addClass(bar, 'cl-ach-complete');
             barLabel.innerHTML = '100/100';
             bar.style.width = '100%';
+            if (ach.classList.contains('past')) {
+              const reward = ach.querySelector('.cl-ach-list-actions-reward');
+              reward.classList.add('issued');
+            }
           } else {
             const percValue = ((perc > 1 || perc === 0) ? perc : 1) + '%';
             barLabel.innerHTML = perc + '/100';
@@ -2562,7 +2594,6 @@ export const MainWidget = function (options) {
     const _this = this;
 
     _this.settings.lbWidget.checkForAvailableAchievements(pageNumber, function (achievementData) {
-      // _this.settings.lbWidget.updateAchievementNavigationCounts();
       _this.achievementListLayout(pageNumber, achievementData, paginationArr);
 
       const idList = _this.settings.lbWidget.settings.achievements.list.map(a => a.id);
