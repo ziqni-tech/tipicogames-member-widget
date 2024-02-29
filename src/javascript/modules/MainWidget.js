@@ -2176,9 +2176,13 @@ export const MainWidget = function (options) {
 
     let isCompleted = false;
     let isEntrant = false;
-    const percentageComplete = statuses[0].percentageComplete;
-    if (statuses[0].status === 'Completed') { isCompleted = true; isEntrant = true; };
-    if (statuses[0].status === 'Entrant') isEntrant = true;
+    let percentageComplete = 0;
+
+    if (statuses && statuses.length) {
+      percentageComplete = statuses[0].percentageComplete;
+      if (statuses[0].status === 'Completed') { isCompleted = true; isEntrant = true; };
+      if (statuses[0].status === 'Entrant') isEntrant = true;
+    }
 
     const template = require('../templates/mainWidget/achievementItemPast.hbs');
     listItem.innerHTML = template({
