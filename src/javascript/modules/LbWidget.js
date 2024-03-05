@@ -758,6 +758,31 @@ export const LbWidget = function (options) {
     });
   };
 
+  this.getContestsByIds = async (ids) => {
+    if (!this.settings.apiWs.contestsApiWsClient) {
+      this.settings.apiWs.contestsApiWsClient = new ContestsApiWs(this.apiClientStomp);
+    }
+
+    const contestRequest = ContestRequest.constructFromObject({
+      languageKey: this.settings.language,
+      contestFilter: {
+        ids: ids,
+        statusCode: {
+          moreThan: 0,
+          lessThan: 100
+        },
+        limit: 20,
+        skip: 0
+      }
+    }, null);
+
+    return new Promise((resolve, reject) => {
+      this.settings.apiWs.contestsApiWsClient.getContests(contestRequest, (json) => {
+        resolve(json.data);
+      });
+    });
+  };
+
   this.getLeaderboardData = async function (count, callback) {
     const _this = this;
     if (this.settings.competition.activeContestId !== null) {
@@ -1257,7 +1282,7 @@ export const LbWidget = function (options) {
           order: 'Desc'
         }],
         skip: (claimedPageNumber - 1) * 6,
-        limit: 6
+        limit: 20
       },
       currencyKey: this.settings.currency
     });
@@ -1326,7 +1351,7 @@ export const LbWidget = function (options) {
       : 0;
 
     const expiredAwards = await this.getAwardsApi(expiredAwardRequest);
-    this.settings.awards.expiredAwards = expiredAwards.data;
+    this.settings.awards.expiredAwards = expiredAwards.data ?? [];
 
     const expiredRewardIds = this.settings.awards.expiredAwards.map(c => c.rewardId);
     if (expiredRewardIds.length) {
@@ -1950,14 +1975,14 @@ export const LbWidget = function (options) {
           }
 
           // load initial available reward data
-          if (_this.settings.navigation.rewards.enable) {
-            _this.checkForAvailableAwards(
-              function () {},
-              1,
-              1
-            );
-            _this.checkForAvailableRewards(1);
-          }
+          // if (_this.settings.navigation.rewards.enable) {
+          //   _this.checkForAvailableAwards(
+          //     function () {},
+          //     1,
+          //     1
+          //   );
+          //   _this.checkForAvailableRewards(1);
+          // }
         });
       });
     }
@@ -1998,6 +2023,21 @@ export const LbWidget = function (options) {
 
   this.eventHandlers = async function (el) {
     const _this = this;
+
+    // hide popups
+    if (!el.closest('.cl-main-widget-ach-optIn-drawer')) {
+      const drawer = document.querySelector('.cl-main-widget-ach-optIn-drawer');
+      if (drawer) {
+        drawer.classList.remove('active');
+      }
+    }
+
+    if (!el.closest('.cl-main-widget-tour-optIn-drawer')) {
+      const drawer = document.querySelector('.cl-main-widget-tour-optIn-drawer');
+      if (drawer) {
+        drawer.classList.remove('active');
+      }
+    }
 
     // mini scoreboard opt-in action
     if (hasClass(el, 'cl-widget-ms-optin-action') && !hasClass(el, 'checking')) {
@@ -2102,6 +2142,33 @@ export const LbWidget = function (options) {
         });
       }
 
+      // Achievement drawer opt-in action
+    } else if (hasClass(el, 'cl-main-widget-ach-optIn-drawer-btn-optIn')) {
+      if (_this.settings.achievements.activeAchievementId) {
+        if (!this.settings.apiWs.optInApiWsClient) {
+          this.settings.apiWs.optInApiWsClient = new OptInApiWs(this.apiClientStomp);
+        }
+
+        const optInRequest = ManageOptinRequest.constructFromObject({
+          entityId: _this.settings.achievements.activeAchievementId,
+          entityType: 'Achievement',
+          action: 'join'
+        }, null);
+
+        const preLoader = _this.settings.mainWidget.preloader();
+
+        preLoader.show(async function () {
+          await _this.settings.apiWs.optInApiWsClient.manageOptin(optInRequest, (json) => {
+            setTimeout(function () {
+              preLoader.hide();
+              _this.settings.mainWidget.hideAchievementDetails(
+                _this.checkForAvailableAchievements(1)
+              );
+            }, 2000);
+          });
+        });
+      }
+
       // Achievement details opt-out action
     } else if (hasClass(el, 'cl-main-widget-ach-details-body-abort')) {
       if (_this.settings.achievements.activeAchievementId) {
@@ -2127,6 +2194,39 @@ export const LbWidget = function (options) {
             }, 2000);
           });
         });
+      }
+
+      // Contest details game click
+    } else if (hasClass(el, 'cl-main-widget-ach-details-game-item') && el.closest('.tour-games')) {
+      const drawer = document.querySelector('.cl-main-widget-tour-optIn-drawer');
+      const container = document.querySelector('.cl-main-widget-lb-optin-container');
+
+      if (container.style.display === 'flex') {
+        drawer.classList.add('active');
+      }
+
+      // Contest drawer opt-in action
+    } else if (hasClass(el, 'cl-main-widget-tour-optIn-drawer-btn-optIn')) {
+      const preLoader = _this.settings.mainWidget.preloader();
+      const drawer = document.querySelector('.cl-main-widget-tour-optIn-drawer');
+      preLoader.show(async function () {
+        await _this.optInMemberToActiveCompetition(function () {
+          setTimeout(function () {
+            preLoader.hide();
+            _this.settings.mainWidget.loadLeaderboard(() => {}, true);
+            drawer.classList.remove('active');
+          }, 2000);
+        });
+      });
+
+      // Achievement details game click
+    } else if (hasClass(el, 'cl-main-widget-ach-details-game-item')) {
+      const drawer = document.querySelector('.cl-main-widget-ach-optIn-drawer');
+      const container = document.querySelector('.cl-main-widget-ach-details-container');
+      const optInBtn = container.querySelector('.cl-main-widget-ach-details-optin-action');
+
+      if (optInBtn.style.display === 'flex') {
+        drawer.classList.add('active');
       }
 
       // Achievement list opt-in action

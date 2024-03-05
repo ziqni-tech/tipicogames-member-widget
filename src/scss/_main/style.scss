@@ -102,8 +102,6 @@
   margin: 0;
   padding: 0;
   border: 0;
-  font-size: 100%;
-  font: inherit;
   color: var(--primary-font-color);
   vertical-align: baseline;
   background: none;
@@ -4187,7 +4185,7 @@
   width: 100%;
   z-index: 1;
   overflow: auto;
-  height: 100%;
+  height: calc(100% - 22px);
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-ach-list-body::-webkit-scrollbar {
@@ -4397,6 +4395,104 @@
   right: 0;
   top: 8px;
   cursor: pointer;
+}
+
+.cl-main-widget-ach-details-hw ol {
+  list-style: none;
+  counter-reset: item;
+  margin-top: 16px;
+  position: relative;
+}
+
+.cl-main-widget-ach-details-hw ol::before {
+  content: '';
+  display: block;
+  position: absolute;
+  height: 100%;
+  width: 1px;
+  background: rgba(80, 245, 255, 0.08);
+  left: 11px;
+}
+
+.cl-main-widget-ach-details-hw ol li {
+  counter-increment: item;
+  margin-bottom: 16px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 21px;
+  text-align: left;
+  display: flex;
+  position: relative;
+  z-index: 1;
+}
+
+.cl-main-widget-tournament-details-hw {
+  margin-top: 32px;
+}
+
+.cl-main-widget-ach-details-hw ol li::before {
+  margin-right: 16px;
+  content: counter(item);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 100%;
+  width: 24px;
+  height: 24px;
+  text-align: center;
+  background: #4C4C4C;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 24px;
+  letter-spacing: 0;
+  flex-shrink: 0;
+}
+
+.cl-main-widget-tournament-details-hw ol {
+  list-style: none;
+  counter-reset: item;
+  margin-top: 16px;
+  position: relative;
+}
+
+.cl-main-widget-tournament-details-hw ol::before {
+  content: '';
+  display: block;
+  position: absolute;
+  height: 100%;
+  width: 1px;
+  background: rgba(80, 245, 255, 0.08);
+  left: 11px;
+}
+
+.cl-main-widget-tournament-details-hw ol li {
+  counter-increment: item;
+  margin-bottom: 16px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 21px;
+  text-align: left;
+  display: flex;
+  position: relative;
+  z-index: 1;
+}
+
+.cl-main-widget-tournament-details-hw ol li::before {
+  margin-right: 16px;
+  content: counter(item);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 100%;
+  width: 24px;
+  height: 24px;
+  text-align: center;
+  background: #4C4C4C;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 24px;
+  letter-spacing: 0;
+  flex-shrink: 0;
 }
 
 .cl-main-widget-ach-details-hw {
@@ -4685,6 +4781,156 @@
   margin-top: 16px;
   font-size: 14px;
   font-weight: 600;
+}
+
+.cl-main-widget-ach-optIn-drawer {
+  position: absolute;
+  bottom: -100%;
+  left: 0;
+  z-index: 2;
+  height: auto;
+  background: var(--card-default);
+  border-radius: 24px 24px 0 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 32px 50px 32px;
+  transition: all .3s ease;
+}
+
+.cl-main-widget-ach-optIn-drawer.active {
+  bottom: 0;
+}
+
+.cl-main-widget-ach-optIn-drawer-title {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 26px;
+  text-align: center;
+  color: var(--Primary-White);
+  margin-top: 30px;
+  margin-bottom: 8px;
+}
+
+.cl-main-widget-ach-optIn-drawer-description {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 21px;
+  text-align: center;
+  color: var(--ui-color-gray-10);
+}
+
+.cl-main-widget-ach-optIn-drawer-btn-optIn {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  border-radius: 8px;
+  background: #fff;
+  color: var(--Primary-Dark);
+  margin-top: 32px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.cl-main-widget-ach-optIn-drawer-btn-play {
+  margin-top: 8px;
+  width: 100%;
+  height: 40px;
+  border: solid 1px #fff;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 21px;
+  text-align: center;
+  color: var(--Primary-White);
+  text-decoration: none;
+}
+
+.cl-main-widget-ach-optIn-drawer-icon {
+  width: 53px;
+  height: 53px;
+  background: url(../../images/drawer.svg) no-repeat center;
+}
+
+
+
+.cl-main-widget-tour-optIn-drawer {
+  position: absolute;
+  bottom: -100%;
+  left: 0;
+  z-index: 2;
+  height: auto;
+  background: var(--card-default);
+  border-radius: 24px 24px 0 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 32px 50px 32px;
+  transition: all .3s ease;
+}
+
+.cl-main-widget-tour-optIn-drawer.active {
+  bottom: 0;
+}
+
+.cl-main-widget-tour-optIn-drawer-title {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 26px;
+  text-align: center;
+  color: var(--Primary-White);
+  margin-top: 30px;
+  margin-bottom: 8px;
+}
+
+.cl-main-widget-tour-optIn-drawer-description {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 21px;
+  text-align: center;
+  color: var(--ui-color-gray-10);
+}
+
+.cl-main-widget-tour-optIn-drawer-btn-optIn {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  border-radius: 8px;
+  background: #fff;
+  color: var(--Primary-Dark);
+  margin-top: 32px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.cl-main-widget-tour-optIn-drawer-btn-play {
+  margin-top: 8px;
+  width: 100%;
+  height: 40px;
+  border: solid 1px #fff;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 21px;
+  text-align: center;
+  color: var(--Primary-White);
+  text-decoration: none;
+}
+
+.cl-main-widget-tour-optIn-drawer-icon {
+  width: 53px;
+  height: 53px;
+  background: url(../../images/drawer.svg) no-repeat center;
 }
 
 .cl-main-widget-lb-details-body-cta-ends-btn-pick {
@@ -6046,6 +6292,10 @@
   height: calc(100% - 121px);
   overflow: auto;
   display: none;
+}
+
+.cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-accordion-container .cl-accordion-list-container {
+  height: calc(100% - 121px);
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-accordion-container .cl-accordion-list-container-header {
