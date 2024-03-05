@@ -9,7 +9,6 @@ import addClass from '../utils/addClass';
 import remove from '../utils/remove';
 import appendNext from '../utils/appendNext';
 import stripHtml from '../utils/stripHtml';
-// import tournamentBrackets from './TournamentBrackets';
 import { ContestRequest } from '@ziqni-tech/member-api-client';
 
 /**
@@ -464,6 +463,11 @@ export const MainWidget = function (options) {
 
     const landscapeClose = document.createElement('div');
 
+    const rewardCelebration = document.createElement('div');
+    rewardCelebration.setAttribute('class', 'cl-main-widget-reward-celebration');
+    const template = require('../templates/mainWidget/rewardCelebration.hbs');
+    rewardCelebration.innerHTML = template({});
+
     landscapeClose.setAttribute('class', 'cl-landscape-close');
 
     const navigationItemList = [];
@@ -506,6 +510,7 @@ export const MainWidget = function (options) {
     mainSectionContainer.appendChild(preLoaderContainer);
     mainSectionContainer.appendChild(landscapeClose);
     mainSectionContainer.appendChild(home);
+    mainSectionContainer.appendChild(rewardCelebration);
 
     // innerWrapper.appendChild(navigationContainer);
     innerWrapper.appendChild(mainSectionContainer);
