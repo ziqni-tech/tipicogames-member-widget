@@ -1195,6 +1195,15 @@ export const MainWidget = function (options) {
     return date;
   };
 
+  this.getActiveContestDescription = function () {
+    return (
+      this.settings.lbWidget.settings.competition.activeContest !== null &&
+      this.settings.lbWidget.settings.competition.activeContest.description
+    )
+      ? this.settings.lbWidget.settings.competition.activeContest.description
+      : '';
+  };
+
   this.getActiveCompetitionBanner = function () {
     let bannerImage = '';
 
@@ -1258,6 +1267,7 @@ export const MainWidget = function (options) {
     const rewardTitle = query(_this.settings.section, '.cl-main-widget-lb-details-reward-title');
     const duration = query(_this.settings.section, '.cl-main-widget-lb-details-duration');
     const actionsDate = query(this.settings.section, '.cl-main-widget-lb-details-body-cta-ends-date');
+    const description = query(this.settings.section, '.cl-main-widget-tournament-details-hw');
 
     // _this.settings.descriptionDate = query(_this.settings.container, '.cl-main-widget-lb-details-description-date');
 
@@ -1304,6 +1314,7 @@ export const MainWidget = function (options) {
     rewardTitle.innerHTML = _this.getActiveContestRewardTitle();
     duration.innerHTML = _this.getActiveContestDuration();
     actionsDate.innerHTML = _this.getActiveContestDate();
+    description.innerHTML = _this.getActiveContestDescription();
     // bannerTitle.innerHTML = _this.getActiveContestTitle();
 
     // if (body === null) {
@@ -2344,6 +2355,8 @@ export const MainWidget = function (options) {
     const pickUpBtn = query(_this.settings.achievement.detailsContainer, '.cl-main-widget-ach-details-body-cta-ends-btn-pick');
     const abortBtn = query(_this.settings.achievement.detailsContainer, '.cl-main-widget-ach-details-body-abort');
     const progress = query(_this.settings.achievement.detailsContainer, '.cl-ach-list-progression');
+    const description = query(_this.settings.achievement.detailsContainer, '.cl-main-widget-ach-details-hw');
+    const endsDate = query(_this.settings.achievement.detailsContainer, '.cl-main-widget-ach-details-body-cta-ends-date');
 
     const headerActions = query(_this.settings.achievement.detailsContainer, '.cl-ach-list-actions');
     const footerActions = query(_this.settings.achievement.detailsContainer, '.cl-main-widget-ach-details-body-cta');
@@ -2355,6 +2368,21 @@ export const MainWidget = function (options) {
       rewardTitle.innerHTML = data.reward.name;
     } else {
       rewardTitle.innerHTML = '';
+    }
+
+    if (data.description) {
+      description.innerHTML = data.description;
+    } else {
+      description.innerHTML = '';
+    }
+
+    if (data.scheduling.endDate) {
+      const date = new Date(data.scheduling.endDate);
+      endsDate.innerHTML = date.toLocaleDateString('fr-CH', {
+        timeZone: 'UTC', year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'
+      });
+    } else {
+      endsDate.innerHTML = '-';
     }
 
     let optinRequiredForEntrants = false;
@@ -3090,12 +3118,34 @@ export const MainWidget = function (options) {
     return listItem;
   };
 
-  this.rewardItemPast = function () {
+  this.rewardItemPast = async function (reward) {
     const listItem = document.createElement('div');
     listItem.setAttribute('class', 'rewards-list-item-past');
 
+    let campaign = '';
+    if (reward.entityType === 'Achievement') {
+      const achievement = await this.settings.lbWidget.getAchievementsByIds([reward.entityId]);
+      campaign = achievement[0].name;
+    } else if (reward.entityType === 'Contest') {
+      const contest = await this.settings.lbWidget.getContestsByIds([reward.entityId]);
+      campaign = contest[0].name;
+    }
+
+    let expires = '-';
+    if (reward.period) {
+      const date = new Date(moment(reward.created).add(reward.period, 'm'));
+      expires = date.toLocaleDateString('fr-CH', {
+        timeZone: 'UTC', year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'
+      });
+    }
+
     const template = require('../templates/mainWidget/rewardItemPast.hbs');
-    listItem.innerHTML = template({});
+    listItem.innerHTML = template({
+      name: reward.name,
+      status: reward.status,
+      campaign: campaign,
+      expires: expires
+    });
 
     return listItem;
   };
@@ -3352,8 +3402,8 @@ export const MainWidget = function (options) {
           }
         });
       } else if (typeof rewardData !== 'undefined' && rewardData.length && layout.type === 'pastAwards') {
-        mapObject(rewardData, function (rew) {
-          const listItem = _this.rewardItemPast(rew);
+        mapObject(rewardData, async function (rew) {
+          const listItem = await _this.rewardItemPast(rew);
           listContainer.appendChild(listItem);
         });
       } else {

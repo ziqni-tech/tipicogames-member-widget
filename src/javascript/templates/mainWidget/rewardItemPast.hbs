@@ -1,10 +1,10 @@
 <div class="rewards-list-item-past-info-header">
   <div class="rewards-list-item-past-info">
     <div class="rewards-list-item-past-info-data">
-      25.12.23 - <span class="rewards-list-item-past-info-data-status">consumed</span>
+      25.12.23 - <span class="rewards-list-item-past-info-data-status">{{ status }}</span>
     </div>
     <div class="rewards-list-item-past-info-title">
-      2 Wheel spins
+      {{ name }}
     </div>
   </div>
   <div class="rewards-list-item-past-info-expand expand-item"></div>
@@ -13,26 +13,26 @@
 <div class="rewards-list-item-past-info-body">
   <div class="rewards-list-item-past-info-body-item">
     <div class="rewards-list-item-past-info-body-item-label">Number of Free Spins used</div>
-    <div class="rewards-list-item-past-info-body-item-value">15/15</div>
+    <div class="rewards-list-item-past-info-body-item-value">-</div>
   </div>
   <div class="rewards-list-item-past-info-body-item">
     <div class="rewards-list-item-past-info-body-item-label">Free Spins Winnings</div>
-    <div class="rewards-list-item-past-info-body-item-value">43,50 €</div>
+    <div class="rewards-list-item-past-info-body-item-value">-</div>
   </div>
   <div class="rewards-list-item-past-info-body-item">
     <div class="rewards-list-item-past-info-body-item-label">Completed on</div>
-    <div class="rewards-list-item-past-info-body-item-value">13.12.23</div>
+    <div class="rewards-list-item-past-info-body-item-value">-</div>
   </div>
   <div class="rewards-list-item-past-info-body-item">
     <div class="rewards-list-item-past-info-body-item-label">Credited on</div>
-    <div class="rewards-list-item-past-info-body-item-value">12.12.23</div>
+    <div class="rewards-list-item-past-info-body-item-value">-</div>
   </div>
   <div class="rewards-list-item-past-info-body-item">
     <div class="rewards-list-item-past-info-body-item-label">Expires on</div>
-    <div class="rewards-list-item-past-info-body-item-value">24.12.23, 23:59</div>
+    <div class="rewards-list-item-past-info-body-item-value">{{ expires }}</div>
   </div>
   <div class="rewards-list-item-past-info-body-item">
     <div class="rewards-list-item-past-info-body-item-label">Campaign</div>
-    <div class="rewards-list-item-past-info-body-item-value">Snowy December Mission</div>
+    <div class="rewards-list-item-past-info-body-item-value">{{ campaign }}</div>
   </div>
 </div>
