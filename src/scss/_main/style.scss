@@ -122,7 +122,6 @@
 .cl-widget-ms-wrapper .cl-widget-ms-icon-wrapper .cl-widget-ms-icon {
   display: block;
   min-height: 100%;
-  background-image: $lb3-widget-icon;
   background-repeat: no-repeat;
   background-position: 50% 50%;
   width: 62px;
@@ -1186,7 +1185,6 @@
 .cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-logo {
   width: 68px;
   height: 68px;
-  background-image: $lb3-widget-icon-nav;
   background-size: contain;
   background-repeat: no-repeat;
   flex-shrink: 0;
@@ -1230,7 +1228,6 @@
   height: 73px;
   position: relative;
   display: block;
-  background: #304F69 url(../../images/sun-dark.svg) no-repeat center 13%;
   border-radius: 30px;
   cursor: pointer;
 }
@@ -1242,7 +1239,6 @@
   position: absolute;
   bottom: 0;
   left: 0;
-  background: #EE3EC8 url(../../images/moon.svg) no-repeat center center;
   border-radius: 50%;
 }
 
@@ -1250,15 +1246,6 @@
   width: 0;
   height: 0;
   visibility: hidden;
-}
-
-.cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-darkMode-toggle input:checked + label {
-  background: #DCE6EF url(../../images/moon-light.svg) no-repeat center 86%;
-}
-
-.cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-darkMode-toggle input:checked + label:after {
-  transform: translateY(-34px);
-  background: #EE3EC8 url(../../images/sun.svg) no-repeat center center;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-navigation-container .cl-main-widget-navigation-darkMode-toggle label,
@@ -1353,7 +1340,6 @@
   width: 32px;
   margin-top: 6px;
   margin-bottom: 5px;
-  background-image: $lb3-missions-icon;
   background-repeat: no-repeat;
   background-size: 100%;
   opacity: 0.7;
@@ -1592,7 +1578,6 @@
   width: 163px;
   height: 142px;
   background-color: #0f1921;
-  background-image: url(../../images/single-wheel.png);
   background-size: cover;
   background-position: center;
   border-radius: 10px;
@@ -1662,7 +1647,6 @@
   width: 163px;
   height: 142px;
   background-color: #0f1921;
-  background-image: url(../../images/scratchcards.svg);
   background-size: 126px;
   background-repeat: no-repeat;
   background-position: center;
@@ -1968,7 +1952,7 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  max-width: 168px;
+  max-width: 182px;
   color: #fff;
   font-style: normal;
   font-weight: 600;
@@ -2730,7 +2714,6 @@
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-lb-details {
   position: relative;
   z-index: 2;
-  background-image: $lb3-tournament-default-banner;
   background-repeat: no-repeat;
   background-size: cover;
   border-radius: 10px;
@@ -2859,7 +2842,6 @@
   height: 176px;
   text-align: center;
   border-radius: 10px;
-  background-image: linear-gradient(93.25deg, rgba(56, 172, 207, 0.29) -4.57%, rgba(16, 26, 34, 0.5) 49.35%, rgba(56, 172, 207, 0.29) 100%), $lb3-tournament-default-banner;
   margin-bottom: 20px;
   background-size: cover;
 }
@@ -5382,6 +5364,112 @@
 
 /**
  * ****************************************
+ * ************ Errors **************
+ * ****************************************
+ */
+
+.cl-main-widget-error {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--Primary-Dark);
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: all .3s ease;
+  padding: 0 16px;
+}
+
+.cl-main-widget-error.active {
+  top: 0;
+}
+
+.cl-main-widget-error-header {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  height: 48px;
+  position: relative;
+  z-index: 2;
+  width: 100%;
+}
+
+.cl-main-widget-error-header-back {
+  background-image: url(../../images/navigation-back.svg);
+  background-repeat: no-repeat;
+  width: 32px;
+  height: 32px;
+  background-size: 100%;
+  cursor: pointer;
+  margin-left: -6px;
+}
+
+.cl-main-widget-error-header-label {
+  width: 100%;
+  text-align: left;
+  color: var(--Primary-White);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24px;
+  padding-left: 16px;
+}
+
+.cl-main-widget-error-header-close {
+  position: absolute;
+  display: block;
+  background-image: url(../../images/close-icon.svg);
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  background-size: 100%;
+  width: 32px;
+  height: 32px;
+  right: 0;
+  top: 8px;
+  cursor: pointer;
+}
+
+.cl-main-widget-error-body {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 34px;
+}
+
+.cl-main-widget-error-body-icon {
+  width: 64px;
+  height: 64px;
+  background-image: url(../../images/error-icon.svg);
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  background-size: 100%;
+}
+
+.cl-main-widget-error-body-title {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 26px;
+  text-align: center;
+  color: var(--Primary-White);
+  margin-top: 24px;
+}
+
+.cl-main-widget-error-body-description {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 21px;
+  text-align: center;
+  color: var(--ui-color-gray-10);
+  margin-top: 8px;
+}
+
+/**
+ * ****************************************
  * ************ Rewards Area **************
  * ****************************************
  */
@@ -5705,7 +5793,6 @@
   width: 136px;
   height: 136px;
   border-radius: 50%;
-  background: $lb3-award-default-icon no-repeat center;
   background-size: 110px;
   margin-bottom: 6px;
 }
@@ -5732,7 +5819,6 @@
   position: absolute;
   left: 0;
   bottom: 0;
-  background: $lb3-achievements-default-icon-border no-repeat;
   background-size: contain;
   background-position-y: bottom;
 }
@@ -5792,7 +5878,6 @@
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-reward-list-body-res .wheel-image {
   width: 304px;
   height: 195px;
-  background-image: url(../../images/single-wheel.png);
   background-color: #0F1921;
   border-radius: 10px;
   margin-bottom: 28px;
@@ -5801,7 +5886,6 @@
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-reward-list-body-res .scratchcards-image {
   width: 304px;
   height: 195px;
-  background-image: url(../../images/scratchcards.svg);
   background-repeat: no-repeat;
   background-position: center 7px;
   background-color: #0F1921;
@@ -5866,7 +5950,6 @@
   width: 300px;
   height: 300px;
   flex-shrink: 0;
-  cursor: url(../../images/coin.svg), auto;
   position: relative;
 }
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-reward-list-body-res .scratchcards-game-canvas {
@@ -5897,18 +5980,6 @@
   background-repeat: no-repeat;
   background-color: #2F0426;
   margin-bottom: 20px;
-}
-
-.cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-reward-list-body-res .prize-1 {
-  background-image: url(../../images/prize-1.png);
-}
-
-.cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-reward-list-body-res .prize-2 {
-  background-image: url(../../images/prize-2.png);
-}
-
-.cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-reward-list-body-res .prize-3 {
-  background-image: url(../../images/prize-3.png);
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-reward-list-body-res .scratchcards-game-prize {
@@ -5960,18 +6031,6 @@
   margin-bottom: 6px;
 }
 
-.cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-reward-list-body-res .scratchcards-game-prize-prizes-first {
-  background: url(../../images/prize-1.png) no-repeat center;
-}
-
-.cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-reward-list-body-res .scratchcards-game-prize-prizes-second {
-  background: url(../../images/prize-2.png) no-repeat center;
-}
-
-.cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-reward-list-body-res .scratchcards-game-prize-prizes-third {
-  background: url(../../images/prize-3.png) no-repeat center;
-}
-
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-reward-list-body-res .scratchcards-game-prize-prizes-first::before,
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-reward-list-body-res .scratchcards-game-prize-prizes-second::before,
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-reward-list-body-res .scratchcards-game-prize-prizes-third::before {
@@ -5998,7 +6057,6 @@
   position: absolute;
   left: 0;
   bottom: 0;
-  background: url(../../images/ellipse.svg) no-repeat;
   background-size: contain;
   background-position-y: bottom;
 }
@@ -6792,7 +6850,6 @@
   width: 100px;
   height: 100px;
   border-radius: 50%;
-  background: url(../../images/award.svg) no-repeat center;
   background-size: 70%;
   position: relative;
 }
@@ -7260,36 +7317,6 @@
   border-radius: 10px 10px 0 0;
 }
 
-.cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-missions-list-body-res .cl-missions-list-item:nth-child(1) {
-  .cl-missions-list-details-img {
-    background-image: url(../../images/mission-1.png);
-  }
-}
-
-.cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-missions-list-body-res .cl-missions-list-item:nth-child(2) {
-  .cl-missions-list-details-img {
-    background-image: url(../../images/mission-2.png);
-  }
-}
-
-.cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-missions-list-body-res .cl-missions-list-item:nth-child(3) {
-  .cl-missions-list-details-img {
-    background-image: url(../../images/mission-3.png);
-  }
-}
-
-.cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-missions-list-body-res .cl-missions-list-item:nth-child(4) {
-  .cl-missions-list-details-img {
-    background-image: url(../../images/mission-4.png);
-  }
-}
-
-.cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-missions-list-body-res .cl-missions-list-item:nth-child(5) {
-  .cl-missions-list-details-img {
-    background-image: url(../../images/mission-5.png);
-  }
-}
-
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-missions-list-body-res .cl-missions-list-details-date {
   position: absolute;
   top: 18px;
@@ -7465,21 +7492,6 @@
   background-image: url(../../images/map-item-bg.png);
 }
 
-.cl-main-widget-wrapper .cl-main-widget-missions-map-graph-item-star-3 {
-  display: none;
-  background-image: url(../../images/rate3.svg);
-}
-
-.cl-main-widget-wrapper .cl-main-widget-missions-map-graph-item-star-2 {
-  display: none;
-  background-image: url(../../images/rate2.svg);
-}
-
-.cl-main-widget-wrapper .cl-main-widget-missions-map-graph-item-star-1 {
-  display: none;
-  background-image: url(../../images/rate1.svg);
-}
-
 .cl-main-widget-wrapper .cl-main-widget-missions-details-container {
   position: absolute;
   height: calc(100% - 134px);
@@ -7627,7 +7639,6 @@
   margin-left: 66px;
   margin-top: -10px;
   border-radius: 50%;
-  background: url(../../images/awardPreview.svg) no-repeat center;
   background-size: 70%;
   position: relative;
 }
@@ -7658,7 +7669,6 @@
   position: absolute;
   left: 0;
   bottom: 0;
-  background: url(../../images/ellipse.svg) no-repeat;
   background-size: contain;
   background-position-y: bottom;
 }
@@ -8002,137 +8012,4 @@
   border: none;
   left: 0;
   top: 0;
-}
-
-/**
- * *************************************
- * ********** Light theme ***********
- * *************************************
- */
-
-.cl-widget-notif-wrapper.lightTheme {
-  .cl-widget-notif-information-wrapper {
-    background: rgba(220, 230, 239, .95);
-    color: #223241;
-    .cl-widget-notif-information-details-label {
-      color: #223241;
-    }
-    .cl-widget-notif-information-details-description {
-      color: #223241;
-    }
-  }
-  .cl-widget-notif-information-close-wrapper {
-    background-image: url(../../images/close-icon-light.svg);
-  }
-  .cl-widget-notif-icon-wrapper {
-    .cl-widget-notif-icon {
-      background: #bccdde;
-      box-shadow: 1px 1px 3px #333;
-    }
-  }
-}
-
-.cl-widget-ms-wrapper.lightTheme {
-  * {
-    color: #141E28;
-  }
-  .cl-widget-ms-information-close-wrapper {
-    background: #B9CEDF;
-    border: 1px solid #FFFFFF;
-    .cl-widget-ms-information-close {
-      background: none;
-    }
-  }
-  .cl-widget-ms-icon-wrapper {
-    .cl-widget-ms-icon {
-      background-image: url(../../images/ziqni-logo-light.svg);
-    }
-  }
-  .cl-widget-ms-information-wrapper {
-    background: #EDF3F7;
-    border: 1px solid #B9CEDF;
-    color: #141E28;
-  }
-  .cl-widget-ms-default-mem-entry:nth-child(odd) {
-    background: #DCE6EF;
-  }
-  .cl-widget-ms-default-wrapper {
-    color: #223241;
-    .cl-widget-ms-default-results-headers {
-      .cl-widget-ms-default-results-header-rank {
-        color: #223241;
-      }
-      .cl-widget-ms-default-results-header-points {
-        color: #223241;
-      }
-    }
-  }
-  .cl-widget-ms-first-to-wrapper {
-    color: #223241;
-    .cl-widget-ms-first-to-results-headers {
-      .cl-widget-ms-first-to-results-header-rank {
-        color: #223241;
-      }
-      .cl-widget-ms-first-to-results-header-points {
-        color: #223241;
-      }
-    }
-  }
-  .cl-widget-ms-default-wrapper.cl-inverse {
-    .cl-widget-ms-default-date-only {
-      .cl-widget-ms-default-date-label {
-        color: #223241;
-      }
-      .cl-widget-ms-default-date {
-        color: #223241;
-        .time-ind {
-          color: #223241;
-        }
-      }
-    }
-  }
-  .cl-widget-ms-first-to-wrapper.cl-inverse {
-    .cl-widget-ms-first-to-date-only {
-      .cl-widget-ms-first-to-date-label {
-        color: #223241;
-      }
-      .cl-widget-ms-first-to-date {
-        color: #223241;
-        .time-ind {
-          color: #223241;
-        }
-      }
-    }
-  }
-
-  .cl-widget-ms-information-top-wrapper {
-    .cl-widget-ms-information-wrapper {
-      .cl-widget-ms-default-wrapper {
-        .cl-widget-ms-default-results-wrapper {
-          .cl-widget-ms-default-results-list {
-            .cl-widget-ms-default-mem-entry {
-              &.cl-widget-ms-default-mem-self {
-                background: #BEE9F3;
-                border: 1px solid #F7A1E4;
-                box-shadow: 0 2px 12px rgba(238, 62, 200, 0.4);
-              }
-            }
-          }
-        }
-      }
-      .cl-widget-ms-first-to-wrapper {
-        .cl-widget-ms-first-to-results-wrapper {
-          .cl-widget-ms-first-to-results-list {
-            .cl-widget-ms-first-to-mem-entry {
-              &.cl-widget-ms-first-to-mem-self {
-                background: #BEE9F3;
-                border: 1px solid #F7A1E4;
-                box-shadow: 0 2px 12px rgba(238, 62, 200, 0.4);
-              }
-            }
-          }
-        }
-      }
-    }
-  }
 }

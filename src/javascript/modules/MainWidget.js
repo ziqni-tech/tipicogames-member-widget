@@ -468,6 +468,11 @@ export const MainWidget = function (options) {
     const template = require('../templates/mainWidget/rewardCelebration.hbs');
     rewardCelebration.innerHTML = template({});
 
+    const errorPage = document.createElement('div');
+    errorPage.setAttribute('class', 'cl-main-widget-error');
+    const errorTemplate = require('../templates/mainWidget/error.hbs');
+    errorPage.innerHTML = errorTemplate({});
+
     landscapeClose.setAttribute('class', 'cl-landscape-close');
 
     const navigationItemList = [];
@@ -511,6 +516,7 @@ export const MainWidget = function (options) {
     mainSectionContainer.appendChild(landscapeClose);
     mainSectionContainer.appendChild(home);
     mainSectionContainer.appendChild(rewardCelebration);
+    mainSectionContainer.appendChild(errorPage);
 
     // innerWrapper.appendChild(navigationContainer);
     innerWrapper.appendChild(mainSectionContainer);
@@ -1791,7 +1797,7 @@ export const MainWidget = function (options) {
     const listResContainer = query(_this.settings.tournamentListContainer, '.cl-main-widget-tournaments-list-body-res');
     // const listIcon = query(_this.settings.container, '.cl-main-widget-lb-header-list-icon');
     // const backIcon = query(_this.settings.container, '.cl-main-widget-lb-header-back-icon');
-    const preLoader = _this.preloader();
+    // const preLoader = _this.preloader();
 
     const totalCount = _this.settings.lbWidget.settings.tournaments.totalCount;
     const readyTotalCount = _this.settings.lbWidget.settings.tournaments.readyTotalCount;
@@ -1961,90 +1967,85 @@ export const MainWidget = function (options) {
       }
     }
 
-    preLoader.show(function () {
-      // listIcon.style.display = 'none';
-      // backIcon.style.display = 'block';
-      const accordionObj = _this.tournamentsList(_this.settings.tournamentsSection.accordionLayout, function (accordionSection, listContainer, topEntryContainer, layout) {
-        const tournamentData = _this.settings.lbWidget.settings.tournaments[layout.type];
+    // listIcon.style.display = 'none';
+    // backIcon.style.display = 'block';
+    const accordionObj = _this.tournamentsList(_this.settings.tournamentsSection.accordionLayout, function (accordionSection, listContainer, topEntryContainer, layout) {
+      const tournamentData = _this.settings.lbWidget.settings.tournaments[layout.type];
 
-        if (typeof tournamentData !== 'undefined') {
-          if (tournamentData.length === 0) {
-            accordionSection.style.display = 'none';
-          }
-          if (layout.type === 'activeCompetitions') {
-            mapObject(tournamentData, async function (tournament, key, count) {
-              const listItem = await _this.dashboardTournamentItem(tournament);
-              listContainer.appendChild(listItem);
-            });
-          } else if (layout.type === 'finishedCompetitions') {
-            mapObject(tournamentData, async function (tournament, key, count) {
-              const listItem = await _this.tournamentResultItem(tournament);
-              listContainer.appendChild(listItem);
-            });
-          }
+      if (typeof tournamentData !== 'undefined') {
+        if (tournamentData.length === 0) {
+          accordionSection.style.display = 'none';
         }
-      });
-
-      listResContainer.innerHTML = '';
-      listResContainer.appendChild(accordionObj);
-
-      if (finishedPaginator) {
-        const finishedContainer = query(listResContainer, '.finishedCompetitions');
-        if (finishedContainer) {
-          const listContainer = query(finishedContainer, '.cl-accordion-list-container');
-          const paginatorItems = query(finishedPaginator, '.paginator-item');
-          paginatorItems.forEach(item => {
-            removeClass(item, 'active');
-            if (Number(item.dataset.page) === Number(finishedPageNumber)) {
-              addClass(item, 'active');
-            }
+        if (layout.type === 'activeCompetitions') {
+          mapObject(tournamentData, async function (tournament, key, count) {
+            const listItem = await _this.dashboardTournamentItem(tournament);
+            listContainer.appendChild(listItem);
           });
-
-          listContainer.appendChild(finishedPaginator);
+        } else if (layout.type === 'finishedCompetitions') {
+          mapObject(tournamentData, async function (tournament, key, count) {
+            const listItem = await _this.tournamentResultItem(tournament);
+            listContainer.appendChild(listItem);
+          });
         }
       }
-
-      if (readyPaginator) {
-        const readyContainer = query(listResContainer, '.readyCompetitions');
-        if (readyContainer) {
-          const listContainer = query(readyContainer, '.cl-accordion-list-container');
-          const paginatorItems = query(readyPaginator, '.paginator-item');
-          paginatorItems.forEach(item => {
-            removeClass(item, 'active');
-            if (Number(item.dataset.page) === Number(readyPageNumber)) {
-              addClass(item, 'active');
-            }
-          });
-
-          listContainer.appendChild(readyPaginator);
-        }
-      }
-
-      if (paginator) {
-        const activeContainer = query(listResContainer, '.activeCompetitions');
-        if (activeContainer) {
-          const listContainer = query(activeContainer, '.cl-accordion-list-container');
-          const paginatorItems = query(paginator, '.paginator-item');
-          paginatorItems.forEach(item => {
-            removeClass(item, 'active');
-            if (Number(item.dataset.page) === Number(activePageNumber)) {
-              addClass(item, 'active');
-            }
-          });
-
-          listContainer.appendChild(paginator);
-        }
-      }
-
-      _this.settings.tournamentListContainer.style.display = 'block';
-      setTimeout(function () {
-        addClass(_this.settings.tournamentListContainer, 'cl-show');
-
-        if (typeof callback === 'function') callback();
-
-        preLoader.hide();
-      }, 50);
     });
+
+    listResContainer.innerHTML = '';
+    listResContainer.appendChild(accordionObj);
+
+    if (finishedPaginator) {
+      const finishedContainer = query(listResContainer, '.finishedCompetitions');
+      if (finishedContainer) {
+        const listContainer = query(finishedContainer, '.cl-accordion-list-container');
+        const paginatorItems = query(finishedPaginator, '.paginator-item');
+        paginatorItems.forEach(item => {
+          removeClass(item, 'active');
+          if (Number(item.dataset.page) === Number(finishedPageNumber)) {
+            addClass(item, 'active');
+          }
+        });
+
+        listContainer.appendChild(finishedPaginator);
+      }
+    }
+
+    if (readyPaginator) {
+      const readyContainer = query(listResContainer, '.readyCompetitions');
+      if (readyContainer) {
+        const listContainer = query(readyContainer, '.cl-accordion-list-container');
+        const paginatorItems = query(readyPaginator, '.paginator-item');
+        paginatorItems.forEach(item => {
+          removeClass(item, 'active');
+          if (Number(item.dataset.page) === Number(readyPageNumber)) {
+            addClass(item, 'active');
+          }
+        });
+
+        listContainer.appendChild(readyPaginator);
+      }
+    }
+
+    if (paginator) {
+      const activeContainer = query(listResContainer, '.activeCompetitions');
+      if (activeContainer) {
+        const listContainer = query(activeContainer, '.cl-accordion-list-container');
+        const paginatorItems = query(paginator, '.paginator-item');
+        paginatorItems.forEach(item => {
+          removeClass(item, 'active');
+          if (Number(item.dataset.page) === Number(activePageNumber)) {
+            addClass(item, 'active');
+          }
+        });
+
+        listContainer.appendChild(paginator);
+      }
+    }
+
+    _this.settings.tournamentListContainer.style.display = 'block';
+    setTimeout(function () {
+      addClass(_this.settings.tournamentListContainer, 'cl-show');
+      if (typeof callback === 'function') callback();
+    }, 50);
   };
 
   this.toggleCompetitionDescription = function () {
@@ -4175,28 +4176,6 @@ export const MainWidget = function (options) {
 
                 _this.settings.navigationSwitchInProgress = false;
               });
-            } else if (target.classList.contains('cl-main-widget-dashboard-rewards-list-more')) {
-              _this.loadAwards(
-                function () {
-                  const rewardsContainer = query(_this.settings.container, '.cl-main-widget-section-container .' + _this.settings.lbWidget.settings.navigation.rewards.containerClass);
-
-                  rewardsContainer.style.display = 'flex';
-                  changeInterval = setTimeout(function () {
-                    addClass(rewardsContainer, 'cl-main-active-section');
-                  }, 30);
-
-                  if (typeof callback === 'function') {
-                    callback();
-                  }
-
-                  preLoader.hide();
-
-                  _this.settings.navigationSwitchInProgress = false;
-                },
-                1,
-                1,
-                1
-              );
             }
           }, 250);
         });
