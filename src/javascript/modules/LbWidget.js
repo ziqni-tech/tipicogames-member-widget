@@ -1247,8 +1247,8 @@ export const LbWidget = function (options) {
           queryField: 'created',
           order: 'Desc'
         }],
-        skip: (pageNumber - 1) * 6,
-        limit: 6
+        skip: (pageNumber - 1) * 20,
+        limit: 20
       },
       currencyKey: this.settings.currency
     });
@@ -1264,8 +1264,8 @@ export const LbWidget = function (options) {
           queryField: 'created',
           order: 'Desc'
         }],
-        skip: (claimedPageNumber - 1) * 6,
-        limit: 6
+        skip: (claimedPageNumber - 1) * 20,
+        limit: 20
       },
       currencyKey: this.settings.currency
     });
@@ -1281,7 +1281,7 @@ export const LbWidget = function (options) {
           queryField: 'created',
           order: 'Desc'
         }],
-        skip: (claimedPageNumber - 1) * 6,
+        skip: (claimedPageNumber - 1) * 20,
         limit: 20
       },
       currencyKey: this.settings.currency
@@ -1400,49 +1400,6 @@ export const LbWidget = function (options) {
       });
     });
   };
-
-  // this.animateIcon = function (entity) {
-  //   const _this = this;
-  //   let icon = null;
-  //   switch (entity) {
-  //     case 'Award':
-  //       icon = query(
-  //         this.settings.mainWidget.settings.container,
-  //         '.' + this.settings.navigation.rewards.navigationClass
-  //       );
-  //       break;
-  //     case 'Message':
-  //       icon = query(
-  //         this.settings.mainWidget.settings.container,
-  //         '.' + this.settings.navigation.inbox.navigationClass
-  //       );
-  //       break;
-  //   }
-  //
-  //   if (icon && !_this.settings.iconIntervalId) {
-  //     let x = 0;
-  //     _this.settings.iconIntervalId = setInterval(function () {
-  //       if (hasClass(icon, 'cl-active-nav')) {
-  //         if (hasClass(icon, 'decrease')) {
-  //           removeClass(icon, 'decrease');
-  //         } else {
-  //           addClass(icon, 'decrease');
-  //         }
-  //       } else {
-  //         if (hasClass(icon, 'grow')) {
-  //           removeClass(icon, 'grow');
-  //         } else {
-  //           addClass(icon, 'grow');
-  //         }
-  //       }
-  //
-  //       if (++x === 8) {
-  //         clearInterval(_this.settings.iconIntervalId);
-  //         _this.settings.iconIntervalId = null;
-  //       }
-  //     }, 300);
-  //   }
-  // };
 
   this.checkForAvailableRewards = function (pageNumber, callback) {
     this.settings.rewards.rewards = [];
@@ -1958,6 +1915,8 @@ export const LbWidget = function (options) {
 
     const _this = this;
 
+    document.body.classList.add('no-scroll');
+
     if (!_this.settings.miniScoreBoard.settings.dragging) {
       _this.deactivateCompetitionsAndLeaderboards(function () {
         _this.settings.leaderboard.leaderboardData = [];
@@ -2443,7 +2402,7 @@ export const LbWidget = function (options) {
       if (el.closest('.cl-main-widget-reward-list-body-res')) {
         if (el.closest('.paginator-claimed')) {
           let pageNumber;
-          const pagesCount = Math.ceil(_this.settings.awards.claimedTotalCount / 6);
+          const pagesCount = Math.ceil(_this.settings.awards.claimedTotalCount / 20);
           let isPrev = false;
           let isNext = false;
 
@@ -2484,7 +2443,7 @@ export const LbWidget = function (options) {
         }
         if (el.closest('.paginator-available')) {
           let pageNumber;
-          const pagesCount = Math.ceil(_this.settings.awards.totalCount / 6);
+          const pagesCount = Math.ceil(_this.settings.awards.totalCount / 20);
           let isPrev = false;
           let isNext = false;
 
@@ -2748,13 +2707,9 @@ export const LbWidget = function (options) {
 
       if (closest(el, '.cl-main-widget-dashboard-achievements-list')) {
         const dashboard = document.querySelector('.cl-main-widget-section-dashboard');
-        // const dashboardIcon = document.querySelector('.cl-main-widget-navigation-dashboard');
-        // const achIcon = document.querySelector('.cl-main-widget-navigation-ach');
         const detailsContainer = document.querySelector('.cl-main-widget-ach-details-container');
 
         dashboard.style.display = 'none';
-        // dashboardIcon.classList.remove('cl-active-nav');
-        // achIcon.classList.add('cl-active-nav');
         detailsContainer.classList.add('cl-show');
         detailsContainer.style.display = 'block';
 
@@ -2920,13 +2875,36 @@ export const LbWidget = function (options) {
     } else if (hasClass(el, 'dashboard-rewards-list-item') || closest(el, '.dashboard-rewards-list-item') !== null) {
       const awardId = (hasClass(el, 'dashboard-rewards-list-item')) ? el.dataset.id : closest(el, '.dashboard-rewards-list-item').dataset.id;
       const preLoader = _this.settings.mainWidget.preloader();
-      preLoader.show(function () {
-        _this.getAward(awardId, function (data) {
-          _this.settings.mainWidget.loadRewardDetails(data, function () {
-          });
-        })
-          .then(() => { preLoader.hide(); });
-      });
+
+      if (closest(el, '.cl-main-widget-dashboard-rewards-list')) {
+        preLoader.show(function () {
+          const dashboard = document.querySelector('.cl-main-widget-section-dashboard');
+          dashboard.style.display = 'none';
+
+          _this.settings.mainWidget.loadAwards(
+            function () {
+              _this.getAward(awardId, function (data) {
+                _this.settings.mainWidget.loadRewardDetails(data, function () {
+                  const rewardsContainer = query(_this.settings.mainWidget.settings.container, '.cl-main-widget-section-container .' + _this.settings.navigation.rewards.containerClass);
+                  rewardsContainer.style.display = 'flex';
+                  addClass(rewardsContainer, 'cl-main-active-section');
+
+                  preLoader.hide();
+                });
+              });
+
+              _this.settings.navigationSwitchInProgress = false;
+            }, 1, 1, 1);
+        });
+      } else {
+        preLoader.show(function () {
+          _this.getAward(awardId, function (data) {
+            _this.settings.mainWidget.loadRewardDetails(data, function () {
+            });
+          })
+            .then(() => { preLoader.hide(); });
+        });
+      }
 
       // claim reward
     } else if (hasClass(el, 'cl-main-widget-reward-claim-btn')) {

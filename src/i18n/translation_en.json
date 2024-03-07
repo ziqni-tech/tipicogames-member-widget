@@ -78,7 +78,7 @@
     },
     "rewards": {
         "label": "Rewards",
-        "expiresInLabel": "Expires In",
+        "expiresInLabel": "Expires",
         "claim": "Claim",
         "claimed": "Past",
         "expired": "Expired",

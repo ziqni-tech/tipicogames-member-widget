@@ -1545,6 +1545,8 @@ export const MainWidget = function (options) {
   this.hide = function (callback) {
     const _this = this;
 
+    document.body.classList.remove('no-scroll');
+
     _this.clearAll();
 
     if (_this.settings.container !== null) {
@@ -2492,60 +2494,44 @@ export const MainWidget = function (options) {
     }, 200);
   };
 
-  this.loadRewardDetails = function (data, callback) {
-    const _this = this;
-    console.log('data:', data);
-    // const label = query(_this.settings.reward.detailsContainer, '.cl-main-widget-reward-details-header-label');
-    // const body = query(_this.settings.reward.detailsContainer, '.cl-main-widget-reward-details-description');
-    // const image = query(_this.settings.reward.detailsContainer, '.cl-main-widget-reward-details-body-image-cont');
-    // const iconWrapp = query(_this.settings.reward.detailsContainer, '.cl-main-widget-reward-winnings-icon');
-    // const claimBtn = query(_this.settings.reward.detailsContainer, '.cl-main-widget-reward-claim-btn');
-    // const icon = query(_this.settings.reward.detailsContainer, '.cl-main-widget-reward-winnings-icon');
-    // const value = query(_this.settings.reward.detailsContainer, '.cl-main-widget-reward-winnings-value');
-    //
-    // label.innerHTML = data.name;
-    // body.innerHTML = data.description ? data.description.replace(/&lt;/g, '<').replace(/&gt;/g, '>') : '';
-    // value.innerHTML = _this.settings.lbWidget.settings.partialFunctions.rewardFormatter(data);
-    // claimBtn.dataset.id = data.id;
-    //
-    // if (data.claimed) {
-    //   addClass(claimBtn, 'cl-claimed');
-    //   claimBtn.innerHTML = _this.settings.lbWidget.settings.translation.rewards.claimed;
-    // } else {
-    //   removeClass(claimBtn, 'cl-claimed');
-    //   claimBtn.innerHTML = _this.settings.lbWidget.settings.translation.rewards.claim;
-    // }
-    //
-    // if (data.icon && typeof data.icon !== 'undefined') {
-    //   icon.innerHTML = '';
-    //
-    //   const _image = new Image();
-    //   iconWrapp.style.background = 'none';
-    //   _image.setAttribute('class', 'cl-reward-list-item-img');
-    //
-    //   _image.src = data.icon;
-    //   _image.alt = _this.settings.lbWidget.settings.partialFunctions.rewardFormatter(data);
-    //
-    //   icon.appendChild(_image);
-    // } else {
-    //   icon.innerHTML = '';
-    //   iconWrapp.style.background = null;
-    // }
-    //
-    // objectIterator(query(body, 'img'), function (img, key, count) {
-    //   if (count === 0) {
-    //     const newImg = img.cloneNode(true);
-    //     image.innerHTML = '';
-    //     image.appendChild(newImg);
-    //
-    //     remove(img);
-    //   }
-    // });
+  this.loadRewardDetails = async function (data, callback) {
+    const rewardValue = query(this.settings.reward.detailsContainer, '.cl-main-widget-reward-details-value');
+    const detailRewardValue = query(this.settings.reward.detailsContainer, '.cl-main-widget-reward-details-content-body-item-value.reward');
+    const rewardType = query(this.settings.reward.detailsContainer, '.cl-main-widget-reward-details-type');
+    const campaign = query(this.settings.reward.detailsContainer, '.cl-main-widget-reward-details-content-body-item-value.campaign');
+    const tAndC = query(this.settings.reward.detailsContainer, '.cl-main-widget-reward-details-tc-body');
+    const expires = query(this.settings.reward.detailsContainer, '.cl-main-widget-reward-details-expires-value');
+    const detailExpires = query(this.settings.reward.detailsContainer, '.cl-main-widget-reward-details-content-body-item-value.expires');
 
-    _this.settings.reward.detailsContainer.style.display = 'block';
+    rewardValue.innerHTML = data.rewardValue;
+    detailRewardValue.innerHTML = data.rewardValue;
+    rewardType.innerHTML = data.rewardType.key;
+
+    if (data.entityType === 'Achievement') {
+      const achievement = await this.settings.lbWidget.getAchievementsByIds([data.entityId]);
+      campaign.innerHTML = achievement[0].name;
+      tAndC.innerHTML = achievement[0].termsAndConditions ?? this.settings.lbWidget.settings.translation.global.tAndCEmpty;
+    } else if (data.entityType === 'Contest') {
+      const contest = await this.settings.lbWidget.getContestsByIds([data.entityId]);
+      campaign.innerHTML = contest[0].name;
+      tAndC.innerHTML = contest[0].termsAndConditions ?? this.settings.lbWidget.settings.translation.global.tAndCEmpty;
+    }
+
+    let expiresValue = '-';
+    if (data.period) {
+      const date = new Date(moment(data.created).add(data.period, 'm'));
+      expiresValue = date.toLocaleDateString('fr-CH', {
+        timeZone: 'UTC', year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'
+      });
+    }
+
+    expires.innerHTML = expiresValue;
+    detailExpires.innerHTML = expiresValue;
+
+    this.settings.reward.detailsContainer.style.display = 'block';
+    addClass(this.settings.reward.detailsContainer, 'cl-show');
+
     setTimeout(function () {
-      addClass(_this.settings.reward.detailsContainer, 'cl-show');
-
       if (typeof callback === 'function') callback();
     }, 50);
   };
@@ -2893,13 +2879,21 @@ export const MainWidget = function (options) {
 
     const rewardImg = `background-image: url(${award.rewardData.iconLink ?? ''})`;
 
+    let expires = '&#8734;';
+    if (award.period) {
+      const date = new Date(moment(award.created).add(award.period, 'm'));
+      expires = date.toLocaleDateString('fr-CH', {
+        timeZone: 'UTC', year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'
+      });
+    }
+
     const template = require('../templates/dashboard/awardItem.hbs');
     listItem.innerHTML = template({
       rewardValue: award.rewardValue,
       rewardType: award.rewardType.key ?? '',
       expiresInLabel: this.settings.lbWidget.settings.translation.rewards.expiresInLabel,
       rewardImg: rewardImg,
-      isPeriod: !!award.period
+      expires: expires
     });
 
     return listItem;
@@ -2916,14 +2910,13 @@ export const MainWidget = function (options) {
   };
 
   this.loadDashboardAwards = async function (claimedAwards = [], availableAwards = [], expiredAwards = []) {
-    const _this = this;
     const awardsList = query(this.settings.section, '.cl-main-widget-dashboard-rewards-list');
     awardsList.innerHTML = '';
 
     availableAwards = availableAwards.filter(a => a.rewardData);
 
     if (availableAwards.length) {
-      availableAwards = availableAwards.slice(0, 5);
+      availableAwards = availableAwards.slice(0, 3);
       availableAwards.forEach(a => {
         const listItem = this.dashboardAwardItem(a);
         awardsList.appendChild(listItem);
@@ -2933,45 +2926,45 @@ export const MainWidget = function (options) {
       awardsList.appendChild(listItem);
     }
 
-    setTimeout(function () {
-      _this.updateDashboardRewardExpirationTime();
-    }, 1000);
+    // setTimeout(function () {
+    //   _this.updateDashboardRewardExpirationTime();
+    // }, 1000);
   };
 
-  this.updateDashboardRewardExpirationTime = function () {
-    const _this = this;
-
-    if (_this.settings.reward.timerInterval) {
-      clearTimeout(_this.settings.reward.timerInterval);
-    }
-
-    this.settings.lbWidget.settings.awards.availableAwards.forEach(award => {
-      if (award.period) {
-        const diff = moment(award.created).add(award.period, 'm').diff(moment());
-        const date = _this.settings.lbWidget.formatAwardDateTime(moment.duration(diff));
-        const container = document.querySelector('.cl-main-widget-dashboard-rewards-list');
-        const listContainer = document.querySelector('.cl-accordion.availableAwards');
-        if (container) {
-          const el = container.querySelector(`.dashboard-rewards-list-item[data-id="${award.id}"]`);
-          if (!el) return;
-          const dateEl = el.querySelector('.dashboard-rewards-list-item-expires-value');
-          if (!dateEl) return;
-          dateEl.innerHTML = date;
-        }
-        if (listContainer) {
-          const el = listContainer.querySelector(`.dashboard-rewards-list-item[data-id="${award.id}"]`);
-          if (!el) return;
-          const dateEl = el.querySelector('.dashboard-rewards-list-item-expires-value');
-          if (!dateEl) return;
-          dateEl.innerHTML = date;
-        }
-      }
-    });
-
-    this.settings.reward.timerInterval = setTimeout(function () {
-      _this.updateDashboardRewardExpirationTime();
-    }, 1000);
-  };
+  // this.updateDashboardRewardExpirationTime = function () {
+  //   const _this = this;
+  //
+  //   if (_this.settings.reward.timerInterval) {
+  //     clearTimeout(_this.settings.reward.timerInterval);
+  //   }
+  //
+  //   this.settings.lbWidget.settings.awards.availableAwards.forEach(award => {
+  //     if (award.period) {
+  //       const diff = moment(award.created).add(award.period, 'm').diff(moment());
+  //       const date = _this.settings.lbWidget.formatAwardDateTime(moment.duration(diff));
+  //       const container = document.querySelector('.cl-main-widget-dashboard-rewards-list');
+  //       const listContainer = document.querySelector('.cl-accordion.availableAwards');
+  //       if (container) {
+  //         const el = container.querySelector(`.dashboard-rewards-list-item[data-id="${award.id}"]`);
+  //         if (!el) return;
+  //         const dateEl = el.querySelector('.dashboard-rewards-list-item-expires-value');
+  //         if (!dateEl) return;
+  //         dateEl.innerHTML = date;
+  //       }
+  //       if (listContainer) {
+  //         const el = listContainer.querySelector(`.dashboard-rewards-list-item[data-id="${award.id}"]`);
+  //         if (!el) return;
+  //         const dateEl = el.querySelector('.dashboard-rewards-list-item-expires-value');
+  //         if (!dateEl) return;
+  //         dateEl.innerHTML = date;
+  //       }
+  //     }
+  //   });
+  //
+  //   this.settings.reward.timerInterval = setTimeout(function () {
+  //     _this.updateDashboardRewardExpirationTime();
+  //   }, 1000);
+  // };
 
   this.loadDashboardTournaments = async function () {
     // const _this = this;
@@ -3101,14 +3094,22 @@ export const MainWidget = function (options) {
     const rewardImg = `background-image: url(${award.rewardData.iconLink ?? ''})`;
     const isClimeBtn = !award.claimed && award.statusCode !== 115;
 
+    let expires = '&#8734;';
+    if (award.period) {
+      const date = new Date(moment(award.created).add(award.period, 'm'));
+      expires = date.toLocaleDateString('fr-CH', {
+        timeZone: 'UTC', year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'
+      });
+    }
+
     const template = require('../templates/mainWidget/rewardItem.hbs');
     listItem.innerHTML = template({
       rewardValue: award.rewardValue,
       rewardType: award.rewardType.key ?? '',
       expiresInLabel: this.settings.lbWidget.settings.translation.rewards.expiresInLabel,
       rewardImg: rewardImg,
-      isPeriod: !!award.period,
-      isClimeBtn: isClimeBtn
+      isClimeBtn: isClimeBtn,
+      expires: expires
     });
 
     return listItem;
@@ -3236,7 +3237,7 @@ export const MainWidget = function (options) {
     const rewardList = query(_this.settings.section, '.' + _this.settings.lbWidget.settings.navigation.rewards.containerClass + ' .cl-main-widget-reward-list-body-res');
     const totalCount = _this.settings.lbWidget.settings.awards.totalCount;
     const claimedTotalCount = _this.settings.lbWidget.settings.awards.claimedTotalCount;
-    const itemsPerPage = 6;
+    const itemsPerPage = 20;
     let paginator = query(rewardList, '.paginator-available');
 
     const prev = document.createElement('span');

@@ -11,6 +11,10 @@
   display: none;
 }
 
+.no-scroll {
+  overflow: hidden;
+}
+
 .cl-widget-ms-wrapper, .cl-widget-notif-wrapper {
   float: left;
   width: 100%;
@@ -1138,6 +1142,7 @@
 .cl-main-widget-wrapper.cl-show {
   opacity: 1;
   transition: all 0.3s ease;
+  overscroll-behavior: contain;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-inner-wrapper {
@@ -1510,6 +1515,7 @@
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-body {
   height: calc(100% - 82px);
   overflow: auto;
+  overscroll-behavior: contain;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-body .cl-main-widget-dashboard-body-label {
@@ -2776,6 +2782,7 @@
   width: 100%;
   display:none;
   overflow: auto;
+  overscroll-behavior: contain;
 }
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-section-image-banner-active .cl-main-widget-lb-leaderboard {
   top: 210px;
@@ -2852,6 +2859,7 @@
   max-height: calc(100% - 24px);
   overflow: auto;
   font-size: 12px;
+  overscroll-behavior: contain;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container.cl-main-active-embedded-description .cl-main-widget-lb-details-tc {
@@ -2861,6 +2869,7 @@
   overflow: auto;
   font-size: 12px;
   display: none;
+  overscroll-behavior: contain;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container.cl-main-active-embedded-description .cl-main-widget-lb-details-tc *:last-child {
@@ -3720,6 +3729,7 @@
   position: absolute;
   top: 80px;
   height: calc(100% - 80px);
+  overscroll-behavior: contain;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-lb-details-container .cl-main-widget-lb-details-body {
@@ -4168,6 +4178,7 @@
   z-index: 1;
   overflow: auto;
   height: calc(100% - 22px);
+  overscroll-behavior: contain;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-ach-list-body::-webkit-scrollbar {
@@ -4567,6 +4578,7 @@
   width: 100%;
   height: calc(100% - 184px);
   overflow: auto;
+  overscroll-behavior: contain;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-ach-details-container .cl-main-widget-ach-details-body {
@@ -6445,6 +6457,7 @@
   height: calc(100% - 121px);
   overflow: auto;
   display: none;
+  overscroll-behavior: contain;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-accordion-container .cl-accordion-list-container {
@@ -6493,16 +6506,15 @@
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-reward-list-body .cl-main-accordion-container .cl-shown .cl-accordion-list-container {
   border: none;
   overflow: auto;
+  overscroll-behavior: contain;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-reward-list-body .cl-main-accordion-container .cl-shown .cl-accordion-list-container::-webkit-scrollbar {
-  width: 4px;
-  background: #141E28;
+  display: none;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-reward-list-body .cl-main-accordion-container .cl-shown .cl-accordion-list-container::-webkit-scrollbar-thumb {
-  border-radius: 10px;
-  background: #304F69;
+  display: none;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-reward-list-body-res .cl-accordion-list {
@@ -6676,6 +6688,9 @@
 
 .cl-main-widget-wrapper .cl-main-widget-reward-details-container .cl-main-widget-reward-details-body-container {
   width: 100%;
+  overflow-y: scroll;
+  overscroll-behavior: contain;
+  height: calc(100% - 92px);
 }
 
 .cl-main-widget-wrapper .cl-main-widget-reward-details-container .cl-main-widget-reward-details-value {
@@ -6740,6 +6755,10 @@
   justify-content: space-between;
   height: 48px;
   padding: 0 8px 0 16px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 21px;
+  text-align: left;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-reward-details-container .cl-main-widget-reward-details-tc-body,
@@ -7768,7 +7787,7 @@
 
 .cl-main-widget-wrapper {
   .paginator {
-    margin-top: 10px;
+    margin-top: 8px;
     margin-right: 0;
     display: flex;
     justify-content: flex-end;
@@ -7788,9 +7807,7 @@
       margin-left: 6px;
       flex-shrink: 0;
       &.active {
-        background: #2F0426;
-        border: 1px solid #406A8C;
-        box-shadow: 0 2px 12px rgba(64, 106, 140, 0.5);
+        background: var(--card-active);
       }
       &.prev {
         background: $pagination-prev-icon no-repeat center;
@@ -7798,9 +7815,6 @@
       &.next {
         background: $pagination-next-icon no-repeat center;
       }
-    }
-    &.accordion {
-      padding: 42px 12px 0 12px;
     }
   }
   .paginator-finished {
@@ -7830,12 +7844,10 @@
     }
     .paginator-claimed {
       padding-right: 0;
-      padding-top: 20px;
       display: flex;
     }
     .paginator-available {
       padding-right: 0;
-      padding-top: 20px;
       display: flex;
     }
   }
