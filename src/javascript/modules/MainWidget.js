@@ -4224,6 +4224,8 @@ export const MainWidget = function (options) {
   this.initLayout = function (callback) {
     const _this = this;
 
+    document.body.classList.add('no-scroll');
+
     _this.settings.active = true;
 
     _this.loadLeaderboard(() => {}, true);
