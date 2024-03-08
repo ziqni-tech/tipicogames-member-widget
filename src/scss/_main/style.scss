@@ -6781,6 +6781,17 @@
   .cl-main-widget-reward-details-tc-body {
     display: flex;
     height: auto;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 18px;
+  }
+  .cl-main-widget-reward-details-tc-body p {
+    color: var(--ui-color-text-secondary);
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 18px;
   }
 }
 
