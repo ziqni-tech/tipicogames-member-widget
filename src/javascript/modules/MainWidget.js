@@ -1158,7 +1158,7 @@ export const MainWidget = function (options) {
   this.getActiveContestIcon = function () {
     let iconUrl = '';
 
-    if (this.settings.lbWidget.settings.competition.activeContest) {
+    if (this.settings.lbWidget.settings.competition.activeContest && this.settings.lbWidget.settings.competition.activeContest.iconLink) {
       iconUrl = this.settings.lbWidget.settings.competition.activeContest.iconLink;
     }
 
@@ -1981,7 +1981,7 @@ export const MainWidget = function (options) {
         if (layout.type === 'activeCompetitions') {
           mapObject(tournamentData, async function (tournament, key, count) {
             const listItem = await _this.dashboardTournamentItem(tournament);
-            listContainer.appendChild(listItem);
+            if (listItem) listContainer.appendChild(listItem);
           });
         } else if (layout.type === 'finishedCompetitions') {
           mapObject(tournamentData, async function (tournament, key, count) {
@@ -2680,6 +2680,9 @@ export const MainWidget = function (options) {
     }, null);
 
     const contests = await this.settings.lbWidget.getContests(contestRequest);
+
+    if (!contests.length) return;
+
     const contest = contests[0];
 
     let isOptIn = false;
@@ -2980,7 +2983,7 @@ export const MainWidget = function (options) {
       title.innerHTML = this.settings.lbWidget.settings.translation.dashboard.tournamentsTitle;
       for (const comp of activeCompetitions) {
         const listItem = await this.dashboardTournamentItem(comp);
-        tournamentsList.appendChild(listItem);
+        if (listItem) tournamentsList.appendChild(listItem);
       }
     } else if (readyCompetitions && readyCompetitions.length) {
       tournamentsContainer.classList.remove('hidden');
@@ -2988,7 +2991,7 @@ export const MainWidget = function (options) {
       title.innerHTML = this.settings.lbWidget.settings.translation.dashboard.upcomingTournamentsTitle;
       for (const comp of readyCompetitions) {
         const listItem = await this.dashboardTournamentItem(comp);
-        tournamentsList.appendChild(listItem);
+        if (listItem) tournamentsList.appendChild(listItem);
       }
     } else {
       tournamentsContainer.classList.add('hidden');

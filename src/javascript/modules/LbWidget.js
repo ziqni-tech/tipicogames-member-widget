@@ -266,7 +266,9 @@ export const LbWidget = function (options) {
       onContestStatusChanged: function (contestId, currentState, previousState) {},
       onCompetitionStatusChanged: function (competitionId, currentState, previousState) {},
       onDisconnect: function () {},
-      onLoadComplete: function () {}
+      onLoadComplete: function () {},
+      onClose: function () {},
+      onGameSelected: function () {}
     },
     callback: null
   };
@@ -585,15 +587,12 @@ export const LbWidget = function (options) {
         this.settings.apiWs.competitionsApiWsClient = new CompetitionsApiWs(this.apiClientStomp);
       }
 
-      // throw new Error();
-
       return new Promise((resolve, reject) => {
         this.settings.apiWs.competitionsApiWsClient.getCompetitions(competitionRequest, (json) => {
           resolve(json);
         });
       });
     } catch (e) {
-      console.warn(e);
       const errorPage = document.querySelector('.cl-main-widget-error');
       errorPage.classList.add('active');
     }
@@ -742,39 +741,49 @@ export const LbWidget = function (options) {
   };
 
   this.getContests = async (contestRequest) => {
-    if (!this.settings.apiWs.contestsApiWsClient) {
-      this.settings.apiWs.contestsApiWsClient = new ContestsApiWs(this.apiClientStomp);
-    }
-    return new Promise((resolve, reject) => {
-      this.settings.apiWs.contestsApiWsClient.getContests(contestRequest, (json) => {
-        resolve(json.data);
+    try {
+      if (!this.settings.apiWs.contestsApiWsClient) {
+        this.settings.apiWs.contestsApiWsClient = new ContestsApiWs(this.apiClientStomp);
+      }
+      return new Promise((resolve, reject) => {
+        this.settings.apiWs.contestsApiWsClient.getContests(contestRequest, (json) => {
+          resolve(json.data);
+        });
       });
-    });
+    } catch (e) {
+      const errorPage = document.querySelector('.cl-main-widget-error');
+      errorPage.classList.add('active');
+    }
   };
 
   this.getContestsByIds = async (ids) => {
-    if (!this.settings.apiWs.contestsApiWsClient) {
-      this.settings.apiWs.contestsApiWsClient = new ContestsApiWs(this.apiClientStomp);
-    }
-
-    const contestRequest = ContestRequest.constructFromObject({
-      languageKey: this.settings.language,
-      contestFilter: {
-        ids: ids,
-        statusCode: {
-          moreThan: 0,
-          lessThan: 100
-        },
-        limit: 20,
-        skip: 0
+    try {
+      if (!this.settings.apiWs.contestsApiWsClient) {
+        this.settings.apiWs.contestsApiWsClient = new ContestsApiWs(this.apiClientStomp);
       }
-    }, null);
 
-    return new Promise((resolve, reject) => {
-      this.settings.apiWs.contestsApiWsClient.getContests(contestRequest, (json) => {
-        resolve(json.data);
+      const contestRequest = ContestRequest.constructFromObject({
+        languageKey: this.settings.language,
+        contestFilter: {
+          ids: ids,
+          statusCode: {
+            moreThan: 0,
+            lessThan: 100
+          },
+          limit: 20,
+          skip: 0
+        }
+      }, null);
+
+      return new Promise((resolve, reject) => {
+        this.settings.apiWs.contestsApiWsClient.getContests(contestRequest, (json) => {
+          resolve(json.data);
+        });
       });
-    });
+    } catch (e) {
+      const errorPage = document.querySelector('.cl-main-widget-error');
+      errorPage.classList.add('active');
+    }
   };
 
   this.getLeaderboardData = async function (count, callback) {
@@ -845,15 +854,20 @@ export const LbWidget = function (options) {
   };
 
   this.subscribeToLeaderboardApi = function (leaderboardSubscriptionRequest) {
-    if (!this.settings.apiWs.leaderboardApiWsClient) {
-      this.settings.apiWs.leaderboardApiWsClient = new LeaderboardApiWs(this.apiClientStomp);
-    }
+    try {
+      if (!this.settings.apiWs.leaderboardApiWsClient) {
+        this.settings.apiWs.leaderboardApiWsClient = new LeaderboardApiWs(this.apiClientStomp);
+      }
 
-    return new Promise((resolve, reject) => {
-      this.settings.apiWs.leaderboardApiWsClient.subscribeToLeaderboard(leaderboardSubscriptionRequest, (json) => {
-        resolve(json.data);
+      return new Promise((resolve, reject) => {
+        this.settings.apiWs.leaderboardApiWsClient.subscribeToLeaderboard(leaderboardSubscriptionRequest, (json) => {
+          resolve(json.data);
+        });
       });
-    });
+    } catch (e) {
+      const errorPage = document.querySelector('.cl-main-widget-error');
+      errorPage.classList.add('active');
+    }
   };
 
   this.updateLeaderboardNavigationCounts = function () {
@@ -1053,71 +1067,87 @@ export const LbWidget = function (options) {
   };
 
   this.getAchievements = async function (achievementRequest) {
-    if (!this.settings.apiWs.achievementsApiWsClient) {
-      this.settings.apiWs.achievementsApiWsClient = new AchievementsApiWs(this.apiClientStomp);
-    }
+    try {
+      if (!this.settings.apiWs.achievementsApiWsClient) {
+        this.settings.apiWs.achievementsApiWsClient = new AchievementsApiWs(this.apiClientStomp);
+      }
 
-    return new Promise((resolve, reject) => {
-      this.settings.apiWs.achievementsApiWsClient.getAchievements(achievementRequest, (json) => {
-        resolve(json);
+      return new Promise((resolve, reject) => {
+        this.settings.apiWs.achievementsApiWsClient.getAchievements(achievementRequest, (json) => {
+          resolve(json);
+        });
       });
-    });
+    } catch (e) {
+      const errorPage = document.querySelector('.cl-main-widget-error');
+      errorPage.classList.add('active');
+    }
   };
 
   this.getAchievementsByIds = async function (achievementIds) {
-    if (!this.settings.apiWs.achievementsApiWsClient) {
-      this.settings.apiWs.achievementsApiWsClient = new AchievementsApiWs(this.apiClientStomp);
-    }
-
-    const request = AchievementRequest.constructFromObject({
-      languageKey: this.settings.language,
-      achievementFilter: {
-        ids: achievementIds,
-        statusCode: {
-          moreThan: 0,
-          lessThan: 100
-        },
-        limit: achievementIds.length
+    try {
+      if (!this.settings.apiWs.achievementsApiWsClient) {
+        this.settings.apiWs.achievementsApiWsClient = new AchievementsApiWs(this.apiClientStomp);
       }
-    }, null);
 
-    return new Promise((resolve, reject) => {
-      this.settings.apiWs.achievementsApiWsClient.getAchievements(request, (json) => {
-        resolve(json.data);
+      const request = AchievementRequest.constructFromObject({
+        languageKey: this.settings.language,
+        achievementFilter: {
+          ids: achievementIds,
+          statusCode: {
+            moreThan: 0,
+            lessThan: 100
+          },
+          limit: achievementIds.length
+        }
+      }, null);
+
+      return new Promise((resolve, reject) => {
+        this.settings.apiWs.achievementsApiWsClient.getAchievements(request, (json) => {
+          resolve(json.data);
+        });
       });
-    });
+    } catch (e) {
+      const errorPage = document.querySelector('.cl-main-widget-error');
+      errorPage.classList.add('active');
+    }
   };
 
   this.leaveAchievement = function (activeAchievementId, isDashboard = false) {
     const _this = this;
-    if (!this.settings.apiWs.optInApiWsClient) {
-      this.settings.apiWs.optInApiWsClient = new OptInApiWs(this.apiClientStomp);
-    }
 
-    const optInRequest = ManageOptinRequest.constructFromObject({
-      entityId: activeAchievementId,
-      entityType: 'Achievement',
-      action: 'leave'
-    }, null);
+    try {
+      if (!this.settings.apiWs.optInApiWsClient) {
+        this.settings.apiWs.optInApiWsClient = new OptInApiWs(this.apiClientStomp);
+      }
 
-    const preLoader = this.settings.mainWidget.preloader();
-    preLoader.show(async function () {
-      await _this.settings.apiWs.optInApiWsClient.manageOptin(optInRequest, (json) => {
-        setTimeout(function () {
-          if (isDashboard) {
-            _this.checkForAvailableAchievements(1, function (achievementData) {
-              _this.settings.mainWidget.loadDashboardAchievements(achievementData.current, function () {
+      const optInRequest = ManageOptinRequest.constructFromObject({
+        entityId: activeAchievementId,
+        entityType: 'Achievement',
+        action: 'leave'
+      }, null);
+
+      const preLoader = this.settings.mainWidget.preloader();
+      preLoader.show(async function () {
+        await _this.settings.apiWs.optInApiWsClient.manageOptin(optInRequest, (json) => {
+          setTimeout(function () {
+            if (isDashboard) {
+              _this.checkForAvailableAchievements(1, function (achievementData) {
+                _this.settings.mainWidget.loadDashboardAchievements(achievementData.current, function () {
+                  preLoader.hide();
+                });
+              });
+            } else {
+              _this.settings.mainWidget.loadAchievements(1, function () {
                 preLoader.hide();
               });
-            });
-          } else {
-            _this.settings.mainWidget.loadAchievements(1, function () {
-              preLoader.hide();
-            });
-          }
-        }, 2000);
+            }
+          }, 2000);
+        });
       });
-    });
+    } catch (e) {
+      const errorPage = document.querySelector('.cl-main-widget-error');
+      errorPage.classList.add('active');
+    }
   };
 
   this.getAward = async function (awardId, callback) {
@@ -1182,19 +1212,24 @@ export const LbWidget = function (options) {
   };
 
   this.claimAward = async function (rewardId, callback) {
-    if (!this.settings.apiWs.awardsApiWsClient) {
-      this.settings.apiWs.awardsApiWsClient = new AwardsApiWs(this.apiClientStomp);
-    }
-
-    const claimAwardRequest = ClaimAwardRequest.constructFromObject({
-      awardIds: [rewardId]
-    });
-
-    this.settings.apiWs.awardsApiWsClient.claimAwards(claimAwardRequest, (json) => {
-      if (typeof callback === 'function') {
-        callback(json);
+    try {
+      if (!this.settings.apiWs.awardsApiWsClient) {
+        this.settings.apiWs.awardsApiWsClient = new AwardsApiWs(this.apiClientStomp);
       }
-    });
+
+      const claimAwardRequest = ClaimAwardRequest.constructFromObject({
+        awardIds: [rewardId]
+      });
+
+      this.settings.apiWs.awardsApiWsClient.claimAwards(claimAwardRequest, (json) => {
+        if (typeof callback === 'function') {
+          callback(json);
+        }
+      });
+    } catch (e) {
+      const errorPage = document.querySelector('.cl-main-widget-error');
+      errorPage.classList.add('active');
+    }
   };
 
   this.checkForMemberAchievementsProgression = async function (idList, callback) {
@@ -1376,15 +1411,20 @@ export const LbWidget = function (options) {
   };
 
   this.getAwardsApi = function (awardRequest) {
-    if (!this.settings.apiWs.awardsApiWsClient) {
-      this.settings.apiWs.awardsApiWsClient = new AwardsApiWs(this.apiClientStomp);
-    }
+    try {
+      if (!this.settings.apiWs.awardsApiWsClient) {
+        this.settings.apiWs.awardsApiWsClient = new AwardsApiWs(this.apiClientStomp);
+      }
 
-    return new Promise((resolve, reject) => {
-      this.settings.apiWs.awardsApiWsClient.getAwards(awardRequest, (json) => {
-        resolve(json);
+      return new Promise((resolve, reject) => {
+        this.settings.apiWs.awardsApiWsClient.getAwards(awardRequest, (json) => {
+          resolve(json);
+        });
       });
-    });
+    } catch (e) {
+      const errorPage = document.querySelector('.cl-main-widget-error');
+      errorPage.classList.add('active');
+    }
   };
 
   this.checkForAvailableRewards = function (pageNumber, callback) {
@@ -1428,14 +1468,19 @@ export const LbWidget = function (options) {
   };
 
   this.getRewardsApi = async function (rewardRequest) {
-    if (!this.settings.apiWs.rewardsApiWsClient) {
-      this.settings.apiWs.rewardsApiWsClient = new RewardsApiWs(this.apiClientStomp);
-    }
-    return new Promise((resolve, reject) => {
-      this.settings.apiWs.rewardsApiWsClient.getRewards(rewardRequest, (json) => {
-        resolve(json);
+    try {
+      if (!this.settings.apiWs.rewardsApiWsClient) {
+        this.settings.apiWs.rewardsApiWsClient = new RewardsApiWs(this.apiClientStomp);
+      }
+      return new Promise((resolve, reject) => {
+        this.settings.apiWs.rewardsApiWsClient.getRewards(rewardRequest, (json) => {
+          resolve(json);
+        });
       });
-    });
+    } catch (e) {
+      const errorPage = document.querySelector('.cl-main-widget-error');
+      errorPage.classList.add('active');
+    }
   };
 
   this.playInstantWinsApi = async function (playRequest) {
@@ -1463,57 +1508,72 @@ export const LbWidget = function (options) {
   };
 
   this.optInMemberToActiveCompetition = async function (callback) {
-    if (!this.settings.apiWs.optInApiWsClient) {
-      this.settings.apiWs.optInApiWsClient = new OptInApiWs(this.apiClientStomp);
-    }
-
-    const optInRequest = ManageOptinRequest.constructFromObject({
-      entityId: this.settings.competition.activeCompetition.id,
-      entityType: 'Competition',
-      action: 'join'
-    }, null);
-
-    await this.settings.apiWs.optInApiWsClient.manageOptin(optInRequest, (json) => {
-      if (typeof callback === 'function') {
-        callback();
+    try {
+      if (!this.settings.apiWs.optInApiWsClient) {
+        this.settings.apiWs.optInApiWsClient = new OptInApiWs(this.apiClientStomp);
       }
-    });
+
+      const optInRequest = ManageOptinRequest.constructFromObject({
+        entityId: this.settings.competition.activeCompetition.id,
+        entityType: 'Competition',
+        action: 'join'
+      }, null);
+
+      await this.settings.apiWs.optInApiWsClient.manageOptin(optInRequest, (json) => {
+        if (typeof callback === 'function') {
+          callback();
+        }
+      });
+    } catch (e) {
+      const errorPage = document.querySelector('.cl-main-widget-error');
+      errorPage.classList.add('active');
+    }
   };
 
   this.optInMemberToActiveCompetitionById = async function (tournamentId, callback) {
-    if (!this.settings.apiWs.optInApiWsClient) {
-      this.settings.apiWs.optInApiWsClient = new OptInApiWs(this.apiClientStomp);
-    }
-
-    const optInRequest = ManageOptinRequest.constructFromObject({
-      entityId: tournamentId,
-      entityType: 'Competition',
-      action: 'join'
-    }, null);
-
-    await this.settings.apiWs.optInApiWsClient.manageOptin(optInRequest, (json) => {
-      if (typeof callback === 'function') {
-        callback();
+    try {
+      if (!this.settings.apiWs.optInApiWsClient) {
+        this.settings.apiWs.optInApiWsClient = new OptInApiWs(this.apiClientStomp);
       }
-    });
+
+      const optInRequest = ManageOptinRequest.constructFromObject({
+        entityId: tournamentId,
+        entityType: 'Competition',
+        action: 'join'
+      }, null);
+
+      await this.settings.apiWs.optInApiWsClient.manageOptin(optInRequest, (json) => {
+        if (typeof callback === 'function') {
+          callback();
+        }
+      });
+    } catch (e) {
+      const errorPage = document.querySelector('.cl-main-widget-error');
+      errorPage.classList.add('active');
+    }
   };
 
   this.optOutMemberToActiveCompetition = async function (callback) {
-    if (!this.settings.apiWs.optInApiWsClient) {
-      this.settings.apiWs.optInApiWsClient = new OptInApiWs(this.apiClientStomp);
-    }
-
-    const optInRequest = ManageOptinRequest.constructFromObject({
-      entityId: this.settings.competition.activeCompetition.id,
-      entityType: 'Competition',
-      action: 'leave'
-    }, null);
-
-    await this.settings.apiWs.optInApiWsClient.manageOptin(optInRequest, (json) => {
-      if (typeof callback === 'function') {
-        callback();
+    try {
+      if (!this.settings.apiWs.optInApiWsClient) {
+        this.settings.apiWs.optInApiWsClient = new OptInApiWs(this.apiClientStomp);
       }
-    });
+
+      const optInRequest = ManageOptinRequest.constructFromObject({
+        entityId: this.settings.competition.activeCompetition.id,
+        entityType: 'Competition',
+        action: 'leave'
+      }, null);
+
+      await this.settings.apiWs.optInApiWsClient.manageOptin(optInRequest, (json) => {
+        if (typeof callback === 'function') {
+          callback();
+        }
+      });
+    } catch (e) {
+      const errorPage = document.querySelector('.cl-main-widget-error');
+      errorPage.classList.add('active');
+    }
   };
 
   var revalidationCount = 0;
@@ -1735,29 +1795,34 @@ export const LbWidget = function (options) {
   };
 
   this.loadMember = async function (callback) {
-    if (!this.settings.apiWs.membersApiWsClient) {
-      this.settings.apiWs.membersApiWsClient = new MembersApiWs(this.apiClientStomp);
+    try {
+      if (!this.settings.apiWs.membersApiWsClient) {
+        this.settings.apiWs.membersApiWsClient = new MembersApiWs(this.apiClientStomp);
+      }
+
+      const memberRequest = MemberRequest.constructFromObject({
+        includeFields: [
+          'id',
+          'memberRefId',
+          'memberType',
+          'name',
+          'jsonClass',
+          'accountId',
+          'groups',
+          'created'
+        ],
+        includeCustomFields: [],
+        includeMetaDataFields: []
+      }, null);
+
+      await this.settings.apiWs.membersApiWsClient.getMember(memberRequest, (json) => {
+        this.settings.member = json.data;
+        callback(json.data);
+      });
+    } catch (e) {
+      const errorPage = document.querySelector('.cl-main-widget-error');
+      errorPage.classList.add('active');
     }
-
-    const memberRequest = MemberRequest.constructFromObject({
-      includeFields: [
-        'id',
-        'memberRefId',
-        'memberType',
-        'name',
-        'jsonClass',
-        'accountId',
-        'groups',
-        'created'
-      ],
-      includeCustomFields: [],
-      includeMetaDataFields: []
-    }, null);
-
-    await this.settings.apiWs.membersApiWsClient.getMember(memberRequest, (json) => {
-      this.settings.member = json.data;
-      callback(json.data);
-    });
   };
 
   this.loadWidgetTranslations = function (callback) {
@@ -2086,6 +2151,8 @@ export const LbWidget = function (options) {
 
       if (container.style.display === 'flex') {
         drawer.classList.add('active');
+      } else {
+        this.settings.callbacks.onGameSelected('123456789');
       }
 
       // Contest drawer opt-in action
@@ -2110,6 +2177,8 @@ export const LbWidget = function (options) {
 
       if (optInBtn.style.display === 'flex') {
         drawer.classList.add('active');
+      } else {
+        this.settings.callbacks.onGameSelected('123456789');
       }
 
       // Achievement list opt-in action
@@ -2171,9 +2240,10 @@ export const LbWidget = function (options) {
       hasClass(el, 'cl-main-widget-dashboard-header-close') ||
       hasClass(el, 'cl-landscape-close')
     ) {
-      _this.settings.mainWidget.hide(function () {
-        _this.activeDataRefresh();
-      });
+      this.settings.callbacks.onClose();
+      // _this.settings.mainWidget.hide(function () {
+      //   _this.activeDataRefresh();
+      // });
 
       // load embedded competition details
     } else if (
@@ -2906,10 +2976,16 @@ export const LbWidget = function (options) {
       _this.settings.mainWidget.resetNavigation();
 
       // hide Error Page
-    } else if (hasClass(el, 'cl-main-widget-error-header-back') || hasClass(el, 'cl-main-widget-error-header-close')) {
+    } else if (hasClass(el, 'cl-main-widget-error-header-back')) {
       const errorPage = document.querySelector('.cl-main-widget-error');
       errorPage.classList.remove('active');
       _this.settings.mainWidget.resetNavigation();
+
+      // hide Error Page
+    } else if (hasClass(el, 'cl-main-widget-error-header-close')) {
+      _this.settings.mainWidget.hide(function () {
+        _this.activeDataRefresh();
+      });
 
       // expand reward data
     } else if (hasClass(el, 'cl-main-widget-reward-details-content-wrapp') || closest(el, '.cl-main-widget-reward-details-content-wrapp') !== null) {
@@ -3049,78 +3125,93 @@ export const LbWidget = function (options) {
   };
 
   this.getCompetitionOptInStatus = async function (competitionId) {
-    if (!this.settings.apiWs.optInApiWsClient) {
-      this.settings.apiWs.optInApiWsClient = new OptInApiWs(this.apiClientStomp);
-    }
-
-    const optInStatesRequest = OptInStatesRequest.constructFromObject({
-      optinStatesFilter: {
-        entityTypes: ['Competition'],
-        ids: [competitionId],
-        statusCodes: {
-          gt: -5,
-          lt: 40
-        },
-        skip: 0,
-        limit: 1
+    try {
+      if (!this.settings.apiWs.optInApiWsClient) {
+        this.settings.apiWs.optInApiWsClient = new OptInApiWs(this.apiClientStomp);
       }
-    }, null);
 
-    return new Promise((resolve, reject) => {
-      this.settings.apiWs.optInApiWsClient.optInStates(optInStatesRequest, (json) => {
-        resolve(json.data);
+      const optInStatesRequest = OptInStatesRequest.constructFromObject({
+        optinStatesFilter: {
+          entityTypes: ['Competition'],
+          ids: [competitionId],
+          statusCodes: {
+            gt: -5,
+            lt: 40
+          },
+          skip: 0,
+          limit: 1
+        }
+      }, null);
+
+      return new Promise((resolve, reject) => {
+        this.settings.apiWs.optInApiWsClient.optInStates(optInStatesRequest, (json) => {
+          resolve(json.data);
+        });
       });
-    });
+    } catch (e) {
+      const errorPage = document.querySelector('.cl-main-widget-error');
+      errorPage.classList.add('active');
+    }
   };
 
   this.getMemberAchievementOptInStatus = async function (achievementId) {
-    if (!this.settings.apiWs.optInApiWsClient) {
-      this.settings.apiWs.optInApiWsClient = new OptInApiWs(this.apiClientStomp);
-    }
-
-    const optInStatesRequest = OptInStatesRequest.constructFromObject({
-      optinStatesFilter: {
-        entityTypes: ['Achievement'],
-        ids: [achievementId],
-        statusCodes: {
-          gt: -5,
-          lt: 40
-        },
-        skip: 0,
-        limit: 1
+    try {
+      if (!this.settings.apiWs.optInApiWsClient) {
+        this.settings.apiWs.optInApiWsClient = new OptInApiWs(this.apiClientStomp);
       }
-    }, null);
 
-    return new Promise((resolve, reject) => {
-      this.settings.apiWs.optInApiWsClient.optInStates(optInStatesRequest, (json) => {
-        resolve(json.data);
+      const optInStatesRequest = OptInStatesRequest.constructFromObject({
+        optinStatesFilter: {
+          entityTypes: ['Achievement'],
+          ids: [achievementId],
+          statusCodes: {
+            gt: -5,
+            lt: 40
+          },
+          skip: 0,
+          limit: 1
+        }
+      }, null);
+
+      return new Promise((resolve, reject) => {
+        this.settings.apiWs.optInApiWsClient.optInStates(optInStatesRequest, (json) => {
+          resolve(json.data);
+        });
       });
-    });
+    } catch (e) {
+      const errorPage = document.querySelector('.cl-main-widget-error');
+      errorPage.classList.add('active');
+    }
   };
 
   this.getMemberAchievementsOptInStatuses = async function (achievementIds) {
-    if (!this.settings.apiWs.optInApiWsClient) {
-      this.settings.apiWs.optInApiWsClient = new OptInApiWs(this.apiClientStomp);
-    }
-
-    const optInStatesRequest = OptInStatesRequest.constructFromObject({
-      optinStatesFilter: {
-        entityTypes: ['Achievement'],
-        ids: achievementIds,
-        statusCodes: {
-          gt: -5,
-          lt: 40
-        },
-        skip: 0,
-        limit: achievementIds.length
+    try {
+      if (!this.settings.apiWs.optInApiWsClient) {
+        this.settings.apiWs.optInApiWsClient = new OptInApiWs(this.apiClientStomp);
       }
-    }, null);
 
-    return new Promise((resolve, reject) => {
-      this.settings.apiWs.optInApiWsClient.optInStates(optInStatesRequest, (json) => {
-        resolve(json.data);
+      const optInStatesRequest = OptInStatesRequest.constructFromObject({
+        optinStatesFilter: {
+          entityTypes: ['Achievement'],
+          ids: achievementIds,
+          statusCodes: {
+            gt: -5,
+            lt: 40
+          },
+          skip: 0,
+          limit: achievementIds.length
+        }
+      }, null);
+
+      return new Promise((resolve, reject) => {
+        this.settings.apiWs.optInApiWsClient.optInStates(optInStatesRequest, (json) => {
+          resolve(json.data);
+        });
       });
-    });
+    } catch (e) {
+      const errorPage = document.querySelector('.cl-main-widget-error');
+      errorPage.classList.add('active');
+    }
   };
 
   this.closeEverything = function () {
@@ -3356,19 +3447,19 @@ export const LbWidget = function (options) {
             this.settings.mainWidget.settings.lbWidget = this;
             this.settings.canvasAnimation.settings.lbWidget = this;
 
-            await this.checkForAvailableCompetitions();
-
-            this.settings.mainWidget.loadLeaderboard();
-
             this.startup();
             this.eventListeners();
+
+            this.settings.mainWidget.initLayout(function () {});
+
+            // await this.checkForAvailableCompetitions();
+
+            // this.settings.mainWidget.loadLeaderboard();
 
             this.settings.isLoadComplete = true;
             if (typeof this.settings.callbacks.onLoadComplete === 'function') {
               this.settings.callbacks.onLoadComplete();
             }
-
-            this.settings.mainWidget.initLayout(function () {});
           });
         });
       });
