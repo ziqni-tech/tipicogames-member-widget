@@ -1221,7 +1221,10 @@ export const LbWidget = function (options) {
         awardIds: [rewardId]
       });
 
+      console.log('claimAwardRequest:', claimAwardRequest);
+
       this.settings.apiWs.awardsApiWsClient.claimAwards(claimAwardRequest, (json) => {
+        console.log('json:', json);
         if (typeof callback === 'function') {
           callback(json);
         }
@@ -1972,7 +1975,7 @@ export const LbWidget = function (options) {
   this.eventHandlers = async function (el) {
     const _this = this;
 
-    // hide popups
+    // hide drawers
     if (!el.closest('.cl-main-widget-ach-optIn-drawer')) {
       const drawer = document.querySelector('.cl-main-widget-ach-optIn-drawer');
       if (drawer) {
@@ -1982,6 +1985,20 @@ export const LbWidget = function (options) {
 
     if (!el.closest('.cl-main-widget-tour-optIn-drawer')) {
       const drawer = document.querySelector('.cl-main-widget-tour-optIn-drawer');
+      if (drawer) {
+        drawer.classList.remove('active');
+      }
+    }
+
+    if (!el.closest('.cl-main-widget-tour-optIn-drawer')) {
+      const drawer = document.querySelector('.cl-main-widget-reward-celebration-drawer');
+      if (drawer) {
+        drawer.classList.remove('active');
+      }
+    }
+
+    if (!el.closest('.cl-main-widget-reward-details-drawer')) {
+      const drawer = document.querySelector('.cl-main-widget-reward-details-drawer');
       if (drawer) {
         drawer.classList.remove('active');
       }
@@ -2854,6 +2871,67 @@ export const LbWidget = function (options) {
         });
       });
 
+      // Claim Award CelebrationPage
+    } else if (hasClass(el, 'cl-main-widget-reward-celebration-actions-clime-btn')) {
+      const awardId = closest(el, '.cl-main-widget-reward-celebration-actions').dataset.id;
+      const page = closest(el, '.cl-main-widget-reward-celebration');
+      const preLoader = _this.settings.mainWidget.preloader();
+
+      preLoader.show(async function () {
+        await _this.claimAward(awardId, function () {
+          setTimeout(function () {
+            page.remove();
+            preLoader.hide();
+          }, 2000);
+        });
+      });
+
+      // Claim Award CelebrationPage Drawer
+    } else if (hasClass(el, 'cl-main-widget-reward-celebration-drawer-btn-claim')) {
+      const awardId = closest(el, '.cl-main-widget-reward-celebration-drawer').dataset.id;
+      const page = closest(el, '.cl-main-widget-reward-celebration');
+      const preLoader = _this.settings.mainWidget.preloader();
+
+      preLoader.show(async function () {
+        await _this.claimAward(awardId, function () {
+          setTimeout(function () {
+            page.remove();
+            preLoader.hide();
+          }, 2000);
+        });
+      });
+
+      // decline Award CelebrationPage
+    } else if (hasClass(el, 'cl-main-widget-reward-celebration-actions-decline')) {
+      const page = closest(el, '.cl-main-widget-reward-celebration');
+      const drawer = page.querySelector('.cl-main-widget-reward-celebration-drawer');
+
+      drawer.classList.add('active');
+
+      // decline Award CelebrationPage Drawer
+    } else if (hasClass(el, 'cl-main-widget-reward-celebration-drawer-btn-decline')) {
+      const page = closest(el, '.cl-main-widget-reward-celebration');
+
+      page.classList.remove('active');
+      setTimeout(function () {
+        page.remove();
+      }, 1000);
+
+      // Award Details Forfeit
+    } else if (hasClass(el, 'cl-main-widget-reward-details-forfeit')) {
+      const drawer = document.querySelector('.cl-main-widget-reward-details-drawer');
+      drawer.classList.add('active');
+
+      // Award Details Drawer Keep
+    } else if (hasClass(el, 'cl-main-widget-reward-details-drawer-btn-claim')) {
+      const drawer = closest(el, '.cl-main-widget-reward-details-drawer');
+      drawer.classList.remove('active');
+
+      // Award Details Drawer Forfeit
+    } else if (hasClass(el, 'cl-main-widget-reward-details-drawer-btn-decline')) {
+      const drawer = closest(el, '.cl-main-widget-reward-details-drawer');
+      drawer.classList.remove('active');
+
       // load rewards details
     } else if (hasClass(el, 'dashboard-rewards-list-item') || closest(el, '.dashboard-rewards-list-item') !== null) {
       const awardId = (hasClass(el, 'dashboard-rewards-list-item')) ? el.dataset.id : closest(el, '.dashboard-rewards-list-item').dataset.id;
@@ -3316,7 +3394,7 @@ export const LbWidget = function (options) {
         this.apiClientStomp.client.debug = () => {};
       }
       await this.apiClientStomp.connect({ token: this.settings.authToken });
-      this.apiClientStomp.sendSys('', {}, (json, headers) => {
+      this.apiClientStomp.sendSys('', {}, async (json, headers) => {
         if (headers && headers.objectType === 'Leaderboard') {
           if (json.id && json.id === this.settings.competition.activeContestId) {
             const leaderboardEntries = json.leaderboardEntries ?? [];
@@ -3329,12 +3407,26 @@ export const LbWidget = function (options) {
           }
         }
         if (json && json.entityType === 'Award') {
-          _this.settings.mainWidget.loadAwards(
-            function () {
-              // _this.animateIcon('Award');
+          const awardRequest = AwardRequest.constructFromObject({
+            languageKey: this.settings.language,
+            awardFilter: {
+              ids: [json.entityId],
+              skip: 0,
+              limit: 1
             },
-            1
-          );
+            currencyKey: this.settings.currency
+          });
+
+          setTimeout(async function () {
+            const awardData = await _this.getAwardsApi(awardRequest);
+            console.log('awardRequest:', awardRequest);
+            console.log('awardData:', awardData);
+            if (awardData.data && awardData.data.length) {
+              if (!awardData.data[0].claimed) {
+                _this.settings.mainWidget.showAwardCelebration(awardData.data[0]);
+              }
+            }
+          }, 2000);
         }
         if (json && json.entityType === 'Contest') {
           _this.checkForAvailableCompetitions(async function () {

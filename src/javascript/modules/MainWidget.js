@@ -463,11 +463,6 @@ export const MainWidget = function (options) {
 
     const landscapeClose = document.createElement('div');
 
-    const rewardCelebration = document.createElement('div');
-    rewardCelebration.setAttribute('class', 'cl-main-widget-reward-celebration');
-    const template = require('../templates/mainWidget/rewardCelebration.hbs');
-    rewardCelebration.innerHTML = template({});
-
     const errorPage = document.createElement('div');
     errorPage.setAttribute('class', 'cl-main-widget-error');
     const errorTemplate = require('../templates/mainWidget/error.hbs');
@@ -515,7 +510,6 @@ export const MainWidget = function (options) {
     mainSectionContainer.appendChild(preLoaderContainer);
     mainSectionContainer.appendChild(landscapeClose);
     mainSectionContainer.appendChild(home);
-    mainSectionContainer.appendChild(rewardCelebration);
     mainSectionContainer.appendChild(errorPage);
 
     // innerWrapper.appendChild(navigationContainer);
@@ -2932,6 +2926,50 @@ export const MainWidget = function (options) {
     // setTimeout(function () {
     //   _this.updateDashboardRewardExpirationTime();
     // }, 1000);
+  };
+
+  this.showAwardCelebration = async function (awardData) {
+    console.log('award:', awardData);
+    const mainSectionContainer = document.querySelector('.cl-main-widget-section-container');
+    const rewardCelebration = document.createElement('div');
+    rewardCelebration.setAttribute('class', 'cl-main-widget-reward-celebration');
+
+    let campaign = '';
+    let title = '-';
+    if (awardData.entityType === 'Achievement') {
+      const achievement = await this.settings.lbWidget.getAchievementsByIds([awardData.entityId]);
+      campaign = achievement[0].name;
+      title = 'Mission Completed';
+    } else if (awardData.entityType === 'Contest') {
+      const contest = await this.settings.lbWidget.getContestsByIds([awardData.entityId]);
+      campaign = contest[0].name;
+      title = 'Tournament Completed';
+    }
+
+    let expires = '-';
+    if (awardData.period) {
+      const date = new Date(moment(awardData.created).add(awardData.period, 'm'));
+      expires = date.toLocaleDateString('fr-CH', {
+        timeZone: 'UTC', year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'
+      });
+    }
+
+    const template = require('../templates/mainWidget/rewardCelebration.hbs');
+    rewardCelebration.innerHTML = template({
+      id: awardData.id,
+      rewardType: awardData.rewardType.key,
+      rewardValue: awardData.rewardValue,
+      campaign: campaign,
+      expires: expires,
+      title: title
+    });
+
+    mainSectionContainer.appendChild(rewardCelebration);
+
+    const rewardCelebrationPage = document.querySelector('.cl-main-widget-reward-celebration');
+    setTimeout(function () {
+      rewardCelebrationPage.classList.add('active');
+    }, 500);
   };
 
   // this.updateDashboardRewardExpirationTime = function () {
