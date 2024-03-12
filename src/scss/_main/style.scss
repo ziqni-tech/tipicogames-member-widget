@@ -4163,7 +4163,7 @@
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-ach-list {
-  height: calc(100% - 60px);
+  height: 100%;
   width: 100%;
   transition: all .3s ease;
   padding-top: 24px;
@@ -4175,10 +4175,8 @@
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-ach-list-body {
   position: relative;
   width: 100%;
+  height: 100%;
   z-index: 1;
-  overflow: auto;
-  height: calc(100% - 22px);
-  overscroll-behavior: contain;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-ach-list-body::-webkit-scrollbar {
@@ -4191,10 +4189,7 @@
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-ach-list-body-res {
   width: 100%;
-  padding: 0;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
+  height: 100%;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-ach-list-popup-wrapp {
