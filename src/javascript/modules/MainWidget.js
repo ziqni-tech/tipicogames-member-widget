@@ -56,7 +56,7 @@ export const MainWidget = function (options) {
       timerInterval: null
     },
     leaderboard: {
-      defaultEmptyList: 20,
+      defaultEmptyList: 3,
       topResultSize: 3,
       header: null,
       container: null,
@@ -466,7 +466,11 @@ export const MainWidget = function (options) {
     const errorPage = document.createElement('div');
     errorPage.setAttribute('class', 'cl-main-widget-error');
     const errorTemplate = require('../templates/mainWidget/error.hbs');
-    errorPage.innerHTML = errorTemplate({});
+    errorPage.innerHTML = errorTemplate({
+      errorLabel: this.settings.lbWidget.settings.translation.error.errorLabel,
+      errorTitle: this.settings.lbWidget.settings.translation.error.errorTitle,
+      errorDescription: this.settings.lbWidget.settings.translation.error.errorDescription
+    });
 
     landscapeClose.setAttribute('class', 'cl-landscape-close');
 
@@ -552,7 +556,23 @@ export const MainWidget = function (options) {
       daysFull: this.settings.lbWidget.settings.translation.time.daysFull,
       hoursFull: this.settings.lbWidget.settings.translation.time.hoursFull,
       minutesFull: this.settings.lbWidget.settings.translation.time.minutesFull,
-      secondsFull: this.settings.lbWidget.settings.translation.time.secondsFull
+      secondsFull: this.settings.lbWidget.settings.translation.time.secondsFull,
+      infoLabel: this.settings.lbWidget.settings.translation.tournaments.infoLabel,
+      leaderboardLabel: this.settings.lbWidget.settings.translation.tournaments.leaderboardLabel,
+      positionLabel: this.settings.lbWidget.settings.translation.tournaments.positionLabel,
+      spinsLeftLabel: this.settings.lbWidget.settings.translation.tournaments.spinsLeftLabel,
+      pointsLabel: this.settings.lbWidget.settings.translation.tournaments.pointsLabel,
+      durationLabel: this.settings.lbWidget.settings.translation.tournaments.durationLabel,
+      spinLimitLabel: this.settings.lbWidget.settings.translation.tournaments.spinLimitLabel,
+      minBetLabel: this.settings.lbWidget.settings.translation.tournaments.minBetLabel,
+      pickAGameLabel: this.settings.lbWidget.settings.translation.tournaments.pickAGameLabel,
+      howToLabel: this.settings.lbWidget.settings.translation.tournaments.howToLabel,
+      abortLabel: this.settings.lbWidget.settings.translation.tournaments.abortLabel,
+      endsLabel: this.settings.lbWidget.settings.translation.tournaments.endsLabel,
+      pickAGameContLabel: this.settings.lbWidget.settings.translation.tournaments.pickAGameContLabel,
+      drawerTitle: this.settings.lbWidget.settings.translation.tournaments.drawerTitle,
+      drawerDescription: this.settings.lbWidget.settings.translation.tournaments.drawerDescription,
+      drawerOntInBtn: this.settings.lbWidget.settings.translation.tournaments.drawerOntInBtn
     });
 
     return sectionLB;
@@ -573,7 +593,14 @@ export const MainWidget = function (options) {
       progressLabel: this.settings.lbWidget.settings.translation.achievements.progress,
       headerLabel: this.settings.lbWidget.settings.translation.achievements.label,
       globalCopy: this.settings.lbWidget.settings.translation.global.copy,
-      enterLabel: this.settings.lbWidget.settings.translation.achievements.enter
+      enterLabel: this.settings.lbWidget.settings.translation.achievements.enter,
+      pickAGameLabel: this.settings.lbWidget.settings.translation.achievements.pickAGameLabel,
+      abortMissionLabel: this.settings.lbWidget.settings.translation.achievements.abortMissionLabel,
+      endsLabel: this.settings.lbWidget.settings.translation.achievements.endsLabel,
+      pickAGameBtn: this.settings.lbWidget.settings.translation.achievements.pickAGameBtn,
+      drawerLabel: this.settings.lbWidget.settings.translation.achievements.drawerLabel,
+      drawerDescription: this.settings.lbWidget.settings.translation.achievements.drawerDescription,
+      drawerPlayBtn: this.settings.lbWidget.settings.translation.achievements.drawerPlayBtn
     });
 
     return sectionACH;
@@ -587,7 +614,19 @@ export const MainWidget = function (options) {
     sectionRewards.innerHTML = template({
       headerLabel: this.settings.lbWidget.settings.translation.rewards.label,
       globalCopy: this.settings.lbWidget.settings.translation.global.copy,
-      claimBtn: this.settings.lbWidget.settings.translation.rewards.claim
+      claimBtn: this.settings.lbWidget.settings.translation.rewards.claim,
+      expiresInLabel: this.settings.lbWidget.settings.translation.rewards.expiresInLabel,
+      gamesLabel: this.settings.lbWidget.settings.translation.rewards.gamesLabel,
+      freeSpinDetailsLabel: this.settings.lbWidget.settings.translation.rewards.freeSpinDetailsLabel,
+      totalLabel: this.settings.lbWidget.settings.translation.rewards.totalLabel,
+      expiresOnLabel: this.settings.lbWidget.settings.translation.rewards.expiresOnLabel,
+      campaignLabel: this.settings.lbWidget.settings.translation.rewards.campaignLabel,
+      tAndCLabel: this.settings.lbWidget.settings.translation.global.tAndCLabel,
+      forfeitLabel: this.settings.lbWidget.settings.translation.rewards.forfeitLabel,
+      drawerLabel: this.settings.lbWidget.settings.translation.rewards.drawerLabel,
+      drawerDescription: this.settings.lbWidget.settings.translation.rewards.drawerDescription,
+      drawerKeepBtn: this.settings.lbWidget.settings.translation.rewards.drawerKeepBtn,
+      drawerForfeitBtn: this.settings.lbWidget.settings.translation.rewards.drawerForfeitBtn
     });
 
     return sectionRewards;
@@ -672,12 +711,12 @@ export const MainWidget = function (options) {
     return cellWrapper;
   };
 
-  this.leaderboardRowUpdate = function (rank, icon, name, change, growth, points, reward, count, memberFound, onMissing) {
+  this.leaderboardRowUpdate = function (rank, icon, name, change, growth, points, reward, count, memberFound, onMissing, isLast) {
     const _this = this;
     const cellRow = query(_this.settings.leaderboard.container, '.cl-lb-rank-' + rank + '.cl-lb-count-' + count);
 
     if (cellRow === null) {
-      onMissing(rank, name ? name[0] : '', name, change, growth, points, reward, count, memberFound);
+      onMissing(rank, name ? name[0] : '', name, change, growth, points, reward, count, memberFound, isLast);
     } else {
       const rankCel = query(cellRow, '.cl-rank-col-value');
       const nameCel = query(cellRow, '.lb-name');
@@ -687,6 +726,10 @@ export const MainWidget = function (options) {
 
       if (count > 0 && !hasClass(cellRow, 'cl-shared-rank')) {
         addClass(cellRow, 'cl-shared-rank');
+      }
+
+      if (isLast) {
+        addClass(cellRow, 'lb-last');
       }
 
       if (memberFound && !rowHasClass) {
@@ -717,28 +760,24 @@ export const MainWidget = function (options) {
   };
 
   this.populateLeaderboardResultsWithDefaultEntries = function (clearPrize = false) {
-    const topResults = [];
+    // const topResults = [];
     const remainingResults = [];
 
-    for (let i = 0; i < this.settings.leaderboard.topResultSize; i++) {
-      const rank = i + 1;
+    // for (let i = 0; i < this.settings.leaderboard.topResultSize; i++) {
+    //   const rank = i + 1;
+    //
+    //   topResults.push({
+    //     name: '-',
+    //     rank: rank,
+    //     score: '-',
+    //     memberId: '',
+    //     memberRefId: ''
+    //   });
+    // }
+    //
+    const emptyListLength = this.settings.lbWidget.settings.leaderboard.fullLeaderboardSize + 1;
 
-      topResults.push({
-        name: '-',
-        rank: rank,
-        score: '-',
-        memberId: '',
-        memberRefId: ''
-      });
-    }
-
-    const emptyListLength = (
-      this.settings.lbWidget.settings.leaderboard.fullLeaderboardSize < this.settings.leaderboard.defaultEmptyList
-    )
-      ? this.settings.lbWidget.settings.leaderboard.fullLeaderboardSize + 1
-      : this.settings.leaderboard.defaultEmptyList;
-
-    for (let s = this.settings.leaderboard.topResultSize; s < emptyListLength; s++) {
+    for (let s = 0; s < emptyListLength; s++) {
       const rank = s + 1;
 
       remainingResults.push({
@@ -750,87 +789,87 @@ export const MainWidget = function (options) {
       });
     }
 
-    this.updateLeaderboardTopResults(topResults, clearPrize);
+    // this.updateLeaderboardTopResults(topResults, clearPrize);
     this.updateLeaderboardResults(remainingResults, clearPrize);
   };
 
-  this.updateLeaderboardTopResults = function (topResults, clearPrize = false) {
-    const _this = this;
-    const rankCheck = [];
-    const cleanupRankCheck = [];
-
-    // cleanup
-    mapObject(topResults, function (lb) {
-      cleanupRankCheck.push(lb.rank);
-      objectIterator(query(_this.settings.leaderboard.topResults, '.cl-lb-rank-' + lb.rank + '.cl-shared-rank'), function (obj) {
-        remove(obj);
-      });
-    });
-
-    objectIterator(query(_this.settings.leaderboard.topResults, '.cl-lb-row'), function (obj) {
-      const rank = parseInt(obj.dataset.rank);
-      if (cleanupRankCheck.indexOf(rank) === -1 && rank > _this.settings.leaderboard.defaultEmptyList) {
-        remove(obj);
-      }
-    });
-
-    mapObject(topResults, function (lb) {
-      let memberNames = '';
-      let memberLbName = '';
-      if (lb.members && lb.members.length) {
-        memberNames = lb.members.map((m) => m.name);
-        memberLbName = memberNames.join();
-      } else {
-        memberLbName = lb.name;
-      }
-      let count = 0;
-      const memberFound = lb.members && lb.members.findIndex(m => m.memberRefId === _this.settings.lbWidget.settings.member.memberRefId) !== -1;
-
-      let memberName = (memberFound) ? _this.settings.lbWidget.settings.translation.leaderboard.you : memberLbName;
-      const memberNameLength = _this.settings.lbWidget.settings.memberNameLength;
-      const reward = clearPrize ? '' : _this.getRewardData(lb.rank);
-      const change = (typeof lb.change === 'undefined') ? 0 : lb.change;
-      const growthType = (change < 0) ? 'down' : (change > 0 ? 'up' : 'same');
-      const growthIcon = "<span class='cl-growth-icon cl-growth-" + growthType + "'></span>";
-      const formattedPoints = _this.settings.lbWidget.settings.leaderboard.pointsFormatter(lb.score);
-
-      if (rankCheck.indexOf(lb.rank) !== -1) {
-        for (let rc = 0; rc < rankCheck.length; rc++) {
-          if (lb.rank === rankCheck[rc]) {
-            count++;
-          }
-        }
-      }
-
-      if (memberNameLength && memberName !== _this.settings.lbWidget.settings.translation.leaderboard.you) {
-        memberName = memberName.slice(0, memberNameLength) + '*****';
-      }
-
-      _this.leaderboardRowUpdate(
-        lb.rank,
-        memberName ? memberName[0] : '', // icon
-        memberName,
-        change,
-        growthIcon, // growth
-        formattedPoints,
-        reward, // reward
-        count,
-        memberFound,
-        function (rank, icon, name, change, growth, points, reward, count, memberFound) {
-          const newRow = _this.leaderboardRow(rank, name ? name[0] : '', name, change, growth, points, reward, count, memberFound);
-          const prevCellRow = query(_this.settings.leaderboard.container, '.cl-lb-rank-' + rank + '.cl-lb-count-' + (count - 1));
-
-          if (prevCellRow !== null && typeof prevCellRow.length === 'undefined') {
-            appendNext(prevCellRow, newRow);
-          } else {
-            _this.settings.leaderboard.topResults.appendChild(newRow);
-          }
-        }
-      );
-
-      rankCheck.push(lb.rank);
-    });
-  };
+  // this.updateLeaderboardTopResults = function (topResults, clearPrize = false) {
+  //   const _this = this;
+  //   const rankCheck = [];
+  //   const cleanupRankCheck = [];
+  //
+  //   // cleanup
+  //   mapObject(topResults, function (lb) {
+  //     cleanupRankCheck.push(lb.rank);
+  //     objectIterator(query(_this.settings.leaderboard.topResults, '.cl-lb-rank-' + lb.rank + '.cl-shared-rank'), function (obj) {
+  //       remove(obj);
+  //     });
+  //   });
+  //
+  //   objectIterator(query(_this.settings.leaderboard.topResults, '.cl-lb-row'), function (obj) {
+  //     const rank = parseInt(obj.dataset.rank);
+  //     if (cleanupRankCheck.indexOf(rank) === -1 && rank > _this.settings.leaderboard.defaultEmptyList) {
+  //       remove(obj);
+  //     }
+  //   });
+  //
+  //   mapObject(topResults, function (lb) {
+  //     let memberNames = '';
+  //     let memberLbName = '';
+  //     if (lb.members && lb.members.length) {
+  //       memberNames = lb.members.map((m) => m.name);
+  //       memberLbName = memberNames.join();
+  //     } else {
+  //       memberLbName = lb.name;
+  //     }
+  //     let count = 0;
+  //     const memberFound = lb.members && lb.members.findIndex(m => m.memberRefId === _this.settings.lbWidget.settings.member.memberRefId) !== -1;
+  //
+  //     let memberName = (memberFound) ? _this.settings.lbWidget.settings.translation.leaderboard.you : memberLbName;
+  //     const memberNameLength = _this.settings.lbWidget.settings.memberNameLength;
+  //     const reward = clearPrize ? '' : _this.getRewardData(lb.rank);
+  //     const change = (typeof lb.change === 'undefined') ? 0 : lb.change;
+  //     const growthType = (change < 0) ? 'down' : (change > 0 ? 'up' : 'same');
+  //     const growthIcon = "<span class='cl-growth-icon cl-growth-" + growthType + "'></span>";
+  //     const formattedPoints = _this.settings.lbWidget.settings.leaderboard.pointsFormatter(lb.score);
+  //
+  //     if (rankCheck.indexOf(lb.rank) !== -1) {
+  //       for (let rc = 0; rc < rankCheck.length; rc++) {
+  //         if (lb.rank === rankCheck[rc]) {
+  //           count++;
+  //         }
+  //       }
+  //     }
+  //
+  //     if (memberNameLength && memberName !== _this.settings.lbWidget.settings.translation.leaderboard.you) {
+  //       memberName = memberName.slice(0, memberNameLength) + '*****';
+  //     }
+  //
+  //     _this.leaderboardRowUpdate(
+  //       lb.rank,
+  //       memberName ? memberName[0] : '', // icon
+  //       memberName,
+  //       change,
+  //       growthIcon, // growth
+  //       formattedPoints,
+  //       reward, // reward
+  //       count,
+  //       memberFound,
+  //       function (rank, icon, name, change, growth, points, reward, count, memberFound) {
+  //         const newRow = _this.leaderboardRow(rank, name ? name[0] : '', name, change, growth, points, reward, count, memberFound);
+  //         const prevCellRow = query(_this.settings.leaderboard.container, '.cl-lb-rank-' + rank + '.cl-lb-count-' + (count - 1));
+  //
+  //         if (prevCellRow !== null && typeof prevCellRow.length === 'undefined') {
+  //           appendNext(prevCellRow, newRow);
+  //         } else {
+  //           _this.settings.leaderboard.topResults.appendChild(newRow);
+  //         }
+  //       }
+  //     );
+  //
+  //     rankCheck.push(lb.rank);
+  //   });
+  // };
 
   this.getRewardData = function (rank) {
     const _this = this;
@@ -910,6 +949,12 @@ export const MainWidget = function (options) {
       }
     });
 
+    if (remainingResults[remainingResults.length - 1] && remainingResults[remainingResults.length - 2]) {
+      if (remainingResults[remainingResults.length - 1].rank - remainingResults[remainingResults.length - 2].rank > 1) {
+        remainingResults[remainingResults.length - 1].isLast = true;
+      }
+    }
+
     mapObject(remainingResults, function (lb) {
       let memberNames = '';
       let memberLbName = '';
@@ -952,8 +997,9 @@ export const MainWidget = function (options) {
         reward,
         count,
         memberFound,
-        function (rank, icon, name, change, growth, points, reward, count, memberFound) {
+        function (rank, icon, name, change, growth, points, reward, count, memberFound, isLast) {
           const newRow = _this.leaderboardRow(rank, icon, name, name, growth, points, reward, count, memberFound);
+          if (isLast) newRow.classList.add('lb-last');
           const prevCellRow = query(_this.settings.leaderboard.container, '.cl-lb-rank-' + rank + '.cl-lb-count-' + (count - 1));
 
           if (prevCellRow !== null && typeof prevCellRow.length === 'undefined') {
@@ -961,7 +1007,8 @@ export const MainWidget = function (options) {
           } else {
             _this.settings.leaderboard.list.appendChild(newRow);
           }
-        }
+        },
+        lb.isLast
       );
 
       rankCheck.push(lb.rank);
@@ -970,20 +1017,16 @@ export const MainWidget = function (options) {
 
   this.updateLeaderboard = function () {
     const _this = this;
-    const topResults = [];
+    // const topResults = [];
     const remainingResults = [];
 
     _this.populateLeaderboardResultsWithDefaultEntries();
 
     mapObject(_this.settings.lbWidget.settings.leaderboard.leaderboardData, function (lb) {
-      if (lb.rank > 0 && lb.rank <= _this.settings.leaderboard.topResultSize) {
-        topResults.push(lb);
-      } else {
-        remainingResults.push(lb);
-      }
+      remainingResults.push(lb);
     });
 
-    _this.updateLeaderboardTopResults(topResults);
+    // _this.updateLeaderboardTopResults(topResults);
     _this.updateLeaderboardResults(remainingResults);
 
     const member = query(_this.settings.leaderboard.resultContainer, '.cl-lb-member-row');
@@ -1980,7 +2023,7 @@ export const MainWidget = function (options) {
         } else if (layout.type === 'finishedCompetitions') {
           mapObject(tournamentData, async function (tournament, key, count) {
             const listItem = await _this.tournamentResultItem(tournament);
-            listContainer.appendChild(listItem);
+            if (listItem) listContainer.appendChild(listItem);
           });
         }
       }
@@ -2763,7 +2806,12 @@ export const MainWidget = function (options) {
       icon: contest.iconLink ?? '',
       isOptIn: isOptIn,
       optInLabel: this.settings.lbWidget.settings.translation.dashboard.optInTournamentLabel,
-      isLive: contest.status === 'Active'
+      isLive: contest.status === 'Active',
+      joinedLabel: this.settings.lbWidget.settings.translation.tournaments.joinedLabel,
+      liveLabel: this.settings.lbWidget.settings.translation.tournaments.liveLabel,
+      positionLabel: this.settings.lbWidget.settings.translation.tournaments.positionLabel,
+      spinsLeftLabel: this.settings.lbWidget.settings.translation.tournaments.spinsLeftLabel,
+      pointsLabel: this.settings.lbWidget.settings.translation.tournaments.pointsLabel
     });
 
     return listItem;
@@ -2786,6 +2834,9 @@ export const MainWidget = function (options) {
     }, null);
 
     const contests = await this.settings.lbWidget.getContests(contestRequest);
+
+    if (!contests.length) return;
+
     const contest = contests[0];
     const rewardRequest = {
       entityFilter: [{
@@ -2901,7 +2952,10 @@ export const MainWidget = function (options) {
     listItem.setAttribute('class', 'dashboard-rewards-list-item-empty');
 
     const template = require('../templates/dashboard/awardItemEmpty.hbs');
-    listItem.innerHTML = template({});
+    listItem.innerHTML = template({
+      title: this.settings.lbWidget.settings.translation.rewards.emptyLabel,
+      description: this.settings.lbWidget.settings.translation.rewards.emptyDescription
+    });
 
     return listItem;
   };
@@ -2961,7 +3015,16 @@ export const MainWidget = function (options) {
       rewardValue: awardData.rewardValue,
       campaign: campaign,
       expires: expires,
-      title: title
+      title: title,
+      label: this.settings.lbWidget.settings.translation.rewardCelebration.label,
+      expiresLabel: this.settings.lbWidget.settings.translation.rewardCelebration.expiresLabel,
+      tAndCLabel: this.settings.lbWidget.settings.translation.global.tAndCLabel,
+      climeBtnLabel: this.settings.lbWidget.settings.translation.rewardCelebration.climeBtnLabel,
+      declineBtnLabel: this.settings.lbWidget.settings.translation.rewardCelebration.declineBtnLabel,
+      drawerTitle: this.settings.lbWidget.settings.translation.rewardCelebration.drawerTitle,
+      drawerDescription: this.settings.lbWidget.settings.translation.rewardCelebration.drawerDescription,
+      drawerClimeBtn: this.settings.lbWidget.settings.translation.rewardCelebration.drawerClimeBtn,
+      drawerDeclineBtn: this.settings.lbWidget.settings.translation.rewardCelebration.drawerDeclineBtn
     });
 
     mainSectionContainer.appendChild(rewardCelebration);
@@ -3192,7 +3255,11 @@ export const MainWidget = function (options) {
       name: reward.name,
       status: reward.status,
       campaign: campaign,
-      expires: expires
+      expires: expires,
+      pastFS: this.settings.lbWidget.settings.translation.rewards.pastFS,
+      pastFSWinnings: this.settings.lbWidget.settings.translation.rewards.pastFSWinnings,
+      expiredOnLabel: this.settings.lbWidget.settings.translation.rewards.expiredOnLabel,
+      campaignLabel: this.settings.lbWidget.settings.translation.rewards.campaignLabel
     });
 
     return listItem;
@@ -3257,7 +3324,12 @@ export const MainWidget = function (options) {
       prizeValue: rewardValue,
       rewardName: rewardName,
       playTournamentLabel: this.settings.lbWidget.settings.translation.dashboard.playTournamentLabel,
-      icon: tournament.iconLink ?? ''
+      icon: tournament.iconLink ?? '',
+      joinedLabel: this.settings.lbWidget.settings.translation.tournaments.joinedLabel,
+      liveLabel: this.settings.lbWidget.settings.translation.tournaments.liveLabel,
+      positionLabel: this.settings.lbWidget.settings.translation.tournaments.positionLabel,
+      spinsLeftLabel: this.settings.lbWidget.settings.translation.tournaments.spinsLeftLabel,
+      pointsLabel: this.settings.lbWidget.settings.translation.tournaments.pointsLabel
     });
 
     return listItem;

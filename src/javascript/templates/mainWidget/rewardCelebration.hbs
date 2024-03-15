@@ -1,14 +1,14 @@
 <div class="cl-main-widget-reward-celebration-header">
   <div class="cl-main-widget-reward-celebration-header-name">{{ campaign }}</div>
   <div class="cl-main-widget-reward-celebration-header-completed">{{ title }}</div>
-  <div class="cl-main-widget-reward-celebration-header-reward">You earned a reward</div>
+  <div class="cl-main-widget-reward-celebration-header-reward">{{ label }}</div>
 </div>
 
 <div class="cl-main-widget-reward-celebration-body">
   <div class="dashboard-rewards-list-item">
     <div class="dashboard-rewards-list-item-info">
       <div class="dashboard-rewards-list-item-expires">
-        <div class="dashboard-rewards-list-item-expires-label">Expires</div>
+        <div class="dashboard-rewards-list-item-expires-label">{{ expiresLabel }}</div>
         <div class="dashboard-rewards-list-item-expires-value">{{ expires }}</div>
       </div>
       <div class="dashboard-rewards-list-item-reward">
@@ -18,20 +18,18 @@
     </div>
     <div class="dashboard-rewards-list-item-img" style="background-image: url(https://first-space.cdn.ziqni.com/Banners/games.png)"></div>
   </div>
-  <div class="cl-main-widget-reward-celebration-body-t-and-c">Terms and Conditions</div>
+  <div class="cl-main-widget-reward-celebration-body-t-and-c">{{ tAndCLabel }}</div>
 </div>
 
 <div class="cl-main-widget-reward-celebration-actions" data-id="{{ id }}">
-  <div class="cl-main-widget-reward-celebration-actions-clime-btn">Claim Reward</div>
-  <div class="cl-main-widget-reward-celebration-actions-decline">Decline Reward</div>
+  <div class="cl-main-widget-reward-celebration-actions-clime-btn">{{ climeBtnLabel }}</div>
+  <div class="cl-main-widget-reward-celebration-actions-decline">{{ declineBtnLabel }}</div>
 </div>
 
 <div class="cl-main-widget-reward-celebration-drawer" data-id="{{ id }}">
   <div class="cl-main-widget-reward-celebration-drawer-icon"></div>
-  <div class="cl-main-widget-reward-celebration-drawer-title">Are you sure you want to decline the reward?</div>
-  <div class="cl-main-widget-reward-celebration-drawer-description">
-    If you decline the reward, it will expire and you will no longer be able to claim it.
-  </div>
-  <div class="cl-main-widget-reward-celebration-drawer-btn-claim">Claim reward</div>
-  <div class="cl-main-widget-reward-celebration-drawer-btn-decline">Decline reward</div>
+  <div class="cl-main-widget-reward-celebration-drawer-title">{{ drawerTitle }}</div>
+  <div class="cl-main-widget-reward-celebration-drawer-description">{{ drawerDescription }}</div>
+  <div class="cl-main-widget-reward-celebration-drawer-btn-claim">{{ drawerClimeBtn }}</div>
+  <div class="cl-main-widget-reward-celebration-drawer-btn-decline">{{ drawerDeclineBtn }}</div>
 </div>

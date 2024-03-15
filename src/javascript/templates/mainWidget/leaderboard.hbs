@@ -34,8 +34,8 @@
     </div>
 
     <div class="cl-main-widget-lb-details-menu">
-      <div class="cl-main-widget-lb-details-menu-item info active">Info</div>
-      <div class="cl-main-widget-lb-details-menu-item leaderboard">Leaderboard</div>
+      <div class="cl-main-widget-lb-details-menu-item info active">{{ infoLabel }}</div>
+      <div class="cl-main-widget-lb-details-menu-item leaderboard">{{ leaderboardLabel }}</div>
     </div>
 
     <!-- Body -->
@@ -45,15 +45,15 @@
         <div class="cl-main-widget-lb-details-data">
           <div class="dashboard-tournament-list-details-data-item dashboard-tournament-list-details-position">
             <div class="dashboard-tournament-list-details-data-item-value dashboard-tournament-list-details-position-value">-</div>
-            <div class="dashboard-tournament-list-details-data-item-label dashboard-tournament-list-details-position-label">Position</div>
+            <div class="dashboard-tournament-list-details-data-item-label dashboard-tournament-list-details-position-label">{{ positionLabel }}</div>
           </div>
           <div class="dashboard-tournament-list-details-data-item dashboard-tournament-list-details-left">
             <div class="dashboard-tournament-list-details-data-item-value dashboard-tournament-list-details-left-value">-</div>
-            <div class="dashboard-tournament-list-details-data-item-label dashboard-tournament-list-details-left-label">Spins left</div>
+            <div class="dashboard-tournament-list-details-data-item-label dashboard-tournament-list-details-left-label">{{ spinsLeftLabel }}</div>
           </div>
           <div class="dashboard-tournament-list-details-data-item dashboard-tournament-list-details-points">
             <div class="dashboard-tournament-list-details-data-item-value dashboard-tournament-list-details-points-value">-</div>
-            <div class="dashboard-tournament-list-details-data-item-label dashboard-tournament-list-details-points-label">Points</div>
+            <div class="dashboard-tournament-list-details-data-item-label dashboard-tournament-list-details-points-label">{{ pointsLabel }}</div>
           </div>
         </div>
 
@@ -67,21 +67,21 @@
               16.238Z" fill="white"></path>
           </svg>
           <div class="dashboard-tournament-list-details-reward-first">1</div>
-          <div class="cl-main-widget-lb-details-reward-title">Get 50 Free Spins</div>
+          <div class="cl-main-widget-lb-details-reward-title">-</div>
         </div>
 
         <div class="dashboard-tournament-list-details-data disabled">
           <div class="dashboard-tournament-list-details-data-item dashboard-tournament-list-details-position">
             <div class="dashboard-tournament-list-details-data-item-value dashboard-tournament-list-details-position-value cl-main-widget-lb-details-duration">-</div>
-            <div class="dashboard-tournament-list-details-data-item-label dashboard-tournament-list-details-position-label">Duration</div>
+            <div class="dashboard-tournament-list-details-data-item-label dashboard-tournament-list-details-position-label">{{ durationLabel }}</div>
           </div>
           <div class="dashboard-tournament-list-details-data-item dashboard-tournament-list-details-left">
             <div class="dashboard-tournament-list-details-data-item-value dashboard-tournament-list-details-left-value cl-main-widget-lb-details-spin-limit">-</div>
-            <div class="dashboard-tournament-list-details-data-item-label dashboard-tournament-list-details-left-label">Spin Limit</div>
+            <div class="dashboard-tournament-list-details-data-item-label dashboard-tournament-list-details-left-label">{{ spinLimitLabel }}</div>
           </div>
           <div class="dashboard-tournament-list-details-data-item dashboard-tournament-list-details-points">
             <div class="dashboard-tournament-list-details-data-item-value dashboard-tournament-list-details-points-value cl-main-widget-lb-details-min-bet">-</div>
-            <div class="dashboard-tournament-list-details-data-item-label dashboard-tournament-list-details-points-label">Min bet</div>
+            <div class="dashboard-tournament-list-details-data-item-label dashboard-tournament-list-details-points-label">{{ minBetLabel }}</div>
           </div>
         </div>
 
@@ -91,7 +91,7 @@
       </div>
 
       <div class="cl-main-widget-ach-details-games">
-        <div class="cl-main-widget-ach-details-games-label">Pick a game</div>
+        <div class="cl-main-widget-ach-details-games-label">{{ pickAGameLabel }}</div>
         <div class="cl-main-widget-ach-details-game-items tour-games">
           <div class="cl-main-widget-ach-details-game-item" style="background-image: url('https://tipicogames-stg.cdn.ziqni.com/Banners/thumbnails-test.png')"></div>
           <div class="cl-main-widget-ach-details-game-item" style="background-image: url('https://tipicogames-stg.cdn.ziqni.com/Banners/thumbnails-test.png')"></div>
@@ -107,7 +107,7 @@
 
       <div class="cl-main-widget-tournament-details-body-description-tc hc">
         <div class="cl-main-widget-tournament-details-body-description-tc-header">
-          <div class="cl-main-widget-ach-details-body-description-tc-title">How are point calculated</div>
+          <div class="cl-main-widget-ach-details-body-description-tc-title">{{ howToLabel }}</div>
           <div class="cl-main-widget-ach-details-body-description-tc-expand expand-item"></div>
         </div>
         <div class="cl-main-widget-tournament-details-hc"></div>
@@ -121,7 +121,7 @@
         <div class="cl-main-widget-tournament-details-tc"></div>
       </div>
 
-      <div class="cl-main-widget-tournament-details-body-abort">Abort Tournament</div>
+      <div class="cl-main-widget-tournament-details-body-abort">{{ abortLabel }}</div>
 
       <div class="cl-main-widget-lb-details-description"></div>
     </div>
@@ -142,37 +142,14 @@
 
     <div class="cl-main-widget-ach-details-body-cta">
       <div class="cl-main-widget-ach-details-body-cta-ends">
-        <div class="cl-main-widget-ach-details-body-cta-ends-label">Ends</div>
+        <div class="cl-main-widget-ach-details-body-cta-ends-label">{{ endsLabel }}</div>
         <div class="cl-main-widget-lb-details-body-cta-ends-date">-</div>
       </div>
-      <div class="cl-main-widget-lb-details-body-cta-ends-btn-pick">Pick a game to continue</div>
+      <div class="cl-main-widget-lb-details-body-cta-ends-btn-pick">{{ pickAGameContLabel }}</div>
       <div class="cl-main-widget-lb-optin-container">
         <a class="cl-main-widget-lb-optin-action" href="javascript:void(0);">{{ enterLabel }}</a>
       </div>
     </div>
-
-<!--    <div class="cl-main-widget-lb-details-description-header">-->
-<!--      <div class="cl-main-widget-lb-details-description-header-title"></div>-->
-<!--      <div class="cl-main-widget-lb-details-description-info">i</div>-->
-<!--    </div>-->
-<!--    <div class="cl-main-widget-lb-details-description-banner">-->
-<!--      <div class="cl-main-widget-lb-details-description-label">-->
-<!--        <span class="cl-main-widget-lb-details-description-label-text"></span>-->
-<!--        <span class="cl-main-widget-lb-details-description-date"></span>-->
-<!--        <div class="cl-main-widget-lb-details-description-date-headers">-->
-<!--          <div class="cl-main-widget-lb-details-description-date-headers-item months hidden">{{ monthsFull }}</div>-->
-<!--          <div class="cl-main-widget-lb-details-description-date-headers-item days">{{ daysFull }}</div>-->
-<!--          <div class="cl-main-widget-lb-details-description-date-headers-item hours">{{ hoursFull }}</div>-->
-<!--          <div class="cl-main-widget-lb-details-description-date-headers-item minutes">{{ minutesFull }}</div>-->
-<!--          <div class="cl-main-widget-lb-details-description-date-headers-item seconds">{{ secondsFull }}</div>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--    <div class="cl-main-widget-lb-details-description-title">{{ descriptionLabel }}</div>-->
-<!--    <div class="cl-main-widget-lb-details-tc-title">{{ tAndCLabel }}</div>-->
-<!--    <div class="cl-main-widget-lb-details-description"></div>-->
-<!--    <div class="cl-main-widget-lb-details-tc"></div>-->
-<!--    <div class="cl-main-widget-lb-details-brackets"></div>-->
   </div>
 
   <div class="cl-main-widget-lb-missing-member-details"></div>
@@ -180,12 +157,10 @@
 
 <div class="cl-main-widget-tour-optIn-drawer">
   <div class="cl-main-widget-tour-optIn-drawer-icon"></div>
-  <div class="cl-main-widget-tour-optIn-drawer-title">Join before you play</div>
-  <div class="cl-main-widget-tour-optIn-drawer-description">
-    Join the Tournament before you play and every spin brings you closer to the top.
-  </div>
-  <div class="cl-main-widget-tour-optIn-drawer-btn-optIn">Join Tournament</div>
-  <div class="cl-main-widget-tour-optIn-drawer-btn-play">Play without joining</div>
+  <div class="cl-main-widget-tour-optIn-drawer-title">{{ drawerTitle }}</div>
+  <div class="cl-main-widget-tour-optIn-drawer-description">{{ drawerDescription }}</div>
+  <div class="cl-main-widget-tour-optIn-drawer-btn-optIn">{{ drawerOntInBtn }}</div>
+  <div class="cl-main-widget-tour-optIn-drawer-btn-play">{{ drawerPlayBtn }}</div>
 </div>
 
 <div class="cl-main-widget-lb-details-container">

@@ -157,7 +157,7 @@ export const LbWidget = function (options) {
       finishedTotalCount: 0
     },
     leaderboard: {
-      fullLeaderboardSize: 100,
+      fullLeaderboardSize: 3,
       refreshIntervalMillis: 1000000,
       refreshInterval: null,
       refreshLbDataInterval: null,
@@ -734,6 +734,24 @@ export const LbWidget = function (options) {
       }
     }
 
+    if (this.settings.competition.activeContestId) {
+      const rewardRequest = {
+        entityFilter: [{
+          entityType: 'Contest',
+          entityIds: [this.settings.competition.activeContestId]
+        }],
+        currencyKey: this.settings.currency,
+        skip: 0,
+        limit: 20
+      };
+
+      const rewardsJson = await this.getRewardsApi(rewardRequest);
+
+      if (rewardsJson.data && rewardsJson.data.length) {
+        this.settings.competition.activeContest.rewards = rewardsJson.data;
+      }
+    }
+
     if (typeof callback === 'function') {
       callback();
     }
@@ -788,6 +806,33 @@ export const LbWidget = function (options) {
 
   this.getLeaderboardData = async function (count, callback) {
     const _this = this;
+
+    let lastPlace = 3;
+
+    if (this.settings.competition.activeContest.rewards && this.settings.competition.activeContest.rewards.length) {
+      this.settings.competition.activeContest.rewards.forEach(reward => {
+        if (reward.rewardRank.indexOf('-') !== -1 || reward.rewardRank.indexOf(',') !== -1) {
+          const rewardRankArr = reward.rewardRank.split(',');
+          rewardRankArr.forEach(r => {
+            const idx = r.indexOf('-');
+            if (idx !== -1) {
+              const end = parseInt(r.substring(idx + 1));
+              if (end > lastPlace) {
+                lastPlace = end;
+              }
+            } else if (parseInt(r) > lastPlace) {
+              lastPlace = parseInt(r);
+            }
+          });
+        } else if (parseInt(reward.rewardRank) > lastPlace) {
+          lastPlace = parseInt(reward.rewardRank);
+        }
+      });
+    }
+
+    count = lastPlace;
+    this.settings.leaderboard.fullLeaderboardSize = lastPlace;
+
     if (this.settings.competition.activeContestId !== null) {
       const leaderboardSubscriptionRequest = LeaderboardSubscriptionRequest.constructFromObject({
         entityId: this.settings.competition.activeContestId,
@@ -3419,8 +3464,6 @@ export const LbWidget = function (options) {
 
           setTimeout(async function () {
             const awardData = await _this.getAwardsApi(awardRequest);
-            console.log('awardRequest:', awardRequest);
-            console.log('awardData:', awardData);
             if (awardData.data && awardData.data.length) {
               if (!awardData.data[0].claimed) {
                 _this.settings.mainWidget.showAwardCelebration(awardData.data[0]);

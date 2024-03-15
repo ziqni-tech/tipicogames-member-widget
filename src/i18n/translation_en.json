@@ -33,7 +33,13 @@
         "rewardLabel": "Reward",
         "completedLabel": "Completed",
         "expiredLabel": "Expired",
-        "abortedLabel": "Aborted"
+        "abortedLabel": "Aborted",
+        "pickAGameLabel": "Pick a game",
+        "abortMissionLabel": "Abort Mission",
+        "pickAGameBtn": "Pick a game to continue",
+        "drawerLabel": "Opt-in before you play",
+        "drawerDescription": "Make sure to opt into the mission before starting to play, otherwise, your progress won't be counted.",
+        "drawerPlayBtn": "Play anyways"
     },
     "tournaments": {
         "label": "Tournaments",
@@ -51,7 +57,23 @@
         "startedLabel": "Started",
         "positionLabel" : "Position",
         "spinsLeftLabel" : "Spins left",
-        "pointsLabel" : "Points"
+        "pointsLabel" : "Points",
+        "joinedLabel": "Joined",
+        "liveLabel": "Live",
+        "infoLabel": "Info",
+        "leaderboardLabel": "Leaderboard",
+        "durationLabel": "Duration",
+        "spinLimitLabel": "Spin Limit",
+        "minBetLabel": "Min bet",
+        "pickAGameLabel": "Pick a game",
+        "howToLabel": "How are point calculated",
+        "abortLabel": "Abort Tournament",
+        "endsLabel": "Ends",
+        "pickAGameContLabel": "Pick a game to continue",
+        "drawerTitle": "Join before you play",
+        "drawerDescription": "Join the Tournament before you play and every spin brings you closer to the top.",
+        "drawerOntInBtn": "Join Tournament",
+        "drawerPlayBtn": "Play without joining"
     },
     "leaderboard": {
         "rank": "Pos.",
@@ -59,22 +81,6 @@
         "points": "PTS.",
         "prize": "Reward",
         "you": "You"
-    },
-    "brackets": {
-        "title": "Tournaments bracket",
-        "starts": "Starts",
-        "ends": "Ends",
-        "ended": "Ended"
-    },
-    "miniLeaderboard": {
-        "highScore": "High Score",
-        "lastScore": "Last Score",
-        "rank": "Rank",
-        "startsIn": "Starting In",
-        "started": "started",
-        "starting": "starting",
-        "finishing": "finishing",
-        "finished": "finished"
     },
     "rewards": {
         "label": "Rewards",
@@ -86,18 +92,21 @@
         "instantWins": "Instant Wins",
         "rewards": "Claimed Awards",
         "expiredRewards": "Expired Awards",
-        "wheelLabel": "The Single Wheel",
-        "scratchcardsLabel": "Scratchcards",
-        "wheelButton": "Play",
-        "scratchcardsButton": "Play",
-        "singleWheelWinLabel": "Congratulations!",
-        "singleWheelWinDescription": "You won",
-        "singleWheelWinButton": "Claim",
-        "prizeLabel": "Uncover your prize by scratching away!",
-        "prizeButton": "Scratch all"
-    },
-    "messages": {
-        "label": "Messages"
+        "emptyLabel": "Currently no rewards",
+        "emptyDescription": "Complete <a href=\"javascript:void(0);\" data-link=\"missions\">Missions</a> or play <a href=\"javascript:void(0);\" data-link=\"tournaments\">Tournaments</a> to earn rewards.",
+        "gamesLabel": "Use in following games",
+        "freeSpinDetailsLabel": "Free spin Details",
+        "totalLabel": "Total Rewarded Freespins",
+        "expiresOnLabel": "Expires on",
+        "campaignLabel": "Campaign",
+        "forfeitLabel": "Forfeit Reward",
+        "drawerLabel": "Are you sure you want to forfeit the reward?",
+        "drawerDescription": "If you forfeit the reward you won’t be able to claim it again.",
+        "drawerKeepBtn": "Keep reward",
+        "drawerForfeitBtn": "Forfeit reward",
+        "pastFS": "Number of Free Spins used",
+        "pastFSWinnings": "Free Spins Winnings",
+        "expiredOnLabel": "Expired on"
     },
     "dashboard": {
         "label": "Hi",
@@ -118,17 +127,26 @@
         "playTournamentLabel": "Play Tournament",
         "optInTournamentLabel": "Join Tournament"
     },
-    "missions": {
-        "label": "Missions",
-        "btn": "Go",
-        "prizeLabel": "Prize",
-        "mapLabel": "Mission map"
-    },
     "global": {
         "copy": "Powered By Ziqni",
         "descriptionLabel": "Description",
         "tAndCLabel": "Terms and Conditions",
         "tAndCEmpty": "No Terms and Conditions provided",
         "descriptionEmpty": "No Descriptions provided"
+    },
+    "error": {
+        "errorLabel": "Error",
+        "errorTitle": "Couldn't load the content",
+        "errorDescription": "Oops, we are having troubles loading this page. Please check again later."
+    },
+    "rewardCelebration": {
+        "label": "You earned a reward",
+        "expiresLabel": "Expires",
+        "climeBtnLabel": "Claim Reward",
+        "declineBtnLabel": "Decline Reward",
+        "drawerTitle": "Are you sure you want to decline the reward?",
+        "drawerDescription": "If you decline the reward, it will expire and you will no longer be able to claim it.",
+        "drawerClimeBtn": "Claim reward",
+        "drawerDeclineBtn": "Decline reward"
     }
 }

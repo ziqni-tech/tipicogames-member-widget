@@ -26,10 +26,10 @@
     <div class="cl-main-widget-reward-details-body-container">
       <div class="cl-main-widget-reward-details-value">-</div>
       <div class="cl-main-widget-reward-details-type">-</div>
-      <div class="cl-main-widget-reward-details-expires">Expires <span class="cl-main-widget-reward-details-expires-value">-</span></div>
+      <div class="cl-main-widget-reward-details-expires">{{ expiresInLabel }} <span class="cl-main-widget-reward-details-expires-value">-</span></div>
 
       <div class="cl-main-widget-ach-details-games">
-        <div class="cl-main-widget-ach-details-games-label">Use in following games</div>
+        <div class="cl-main-widget-ach-details-games-label">{{ gamesLabel }}</div>
         <div class="cl-main-widget-ach-details-game-items reward-games">
           <div class="cl-main-widget-ach-details-game-item" style="background-image: url('https://tipicogames-stg.cdn.ziqni.com/Banners/thumbnails-test.png')"></div>
           <div class="cl-main-widget-ach-details-game-item" style="background-image: url('https://tipicogames-stg.cdn.ziqni.com/Banners/thumbnails-test.png')"></div>
@@ -45,11 +45,11 @@
 
       <div class="cl-main-widget-reward-details-content-wrapp">
         <div class="cl-main-widget-reward-details-content-header">
-          Free spin Details <div class="cl-main-widget-reward-details-content-wrapp-expand expand-item"></div>
+          {{ freeSpinDetailsLabel }} <div class="cl-main-widget-reward-details-content-wrapp-expand expand-item"></div>
         </div>
         <div class="cl-main-widget-reward-details-content-body">
           <div class="cl-main-widget-reward-details-content-body-item">
-            <div class="cl-main-widget-reward-details-content-body-item-label">Total Rewarded Freespins</div>
+            <div class="cl-main-widget-reward-details-content-body-item-label">{{ totalLabel }}</div>
             <div class="cl-main-widget-reward-details-content-body-item-value reward">-</div>
           </div>
 <!--          <div class="cl-main-widget-reward-details-content-body-item">-->
@@ -57,11 +57,11 @@
 <!--            <div class="cl-main-widget-reward-details-content-body-item-value">-</div>-->
 <!--          </div>-->
           <div class="cl-main-widget-reward-details-content-body-item">
-            <div class="cl-main-widget-reward-details-content-body-item-label">Expires on</div>
+            <div class="cl-main-widget-reward-details-content-body-item-label">{{ expiresOnLabel }}</div>
             <div class="cl-main-widget-reward-details-content-body-item-value expires">-</div>
           </div>
           <div class="cl-main-widget-reward-details-content-body-item">
-            <div class="cl-main-widget-reward-details-content-body-item-label">Campaign</div>
+            <div class="cl-main-widget-reward-details-content-body-item-label">{{ campaignLabel }}</div>
             <div class="cl-main-widget-reward-details-content-body-item-value campaign">-</div>
           </div>
         </div>
@@ -69,24 +69,20 @@
 
       <div class="cl-main-widget-reward-details-tc-wrapp">
         <div class="cl-main-widget-reward-details-tc-header">
-          Terms and Conditions <div class="cl-main-widget-reward-details-tc-wrapp-expand expand-item"></div>
+          {{ tAndCLabel }} <div class="cl-main-widget-reward-details-tc-wrapp-expand expand-item"></div>
         </div>
-        <div class="cl-main-widget-reward-details-tc-body">
-          Nunc ultricies ornare bibendum. Donec ultricies sit amet diam sed lobortis. Nam non lobortis ex.
-        </div>
+        <div class="cl-main-widget-reward-details-tc-body"></div>
       </div>
 
-      <div class="cl-main-widget-reward-details-forfeit">Forfeit Reward</div>
+      <div class="cl-main-widget-reward-details-forfeit">{{ drawerForfeitBtn }}</div>
     </div>
   </div>
 </div>
 
 <div class="cl-main-widget-reward-details-drawer">
   <div class="cl-main-widget-reward-details-drawer-icon"></div>
-  <div class="cl-main-widget-reward-details-drawer-title">Are you sure you want to forfeit the reward?</div>
-  <div class="cl-main-widget-reward-details-drawer-description">
-    If you forfeit the reward you won’t be able to claim it again.
-  </div>
-  <div class="cl-main-widget-reward-details-drawer-btn-claim">Keep reward</div>
-  <div class="cl-main-widget-reward-details-drawer-btn-decline">Forfeit reward</div>
+  <div class="cl-main-widget-reward-details-drawer-title">{{ drawerLabel }}</div>
+  <div class="cl-main-widget-reward-details-drawer-description">{{ drawerDescription }}</div>
+  <div class="cl-main-widget-reward-details-drawer-btn-claim">{{ drawerKeepBtn }}</div>
+  <div class="cl-main-widget-reward-details-drawer-btn-decline">{{ drawerForfeitBtn }}</div>
 </div>
