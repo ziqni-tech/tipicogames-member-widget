@@ -448,7 +448,7 @@ export const MainWidget = function (options) {
     const navigationItems = document.createElement('div');
 
     const mainSectionContainer = document.createElement('div');
-    const home = document.createElement('div');
+    // const home = document.createElement('div');
 
     const preLoaderContainer = document.createElement('div');
     const preLoaderContent = document.createElement('div');
@@ -492,7 +492,7 @@ export const MainWidget = function (options) {
 
     mainSectionContainer.setAttribute('class', 'cl-main-widget-section-container' + (_this.settings.lbWidget.settings.showCopyright ? '' : ' cl-hidden-copyright'));
 
-    home.setAttribute('class', 'cl-main-widget-home');
+    // home.setAttribute('class', 'cl-main-widget-home');
 
     preLoaderContainer.setAttribute('class', 'cl-main-widget-pre-loader');
     preLoaderContent.setAttribute('class', 'cl-main-widget-pre-loader-content');
@@ -513,7 +513,7 @@ export const MainWidget = function (options) {
     mainSectionContainer.appendChild(sectionDashboard);
     mainSectionContainer.appendChild(preLoaderContainer);
     mainSectionContainer.appendChild(landscapeClose);
-    mainSectionContainer.appendChild(home);
+    // mainSectionContainer.appendChild(home);
     mainSectionContainer.appendChild(errorPage);
 
     // innerWrapper.appendChild(navigationContainer);
@@ -600,7 +600,8 @@ export const MainWidget = function (options) {
       pickAGameBtn: this.settings.lbWidget.settings.translation.achievements.pickAGameBtn,
       drawerLabel: this.settings.lbWidget.settings.translation.achievements.drawerLabel,
       drawerDescription: this.settings.lbWidget.settings.translation.achievements.drawerDescription,
-      drawerPlayBtn: this.settings.lbWidget.settings.translation.achievements.drawerPlayBtn
+      drawerPlayBtn: this.settings.lbWidget.settings.translation.achievements.drawerPlayBtn,
+      optedInLabel: this.settings.lbWidget.settings.translation.achievements.optedInLabel
     });
 
     return sectionACH;
@@ -2398,6 +2399,7 @@ export const MainWidget = function (options) {
     const pregressLabel = query(_this.settings.achievement.detailsContainer, '.cl-ach-list-progression-label');
     const rewardTitle = query(_this.settings.achievement.detailsContainer, '.cl-ach-list-actions-reward-title');
     const pickUpBtn = query(_this.settings.achievement.detailsContainer, '.cl-main-widget-ach-details-body-cta-ends-btn-pick');
+    const optedInLabel = query(_this.settings.achievement.detailsContainer, '.cl-main-widget-ach-details-header-label-opted-in');
     const abortBtn = query(_this.settings.achievement.detailsContainer, '.cl-main-widget-ach-details-body-abort');
     const progress = query(_this.settings.achievement.detailsContainer, '.cl-ach-list-progression');
     const description = query(_this.settings.achievement.detailsContainer, '.cl-main-widget-ach-details-hw');
@@ -2408,6 +2410,15 @@ export const MainWidget = function (options) {
 
     const optInHeader = query(headerActions, '.cl-main-widget-ach-details-optin-action');
     const optInFooter = query(footerActions, '.cl-main-widget-ach-details-optin-action');
+
+    const gamesWrapp = document.querySelector('.cl-main-widget-ach-details-games.ach-games');
+    const gameItems = gamesWrapp.querySelector('.cl-main-widget-ach-details-game-items');
+    const gameFull = gamesWrapp.querySelector('.cl-main-widget-ach-details-game-full');
+    const gameOverlay = gamesWrapp.querySelector('.cl-main-widget-ach-details-game-overlay');
+
+    gameItems.classList.remove('expanded');
+    gameFull.style.display = 'flex';
+    gameOverlay.style.display = 'block';
 
     if (data.reward) {
       rewardTitle.innerHTML = data.reward.name;
@@ -2453,6 +2464,7 @@ export const MainWidget = function (options) {
         optInHeader.style.display = 'none';
         optInFooter.style.display = 'none';
         pickUpBtn.style.display = 'flex';
+        optedInLabel.style.display = 'flex';
         progress.style.display = 'flex';
         abortBtn.style.display = 'block';
       } else if (
@@ -2468,6 +2480,7 @@ export const MainWidget = function (options) {
         optInHeader.style.display = 'flex';
         optInFooter.style.display = 'flex';
         pickUpBtn.style.display = 'none';
+        optedInLabel.style.display = 'none';
         abortBtn.style.display = 'none';
         progress.style.display = 'none';
       } else {
@@ -2478,6 +2491,7 @@ export const MainWidget = function (options) {
         optInHeader.style.display = 'flex';
         optInFooter.style.display = 'flex';
         pickUpBtn.style.display = 'none';
+        optedInLabel.style.display = 'none';
         abortBtn.style.display = 'none';
         progress.style.display = 'none';
       }
@@ -2487,6 +2501,7 @@ export const MainWidget = function (options) {
       optInHeader.style.display = 'none';
       optInFooter.style.display = 'none';
       pickUpBtn.style.display = 'flex';
+      optedInLabel.style.display = 'flex';
       progress.style.display = 'flex';
       abortBtn.style.display = 'block';
     }
@@ -2586,7 +2601,7 @@ export const MainWidget = function (options) {
 
   this.updateAchievementProgressionAndIssued = function (issued, progression) {
     const _this = this;
-    const achList = query(_this.settings.section, '.' + _this.settings.lbWidget.settings.navigation.achievements.containerClass + ' .cl-main-widget-ach-list-body-res');
+    const achList = query(_this.settings.section, '.' + _this.settings.lbWidget.settings.navigation.achievements.containerClass + ' .cl-main-widget-ach-list-body-res' + ' .cl-accordion.current');
     const dashboardAchList = document.querySelector('.cl-main-widget-dashboard-achievements-list');
 
     objectIterator(query(achList, '.cl-ach-list-item'), function (ach) {

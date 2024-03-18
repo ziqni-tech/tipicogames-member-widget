@@ -1042,6 +1042,7 @@ export const LbWidget = function (options) {
 
     const jsonPast = await this.getAchievements(pastAchievementRequest);
     this.settings.achievements.pastList = jsonPast.data;
+    console.log('this.settings.achievements.pastList:', this.settings.achievements.pastList);
     this.settings.achievements.pastTotalCount = jsonPast.meta.totalRecordsFound || 0;
     if (this.settings.achievements.pastList.length) {
       const ids = this.settings.achievements.pastList.map(a => a.id);
@@ -2205,6 +2206,25 @@ export const LbWidget = function (options) {
           });
         });
       }
+
+      // Achievement pick a game action
+    } else if (hasClass(el, 'cl-main-widget-ach-details-body-cta-ends-btn-pick')) {
+      const gamesEl = document.querySelector('.cl-main-widget-ach-details-games.ach-games');
+      const container = gamesEl.closest('.cl-main-widget-ach-details-body-container');
+      const topPos = gamesEl.offsetTop;
+
+      container.scrollTop = topPos - 55;
+
+      // Achievement show all games action
+    } else if (hasClass(el, 'cl-main-widget-ach-details-game-full') || hasClass(el, 'cl-main-widget-ach-details-game-overlay')) {
+      const wrapp = el.closest('.cl-main-widget-ach-details-games');
+      const container = wrapp.querySelector('.cl-main-widget-ach-details-game-items');
+      const full = wrapp.querySelector('.cl-main-widget-ach-details-game-full');
+      const overlay = wrapp.querySelector('.cl-main-widget-ach-details-game-overlay');
+
+      container.classList.add('expanded');
+      full.style.display = 'none';
+      overlay.style.display = 'none';
 
       // Contest details game click
     } else if (hasClass(el, 'cl-main-widget-ach-details-game-item') && el.closest('.tour-games')) {
