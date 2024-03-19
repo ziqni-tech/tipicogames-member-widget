@@ -3,7 +3,7 @@
     <div class="cl-main-widget-lb-header-list-icon"></div>
     <div class="cl-main-widget-lb-header-back-icon"></div>
   </div>
-  <div class="cl-main-widget-lb-header-label">{{ tournamentsLabel }}</div>
+  <div class="cl-main-widget-lb-header-label"></div>
   <div class="cl-main-widget-lb-header-date"></div>
   <div class="cl-main-widget-lb-header-close"></div>
 </div>
@@ -30,7 +30,10 @@
   <div class="cl-main-widget-lb-details-description-container">
     <div class="cl-main-widget-lb-details-header-label-wrapp">
       <div class="cl-main-widget-lb-details-image-cont"></div>
-      <div class="cl-main-widget-lb-details-header-title"></div>
+      <div class="cl-main-widget-lb-details-header-container">
+        <div class="cl-main-widget-lb-details-header-opted-in">{{ optedInLabel }}</div>
+        <div class="cl-main-widget-lb-details-header-title"></div>
+      </div>
     </div>
 
     <div class="cl-main-widget-lb-details-menu">
@@ -57,17 +60,26 @@
           </div>
         </div>
 
-        <div class="cl-main-widget-lb-details-actions-reward">
-          <svg width="40" height="41" viewBox="0 0 40 41" fill="none" xmlns="http://www.w3.org/2000/svg" class="cl-main-widget-lb-details-actions-reward-img">
-            <path fill-rule="evenodd" clip-rule="evenodd" d="M11.2023 8H29.631L37.0833 15.4523L20.4167 32.119L3.75
+        <div class="cl-main-widget-lb-details-actions-reward-wrapp">
+          <div class="cl-main-widget-lb-details-actions-reward">
+            <svg width="40" height="41" viewBox="0 0 40 41" fill="none" xmlns="http://www.w3.org/2000/svg" class="cl-main-widget-lb-details-actions-reward-img">
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M11.2023 8H29.631L37.0833 15.4523L20.4167 32.119L3.75
               15.4523L11.2023 8ZM18.5199 9.57135H12.6178L14.0934 13.9979L18.5199 9.57135ZM12.6599 14.6667L11.1844 10.2401L6.7579
               14.6667H12.6599ZM6.7579 16.238H13.2319L18.0875 27.5676L6.7579 16.238ZM22.7459 27.5676L34.0754 16.238H27.6014L22.7459
               27.5676ZM28.1734 14.6667H34.0754L29.6489 10.2401L28.1734 14.6667ZM28.2155 9.57135H22.3135L26.74 13.9979L28.2155
               9.57135ZM25.1865 14.6667H15.6468L20.4167 9.89679L25.1865 14.6667ZM14.9415 16.238H25.8918L20.4167 29.0134L14.9415
               16.238Z" fill="white"></path>
-          </svg>
-          <div class="dashboard-tournament-list-details-reward-first">1</div>
-          <div class="cl-main-widget-lb-details-reward-title">-</div>
+            </svg>
+            <div class="dashboard-tournament-list-details-reward-first">1</div>
+            <div class="cl-main-widget-lb-details-reward-title">-</div>
+            <div class="cl-main-widget-lb-details-actions-reward-expand expand-item"></div>
+          </div>
+          <div class="cl-main-widget-lb-details-actions-reward-items">
+            <div class="rewards-list-item-past-info-body-item">
+              <div class="rewards-list-item-past-info-body-item-label">Number of Free Spins used</div>
+              <div class="rewards-list-item-past-info-body-item-value">-</div>
+            </div>
+          </div>
         </div>
 
         <div class="dashboard-tournament-list-details-data disabled">
@@ -90,7 +102,7 @@
       <div class="cl-main-widget-tournament-details-hw">
       </div>
 
-      <div class="cl-main-widget-ach-details-games">
+      <div class="cl-main-widget-ach-details-games tour-game">
         <div class="cl-main-widget-ach-details-games-label">{{ pickAGameLabel }}</div>
         <div class="cl-main-widget-ach-details-game-items tour-games">
           <div class="cl-main-widget-ach-details-game-item" style="background-image: url('https://tipicogames-stg.cdn.ziqni.com/Banners/thumbnails-test.png')"></div>
@@ -102,7 +114,12 @@
           <div class="cl-main-widget-ach-details-game-item" style="background-image: url('https://tipicogames-stg.cdn.ziqni.com/Banners/thumbnails-test.png')"></div>
           <div class="cl-main-widget-ach-details-game-item" style="background-image: url('https://tipicogames-stg.cdn.ziqni.com/Banners/thumbnails-test.png')"></div>
           <div class="cl-main-widget-ach-details-game-item" style="background-image: url('https://tipicogames-stg.cdn.ziqni.com/Banners/thumbnails-test.png')"></div>
+          <div class="cl-main-widget-ach-details-game-item" style="background-image: url('https://tipicogames-stg.cdn.ziqni.com/Banners/thumbnails-test.png')"></div>
+          <div class="cl-main-widget-ach-details-game-item" style="background-image: url('https://tipicogames-stg.cdn.ziqni.com/Banners/thumbnails-test.png')"></div>
+          <div class="cl-main-widget-ach-details-game-item" style="background-image: url('https://tipicogames-stg.cdn.ziqni.com/Banners/thumbnails-test.png')"></div>
         </div>
+        <div class="cl-main-widget-ach-details-game-full"></div>
+        <div class="cl-main-widget-ach-details-game-overlay"></div>
       </div>
 
       <div class="cl-main-widget-tournament-details-body-description-tc hc">
@@ -142,6 +159,7 @@
 
     <div class="cl-main-widget-ach-details-body-cta">
       <div class="cl-main-widget-ach-details-body-cta-ends">
+        <div class="cl-main-widget-ach-details-body-cta-live">{{ liveLabel }}</div>
         <div class="cl-main-widget-ach-details-body-cta-ends-label">{{ endsLabel }}</div>
         <div class="cl-main-widget-lb-details-body-cta-ends-date">-</div>
       </div>

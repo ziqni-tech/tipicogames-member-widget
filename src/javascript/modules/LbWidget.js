@@ -1042,7 +1042,6 @@ export const LbWidget = function (options) {
 
     const jsonPast = await this.getAchievements(pastAchievementRequest);
     this.settings.achievements.pastList = jsonPast.data;
-    console.log('this.settings.achievements.pastList:', this.settings.achievements.pastList);
     this.settings.achievements.pastTotalCount = jsonPast.meta.totalRecordsFound || 0;
     if (this.settings.achievements.pastList.length) {
       const ids = this.settings.achievements.pastList.map(a => a.id);
@@ -2237,6 +2236,14 @@ export const LbWidget = function (options) {
         this.settings.callbacks.onGameSelected('123456789');
       }
 
+      // Contest details pick a game action
+    } else if (hasClass(el, 'cl-main-widget-lb-details-body-cta-ends-btn-pick')) {
+      const gamesEl = document.querySelector('.cl-main-widget-ach-details-games.tour-game');
+      const container = gamesEl.closest('.cl-main-widget-lb-details-description-container');
+      const topPos = gamesEl.offsetTop;
+
+      container.scrollTop = topPos - 65;
+
       // Contest drawer opt-in action
     } else if (hasClass(el, 'cl-main-widget-tour-optIn-drawer-btn-optIn')) {
       const preLoader = _this.settings.mainWidget.preloader();
@@ -3112,6 +3119,15 @@ export const LbWidget = function (options) {
 
       // hide competition list view
     } else if (hasClass(el, 'cl-main-widget-tournaments-back-btn') || hasClass(el, 'cl-main-widget-lb-header-back-icon')) {
+      const gamesWrapp = document.querySelector('.cl-main-widget-ach-details-games.tour-game');
+      const gameItems = gamesWrapp.querySelector('.cl-main-widget-ach-details-game-items');
+      const gameFull = gamesWrapp.querySelector('.cl-main-widget-ach-details-game-full');
+      const gameOverlay = gamesWrapp.querySelector('.cl-main-widget-ach-details-game-overlay');
+
+      gameItems.classList.remove('expanded');
+      gameFull.style.display = 'flex';
+      gameOverlay.style.display = 'block';
+
       _this.settings.mainWidget.resetNavigation();
 
       // hide Instant Wins
@@ -3185,6 +3201,15 @@ export const LbWidget = function (options) {
       // expand mission ts
     } else if (hasClass(el, 'cl-main-widget-ach-details-body-description-tc-header') || closest(el, '.cl-main-widget-ach-details-body-description-tc-header') !== null) {
       const wrapper = closest(el, '.cl-main-widget-ach-details-body-description-tc');
+      if (wrapper.classList.contains('expanded')) {
+        wrapper.classList.remove('expanded');
+      } else {
+        wrapper.classList.add('expanded');
+      }
+
+      // expand tournament rewards
+    } else if (hasClass(el, 'cl-main-widget-lb-details-actions-reward') || closest(el, '.cl-main-widget-lb-details-actions-reward') !== null) {
+      const wrapper = closest(el, '.cl-main-widget-lb-details-actions-reward-wrapp');
       if (wrapper.classList.contains('expanded')) {
         wrapper.classList.remove('expanded');
       } else {

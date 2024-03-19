@@ -48,7 +48,7 @@ $pagination-next-icon: url(../../images/arrow-right.svg);
   --card-default: #272727;
   --ui-color-text-secondary: #BDBDBD;
   --ui-color-error: #F88;
-  --widget-bg-blue: rgba(255, 255, 255, 0.08);
+  --widget-bg-blue: #FFFFFF14;
   --Primary-Dark: #141414;
   --Primary-White: #ffffff;
   --ui-color-success: #68FFA5;
@@ -77,6 +77,8 @@ $pagination-next-icon: url(../../images/arrow-right.svg);
   --lb-widget-header-text-color: rgba(255, 255, 255, 0.8);
 
   --lightTheme-font-color: #080D12;
+
+  --lb3-tournament-header-text-color: var(--ui-color-gray-9);
 
 
   // MAIN
@@ -158,8 +160,7 @@ $pagination-next-icon: url(../../images/arrow-right.svg);
   --lb3-tournament-lb-third-place-color: unset;
   --lb3-tournament-lb-third-place-border: none;
 
-  --lb3-tournament-header-text-color: var(--primary-font-color);
-  --lb3-tournament-header-text-size: 11px;
+   --lb3-tournament-header-text-size: 11px;
   --lb3-tournament-top-results-text-color: var(--primary-font-color);
   --lb3-tournament-lb-top-results-place-box-shadow: 1px 1px 3px #575f57;
 

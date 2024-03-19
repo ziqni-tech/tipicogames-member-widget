@@ -572,7 +572,9 @@ export const MainWidget = function (options) {
       pickAGameContLabel: this.settings.lbWidget.settings.translation.tournaments.pickAGameContLabel,
       drawerTitle: this.settings.lbWidget.settings.translation.tournaments.drawerTitle,
       drawerDescription: this.settings.lbWidget.settings.translation.tournaments.drawerDescription,
-      drawerOntInBtn: this.settings.lbWidget.settings.translation.tournaments.drawerOntInBtn
+      drawerOntInBtn: this.settings.lbWidget.settings.translation.tournaments.drawerOntInBtn,
+      optedInLabel: this.settings.lbWidget.settings.translation.tournaments.joinedLabel,
+      liveLabel: this.settings.lbWidget.settings.translation.tournaments.liveLabel
     });
 
     return sectionLB;
@@ -1309,6 +1311,7 @@ export const MainWidget = function (options) {
     // let body = null;
     let tc = null;
     let title = null;
+    let headerLabel = null;
     // let bannerTitle = null;
     // let bannerImage = null;
     // let lbBannerImage = null;
@@ -1323,6 +1326,7 @@ export const MainWidget = function (options) {
     // body = query(_this.settings.section, '.cl-main-widget-lb-details-description');
     tc = query(_this.settings.section, '.cl-main-widget-tournament-details-tc');
     title = query(_this.settings.section, '.cl-main-widget-lb-details-header-title');
+    headerLabel = query(_this.settings.section, '.cl-main-widget-lb-header-label');
     // bannerTitle = query(_this.settings.section, '.cl-main-widget-lb-details-description-label-text');
     // bannerImage = query(_this.settings.section, '.cl-main-widget-lb-details-description-banner');
     // lbBannerImage = query(_this.settings.section, '.cl-main-widget-lb-details');
@@ -1358,6 +1362,7 @@ export const MainWidget = function (options) {
 
     tc.innerHTML = _this.getActiveCompetitionTAndC();
     title.innerHTML = _this.getActiveContestTitle();
+    headerLabel.innerHTML = _this.getActiveContestTitle();
     const iconUrl = _this.getActiveContestIcon();
     icon.style = `background-image: url(${iconUrl})`;
     rewardTitle.innerHTML = _this.getActiveContestRewardTitle();
@@ -1423,6 +1428,7 @@ export const MainWidget = function (options) {
     const pickBtn = query(this.settings.section, '.cl-main-widget-lb-details-body-cta-ends-btn-pick');
     const abortBtn = query(this.settings.section, '.cl-main-widget-tournament-details-body-abort');
     const detailsData = query(this.settings.section, '.cl-main-widget-lb-details-data');
+    const optedInLabel = query(this.settings.section, '.cl-main-widget-lb-details-header-opted-in');
 
     if (
       typeof this.settings.lbWidget.settings.competition.activeCompetition !== 'undefined' &&
@@ -1437,6 +1443,7 @@ export const MainWidget = function (options) {
       if (optInStatus.length && optInStatus[0].statusCode >= 15 && optInStatus[0].statusCode <= 35) {
         optIn.parentNode.style.display = 'none';
         pickBtn.style.display = 'flex';
+        optedInLabel.style.display = 'flex';
         abortBtn.style.display = 'block';
         detailsData.style.display = 'flex';
       } else if (optInStatus.length && (optInStatus[0].statusCode === 10 || optInStatus[0].statusCode === 0)) {
@@ -1444,6 +1451,7 @@ export const MainWidget = function (options) {
         addClass(optIn, 'checking');
         optIn.parentNode.style.display = 'flex';
         pickBtn.style.display = 'none';
+        optedInLabel.style.display = 'none';
         abortBtn.style.display = 'none';
         detailsData.style.display = 'none';
       } else {
@@ -1451,12 +1459,14 @@ export const MainWidget = function (options) {
         optIn.parentNode.style.display = 'flex';
         removeClass(optIn, 'checking');
         pickBtn.style.display = 'none';
+        optedInLabel.style.display = 'none';
         abortBtn.style.display = 'none';
         detailsData.style.display = 'none';
       }
     } else {
       optIn.parentNode.style.display = 'none';
       pickBtn.style.display = 'flex';
+      optedInLabel.style.display = 'flex';
       abortBtn.style.display = 'block';
       detailsData.style.display = 'flex';
     }
@@ -1726,6 +1736,8 @@ export const MainWidget = function (options) {
 
     if (_this.settings.leaderboard.list !== null && _this.settings.leaderboard.list.parentNode.onscroll === null) {
       const detailsContainer = _this.settings.leaderboard.list.closest('.cl-main-widget-lb-details-description-container');
+      const lbHeaderLabel = document.querySelector('.cl-main-widget-lb-header-label');
+
       if (detailsContainer.onscroll === null) {
         detailsContainer.onscroll = function (evt) {
           evt.preventDefault();
@@ -1733,6 +1745,12 @@ export const MainWidget = function (options) {
 
           if (member !== null) {
             _this.missingMember(_this.isElementVisibleInView(member, evt.target));
+          }
+
+          if (evt.target.scrollTop > 55) {
+            lbHeaderLabel.classList.add('active');
+          } else {
+            lbHeaderLabel.classList.remove('active');
           }
         };
       }
