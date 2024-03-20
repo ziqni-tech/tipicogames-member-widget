@@ -74,7 +74,8 @@
         "drawerTitle": "Join before you play",
         "drawerDescription": "Join the Tournament before you play and every spin brings you closer to the top.",
         "drawerOntInBtn": "Join Tournament",
-        "drawerPlayBtn": "Play without joining"
+        "drawerPlayBtn": "Play without joining",
+        "rewarded": "Top $ rewarded"
     },
     "leaderboard": {
         "rank": "Pos.",

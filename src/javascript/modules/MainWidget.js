@@ -1340,6 +1340,9 @@ export const MainWidget = function (options) {
     const actionsDate = query(this.settings.section, '.cl-main-widget-lb-details-body-cta-ends-date');
     const description = query(this.settings.section, '.cl-main-widget-tournament-details-hw');
     const rewardItems = query(this.settings.section, '.cl-main-widget-lb-details-actions-reward-items');
+    const rewardedEl = query(this.settings.section, '.cl-main-widget-lb-details-rewarded');
+
+    rewardedEl.innerHTML = this.settings.lbWidget.settings.translation.tournaments.rewarded.replace('$', this.settings.lbWidget.settings.leaderboard.fullLeaderboardSize);
 
     rewardItems.innerHTML = '';
 
