@@ -1305,6 +1305,25 @@ export const MainWidget = function (options) {
       : '<p>' + this.settings.lbWidget.settings.translation.global.tAndCEmpty + '</p>';
   };
 
+  this.createLbRewardItem = function (reward) {
+    const item = document.createElement('div');
+    const positionEl = document.createElement('div');
+    const valueEl = document.createElement('div');
+
+    item.classList.add('cl-main-widget-lb-details-actions-reward-item');
+    positionEl.classList.add('cl-main-widget-lb-details-actions-reward-item-position');
+    valueEl.classList.add('cl-main-widget-lb-details-actions-reward-item-value');
+
+    positionEl.classList.add('rank-' + reward.rewardRank);
+    positionEl.innerHTML = reward.rewardRank;
+    valueEl.innerHTML = reward.rewardValue + ' ' + reward.rewardType.key;
+
+    item.appendChild(positionEl);
+    item.appendChild(valueEl);
+
+    return item;
+  };
+
   this.leaderboardDetailsUpdate = function () {
     const _this = this;
     const mainLabel = query(_this.settings.section, '.cl-main-widget-lb-details-content-label-text');
@@ -1320,6 +1339,16 @@ export const MainWidget = function (options) {
     const duration = query(_this.settings.section, '.cl-main-widget-lb-details-duration');
     const actionsDate = query(this.settings.section, '.cl-main-widget-lb-details-body-cta-ends-date');
     const description = query(this.settings.section, '.cl-main-widget-tournament-details-hw');
+    const rewardItems = query(this.settings.section, '.cl-main-widget-lb-details-actions-reward-items');
+
+    rewardItems.innerHTML = '';
+
+    if (this.settings.lbWidget.settings.competition.activeContest && this.settings.lbWidget.settings.competition.activeContest.rewards) {
+      this.settings.lbWidget.settings.competition.activeContest.rewards.forEach(reward => {
+        const rewardItem = this.createLbRewardItem(reward);
+        rewardItems.appendChild(rewardItem);
+      });
+    }
 
     // _this.settings.descriptionDate = query(_this.settings.container, '.cl-main-widget-lb-details-description-date');
 
