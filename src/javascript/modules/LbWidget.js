@@ -45,7 +45,8 @@ import {
   ClaimAwardRequest,
   InstantWinsApiWs,
   InstantWinRequest,
-  InstantWinPlayRequest
+  InstantWinPlayRequest,
+  ProductsApiWs
 } from '@ziqni-tech/member-api-client';
 
 const translation = require(`../../i18n/translation_${process.env.LANG}.json`);
@@ -215,7 +216,8 @@ export const LbWidget = function (options) {
       rewardsApiWsClient: null,
       awardsApiWsClient: null,
       filesApiWsClient: null,
-      instantWinsApiWsClient: null
+      instantWinsApiWsClient: null,
+      productApiWsClient: null
     },
     uri: {
       gatewayDomain: cLabs.api.url,
@@ -529,6 +531,27 @@ export const LbWidget = function (options) {
 
         return comp;
       });
+
+      const productRequest = {
+        languageKey: this.settings.language,
+        productFilter: {
+          entityIDs: ids,
+          limit: 20,
+          skip: 0
+        }
+      };
+      // const productRequest = {
+      //   entityFilter: [{
+      //     entityType: 'Competition',
+      //     entityIds: ids
+      //   }],
+      //   currencyKey: this.settings.currency,
+      //   skip: 0,
+      //   limit: 20
+      // };
+      console.log('productRequest:', productRequest);
+      this.getProductsApi(productRequest)
+        .then(products => console.log('products:', products));
     }
 
     if (this.settings.tournaments.readyCompetitions.length) {
@@ -1466,6 +1489,23 @@ export const LbWidget = function (options) {
 
       return new Promise((resolve, reject) => {
         this.settings.apiWs.awardsApiWsClient.getAwards(awardRequest, (json) => {
+          resolve(json);
+        });
+      });
+    } catch (e) {
+      const errorPage = document.querySelector('.cl-main-widget-error');
+      errorPage.classList.add('active');
+    }
+  };
+
+  this.getProductsApi = function (productRequest) {
+    try {
+      if (!this.settings.apiWs.productApiWsClient) {
+        this.settings.apiWs.productApiWsClient = new ProductsApiWs(this.apiClientStomp);
+      }
+
+      return new Promise((resolve, reject) => {
+        this.settings.apiWs.productApiWsClient.getProducts(productRequest, (json) => {
           resolve(json);
         });
       });
@@ -3183,6 +3223,22 @@ export const LbWidget = function (options) {
           wrapper.classList.add('expanded');
         }
       }
+
+      // Show past mission t&c
+    } else if (hasClass(el, 'cl-ach-list-past-tc')) {
+      const id = el.closest('.cl-ach-list-item').dataset.id;
+      this.settings.mainWidget.showTermsAndConditions('achievement', id);
+
+      // Show past tourneys t&c
+    } else if (hasClass(el, 'tournament-result-item-data-tc')) {
+      const id = el.closest('.tournament-result-item').dataset.id;
+      const contestId = el.closest('.tournament-result-item').dataset.contestId;
+      this.settings.mainWidget.showTermsAndConditions('contest', id, contestId);
+
+      // Close t&c drawer
+    } else if (hasClass(el, 'terms-and-conditions-drawer-btn')) {
+      const drawer = document.querySelector('.terms-and-conditions-drawer');
+      drawer.remove();
 
       // expand contest data
     } else if (

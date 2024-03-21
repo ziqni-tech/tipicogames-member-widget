@@ -134,7 +134,8 @@
         "descriptionLabel": "Description",
         "tAndCLabel": "Terms and Conditions",
         "tAndCEmpty": "No Terms and Conditions provided",
-        "descriptionEmpty": "No Descriptions provided"
+        "descriptionEmpty": "No Descriptions provided",
+        "tAndCDrawerBtnLabel": "Close"
     },
     "error": {
         "errorLabel": "Error",

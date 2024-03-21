@@ -1487,7 +1487,7 @@
   margin-left: -16px;
   padding-left: 16px;
   width: calc(100% + 16px);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(6px);
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-header .cl-main-widget-dashboard-header-label {
@@ -4022,7 +4022,7 @@
  * Competition list
  */
 .cl-main-widget-tournaments-list {
-  height: 100%;
+  height: calc(100% - 48px);
   width: 100%;
   transition: all .3s ease;
   padding-top: 24px;
@@ -4328,7 +4328,7 @@
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-ach-list {
-  height: 100%;
+  height: calc(100% - 48px);
   width: 100%;
   transition: all .3s ease;
   padding-top: 24px;
@@ -5801,6 +5801,63 @@
   margin-top: 22px;
 }
 
+.terms-and-conditions-drawer {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: var(--ui-main-bg-color);
+  z-index: 1;
+  padding: 40px 32px 42px 32px;
+  display: flex;
+  flex-direction: column;
+}
+
+.terms-and-conditions-drawer-label {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24px;
+  color: var(--Primary-White);
+  padding-bottom: 24px;
+}
+
+.terms-and-conditions-drawer-body {
+  flex-grow: 1;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 18px;
+  text-align: left;
+  color: var(--Primary-White);
+  overflow: auto;
+  margin-bottom: 42px;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.terms-and-conditions-drawer-body p {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 18px;
+  text-align: left;
+  color: var(--Primary-White);
+}
+
+.terms-and-conditions-drawer-btn {
+  width: 100%;
+  height: 48px;
+  border: 1px solid var(--Primary-White);
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24px;
+  text-align: center;
+  color: var(--Primary-White);
+  border-radius: 8px;
+}
+
 /**
  * ****************************************
  * ************ Errors **************
@@ -6836,7 +6893,7 @@
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-accordion-container .cl-accordion.cl-shown {
-  height: 100%;
+  height: calc(100% - 80px);
   padding-top: 20px;
 }
 
@@ -6881,14 +6938,10 @@
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-accordion-container .cl-accordion-list-container {
   width: 100%;
-  height: calc(100% - 121px);
+  height: 100%;
   overflow: auto;
   display: none;
   overscroll-behavior: contain;
-}
-
-.cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-accordion-container .cl-accordion-list-container {
-  height: calc(100% - 121px);
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-accordion-container .cl-accordion-list-container::-webkit-scrollbar {

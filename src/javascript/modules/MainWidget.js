@@ -9,6 +9,7 @@ import addClass from '../utils/addClass';
 import remove from '../utils/remove';
 import appendNext from '../utils/appendNext';
 import stripHtml from '../utils/stripHtml';
+import cloneDeep from 'lodash.clonedeep';
 import { ContestRequest } from '@ziqni-tech/member-api-client';
 
 /**
@@ -1305,6 +1306,47 @@ export const MainWidget = function (options) {
       : '<p>' + this.settings.lbWidget.settings.translation.global.tAndCEmpty + '</p>';
   };
 
+  this.showTermsAndConditions = (type, id, contestId = null) => {
+    const drawer = document.createElement('div');
+    const wrapp = document.querySelector('.cl-main-widget-inner-wrapper');
+    drawer.classList.add('terms-and-conditions-drawer');
+    const template = require('../templates/mainWidget/termsAndConditions.hbs');
+
+    if (type === 'achievement') {
+      const idx = this.settings.lbWidget.settings.achievements.pastList.findIndex(ach => ach.id === id);
+      const achievement = this.settings.lbWidget.settings.achievements.pastList[idx];
+
+      drawer.innerHTML = template({
+        label: this.settings.lbWidget.settings.translation.global.tAndCLabel,
+        body: achievement.termsAndConditions ?? this.settings.lbWidget.settings.translation.global.tAndCEmpty,
+        btnLabel: this.settings.lbWidget.settings.translation.global.tAndCDrawerBtnLabel
+      });
+
+      wrapp.appendChild(drawer);
+    } else if (type === 'contest') {
+      this.settings.lbWidget.getContestsByIds([contestId])
+        .then(contest => {
+          const idx = this.settings.lbWidget.settings.tournaments.finishedCompetitions.findIndex(tour => tour.id === id);
+          const tour = this.settings.lbWidget.settings.tournaments.finishedCompetitions[idx];
+
+          let tAndC = this.settings.lbWidget.settings.translation.global.tAndCEmpty;
+          if (contest.termsAndConditions) {
+            tAndC = contest.termsAndConditions;
+          } else if (tour.termsAndConditions) {
+            tAndC = tour.termsAndConditions;
+          }
+
+          drawer.innerHTML = template({
+            label: this.settings.lbWidget.settings.translation.global.tAndCLabel,
+            body: tAndC,
+            btnLabel: this.settings.lbWidget.settings.translation.global.tAndCDrawerBtnLabel
+          });
+
+          wrapp.appendChild(drawer);
+        });
+    }
+  };
+
   this.createLbRewardItem = function (reward) {
     const item = document.createElement('div');
     const positionEl = document.createElement('div');
@@ -2060,7 +2102,7 @@ export const MainWidget = function (options) {
     // listIcon.style.display = 'none';
     // backIcon.style.display = 'block';
     const accordionObj = _this.tournamentsList(_this.settings.tournamentsSection.accordionLayout, function (accordionSection, listContainer, topEntryContainer, layout) {
-      const tournamentData = _this.settings.lbWidget.settings.tournaments[layout.type];
+      const tournamentData = cloneDeep(_this.settings.lbWidget.settings.tournaments[layout.type]);
 
       if (typeof tournamentData !== 'undefined') {
         if (tournamentData.length === 0) {
