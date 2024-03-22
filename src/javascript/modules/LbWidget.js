@@ -832,7 +832,7 @@ export const LbWidget = function (options) {
 
     let lastPlace = 3;
 
-    if (this.settings.competition.activeContest.rewards && this.settings.competition.activeContest.rewards.length) {
+    if (this.settings.competition.activeContest && this.settings.competition.activeContest.rewards && this.settings.competition.activeContest.rewards.length) {
       this.settings.competition.activeContest.rewards.forEach(reward => {
         if (reward.rewardRank.indexOf('-') !== -1 || reward.rewardRank.indexOf(',') !== -1) {
           const rewardRankArr = reward.rewardRank.split(',');
@@ -2123,26 +2123,22 @@ export const LbWidget = function (options) {
       });
 
       // Tournament list opt-in action
-    } else if (hasClass(el, 'dashboard-tournament-list-opt-in-btn') && !hasClass(el, 'checking')) {
-      addClass(el, 'checking');
+    } else if (hasClass(el, 'dashboard-tournament-list-opt-in-btn') && !hasClass(el, 'in-progress')) {
+      addClass(el, 'in-progress');
 
       const tournamentId = closest(el, '.dashboard-tournament-item').dataset.id;
-      const isDashboard = !!closest(el, 'cl-main-widget-section-dashboard');
+      const isDashboard = !!closest(el, '.cl-main-widget-section-dashboard');
 
-      const preLoader = _this.settings.mainWidget.preloader();
-      preLoader.show(async function () {
-        await _this.optInMemberToActiveCompetitionById(tournamentId, function () {
-          setTimeout(function () {
-            preLoader.hide();
-            if (isDashboard) {
-              _this.init();
-            } else {
-              _this.checkForAvailableCompetitions(function () {
-                _this.settings.mainWidget.loadCompetitionList();
-              });
-            }
-          }, 2000);
-        });
+      await _this.optInMemberToActiveCompetitionById(tournamentId, function () {
+        setTimeout(function () {
+          if (isDashboard) {
+            _this.settings.mainWidget.loadDashboardTournaments();
+          } else {
+            _this.checkForAvailableCompetitions(function () {
+              _this.settings.mainWidget.loadCompetitionList();
+            });
+          }
+        }, 3000);
       });
 
       // Leaderboard details opt-out action
@@ -2816,6 +2812,8 @@ export const LbWidget = function (options) {
       // load achievement details
     } else if ((hasClass(el, 'cl-ach-list-more') || closest(el, '.cl-ach-list-details-cont') !== null) && !closest(el, '.past')) {
       const id = closest(el, '.cl-ach-list-item').dataset.id;
+      const preLoader = _this.settings.mainWidget.preloader();
+      preLoader.show(() => {});
 
       if (closest(el, '.cl-main-widget-dashboard-achievements-list')) {
         const dashboard = document.querySelector('.cl-main-widget-section-dashboard');
@@ -2833,8 +2831,7 @@ export const LbWidget = function (options) {
 
           _this.getAchievement(id, function (data) {
             _this.settings.achievements.activeAchievementId = data.id;
-            _this.settings.mainWidget.loadAchievementDetails(data, function () {
-            });
+            _this.settings.mainWidget.loadAchievementDetails(data, preLoader.hide());
           });
 
           _this.settings.navigationSwitchInProgress = false;
@@ -2842,8 +2839,7 @@ export const LbWidget = function (options) {
       } else {
         _this.getAchievement(id, function (data) {
           _this.settings.achievements.activeAchievementId = data.id;
-          _this.settings.mainWidget.loadAchievementDetails(data, function () {
-          });
+          _this.settings.mainWidget.loadAchievementDetails(data, preLoader.hide());
         });
       }
 
@@ -3170,7 +3166,7 @@ export const LbWidget = function (options) {
 
       _this.settings.mainWidget.resetNavigation();
 
-      // hide Instant Wins
+      // hide achievements
     } else if (hasClass(el, 'cl-main-widget-reward-header-back') || hasClass(el, 'cl-main-widget-ach-header-back')) {
       _this.settings.mainWidget.resetNavigation();
 

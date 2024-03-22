@@ -449,13 +449,9 @@ export const MainWidget = function (options) {
     const navigationItems = document.createElement('div');
 
     const mainSectionContainer = document.createElement('div');
-    // const home = document.createElement('div');
 
     const preLoaderContainer = document.createElement('div');
     const preLoaderContent = document.createElement('div');
-    const preLoaderBar1 = document.createElement('div');
-    const preLoaderBar2 = document.createElement('div');
-    const preLoaderBar3 = document.createElement('div');
 
     const sectionLB = _this.leaderboardAreaLayout();
     const sectionACH = _this.achievementsAreaLayout();
@@ -493,17 +489,9 @@ export const MainWidget = function (options) {
 
     mainSectionContainer.setAttribute('class', 'cl-main-widget-section-container' + (_this.settings.lbWidget.settings.showCopyright ? '' : ' cl-hidden-copyright'));
 
-    // home.setAttribute('class', 'cl-main-widget-home');
-
     preLoaderContainer.setAttribute('class', 'cl-main-widget-pre-loader');
     preLoaderContent.setAttribute('class', 'cl-main-widget-pre-loader-content');
-    preLoaderBar1.setAttribute('class', 'cl-pre-loader-bar');
-    preLoaderBar2.setAttribute('class', 'cl-pre-loader-bar');
-    preLoaderBar3.setAttribute('class', 'cl-pre-loader-bar');
 
-    preLoaderContent.appendChild(preLoaderBar1);
-    preLoaderContent.appendChild(preLoaderBar2);
-    preLoaderContent.appendChild(preLoaderBar3);
     preLoaderContainer.appendChild(preLoaderContent);
 
     navigationContainer.appendChild(navigationItems);
@@ -514,10 +502,8 @@ export const MainWidget = function (options) {
     mainSectionContainer.appendChild(sectionDashboard);
     mainSectionContainer.appendChild(preLoaderContainer);
     mainSectionContainer.appendChild(landscapeClose);
-    // mainSectionContainer.appendChild(home);
     mainSectionContainer.appendChild(errorPage);
 
-    // innerWrapper.appendChild(navigationContainer);
     innerWrapper.appendChild(mainSectionContainer);
     wrapper.appendChild(innerWrapper);
 
@@ -3177,7 +3163,7 @@ export const MainWidget = function (options) {
   //   }, 1000);
   // };
 
-  this.loadDashboardTournaments = async function () {
+  this.loadDashboardTournaments = async function (callback) {
     // const _this = this;
     const tournamentsList = query(this.settings.section, '.cl-main-widget-dashboard-tournaments-list');
     const tournamentsContainer = query(this.settings.section, '.cl-main-widget-dashboard-tournaments');
@@ -3203,6 +3189,10 @@ export const MainWidget = function (options) {
       }
     } else {
       tournamentsContainer.classList.add('hidden');
+    }
+
+    if (typeof callback === 'function') {
+      callback();
     }
 
     // setTimeout(function () {
@@ -4275,8 +4265,9 @@ export const MainWidget = function (options) {
 
   this.activateDashboard = () => {
     const _this = this;
-    const preLoader = _this.preloader();
     const dashboardContainer = query(this.settings.container, '.cl-main-widget-section-container .' + this.settings.lbWidget.settings.navigation.dashboard.containerClass);
+    const preLoader = _this.preloader();
+    preLoader.show(() => {});
 
     dashboardContainer.style.display = 'flex';
 
@@ -4296,11 +4287,10 @@ export const MainWidget = function (options) {
 
     changeInterval = setTimeout(function () {
       addClass(dashboardContainer, 'cl-main-active-section');
-    }, 30);
+      preLoader.hide();
+    }, 800);
 
     this.loadAwards();
-
-    preLoader.hide();
 
     this.settings.navigationSwitchInProgress = false;
   };
@@ -4409,8 +4399,6 @@ export const MainWidget = function (options) {
 
   this.resetNavigation = function (callback) {
     const _this = this;
-    // const listIcon = query(_this.settings.container, '.cl-main-widget-lb-header-list-icon');
-    // const backIcon = query(_this.settings.container, '.cl-main-widget-lb-header-back-icon');
 
     objectIterator(query(_this.settings.container, '.cl-main-widget-navigation-items .cl-active-nav'), function (obj) {
       removeClass(obj, 'cl-active-nav');
@@ -4421,8 +4409,6 @@ export const MainWidget = function (options) {
       removeClass(obj, 'cl-main-active-section');
     });
 
-    this.activateDashboard();
-
     let activeNave = false;
     objectIterator(query(_this.settings.container, '.cl-main-widget-navigation-container .cl-main-widget-navigation-item'), function (navItem, key, count) {
       if (!activeNave && !hasClass(navItem, 'cl-hidden-navigation-item')) {
@@ -4431,8 +4417,8 @@ export const MainWidget = function (options) {
       }
     });
 
-    // listIcon.style.display = 'block';
-    // backIcon.style.display = 'none';
+    this.activateDashboard();
+
     _this.hideEmbeddedCompetitionDetailsContent();
     _this.hideCompetitionList();
 
