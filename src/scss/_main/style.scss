@@ -4912,16 +4912,23 @@
 
 .cl-main-widget-wrapper .cl-main-widget-tournament-details-tc p {
   color: var(--ui-color-text-secondary);
-  font-size: 12px;
   font-style: normal;
   font-weight: 600;
   line-height: 18px;
+  max-height: 0;
+  font-size: 0;
+  transition: all .3s;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-ach-details-body-description-tc.expanded .cl-main-widget-tournament-details-tc {
   opacity: 1;
   max-height: 100vh;
   padding-bottom: 24px;
+}
+
+.cl-main-widget-wrapper .cl-main-widget-ach-details-body-description-tc.expanded .cl-main-widget-tournament-details-tc p {
+  max-height: 100vh;
+  font-size: 12px;
 }
 
 .cl-main-widget-ach-details-body-description-tc {
@@ -4975,6 +4982,10 @@
     opacity: 1;
     max-height: 100vh;
     padding-bottom: 24px;
+  }
+  .cl-main-widget-tournament-details-tc p {
+    max-height: 100vh;
+    font-size: 12px;
   }
 }
 
@@ -7233,6 +7244,14 @@
   height: calc(100% - 92px);
 }
 
+.cl-main-widget-wrapper .cl-main-widget-reward-details-container .cl-main-widget-reward-details-body-container::-webkit-scrollbar {
+  display: none;
+}
+
+.cl-main-widget-wrapper .cl-main-widget-reward-details-container .cl-main-widget-reward-details-body-container::-webkit-scrollbar-thumb {
+  display: none;
+}
+
 .cl-main-widget-wrapper .cl-main-widget-reward-details-container .cl-main-widget-reward-details-value {
   color: #ffffff;
   text-align: center;
@@ -7311,6 +7330,12 @@
   transition: all .3s ease;
 }
 
+.cl-main-widget-wrapper .cl-main-widget-reward-details-container .cl-main-widget-reward-details-tc-body p {
+  max-height: 0;
+  font-size: 0;
+  transition: all .3s ease;
+}
+
 .cl-main-widget-wrapper .cl-main-widget-reward-details-container .cl-main-widget-reward-details-content-wrapp.expanded {
   .cl-main-widget-reward-details-content-body {
     max-height: 100vh;
@@ -7338,6 +7363,7 @@
     font-style: normal;
     font-weight: 600;
     line-height: 18px;
+    max-height: 100vh;
   }
 }
 

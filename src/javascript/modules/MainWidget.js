@@ -37,6 +37,7 @@ export const MainWidget = function (options) {
     labelDateHeaders: null,
     detailsDateHeaders: null,
     descriptionDate: null,
+    awardTAndC: null,
     preLoader: {
       preLoaderActive: false,
       preLoaderlastAttempt: null,
@@ -1330,6 +1331,14 @@ export const MainWidget = function (options) {
 
           wrapp.appendChild(drawer);
         });
+    } else if (type === 'award') {
+      drawer.innerHTML = template({
+        label: this.settings.lbWidget.settings.translation.global.tAndCLabel,
+        body: this.awardTAndC ?? this.settings.lbWidget.settings.translation.global.tAndCEmpty,
+        btnLabel: this.settings.lbWidget.settings.translation.global.tAndCDrawerBtnLabel
+      });
+
+      wrapp.appendChild(drawer);
     }
   };
 
@@ -3076,10 +3085,11 @@ export const MainWidget = function (options) {
   };
 
   this.showAwardCelebration = async function (awardData) {
-    console.log('award:', awardData);
     const mainSectionContainer = document.querySelector('.cl-main-widget-section-container');
     const rewardCelebration = document.createElement('div');
     rewardCelebration.setAttribute('class', 'cl-main-widget-reward-celebration');
+
+    this.awardTAndC = null;
 
     let campaign = '';
     let title = '-';
@@ -3087,10 +3097,12 @@ export const MainWidget = function (options) {
       const achievement = await this.settings.lbWidget.getAchievementsByIds([awardData.entityId]);
       campaign = achievement[0].name;
       title = 'Mission Completed';
+      this.awardTAndC = achievement[0].termsAndConditions;
     } else if (awardData.entityType === 'Contest') {
       const contest = await this.settings.lbWidget.getContestsByIds([awardData.entityId]);
       campaign = contest[0].name;
       title = 'Tournament Completed';
+      this.awardTAndC = contest[0].termsAndConditions;
     }
 
     let expires = '-';

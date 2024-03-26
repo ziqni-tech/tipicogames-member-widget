@@ -141,7 +141,8 @@ export const LbWidget = function (options) {
       totalCount: 0,
       claimedTotalCount: 0,
       intervalId: null,
-      showExpiredAwards: false
+      showExpiredAwards: false,
+      awardCelebrationData: null
     },
     iconIntervalId: null,
     instantWins: {
@@ -535,7 +536,7 @@ export const LbWidget = function (options) {
       const productRequest = {
         languageKey: this.settings.language,
         productFilter: {
-          entityIDs: ids,
+          entityIds: ids,
           limit: 20,
           skip: 0
         }
@@ -3239,6 +3240,12 @@ export const LbWidget = function (options) {
       const contestId = el.closest('.tournament-result-item').dataset.contestId;
       this.settings.mainWidget.showTermsAndConditions('contest', id, contestId);
 
+      // Show Award tourneys t&c
+    } else if (hasClass(el, 'cl-main-widget-reward-celebration-body-t-and-c')) {
+      const container = el.closest('.cl-main-widget-reward-celebration');
+      const id = container.querySelector('.cl-main-widget-reward-celebration-actions').dataset.id;
+      this.settings.mainWidget.showTermsAndConditions('award', id);
+
       // Close t&c drawer
     } else if (hasClass(el, 'terms-and-conditions-drawer-btn')) {
       const drawer = document.querySelector('.terms-and-conditions-drawer');
@@ -3569,6 +3576,7 @@ export const LbWidget = function (options) {
 
           setTimeout(async function () {
             const awardData = await _this.getAwardsApi(awardRequest);
+            _this.settings.awards.awardCelebrationData = awardData.data[0];
             if (awardData.data && awardData.data.length) {
               if (!awardData.data[0].claimed) {
                 _this.settings.mainWidget.showAwardCelebration(awardData.data[0]);
