@@ -3044,14 +3044,19 @@
   font-style: normal;
   font-weight: 600;
   line-height: 18px;
-  display: none;
-  padding: 0 16px 12px 16px;
+  display: flex;
+  flex-direction: column;
+  max-height: 0;
+  opacity: 0;
+  padding: 0;
+  transition: all .5s;
 }
 
 .cl-main-widget-lb-details-actions-reward-wrapp.expanded {
   .cl-main-widget-lb-details-actions-reward-items {
-    display: flex;
-    flex-direction: column;
+    max-height: 100vh;
+    opacity: 1;
+    padding: 0 16px 12px 16px;
   }
   .cl-main-widget-lb-details-header-reward-wrapp {
     opacity: 0;
@@ -4783,10 +4788,11 @@
   justify-content: space-between;
   max-height: 492px;
   overflow: hidden;
+  transition: max-height .3s;
 }
 
 .cl-main-widget-ach-details-game-items.expanded {
-  max-height: fit-content;
+  max-height: 100vh;
 }
 
 .cl-main-widget-ach-details-game-item {
@@ -4829,6 +4835,11 @@
   width: 50%;
 }
 
+.cl-main-widget-ach-details-game-full.expanded {
+  margin-top: 0;
+  transform: scaleY(-1);
+}
+
 .cl-main-widget-ach-details-game-overlay {
   position: absolute;
   height: 164px;
@@ -4867,8 +4878,10 @@
   font-style: normal;
   font-weight: 600;
   line-height: 18px;
-  padding-bottom: 24px;
-  display: none;
+  padding-bottom: 0;
+  max-height: 0;
+  opacity: 0;
+  transition: all .3s;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-ach-details-container .cl-main-widget-ach-details-tc p {
@@ -4880,7 +4893,9 @@
 }
 
 .cl-main-widget-wrapper .cl-main-widget-ach-details-container .cl-main-widget-ach-details-body-description-tc.expanded .cl-main-widget-ach-details-tc {
-  display: block;
+  padding-bottom: 24px;
+  max-height: 100vh;
+  opacity: 1;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-tournament-details-tc {
@@ -4889,8 +4904,10 @@
   font-style: normal;
   font-weight: 600;
   line-height: 18px;
-  padding-bottom: 24px;
-  display: none;
+  padding: 0;
+  opacity: 0;
+  max-height: 0;
+  transition: all .3s;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-tournament-details-tc p {
@@ -4902,7 +4919,9 @@
 }
 
 .cl-main-widget-wrapper .cl-main-widget-ach-details-body-description-tc.expanded .cl-main-widget-tournament-details-tc {
-  display: block;
+  opacity: 1;
+  max-height: 100vh;
+  padding-bottom: 24px;
 }
 
 .cl-main-widget-ach-details-body-description-tc {
@@ -4953,7 +4972,9 @@
 
 .cl-main-widget-tournament-details-body-description-tc.expanded {
   .cl-main-widget-tournament-details-tc {
-    display: block;
+    opacity: 1;
+    max-height: 100vh;
+    padding-bottom: 24px;
   }
 }
 
@@ -7283,23 +7304,29 @@
 .cl-main-widget-wrapper .cl-main-widget-reward-details-container .cl-main-widget-reward-details-tc-body,
 .cl-main-widget-wrapper .cl-main-widget-reward-details-container .cl-main-widget-reward-details-content-body {
   flex-direction: column;
-  padding: 24px 16px;
-  display: none;
-  height: 0;
+  padding: 0;
+  display: flex;
+  max-height: 0;
+  opacity: 0;
   transition: all .3s ease;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-reward-details-container .cl-main-widget-reward-details-content-wrapp.expanded {
   .cl-main-widget-reward-details-content-body {
-    display: flex;
-    height: auto;
+    max-height: 100vh;
+    opacity: 1;
+    padding: 24px 16px;
+  }
+  .cl-main-widget-reward-details-content-body-item {
+    height: 40px;
   }
 }
 
 .cl-main-widget-wrapper .cl-main-widget-reward-details-container .cl-main-widget-reward-details-tc-wrapp.expanded {
   .cl-main-widget-reward-details-tc-body {
-    display: flex;
-    height: auto;
+    max-height: 100vh;
+    opacity: 1;
+    padding: 24px 16px;
     font-size: 12px;
     font-style: normal;
     font-weight: 600;
@@ -7338,7 +7365,7 @@
 .cl-main-widget-reward-details-content-body-item {
   display: flex;
   justify-content: space-between;
-  height: 40px;
+  height: 0;
   align-items: center;
   border-bottom: solid 1px rgba(255, 255, 255, 0.10);
 }

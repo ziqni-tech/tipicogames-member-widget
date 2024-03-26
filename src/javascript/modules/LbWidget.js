@@ -2257,9 +2257,17 @@ export const LbWidget = function (options) {
       const full = wrapp.querySelector('.cl-main-widget-ach-details-game-full');
       const overlay = wrapp.querySelector('.cl-main-widget-ach-details-game-overlay');
 
-      container.classList.add('expanded');
-      full.style.display = 'none';
-      overlay.style.display = 'none';
+      if (full.classList.contains('expanded')) {
+        container.classList.remove('expanded');
+        overlay.style.display = 'block';
+        setTimeout(function () {
+          full.classList.remove('expanded');
+        }, 300);
+      } else {
+        container.classList.add('expanded');
+        full.classList.add('expanded');
+        overlay.style.display = 'none';
+      }
 
       // Contest details game click
     } else if (hasClass(el, 'cl-main-widget-ach-details-game-item') && el.closest('.tour-games')) {
