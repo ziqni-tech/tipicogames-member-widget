@@ -11,6 +11,27 @@
   display: none;
 }
 
+#confetti {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 55%;
+  border-radius: 50%;
+}
+
+.confetti-bg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 55%;
+  z-index: 1;
+  background: radial-gradient(circle, transparent 20%, #141414 70%) !important;
+}
+
 .no-scroll {
   overflow: hidden;
 }
@@ -6040,7 +6061,6 @@
   width: 100%;
   height: 100%;
   background: var(--Primary-Dark);
-  background: radial-gradient(circle, rgb(87 87 87) 0%, rgb(47 47 47) 16%, rgb(20, 20, 20) 56%);
   z-index: 1;
   display: flex;
   flex-direction: column;
@@ -6083,6 +6103,10 @@
   text-align: center;
   color: var(--ui-color-success);
   margin-top: 16px;
+}
+
+.cl-main-widget-reward-celebration-body {
+  z-index: 2;
 }
 
 .cl-main-widget-reward-celebration-body-t-and-c {

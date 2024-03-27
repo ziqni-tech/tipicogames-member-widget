@@ -92,7 +92,7 @@ export const LbWidget = function (options) {
     memberToken: '',
     expires: 36000000,
     member: null,
-    itemsPerPage: 10,
+    itemsPerPage: 20,
     layout: {
       logoUrl: '',
       showThemeSwitcher: true,
@@ -455,8 +455,8 @@ export const LbWidget = function (options) {
           queryField: 'created',
           order: 'Desc'
         }],
-        limit: 12,
-        skip: (readyPageNumber - 1) * 12
+        limit: 20,
+        skip: (readyPageNumber - 1) * 20
       }
     }, null);
 
@@ -471,8 +471,8 @@ export const LbWidget = function (options) {
           queryField: 'created',
           order: 'Desc'
         }],
-        limit: 12,
-        skip: (activePageNumber - 1) * 12
+        limit: 20,
+        skip: (activePageNumber - 1) * 20
       }
     }, null);
 
@@ -494,8 +494,8 @@ export const LbWidget = function (options) {
           queryField: 'created',
           order: 'Desc'
         }],
-        limit: 12,
-        skip: (finishedPageNumber - 1) * 12
+        limit: 20,
+        skip: (finishedPageNumber - 1) * 20
       }
     }, null);
 
@@ -536,7 +536,7 @@ export const LbWidget = function (options) {
       const productRequest = {
         languageKey: this.settings.language,
         productFilter: {
-          entityIds: ids,
+          entityIDs: ids,
           limit: 20,
           skip: 0
         }
@@ -2603,7 +2603,7 @@ export const LbWidget = function (options) {
 
       if (el.closest('.paginator-finished')) {
         let pageNumber;
-        const pagesCount = Math.ceil(_this.settings.tournaments.finishedTotalCount / 12);
+        const pagesCount = Math.ceil(_this.settings.tournaments.finishedTotalCount / 20);
         let isPrev = false;
         let isNext = false;
 
@@ -2624,7 +2624,7 @@ export const LbWidget = function (options) {
           }
         } else if (el.classList.contains('next') || isNext) {
           const activePage = Number(el.closest('.paginator-finished').querySelector('.active').dataset.page);
-          const pagesCount = Math.ceil(_this.settings.tournaments.finishedTotalCount / 12);
+          const pagesCount = Math.ceil(_this.settings.tournaments.finishedTotalCount / 20);
           if (activePage < pagesCount) {
             pageNumber = activePage + 1;
           } else {
@@ -2645,7 +2645,7 @@ export const LbWidget = function (options) {
       }
       if (el.closest('.paginator-ready')) {
         let pageNumber;
-        const pagesCount = Math.ceil(_this.settings.tournaments.readyTotalCount / 12);
+        const pagesCount = Math.ceil(_this.settings.tournaments.readyTotalCount / 20);
         let isPrev = false;
         let isNext = false;
 
@@ -2666,7 +2666,7 @@ export const LbWidget = function (options) {
           }
         } else if (el.classList.contains('next') || isNext) {
           const activePage = Number(el.closest('.paginator-ready').querySelector('.active').dataset.page);
-          const pagesCount = Math.ceil(_this.settings.tournaments.readyTotalCount / 12);
+          const pagesCount = Math.ceil(_this.settings.tournaments.readyTotalCount / 20);
           if (activePage < pagesCount) {
             pageNumber = activePage + 1;
           } else {
@@ -2687,7 +2687,7 @@ export const LbWidget = function (options) {
       }
       if (el.closest('.paginator-active')) {
         let pageNumber;
-        const pagesCount = Math.ceil(_this.settings.tournaments.totalCount / 12);
+        const pagesCount = Math.ceil(_this.settings.tournaments.totalCount / 20);
         let isPrev = false;
         let isNext = false;
 
@@ -2708,7 +2708,7 @@ export const LbWidget = function (options) {
           }
         } else if (el.classList.contains('next') || isNext) {
           const activePage = Number(el.closest('.paginator-active').querySelector('.active').dataset.page);
-          const pagesCount = Math.ceil(_this.settings.tournaments.totalCount / 12);
+          const pagesCount = Math.ceil(_this.settings.tournaments.totalCount / 20);
           if (activePage < pagesCount) {
             pageNumber = activePage + 1;
           } else {

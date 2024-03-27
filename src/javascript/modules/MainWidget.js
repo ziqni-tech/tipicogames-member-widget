@@ -10,6 +10,7 @@ import remove from '../utils/remove';
 import appendNext from '../utils/appendNext';
 import stripHtml from '../utils/stripHtml';
 import cloneDeep from 'lodash.clonedeep';
+// import { startConfetti } from './confetti.js';
 import { ContestRequest } from '@ziqni-tech/member-api-client';
 
 /**
@@ -1929,7 +1930,7 @@ export const MainWidget = function (options) {
     const totalCount = _this.settings.lbWidget.settings.tournaments.totalCount;
     const readyTotalCount = _this.settings.lbWidget.settings.tournaments.readyTotalCount;
     const finishedTotalCount = _this.settings.lbWidget.settings.tournaments.finishedTotalCount;
-    const itemsPerPage = 12;
+    const itemsPerPage = 20;
 
     const prev = document.createElement('span');
     prev.setAttribute('class', 'paginator-item prev');
@@ -3138,6 +3139,12 @@ export const MainWidget = function (options) {
     setTimeout(function () {
       rewardCelebrationPage.classList.add('active');
     }, 500);
+
+    const confetti = require('./confetti');
+
+    setTimeout(() => {
+      confetti.startConfetti();
+    }, 1000);
   };
 
   // this.updateDashboardRewardExpirationTime = function () {
