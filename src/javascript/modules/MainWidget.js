@@ -10,7 +10,6 @@ import remove from '../utils/remove';
 import appendNext from '../utils/appendNext';
 import stripHtml from '../utils/stripHtml';
 import cloneDeep from 'lodash.clonedeep';
-// import { startConfetti } from './confetti.js';
 import { ContestRequest } from '@ziqni-tech/member-api-client';
 
 /**
@@ -1302,15 +1301,28 @@ export const MainWidget = function (options) {
 
     if (type === 'achievement') {
       const idx = this.settings.lbWidget.settings.achievements.pastList.findIndex(ach => ach.id === id);
-      const achievement = this.settings.lbWidget.settings.achievements.pastList[idx];
+      if (idx !== -1) {
+        const achievement = this.settings.lbWidget.settings.achievements.pastList[idx];
 
-      drawer.innerHTML = template({
-        label: this.settings.lbWidget.settings.translation.global.tAndCLabel,
-        body: achievement.termsAndConditions ?? this.settings.lbWidget.settings.translation.global.tAndCEmpty,
-        btnLabel: this.settings.lbWidget.settings.translation.global.tAndCDrawerBtnLabel
-      });
+        drawer.innerHTML = template({
+          label: this.settings.lbWidget.settings.translation.global.tAndCLabel,
+          body: achievement.termsAndConditions ?? this.settings.lbWidget.settings.translation.global.tAndCEmpty,
+          btnLabel: this.settings.lbWidget.settings.translation.global.tAndCDrawerBtnLabel
+        });
 
-      wrapp.appendChild(drawer);
+        wrapp.appendChild(drawer);
+      } else {
+        this.settings.lbWidget.getAchievementsByIds([id])
+          .then(achievement => {
+            drawer.innerHTML = template({
+              label: this.settings.lbWidget.settings.translation.global.tAndCLabel,
+              body: achievement[0].termsAndConditions ?? this.settings.lbWidget.settings.translation.global.tAndCEmpty,
+              btnLabel: this.settings.lbWidget.settings.translation.global.tAndCDrawerBtnLabel
+            });
+
+            wrapp.appendChild(drawer);
+          });
+      }
     } else if (type === 'contest') {
       this.settings.lbWidget.getContestsByIds([contestId])
         .then(contest => {
@@ -3348,6 +3360,8 @@ export const MainWidget = function (options) {
   this.rewardItemPast = async function (reward) {
     const listItem = document.createElement('div');
     listItem.setAttribute('class', 'rewards-list-item-past');
+    listItem.setAttribute('data-entity-id', reward.entityId);
+    listItem.setAttribute('data-entity-type', reward.entityType);
 
     let campaign = '';
     if (reward.entityType === 'Achievement') {
@@ -3375,7 +3389,8 @@ export const MainWidget = function (options) {
       pastFS: this.settings.lbWidget.settings.translation.rewards.pastFS,
       pastFSWinnings: this.settings.lbWidget.settings.translation.rewards.pastFSWinnings,
       expiredOnLabel: this.settings.lbWidget.settings.translation.rewards.expiredOnLabel,
-      campaignLabel: this.settings.lbWidget.settings.translation.rewards.campaignLabel
+      campaignLabel: this.settings.lbWidget.settings.translation.rewards.campaignLabel,
+      tAndCLabel: this.settings.lbWidget.settings.translation.global.tAndCLabel
     });
 
     return listItem;

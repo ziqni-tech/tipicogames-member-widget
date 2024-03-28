@@ -2477,6 +2477,15 @@
   line-height: 21px;
 }
 
+.rewards-list-past-tc {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 18px;
+  color: var(--ui-color-text-secondary);
+  text-decoration: underline;
+  padding-top: 18px;
+}
+
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-achievements-list .cl-ach-list-item {
   display: flex;
   flex-shrink: 0;

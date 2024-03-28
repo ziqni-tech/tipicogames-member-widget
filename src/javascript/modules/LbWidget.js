@@ -3210,7 +3210,7 @@ export const LbWidget = function (options) {
       }
 
       // expand past reward data
-    } else if (hasClass(el, 'rewards-list-item-past') || closest(el, '.rewards-list-item-past') !== null) {
+    } else if (hasClass(el, 'rewards-list-item-past-info-header') || closest(el, '.rewards-list-item-past-info-header') !== null) {
       const wrapper = (hasClass(el, 'rewards-list-item-past')) ? el : closest(el, '.rewards-list-item-past');
       if (wrapper.classList.contains('expanded')) {
         wrapper.classList.remove('expanded');
@@ -3228,6 +3228,12 @@ export const LbWidget = function (options) {
           wrapper.classList.add('expanded');
         }
       }
+
+      // Show past awards t&c
+    } else if (hasClass(el, 'rewards-list-past-tc')) {
+      const entityId = el.closest('.rewards-list-item-past').dataset.entityId;
+      const entityType = el.closest('.rewards-list-item-past').dataset.entityType;
+      this.settings.mainWidget.showTermsAndConditions(entityType.toLowerCase(), entityId);
 
       // Show past mission t&c
     } else if (hasClass(el, 'cl-ach-list-past-tc')) {
