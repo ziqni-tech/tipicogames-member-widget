@@ -1829,12 +1829,12 @@ export const LbWidget = function (options) {
 
       const preLoader = _this.settings.mainWidget.preloader();
       preLoader.show(async function () {
-        await _this.optInMemberToActiveCompetition(function () {
-          setTimeout(function () {
-            preLoader.hide();
-            _this.settings.mainWidget.loadLeaderboard();
-          }, 2000);
-        });
+        await _this.optInMemberToActiveCompetition();
+        setTimeout(function () {
+          removeClass(el, 'checking');
+          preLoader.hide();
+          _this.settings.mainWidget.loadLeaderboard();
+        }, 2000);
       });
 
       // Tournaments list opt-in action
