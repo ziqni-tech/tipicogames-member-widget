@@ -1995,7 +1995,9 @@ export const MainWidget = function (options) {
     if (!ach) return;
 
     const bar = query(ach, '.cl-ach-list-progression-bar');
-    bar.style.width = ((percentageComplete > 1 || percentageComplete === 0) ? percentageComplete : 1) + '%';
+    if (bar) {
+      bar.style.width = ((percentageComplete > 1 || percentageComplete === 0) ? percentageComplete : 1) + '%';
+    }
   };
 
   this.achievementListLayout = function (pageNumber, achievementData) {

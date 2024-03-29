@@ -1307,11 +1307,11 @@ export const LbWidget = function (options) {
       action: 'join'
     }, null);
 
-    await this.settings.apiWs.optInApiWsClient.manageOptin(optInRequest, (json) => {
-      if (typeof callback === 'function') {
-        callback();
-      }
-    });
+    await this.settings.apiWs.optInApiWsClient.manageOptin(optInRequest);
+
+    if (typeof callback === 'function') {
+      callback();
+    }
   };
 
   this.optOutMemberFromActiveCompetition = async function (callback) {
@@ -1325,11 +1325,11 @@ export const LbWidget = function (options) {
       action: 'leave'
     }, null);
 
-    await this.settings.apiWs.optInApiWsClient.manageOptin(optInRequest, (json) => {
-      if (typeof callback === 'function') {
-        callback();
-      }
-    });
+    await this.settings.apiWs.optInApiWsClient.manageOptin(optInRequest);
+
+    if (typeof callback === 'function') {
+      callback();
+    }
   };
 
   var revalidationCount = 0;
@@ -1844,8 +1844,10 @@ export const LbWidget = function (options) {
       const preLoader = _this.settings.mainWidget.preloader();
       preLoader.show(async function () {
         await _this.optInMemberToActiveCompetition(async function () {
-          await _this.checkForAvailableCompetitions(null);
-          _this.settings.mainWidget.loadCompetitionList(preLoader.hide());
+          setTimeout(async function () {
+            await _this.checkForAvailableCompetitions(null);
+            _this.settings.mainWidget.loadCompetitionList(preLoader.hide());
+          }, 2000);
         }, el.dataset.id);
       });
 
@@ -1853,12 +1855,11 @@ export const LbWidget = function (options) {
     } else if (hasClass(el, 'cl-main-widget-lb-optout-action')) {
       const preLoader = _this.settings.mainWidget.preloader();
       preLoader.show(async function () {
-        await _this.optOutMemberFromActiveCompetition(function () {
-          setTimeout(function () {
-            preLoader.hide();
-            _this.settings.mainWidget.loadLeaderboard();
-          }, 2000);
-        });
+        await _this.optOutMemberFromActiveCompetition();
+        setTimeout(function () {
+          preLoader.hide();
+          _this.settings.mainWidget.loadLeaderboard();
+        }, 2000);
       });
 
       // Achievement details opt-in action
@@ -1885,14 +1886,13 @@ export const LbWidget = function (options) {
         const preLoader = _this.settings.mainWidget.preloader();
 
         preLoader.show(async function () {
-          await _this.settings.apiWs.optInApiWsClient.manageOptin(optInRequest, (json) => {
-            setTimeout(function () {
-              preLoader.hide();
-              _this.settings.mainWidget.hideAchievementDetails(
-                _this.checkForAvailableAchievements(1)
-              );
-            }, 2000);
-          });
+          await _this.settings.apiWs.optInApiWsClient.manageOptin(optInRequest);
+          setTimeout(function () {
+            preLoader.hide();
+            _this.settings.mainWidget.hideAchievementDetails(
+              _this.settings.mainWidget.loadAchievements(1)
+            );
+          }, 2000);
         });
       }
 
@@ -1912,13 +1912,12 @@ export const LbWidget = function (options) {
 
       const preLoader = _this.settings.mainWidget.preloader();
       preLoader.show(async function () {
-        await _this.settings.apiWs.optInApiWsClient.manageOptin(optInRequest, (json) => {
-          setTimeout(function () {
-            _this.settings.mainWidget.loadAchievements(1, function () {
-              preLoader.hide();
-            });
-          }, 2000);
-        });
+        await _this.settings.apiWs.optInApiWsClient.manageOptin(optInRequest);
+        setTimeout(function () {
+          _this.settings.mainWidget.loadAchievements(1, function () {
+            preLoader.hide();
+          });
+        }, 2000);
       });
 
       // Achievement list leave action
@@ -2054,6 +2053,7 @@ export const LbWidget = function (options) {
       // achievements details back button
     } else if (hasClass(el, 'cl-main-widget-ach-details-back-btn')) {
       _this.settings.mainWidget.hideAchievementDetails(function () {
+        _this.settings.mainWidget.loadAchievements(1);
       });
 
       // rewards details back button

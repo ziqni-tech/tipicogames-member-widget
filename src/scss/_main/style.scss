@@ -2574,19 +2574,22 @@
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-section-ach .cl-ach-list-in-progress {
+  height: 32px;
+  width: 100%;
   text-align: center;
-  color: var(--light-font-color);
-  line-height: 25px;
-  background: var(--lb3-achievements-btn-hover-color);
-  text-decoration: none;
-  border-radius: var(--lb3-achievements-btn-border-radius);
-  box-shadow: var(--lb3-achievements-btn-box-shadow);
+  font-size: 12px;
+  font-weight: 700;
   text-transform: uppercase;
-  padding: 4px 25px;
-  margin-left: 16px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  border: var(--lb3-achievements-btn-border);
+  padding: 4px 16px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  margin-top: 8px;
+  border: 1px solid #63b250;
+  color: #63b250;
+  background: #fff;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-section-ach .cl-ach-list-in-progress:hover {
