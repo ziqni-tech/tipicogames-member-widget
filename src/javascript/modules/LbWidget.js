@@ -532,27 +532,6 @@ export const LbWidget = function (options) {
 
         return comp;
       });
-
-      const productRequest = {
-        languageKey: this.settings.language,
-        productFilter: {
-          entityIDs: ids,
-          limit: 20,
-          skip: 0
-        }
-      };
-      // const productRequest = {
-      //   entityFilter: [{
-      //     entityType: 'Competition',
-      //     entityIds: ids
-      //   }],
-      //   currencyKey: this.settings.currency,
-      //   skip: 0,
-      //   limit: 20
-      // };
-      console.log('productRequest:', productRequest);
-      this.getProductsApi(productRequest)
-        .then(products => console.log('products:', products));
     }
 
     if (this.settings.tournaments.readyCompetitions.length) {
@@ -1127,8 +1106,21 @@ export const LbWidget = function (options) {
     }
   };
 
-  this.getAchievement = function (achievementId, callback) {
+  this.getAchievement = async function (achievementId, callback) {
     const achievementData = this.settings.achievements.list.filter(a => a.id === achievementId);
+
+    const productRequest = {
+      languageKey: this.settings.language,
+      productFilter: {
+        entityIds: [achievementData[0].id],
+        limit: 20,
+        skip: 0
+      }
+    };
+
+    console.log('productRequest:', productRequest);
+    const products = await this.getProductsApi(productRequest);
+    console.log('products:', products);
 
     if (typeof callback === 'function' && achievementData.length) {
       callback(achievementData[0]);
