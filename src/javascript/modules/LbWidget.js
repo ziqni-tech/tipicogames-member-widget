@@ -48,6 +48,7 @@ import {
   InstantWinPlayRequest,
   ProductsApiWs
 } from '@ziqni-tech/member-api-client';
+import cloneDeep from 'lodash.clonedeep';
 
 const translation = require(`../../i18n/translation_${process.env.LANG}.json`);
 
@@ -755,6 +756,19 @@ export const LbWidget = function (options) {
       }
     }
 
+    const productRequest = {
+      languageKey: this.settings.language,
+      productFilter: {
+        entityIds: [this.settings.tournaments.activeCompetitionId],
+        limit: 20,
+        skip: 0
+      }
+    };
+
+    const products = await this.getProductsApi(productRequest);
+
+    this.settings.competition.activeCompetition.products = products.data;
+
     if (typeof callback === 'function') {
       callback();
     }
@@ -1109,21 +1123,25 @@ export const LbWidget = function (options) {
   this.getAchievement = async function (achievementId, callback) {
     const achievementData = this.settings.achievements.list.filter(a => a.id === achievementId);
 
-    const productRequest = {
-      languageKey: this.settings.language,
-      productFilter: {
-        entityIds: [achievementData[0].id],
-        limit: 20,
-        skip: 0
+    if (achievementData.length) {
+      const achievement = cloneDeep(achievementData[0]);
+
+      const productRequest = {
+        languageKey: this.settings.language,
+        productFilter: {
+          entityIds: [achievement.id],
+          limit: 20,
+          skip: 0
+        }
+      };
+
+      const products = await this.getProductsApi(productRequest);
+
+      achievement.products = products.data;
+
+      if (typeof callback === 'function') {
+        callback(achievement);
       }
-    };
-
-    console.log('productRequest:', productRequest);
-    const products = await this.getProductsApi(productRequest);
-    console.log('products:', products);
-
-    if (typeof callback === 'function' && achievementData.length) {
-      callback(achievementData[0]);
     }
   };
 
@@ -2262,15 +2280,22 @@ export const LbWidget = function (options) {
         overlay.style.display = 'none';
       }
 
+      // Award game click
+    } else if (hasClass(el, 'cl-main-widget-ach-details-game-item') && el.closest('.reward-games')) {
+      const id = el.dataset.id;
+
+      this.settings.callbacks.onGameSelected(id);
+
       // Contest details game click
     } else if (hasClass(el, 'cl-main-widget-ach-details-game-item') && el.closest('.tour-games')) {
       const drawer = document.querySelector('.cl-main-widget-tour-optIn-drawer');
       const container = document.querySelector('.cl-main-widget-lb-optin-container');
+      const id = el.dataset.id;
 
       if (container.style.display === 'flex') {
         drawer.classList.add('active');
       } else {
-        this.settings.callbacks.onGameSelected('123456789');
+        this.settings.callbacks.onGameSelected(id);
       }
 
       // Contest details pick a game action
@@ -2296,15 +2321,16 @@ export const LbWidget = function (options) {
       });
 
       // Achievement details game click
-    } else if (hasClass(el, 'cl-main-widget-ach-details-game-item')) {
+    } else if (hasClass(el, 'cl-main-widget-ach-details-game-item') && el.closest('.ach-games')) {
       const drawer = document.querySelector('.cl-main-widget-ach-optIn-drawer');
       const container = document.querySelector('.cl-main-widget-ach-details-container');
       const optInBtn = container.querySelector('.cl-main-widget-ach-details-optin-action');
+      const id = el.dataset.id;
 
       if (optInBtn.style.display === 'flex') {
         drawer.classList.add('active');
       } else {
-        this.settings.callbacks.onGameSelected('123456789');
+        this.settings.callbacks.onGameSelected(id);
       }
 
       // Achievement list opt-in action

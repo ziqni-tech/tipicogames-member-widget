@@ -1243,6 +1243,15 @@ export const MainWidget = function (options) {
       : '';
   };
 
+  this.getActiveContestProducts = function (el) {
+    if (this.settings.lbWidget.settings.competition.activeCompetition && this.settings.lbWidget.settings.competition.activeCompetition.products) {
+      this.settings.lbWidget.settings.competition.activeCompetition.products.forEach(product => {
+        const item = this.createGameItem(product);
+        el.appendChild(item);
+      });
+    }
+  };
+
   this.getActiveCompetitionBanner = function () {
     let bannerImage = '';
 
@@ -1377,13 +1386,9 @@ export const MainWidget = function (options) {
   this.leaderboardDetailsUpdate = function () {
     const _this = this;
     const mainLabel = query(_this.settings.section, '.cl-main-widget-lb-details-content-label-text');
-    // let body = null;
     let tc = null;
     let title = null;
     let headerLabel = null;
-    // let bannerTitle = null;
-    // let bannerImage = null;
-    // let lbBannerImage = null;
     let icon = null;
     const rewardTitle = query(_this.settings.section, '.cl-main-widget-lb-details-reward-title');
     const duration = query(_this.settings.section, '.cl-main-widget-lb-details-duration');
@@ -1391,10 +1396,13 @@ export const MainWidget = function (options) {
     const description = query(this.settings.section, '.cl-main-widget-tournament-details-hw');
     const rewardItems = query(this.settings.section, '.cl-main-widget-lb-details-actions-reward-items');
     const rewardedEl = query(this.settings.section, '.cl-main-widget-lb-details-rewarded');
+    const games = query(this.settings.section, '.cl-main-widget-ach-details-game-items.tour-games');
 
     rewardedEl.innerHTML = this.settings.lbWidget.settings.translation.tournaments.rewarded.replace('$', this.settings.lbWidget.settings.leaderboard.fullLeaderboardSize);
 
     rewardItems.innerHTML = '';
+
+    games.innerHTML = '';
 
     if (this.settings.lbWidget.settings.competition.activeContest && this.settings.lbWidget.settings.competition.activeContest.rewards) {
       this.settings.lbWidget.settings.competition.activeContest.rewards.forEach(reward => {
@@ -1403,44 +1411,12 @@ export const MainWidget = function (options) {
       });
     }
 
-    // _this.settings.descriptionDate = query(_this.settings.container, '.cl-main-widget-lb-details-description-date');
-
-    // body = query(_this.settings.section, '.cl-main-widget-lb-details-description');
     tc = query(_this.settings.section, '.cl-main-widget-tournament-details-tc');
     title = query(_this.settings.section, '.cl-main-widget-lb-details-header-title');
     headerLabel = query(_this.settings.section, '.cl-main-widget-lb-header-label');
-    // bannerTitle = query(_this.settings.section, '.cl-main-widget-lb-details-description-label-text');
-    // bannerImage = query(_this.settings.section, '.cl-main-widget-lb-details-description-banner');
-    // lbBannerImage = query(_this.settings.section, '.cl-main-widget-lb-details');
     icon = query(_this.settings.section, '.cl-main-widget-lb-details-image-cont');
 
     if (!title) return;
-
-    // const bodyInnerHTML = body.innerHTML;
-    // if (!bodyInnerHTML || bodyInnerHTML !== _this.getActiveCompetitionDescription()) {
-    //   body.innerHTML = _this.getActiveCompetitionDescription();
-    // }
-
-    // if (!bannerImage.style || !bannerImage.style.backgroundImage || bannerImage.style.backgroundImage !== this.getActiveCompetitionBanner()) {
-    //  const link = this.getActiveCompetitionBanner();
-    //   if (link) {
-    //     bannerImage.setAttribute('style', `background-image: url(${link})`);
-    //   } else {
-    //     bannerImage.setAttribute('style', '');
-    //   }
-    // }
-
-    // if (!lbBannerImage.style || !lbBannerImage.style.backgroundImage || lbBannerImage.style.backgroundImage !== this.getActiveCompetitionBanner()) {
-    //   const link = this.getActiveCompetitionBanner();
-    //   const lbBannerContent = query(_this.settings.section, '.cl-main-widget-lb-details-content');
-    //   if (link) {
-    //     lbBannerImage.setAttribute('style', `background-image: url(${link})`);
-    //     lbBannerContent.classList.add('no-gradient');
-    //   } else {
-    //     lbBannerImage.setAttribute('style', '');
-    //     lbBannerContent.classList.remove('no-gradient');
-    //   }
-    // }
 
     tc.innerHTML = _this.getActiveCompetitionTAndC();
     title.innerHTML = _this.getActiveContestTitle();
@@ -1451,12 +1427,7 @@ export const MainWidget = function (options) {
     duration.innerHTML = _this.getActiveContestDuration();
     actionsDate.innerHTML = _this.getActiveContestDate();
     description.innerHTML = _this.getActiveContestDescription();
-    // bannerTitle.innerHTML = _this.getActiveContestTitle();
-
-    // if (body === null) {
-    //   body = document.createElement('div');
-    //   body.innerHTML = _this.getActiveCompetitionDescription();
-    // }
+    _this.getActiveContestProducts(games);
 
     if (this.settings.lbWidget.settings.competition.activeCompetition && this.settings.lbWidget.settings.competition.activeCompetition.statusCode === 15) {
       mainLabel.innerHTML = this.settings.lbWidget.settings.competition.activeCompetition.name;
@@ -2490,6 +2461,15 @@ export const MainWidget = function (options) {
     achList.appendChild(accordionObj);
   };
 
+  this.createGameItem = (product) => {
+    const item = document.createElement('div');
+    item.classList.add('cl-main-widget-ach-details-game-item');
+    if (product.iconLink) item.style.backgroundImage = `url(${product.iconLink})`;
+    item.dataset.id = product.id;
+
+    return item;
+  };
+
   this.loadAchievementDetails = async function (data, callback) {
     const _this = this;
     const label = query(_this.settings.achievement.detailsContainer, '.cl-main-widget-ach-details-header-label');
@@ -2505,6 +2485,8 @@ export const MainWidget = function (options) {
     const description = query(_this.settings.achievement.detailsContainer, '.cl-main-widget-ach-details-hw');
     const endsDate = query(_this.settings.achievement.detailsContainer, '.cl-main-widget-ach-details-body-cta-ends-date');
 
+    const games = query(_this.settings.achievement.detailsContainer, '.cl-main-widget-ach-details-game-items.ach-games');
+
     const headerActions = query(_this.settings.achievement.detailsContainer, '.cl-ach-list-actions');
     const footerActions = query(_this.settings.achievement.detailsContainer, '.cl-main-widget-ach-details-body-cta');
 
@@ -2519,6 +2501,15 @@ export const MainWidget = function (options) {
     gameItems.classList.remove('expanded');
     gameFull.style.display = 'flex';
     gameOverlay.style.display = 'block';
+
+    games.innerHTML = '';
+
+    if (data.products && data.products.length) {
+      data.products.forEach(product => {
+        const gameItem = this.createGameItem(product);
+        games.appendChild(gameItem);
+      });
+    }
 
     if (data.reward) {
       rewardTitle.innerHTML = data.reward.name;
@@ -2654,6 +2645,8 @@ export const MainWidget = function (options) {
     const tAndC = query(this.settings.reward.detailsContainer, '.cl-main-widget-reward-details-tc-body');
     const expires = query(this.settings.reward.detailsContainer, '.cl-main-widget-reward-details-expires-value');
     const detailExpires = query(this.settings.reward.detailsContainer, '.cl-main-widget-reward-details-content-body-item-value.expires');
+    const games = query(this.settings.reward.detailsContainer, '.cl-main-widget-ach-details-game-items.reward-games');
+    let products = null;
 
     rewardValue.innerHTML = data.rewardValue;
     detailRewardValue.innerHTML = data.rewardValue;
@@ -2661,12 +2654,41 @@ export const MainWidget = function (options) {
 
     if (data.entityType === 'Achievement') {
       const achievement = await this.settings.lbWidget.getAchievementsByIds([data.entityId]);
+      const productRequest = {
+        languageKey: this.settings.lbWidget.settings.language,
+        productFilter: {
+          entityIds: [achievement[0].id],
+          limit: 20,
+          skip: 0
+        }
+      };
+      products = await this.settings.lbWidget.getProductsApi(productRequest);
+
       campaign.innerHTML = achievement[0].name;
       tAndC.innerHTML = achievement[0].termsAndConditions ?? this.settings.lbWidget.settings.translation.global.tAndCEmpty;
     } else if (data.entityType === 'Contest') {
       const contest = await this.settings.lbWidget.getContestsByIds([data.entityId]);
+      const productRequest = {
+        languageKey: this.settings.lbWidget.settings.language,
+        productFilter: {
+          entityIds: [contest[0].id],
+          limit: 20,
+          skip: 0
+        }
+      };
+      products = await this.settings.lbWidget.getProductsApi(productRequest);
+
       campaign.innerHTML = contest[0].name;
       tAndC.innerHTML = contest[0].termsAndConditions ?? this.settings.lbWidget.settings.translation.global.tAndCEmpty;
+    }
+
+    games.innerHTML = '';
+
+    if (products && products.data.length) {
+      products.data.forEach(product => {
+        const gameItem = this.createGameItem(product);
+        games.appendChild(gameItem);
+      });
     }
 
     let expiresValue = '-';
