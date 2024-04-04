@@ -1,12 +1,25 @@
 <div class="dashboard-tournament-list-bg" style="background-image: url({{ itemBg }})">
+
+  <div class="dashboard-tournament-list-bg-items">
+    {{#each products}}
+      <div style="background-image: url({{ iconLink }})" class="dashboard-tournament-list-bg-item"></div>
+    {{/each}}
+    {{#if productsCount}}
+      <div class="dashboard-tournament-list-products-count">+{{productsCount}}</div>
+    {{/if}}
+  </div>
+
   <div class="dashboard-tournament-list-statuses">
     {{#unless isOptIn}}<div class="dashboard-tournament-list-joined">{{ joinedLabel }}</div>{{/unless}}
     {{#if isLive}}<div class="dashboard-tournament-list-live">{{ liveLabel }}</div>{{/if}}
   </div>
+
   <div class="dashboard-tournament-list-bg-blur">
     <img src="{{ itemBg }}" alt="" class="dashboard-tournament-list-bg-img">
   </div>
+
 </div>
+
 <div class="dashboard-tournament-list-info">
   <div class="dashboard-tournament-list-cont">
     <div class="dashboard-tournament-list-icon" style="background-image: url({{ icon }})"></div>

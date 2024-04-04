@@ -1244,7 +1244,11 @@ export const MainWidget = function (options) {
   };
 
   this.getActiveContestProducts = function (el) {
-    if (this.settings.lbWidget.settings.competition.activeCompetition && this.settings.lbWidget.settings.competition.activeCompetition.products) {
+    if (
+      this.settings.lbWidget.settings.competition.activeCompetition &&
+      this.settings.lbWidget.settings.competition.activeCompetition.products &&
+      this.settings.lbWidget.settings.competition.activeCompetition.products.length
+    ) {
       this.settings.lbWidget.settings.competition.activeCompetition.products.forEach(product => {
         const item = this.createGameItem(product);
         el.appendChild(item);
@@ -2918,16 +2922,22 @@ export const MainWidget = function (options) {
       }
     }
 
-    let itemBg = '';
-    if (tournament.bannerLowResolutionLink) {
-      itemBg = tournament.bannerLowResolutionLink;
-    } else if (tournament.bannerLink) {
-      itemBg = tournament.bannerLink;
-    }
-
     const endsLabel = isReadyStatus
       ? this.settings.lbWidget.settings.translation.dashboard.startsTitle
       : this.settings.lbWidget.settings.translation.dashboard.endsTitle;
+
+    let productsCount = null;
+    let products = tournament.products.data;
+
+    if (products && products.length > 3) {
+      products = products.slice(0, 3);
+      productsCount = tournament.products.meta.totalRecordsFound - 3;
+    }
+
+    let itemBg = '';
+    if (products && products.length) {
+      itemBg = products[0].iconLink;
+    }
 
     const date = isReadyStatus ? new Date(contest.scheduledStartDate) : new Date(contest.scheduledEndDate);
     const template = require('../templates/dashboard/tournamentItem.hbs');
@@ -2948,7 +2958,9 @@ export const MainWidget = function (options) {
       liveLabel: this.settings.lbWidget.settings.translation.tournaments.liveLabel,
       positionLabel: this.settings.lbWidget.settings.translation.tournaments.positionLabel,
       spinsLeftLabel: this.settings.lbWidget.settings.translation.tournaments.spinsLeftLabel,
-      pointsLabel: this.settings.lbWidget.settings.translation.tournaments.pointsLabel
+      pointsLabel: this.settings.lbWidget.settings.translation.tournaments.pointsLabel,
+      productsCount: productsCount,
+      products: products
     });
 
     return listItem;
@@ -3057,7 +3069,7 @@ export const MainWidget = function (options) {
     return listItem;
   };
 
-  this.dashboardAwardItem = function (award) {
+  this.dashboardAwardItem = function (award, products = null) {
     const listItem = document.createElement('div');
     listItem.setAttribute('class', 'dashboard-rewards-list-item');
     listItem.setAttribute('data-id', award.id);
@@ -3072,13 +3084,23 @@ export const MainWidget = function (options) {
       });
     }
 
+    let productsCount = null;
+    let productsData = products.data;
+
+    if (productsData && productsData.length > 3) {
+      productsData = productsData.slice(0, 3);
+      productsCount = products.meta.totalRecordsFound - 3;
+    }
+
     const template = require('../templates/dashboard/awardItem.hbs');
     listItem.innerHTML = template({
       rewardValue: award.rewardValue,
       rewardType: award.rewardType.key ?? '',
       expiresInLabel: this.settings.lbWidget.settings.translation.rewards.expiresInLabel,
       rewardImg: rewardImg,
-      expires: expires
+      expires: expires,
+      productsCount: productsCount,
+      products: productsData
     });
 
     return listItem;
@@ -3105,10 +3127,36 @@ export const MainWidget = function (options) {
 
     if (availableAwards.length) {
       availableAwards = availableAwards.slice(0, 3);
-      availableAwards.forEach(a => {
-        const listItem = this.dashboardAwardItem(a);
+
+      for (const award of availableAwards) {
+        let products = null;
+        if (award.entityType === 'Achievement') {
+          const achievement = await this.settings.lbWidget.getAchievementsByIds([award.entityId]);
+          const productRequest = {
+            languageKey: this.settings.language,
+            productFilter: {
+              entityIds: [achievement.id],
+              limit: 100,
+              skip: 0
+            }
+          };
+          products = await this.settings.lbWidget.getProductsApi(productRequest);
+        } else if (award.entityType === 'Contest') {
+          const contest = await this.settings.lbWidget.getContestsByIds([award.entityId]);
+          const productRequest = {
+            languageKey: this.settings.language,
+            productFilter: {
+              entityIds: [contest.id],
+              limit: 100,
+              skip: 0
+            }
+          };
+          products = await this.settings.lbWidget.getProductsApi(productRequest);
+        }
+
+        const listItem = this.dashboardAwardItem(award, products);
         awardsList.appendChild(listItem);
-      });
+      }
     } else {
       const listItem = this.dashboardAwardItemEmpty();
       awardsList.appendChild(listItem);

@@ -27,26 +27,26 @@ import {
   AchievementRequest,
   AchievementsApiWs,
   ApiClientStomp,
+  AwardRequest,
+  AwardsApiWs,
+  ClaimAwardRequest,
   CompetitionRequest,
   CompetitionsApiWs,
   ContestRequest,
   ContestsApiWs,
+  FilesApiWs,
+  InstantWinPlayRequest,
+  InstantWinRequest,
+  InstantWinsApiWs,
+  LeaderboardApiWs,
+  LeaderboardSubscriptionRequest,
   ManageOptinRequest,
   MemberRequest,
   MembersApiWs,
   OptInApiWs,
-  FilesApiWs,
   OptInStatesRequest,
-  RewardsApiWs,
-  LeaderboardApiWs,
-  LeaderboardSubscriptionRequest,
-  AwardsApiWs,
-  AwardRequest,
-  ClaimAwardRequest,
-  InstantWinsApiWs,
-  InstantWinRequest,
-  InstantWinPlayRequest,
-  ProductsApiWs
+  ProductsApiWs,
+  RewardsApiWs
 } from '@ziqni-tech/member-api-client';
 import cloneDeep from 'lodash.clonedeep';
 
@@ -429,7 +429,24 @@ export const LbWidget = function (options) {
       });
     }
 
-    return { activeCompetitions: activeCompetitionsData, readyCompetitions: readyCompetitionsData };
+    const activeCompetitionsDataWithProducts = [];
+
+    for (const comp of activeCompetitionsData) {
+      const productRequest = {
+        languageKey: this.settings.language,
+        productFilter: {
+          entityIds: [comp.id],
+          limit: 100,
+          skip: 0
+        }
+      };
+
+      comp.products = await this.getProductsApi(productRequest);
+
+      activeCompetitionsDataWithProducts.push(comp);
+    }
+
+    return { activeCompetitions: activeCompetitionsDataWithProducts, readyCompetitions: readyCompetitionsData };
   };
 
   /**
@@ -533,6 +550,25 @@ export const LbWidget = function (options) {
 
         return comp;
       });
+
+      const activeCompetitionsDataWithProducts = [];
+
+      for (const comp of this.settings.tournaments.activeCompetitions) {
+        const productRequest = {
+          languageKey: this.settings.language,
+          productFilter: {
+            entityIds: [comp.id],
+            limit: 100,
+            skip: 0
+          }
+        };
+
+        comp.products = await this.getProductsApi(productRequest);
+
+        activeCompetitionsDataWithProducts.push(comp);
+      }
+
+      this.settings.tournaments.activeCompetitions = cloneDeep(activeCompetitionsDataWithProducts);
     }
 
     if (this.settings.tournaments.readyCompetitions.length) {
