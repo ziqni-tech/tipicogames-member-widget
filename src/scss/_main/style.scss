@@ -1935,6 +1935,8 @@
   right: 0;
   top: 0;
   z-index: 1;
+  background-size: cover;
+  background-position: center;
 }
 
 .dashboard-tournament-list-bg-item:nth-child(2) {
@@ -2386,6 +2388,8 @@
   right: 0;
   top: 0;
   z-index: 1;
+  background-size: cover;
+  background-position: center;
 }
 
 .dashboard-rewards-list-item-img:nth-child(2) {
@@ -6320,7 +6324,7 @@
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-reward-list {
-  height: 100%;
+  height: calc(100% - 48px);
   width: 100%;
   transition: all .3s ease;
   padding-top: 24px;

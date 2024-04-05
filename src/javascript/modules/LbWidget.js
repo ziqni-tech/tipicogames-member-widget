@@ -1171,7 +1171,10 @@ export const LbWidget = function (options) {
         }
       };
 
+      console.log('productRequest:', productRequest);
+
       const products = await this.getProductsApi(productRequest);
+      console.log('products:', products);
 
       achievement.products = products.data;
 
@@ -1336,10 +1339,7 @@ export const LbWidget = function (options) {
         awardIds: [rewardId]
       });
 
-      console.log('claimAwardRequest:', claimAwardRequest);
-
       this.settings.apiWs.awardsApiWsClient.claimAwards(claimAwardRequest, (json) => {
-        console.log('json:', json);
         if (typeof callback === 'function') {
           callback(json);
         }

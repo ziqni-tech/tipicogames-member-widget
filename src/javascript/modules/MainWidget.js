@@ -3388,7 +3388,7 @@ export const MainWidget = function (options) {
   //   }, 1000);
   // };
 
-  this.rewardItem = function (award) {
+  this.rewardItem = async function (award) {
     const listItem = document.createElement('div');
     listItem.setAttribute('class', 'dashboard-rewards-list-item');
     listItem.dataset.id = award.id;
@@ -3404,6 +3404,43 @@ export const MainWidget = function (options) {
       });
     }
 
+    let products = null;
+    let awardProducts = null;
+    let productsCount = null;
+
+    if (award.entityType === 'Achievement') {
+      const achievement = await this.settings.lbWidget.getAchievementsByIds([award.entityId]);
+      const productRequest = {
+        languageKey: this.settings.lbWidget.settings.language,
+        productFilter: {
+          entityIds: [achievement.id],
+          limit: 100,
+          skip: 0
+        }
+      };
+
+      products = await this.settings.lbWidget.getProductsApi(productRequest);
+    } else if (award.entityType === 'Contest') {
+      const contest = await this.settings.lbWidget.getContestsByIds([award.entityId]);
+      const productRequest = {
+        languageKey: this.settings.lbWidget.settings.language,
+        productFilter: {
+          entityIds: [contest.id],
+          limit: 100,
+          skip: 0
+        }
+      };
+
+      products = await this.settings.lbWidget.getProductsApi(productRequest);
+    }
+
+    awardProducts = products.data;
+
+    if (awardProducts && awardProducts.length > 3) {
+      awardProducts = awardProducts.slice(0, 3);
+      productsCount = products.meta.totalRecordsFound - 3;
+    }
+
     const template = require('../templates/mainWidget/rewardItem.hbs');
     listItem.innerHTML = template({
       rewardValue: award.rewardValue,
@@ -3411,7 +3448,9 @@ export const MainWidget = function (options) {
       expiresInLabel: this.settings.lbWidget.settings.translation.rewards.expiresInLabel,
       rewardImg: rewardImg,
       isClimeBtn: isClimeBtn,
-      expires: expires
+      expires: expires,
+      products: awardProducts,
+      productsCount: productsCount
     });
 
     return listItem;
@@ -3711,14 +3750,9 @@ export const MainWidget = function (options) {
         if (rewardData.length === 0) {
           accordionSection.style.display = 'none';
         }
-        mapObject(rewardData, function (rew, key, count) {
-          // if ((count + 1) <= layout.showTopResults && query(topEntryContainer, '.cl-reward-' + rew.id) === null) {
-          //   var topEntryContaineRlistItem = _this.rewardItem(rew);
-          //   topEntryContainer.appendChild(topEntryContaineRlistItem);
-          // }
-
+        mapObject(rewardData, async function (rew, key, count) {
           if (query(listContainer, '.cl-reward-' + rew.id) === null) {
-            const listItem = _this.rewardItem(rew);
+            const listItem = await _this.rewardItem(rew);
             listContainer.appendChild(listItem);
           }
         });
