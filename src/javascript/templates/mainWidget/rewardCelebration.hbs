@@ -16,7 +16,14 @@
         <div class="dashboard-rewards-list-item-reward-type">{{ rewardType }}</div>
       </div>
     </div>
-    <div class="dashboard-rewards-list-item-img" style="background-image: url(https://first-space.cdn.ziqni.com/Banners/games.png)"></div>
+    <div class="dashboard-rewards-list-item-images">
+      {{#each products}}
+        <div style="background-image: url({{ iconLink }})" class="dashboard-rewards-list-item-img"></div>
+      {{/each}}
+      {{#if productsCount}}
+        <div class="dashboard-rewards-list-item-products-count">+{{productsCount}}</div>
+      {{/if}}
+    </div>
   </div>
   <div class="cl-main-widget-reward-celebration-body-t-and-c">{{ tAndCLabel }}</div>
 </div>

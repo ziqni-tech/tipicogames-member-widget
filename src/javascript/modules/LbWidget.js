@@ -436,6 +436,7 @@ export const LbWidget = function (options) {
         languageKey: this.settings.language,
         productFilter: {
           entityIds: [comp.id],
+          entityType: 'competition',
           limit: 100,
           skip: 0
         }
@@ -535,7 +536,7 @@ export const LbWidget = function (options) {
       const ids = this.settings.tournaments.activeCompetitions.map(a => a.id);
       const rewardRequest = {
         entityFilter: [{
-          entityType: 'Competition',
+          entityType: 'competition',
           entityIds: ids
         }],
         currencyKey: this.settings.currency,
@@ -558,6 +559,7 @@ export const LbWidget = function (options) {
           languageKey: this.settings.language,
           productFilter: {
             entityIds: [comp.id],
+            entityType: 'competition',
             limit: 100,
             skip: 0
           }
@@ -796,6 +798,7 @@ export const LbWidget = function (options) {
       languageKey: this.settings.language,
       productFilter: {
         entityIds: [this.settings.tournaments.activeCompetitionId],
+        entityType: 'competition',
         limit: 20,
         skip: 0
       }
@@ -1073,7 +1076,7 @@ export const LbWidget = function (options) {
       const ids = this.settings.achievements.list.map(a => a.id);
       const rewardRequest = {
         entityFilter: [{
-          entityType: 'Achievement',
+          entityType: 'achievement',
           entityIds: ids
         }],
         currencyKey: this.settings.currency,
@@ -1166,15 +1169,13 @@ export const LbWidget = function (options) {
         languageKey: this.settings.language,
         productFilter: {
           entityIds: [achievement.id],
+          entityType: 'achievement',
           limit: 20,
           skip: 0
         }
       };
 
-      console.log('productRequest:', productRequest);
-
       const products = await this.getProductsApi(productRequest);
-      console.log('products:', products);
 
       achievement.products = products.data;
 

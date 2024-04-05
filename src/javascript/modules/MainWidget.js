@@ -1244,15 +1244,33 @@ export const MainWidget = function (options) {
   };
 
   this.getActiveContestProducts = function (el) {
+    const gameFull = query(this.settings.section, '.cl-main-widget-tournament-details-body .cl-main-widget-ach-details-game-full');
+    const gameOverlay = query(this.settings.section, '.cl-main-widget-tournament-details-body .cl-main-widget-ach-details-game-overlay');
+    let isExpand = false;
+
     if (
       this.settings.lbWidget.settings.competition.activeCompetition &&
       this.settings.lbWidget.settings.competition.activeCompetition.products &&
       this.settings.lbWidget.settings.competition.activeCompetition.products.length
     ) {
+      if (this.settings.lbWidget.settings.competition.activeCompetition.products.length > 9) {
+        isExpand = true;
+      }
+
       this.settings.lbWidget.settings.competition.activeCompetition.products.forEach(product => {
         const item = this.createGameItem(product);
         el.appendChild(item);
       });
+    }
+
+    if (gameFull && gameOverlay) {
+      if (isExpand) {
+        gameFull.style.display = 'flex';
+        gameOverlay.style.display = 'block';
+      } else {
+        gameFull.style.display = 'none';
+        gameOverlay.style.display = 'none';
+      }
     }
   };
 
@@ -2501,18 +2519,28 @@ export const MainWidget = function (options) {
     const gameItems = gamesWrapp.querySelector('.cl-main-widget-ach-details-game-items');
     const gameFull = gamesWrapp.querySelector('.cl-main-widget-ach-details-game-full');
     const gameOverlay = gamesWrapp.querySelector('.cl-main-widget-ach-details-game-overlay');
+    let isExpand = false;
 
     gameItems.classList.remove('expanded');
-    gameFull.style.display = 'flex';
-    gameOverlay.style.display = 'block';
 
     games.innerHTML = '';
 
     if (data.products && data.products.length) {
+      if (data.products.length > 9) {
+        isExpand = true;
+      }
       data.products.forEach(product => {
         const gameItem = this.createGameItem(product);
         games.appendChild(gameItem);
       });
+    }
+
+    if (isExpand) {
+      gameFull.style.display = 'flex';
+      gameOverlay.style.display = 'block';
+    } else {
+      gameFull.style.display = 'none';
+      gameOverlay.style.display = 'none';
     }
 
     if (data.reward) {
@@ -2650,7 +2678,10 @@ export const MainWidget = function (options) {
     const expires = query(this.settings.reward.detailsContainer, '.cl-main-widget-reward-details-expires-value');
     const detailExpires = query(this.settings.reward.detailsContainer, '.cl-main-widget-reward-details-content-body-item-value.expires');
     const games = query(this.settings.reward.detailsContainer, '.cl-main-widget-ach-details-game-items.reward-games');
+    const expand = query(this.settings.reward.detailsContainer, '.cl-main-widget-ach-details-game-full');
+    const expandOverlay = query(this.settings.reward.detailsContainer, '.cl-main-widget-ach-details-game-overlay');
     let products = null;
+    let isExpand = false;
 
     rewardValue.innerHTML = data.rewardValue;
     detailRewardValue.innerHTML = data.rewardValue;
@@ -2662,6 +2693,7 @@ export const MainWidget = function (options) {
         languageKey: this.settings.lbWidget.settings.language,
         productFilter: {
           entityIds: [achievement[0].id],
+          entityType: 'achievement',
           limit: 20,
           skip: 0
         }
@@ -2676,6 +2708,7 @@ export const MainWidget = function (options) {
         languageKey: this.settings.lbWidget.settings.language,
         productFilter: {
           entityIds: [contest[0].id],
+          entityType: 'competition',
           limit: 20,
           skip: 0
         }
@@ -2689,10 +2722,21 @@ export const MainWidget = function (options) {
     games.innerHTML = '';
 
     if (products && products.data.length) {
+      if (products.data.length > 9) {
+        isExpand = true;
+      }
       products.data.forEach(product => {
         const gameItem = this.createGameItem(product);
         games.appendChild(gameItem);
       });
+    }
+
+    if (isExpand) {
+      expand.style.display = 'flex';
+      expandOverlay.style.display = 'block';
+    } else {
+      expand.style.display = 'none';
+      expandOverlay.style.display = 'none';
     }
 
     let expiresValue = '-';
@@ -2936,7 +2980,7 @@ export const MainWidget = function (options) {
 
     let itemBg = '';
     if (products && products.length) {
-      itemBg = products[0].iconLink;
+      itemBg = products[products.length - 1].iconLink;
     }
 
     const date = isReadyStatus ? new Date(contest.scheduledStartDate) : new Date(contest.scheduledEndDate);
@@ -3135,7 +3179,8 @@ export const MainWidget = function (options) {
           const productRequest = {
             languageKey: this.settings.language,
             productFilter: {
-              entityIds: [achievement.id],
+              entityIds: [achievement[0].id],
+              entityType: 'achievement',
               limit: 100,
               skip: 0
             }
@@ -3146,7 +3191,8 @@ export const MainWidget = function (options) {
           const productRequest = {
             languageKey: this.settings.language,
             productFilter: {
-              entityIds: [contest.id],
+              entityIds: [contest[0].id],
+              entityType: 'competition',
               limit: 100,
               skip: 0
             }
@@ -3176,16 +3222,49 @@ export const MainWidget = function (options) {
 
     let campaign = '';
     let title = '-';
+    let products = null;
+    let productsCount = null;
+
     if (awardData.entityType === 'Achievement') {
       const achievement = await this.settings.lbWidget.getAchievementsByIds([awardData.entityId]);
       campaign = achievement[0].name;
       title = 'Mission Completed';
       this.awardTAndC = achievement[0].termsAndConditions;
+
+      const productRequest = {
+        languageKey: this.settings.language,
+        productFilter: {
+          entityIds: [achievement[0].id],
+          entityType: 'achievement',
+          limit: 100,
+          skip: 0
+        }
+      };
+
+      products = await this.settings.lbWidget.getProductsApi(productRequest);
     } else if (awardData.entityType === 'Contest') {
       const contest = await this.settings.lbWidget.getContestsByIds([awardData.entityId]);
       campaign = contest[0].name;
       title = 'Tournament Completed';
       this.awardTAndC = contest[0].termsAndConditions;
+
+      const productRequest = {
+        languageKey: this.settings.language,
+        productFilter: {
+          entityIds: [contest[0].id],
+          entityType: 'competition',
+          limit: 100,
+          skip: 0
+        }
+      };
+      products = await this.settings.lbWidget.getProductsApi(productRequest);
+    }
+
+    let awardProducts = products ? products.data : null;
+
+    if (awardProducts && awardProducts.length > 3) {
+      awardProducts = awardProducts.slice(0, 3);
+      productsCount = products.meta.totalRecordsFound - 3;
     }
 
     let expires = '-';
@@ -3212,7 +3291,9 @@ export const MainWidget = function (options) {
       drawerTitle: this.settings.lbWidget.settings.translation.rewardCelebration.drawerTitle,
       drawerDescription: this.settings.lbWidget.settings.translation.rewardCelebration.drawerDescription,
       drawerClimeBtn: this.settings.lbWidget.settings.translation.rewardCelebration.drawerClimeBtn,
-      drawerDeclineBtn: this.settings.lbWidget.settings.translation.rewardCelebration.drawerDeclineBtn
+      drawerDeclineBtn: this.settings.lbWidget.settings.translation.rewardCelebration.drawerDeclineBtn,
+      productsCount: productsCount,
+      products: awardProducts
     });
 
     mainSectionContainer.appendChild(rewardCelebration);
@@ -3413,7 +3494,8 @@ export const MainWidget = function (options) {
       const productRequest = {
         languageKey: this.settings.lbWidget.settings.language,
         productFilter: {
-          entityIds: [achievement.id],
+          entityIds: [achievement[0].id],
+          entityType: 'achievement',
           limit: 100,
           skip: 0
         }
@@ -3425,7 +3507,8 @@ export const MainWidget = function (options) {
       const productRequest = {
         languageKey: this.settings.lbWidget.settings.language,
         productFilter: {
-          entityIds: [contest.id],
+          entityIds: [contest[0].id],
+          entityType: 'competition',
           limit: 100,
           skip: 0
         }
