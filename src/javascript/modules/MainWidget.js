@@ -1831,6 +1831,22 @@ export const MainWidget = function (options) {
       }
     }
 
+    if (_this.settings.achievement.detailsContainer !== null) {
+      const detailsContainer = _this.settings.achievement.detailsContainer.querySelector('.cl-main-widget-ach-details-body-container');
+      const lbHeaderLabel = document.querySelector('.cl-main-widget-ach-details-top-label');
+
+      if (detailsContainer.onscroll === null) {
+        detailsContainer.onscroll = function (evt) {
+          evt.preventDefault();
+          if (evt.target.scrollTop > 55) {
+            lbHeaderLabel.classList.add('active');
+          } else {
+            lbHeaderLabel.classList.remove('active');
+          }
+        };
+      }
+    }
+
     if (!onresizeInitialised) {
       onresizeInitialised = true;
       window.onresize = function (evt) {
@@ -2495,6 +2511,7 @@ export const MainWidget = function (options) {
   this.loadAchievementDetails = async function (data, callback) {
     const _this = this;
     const label = query(_this.settings.achievement.detailsContainer, '.cl-main-widget-ach-details-header-label');
+    const topLabel = query(_this.settings.achievement.detailsContainer, '.cl-main-widget-ach-details-top-label');
     const tc = query(_this.settings.achievement.detailsContainer, '.cl-main-widget-ach-details-tc');
     const image = query(_this.settings.achievement.detailsContainer, '.cl-main-widget-ach-details-body-image-cont');
     const pregressBar = query(_this.settings.achievement.detailsContainer, '.cl-ach-list-progression-bar');
@@ -2630,6 +2647,7 @@ export const MainWidget = function (options) {
     }
 
     label.innerHTML = data.name;
+    topLabel.innerHTML = data.name;
     tc.innerHTML = data.termsAndConditions
       ? data.termsAndConditions.replace(/&lt;/g, '<').replace(/&gt;/g, '>')
       : this.settings.lbWidget.settings.translation.global.tAndCEmpty;

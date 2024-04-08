@@ -4675,6 +4675,21 @@
   padding-left: 16px;
 }
 
+.cl-main-widget-wrapper .cl-main-widget-ach-details-container .cl-main-widget-ach-details-top-label {
+  width: 100%;
+  text-align: left;
+  color: var(--Primary-White);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24px;
+  padding-left: 16px;
+  display: none;
+}
+
+.cl-main-widget-wrapper .cl-main-widget-ach-details-container .cl-main-widget-ach-details-top-label.active {
+  display: block;
+}
+
 .cl-main-widget-wrapper .cl-main-widget-ach-details-container .cl-main-widget-ach-details-header-date {
   text-align: center;
   color: var(--lb3-messages-details-date-color);
@@ -4708,6 +4723,7 @@
   background-size: 100%;
   cursor: pointer;
   margin-left: -6px;
+  flex-shrink: 0;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-ach-details-container .cl-main-widget-ach-details-close {
@@ -5007,16 +5023,21 @@
 
 .cl-main-widget-wrapper .cl-main-widget-ach-details-container .cl-main-widget-ach-details-tc p {
   color: var(--ui-color-text-secondary);
-  font-size: 12px;
+  font-size: 0;
   font-style: normal;
   font-weight: 600;
   line-height: 18px;
+  transition: all .3s;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-ach-details-container .cl-main-widget-ach-details-body-description-tc.expanded .cl-main-widget-ach-details-tc {
   padding-bottom: 24px;
   max-height: 100vh;
   opacity: 1;
+}
+
+.cl-main-widget-wrapper .cl-main-widget-ach-details-container .cl-main-widget-ach-details-body-description-tc.expanded .cl-main-widget-ach-details-tc p {
+  font-size: 12px;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-tournament-details-tc {
