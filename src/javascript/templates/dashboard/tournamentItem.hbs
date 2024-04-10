@@ -19,6 +19,7 @@
 </div>
 
 <div class="dashboard-tournament-list-info">
+
   <div class="dashboard-tournament-list-cont">
     <div class="dashboard-tournament-list-icon" style="background-image: url({{ icon }})"></div>
     <div class="dashboard-tournament-list-details-wrap">
@@ -26,6 +27,7 @@
       <div class="dashboard-tournament-list-details-label">{{ title }}</div>
     </div>
   </div>
+
   <div class="dashboard-tournament-list-details-reward">
     <svg width="40" height="41" viewBox="0 0 40 41" fill="none" xmlns="http://www.w3.org/2000/svg" class="dashboard-tournament-list-details-reward-img">
       <path fill-rule="evenodd" clip-rule="evenodd" d="M11.2023 8H29.631L37.0833 15.4523L20.4167 32.119L3.75
@@ -38,6 +40,8 @@
     <div class="dashboard-tournament-list-details-reward-first">1</div>
     <div class="dashboard-tournament-list-details-reward-title">{{ rewardName }}</div>
   </div>
+
+  {{#if isLive}}
   <div class="dashboard-tournament-list-details-data">
     <div class="dashboard-tournament-list-details-data-item dashboard-tournament-list-details-position">
       <div class="dashboard-tournament-list-details-data-item-value dashboard-tournament-list-details-position-value">-</div>
@@ -52,6 +56,23 @@
       <div class="dashboard-tournament-list-details-data-item-label dashboard-tournament-list-details-points-label">{{ pointsLabel }}</div>
     </div>
   </div>
+  {{else}}
+  <div class="dashboard-tournament-list-details-data disabled">
+    <div class="dashboard-tournament-list-details-data-item dashboard-tournament-list-details-position">
+      <div class="dashboard-tournament-list-details-data-item-value dashboard-tournament-list-details-position-value cl-main-widget-lb-details-duration">{{ duration }}</div>
+      <div class="dashboard-tournament-list-details-data-item-label dashboard-tournament-list-details-position-label">Duration</div>
+    </div>
+    <div class="dashboard-tournament-list-details-data-item dashboard-tournament-list-details-left">
+      <div class="dashboard-tournament-list-details-data-item-value dashboard-tournament-list-details-left-value cl-main-widget-lb-details-spin-limit">-</div>
+      <div class="dashboard-tournament-list-details-data-item-label dashboard-tournament-list-details-left-label">Spin Limit</div>
+    </div>
+    <div class="dashboard-tournament-list-details-data-item dashboard-tournament-list-details-points">
+      <div class="dashboard-tournament-list-details-data-item-value dashboard-tournament-list-details-points-value cl-main-widget-lb-details-min-bet">-</div>
+      <div class="dashboard-tournament-list-details-data-item-label dashboard-tournament-list-details-points-label">Min bet</div>
+    </div>
+  </div>
+  {{/if}}
+
   {{#if isOptIn}}
     <div class="dashboard-tournament-list-opt-in-btn">{{ optInLabel }} <div class="progress"></div></div>
   {{else}}

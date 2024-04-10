@@ -354,7 +354,7 @@ export const LbWidget = function (options) {
       languageKey: this.settings.language,
       competitionFilter: {
         statusCode: {
-          moreThan: 20,
+          moreThan: 10,
           lessThan: 30
         },
         sortBy: [{
@@ -366,26 +366,8 @@ export const LbWidget = function (options) {
       }
     }, null);
 
-    const readyRequest = CompetitionRequest.constructFromObject({
-      languageKey: this.settings.language,
-      competitionFilter: {
-        statusCode: {
-          moreThan: 10,
-          lessThan: 20
-        },
-        sortBy: [{
-          queryField: 'created',
-          order: 'Desc'
-        }],
-        limit: 2,
-        skip: 0
-      }
-    }, null);
-
     const activeCompetitions = await this.getCompetitionsApi(activeRequest);
-    const readyCompetitions = await this.getCompetitionsApi(readyRequest);
     let activeCompetitionsData = activeCompetitions.data;
-    let readyCompetitionsData = readyCompetitions.data;
 
     if (activeCompetitionsData) {
       const ids = activeCompetitionsData.map(a => a.id);
@@ -402,27 +384,6 @@ export const LbWidget = function (options) {
       const rewardsData = rewards.data;
 
       activeCompetitionsData = activeCompetitionsData.map(comp => {
-        comp.rewards = rewardsData.filter(r => r.entityId === comp.id);
-
-        return comp;
-      });
-    }
-
-    if (readyCompetitionsData) {
-      const ids = readyCompetitionsData.map(a => a.id);
-      const rewardRequest = {
-        entityFilter: [{
-          entityType: 'Competition',
-          entityIds: ids
-        }],
-        currencyKey: this.settings.currency,
-        skip: 0,
-        limit: 20
-      };
-      const rewards = await this.getRewardsApi(rewardRequest);
-      const rewardsData = rewards.data;
-
-      readyCompetitionsData = readyCompetitionsData.map(comp => {
         comp.rewards = rewardsData.filter(r => r.entityId === comp.id);
 
         return comp;
@@ -447,7 +408,7 @@ export const LbWidget = function (options) {
       activeCompetitionsDataWithProducts.push(comp);
     }
 
-    return { activeCompetitions: activeCompetitionsDataWithProducts, readyCompetitions: readyCompetitionsData };
+    return { activeCompetitions: activeCompetitionsDataWithProducts };
   };
 
   /**
@@ -483,7 +444,7 @@ export const LbWidget = function (options) {
       languageKey: this.settings.language,
       competitionFilter: {
         statusCode: {
-          moreThan: 20,
+          moreThan: 10,
           lessThan: 30
         },
         sortBy: [{

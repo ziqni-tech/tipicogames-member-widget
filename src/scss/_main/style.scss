@@ -2118,6 +2118,10 @@
   background: var(--widget-bg-blue);
 }
 
+.cl-main-widget-wrapper .cl-main-widget-section-container .dashboard-tournament-list-details-data.disabled {
+  border: none;
+}
+
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-lb-details-data {
   display: flex;
   justify-content: space-between;

@@ -70,12 +70,6 @@ export const MainWidget = function (options) {
     tournamentsSection: {
       accordionLayout: [
         {
-          label: 'Upcoming Tournaments',
-          type: 'readyCompetitions',
-          show: false,
-          showTopResults: 0
-        },
-        {
           label: 'Active Tournaments',
           type: 'activeCompetitions',
           show: true,
@@ -271,19 +265,14 @@ export const MainWidget = function (options) {
         case 'finishedCompetitions':
           finishedTitle.classList.add('active');
           break;
-        // case 'readyCompetitions':
-        //   readyTitle.classList.add('active');
-        //   break;
       }
     }
 
     finishedTitle.innerHTML = _this.settings.lbWidget.settings.translation.tournaments.finishedCompetitions;
     activeTitle.innerHTML = _this.settings.lbWidget.settings.translation.tournaments.activeCompetitions;
-    // readyTitle.innerHTML = _this.settings.lbWidget.settings.translation.tournaments.readyCompetitions;
 
     statusMenu.appendChild(activeTitle);
     statusMenu.appendChild(finishedTitle);
-    // statusMenu.appendChild(readyTitle);
 
     accordionWrapper.appendChild(statusMenu);
 
@@ -351,10 +340,6 @@ export const MainWidget = function (options) {
     if (element.classList.contains('activeTournaments')) {
       const activeContainer = container.querySelector('.activeCompetitions');
       activeContainer.classList.add('cl-shown');
-    }
-    if (element.classList.contains('readyTournaments')) {
-      const readyContainer = container.querySelector('.readyCompetitions');
-      readyContainer.classList.add('cl-shown');
     }
 
     if (element.classList.contains('availableAwards')) {
@@ -1413,7 +1398,7 @@ export const MainWidget = function (options) {
     let headerLabel = null;
     let icon = null;
     const rewardTitle = query(_this.settings.section, '.cl-main-widget-lb-details-reward-title');
-    const duration = query(_this.settings.section, '.cl-main-widget-lb-details-duration');
+    const duration = query(_this.settings.section, '.cl-main-widget-tournament-details-body .cl-main-widget-lb-details-duration');
     const actionsDate = query(this.settings.section, '.cl-main-widget-lb-details-body-cta-ends-date');
     const description = query(this.settings.section, '.cl-main-widget-tournament-details-hw');
     const rewardItems = query(this.settings.section, '.cl-main-widget-lb-details-actions-reward-items');
@@ -2072,21 +2057,7 @@ export const MainWidget = function (options) {
       finishedPaginator.appendChild(next);
     }
 
-    if (isReady) {
-      _this.settings.tournamentsSection.accordionLayout.map(t => {
-        t.show = t.type === 'readyCompetitions';
-      });
-      if (paginationArr && paginationArr.length) {
-        let page = '';
-        for (const i in paginationArr) {
-          page += '<span class="paginator-item" data-page=' + paginationArr[i] + '\>' + paginationArr[i] + '</span>';
-        }
-        readyPaginator.innerHTML = page;
-
-        readyPaginator.prepend(prev);
-        readyPaginator.appendChild(next);
-      }
-    } else if (isFinished) {
+    if (isFinished) {
       _this.settings.tournamentsSection.accordionLayout.map(t => {
         t.show = t.type === 'finishedCompetitions';
       });
@@ -2155,22 +2126,6 @@ export const MainWidget = function (options) {
         });
 
         listContainer.appendChild(finishedPaginator);
-      }
-    }
-
-    if (readyPaginator) {
-      const readyContainer = query(listResContainer, '.readyCompetitions');
-      if (readyContainer) {
-        const listContainer = query(readyContainer, '.cl-accordion-list-container');
-        const paginatorItems = query(readyPaginator, '.paginator-item');
-        paginatorItems.forEach(item => {
-          removeClass(item, 'active');
-          if (Number(item.dataset.page) === Number(readyPageNumber)) {
-            addClass(item, 'active');
-          }
-        });
-
-        listContainer.appendChild(readyPaginator);
       }
     }
 
@@ -3001,6 +2956,10 @@ export const MainWidget = function (options) {
       itemBg = products[products.length - 1].iconLink;
     }
 
+    let duration = '';
+    const diff = moment(contest.scheduledEndDate).diff(moment(contest.scheduledStartDate));
+    duration = moment.duration(diff).humanize();
+
     const date = isReadyStatus ? new Date(contest.scheduledStartDate) : new Date(contest.scheduledEndDate);
     const template = require('../templates/dashboard/tournamentItem.hbs');
     listItem.innerHTML = template({
@@ -3022,7 +2981,8 @@ export const MainWidget = function (options) {
       spinsLeftLabel: this.settings.lbWidget.settings.translation.tournaments.spinsLeftLabel,
       pointsLabel: this.settings.lbWidget.settings.translation.tournaments.pointsLabel,
       productsCount: productsCount,
-      products: products
+      products: products,
+      duration: duration
     });
 
     return listItem;
@@ -3367,7 +3327,7 @@ export const MainWidget = function (options) {
     // const _this = this;
     const tournamentsList = query(this.settings.section, '.cl-main-widget-dashboard-tournaments-list');
     const tournamentsContainer = query(this.settings.section, '.cl-main-widget-dashboard-tournaments');
-    const { activeCompetitions, readyCompetitions } = await this.settings.lbWidget.getDashboardCompetitions();
+    const { activeCompetitions } = await this.settings.lbWidget.getDashboardCompetitions();
 
     tournamentsList.innerHTML = '';
 
@@ -3376,14 +3336,6 @@ export const MainWidget = function (options) {
       const title = document.querySelector('.cl-main-widget-dashboard-tournaments-title');
       title.innerHTML = this.settings.lbWidget.settings.translation.dashboard.tournamentsTitle;
       for (const comp of activeCompetitions) {
-        const listItem = await this.dashboardTournamentItem(comp);
-        if (listItem) tournamentsList.appendChild(listItem);
-      }
-    } else if (readyCompetitions && readyCompetitions.length) {
-      tournamentsContainer.classList.remove('hidden');
-      const title = document.querySelector('.cl-main-widget-dashboard-tournaments-title');
-      title.innerHTML = this.settings.lbWidget.settings.translation.dashboard.upcomingTournamentsTitle;
-      for (const comp of readyCompetitions) {
         const listItem = await this.dashboardTournamentItem(comp);
         if (listItem) tournamentsList.appendChild(listItem);
       }
