@@ -542,6 +542,7 @@ export const MainWidget = function (options) {
       howToLabel: this.settings.lbWidget.settings.translation.tournaments.howToLabel,
       abortLabel: this.settings.lbWidget.settings.translation.tournaments.abortLabel,
       endsLabel: this.settings.lbWidget.settings.translation.tournaments.endsLabel,
+      startsLabel: this.settings.lbWidget.settings.translation.tournaments.startsLabel,
       pickAGameContLabel: this.settings.lbWidget.settings.translation.tournaments.pickAGameContLabel,
       drawerTitle: this.settings.lbWidget.settings.translation.tournaments.drawerTitle,
       drawerDescription: this.settings.lbWidget.settings.translation.tournaments.drawerDescription,
@@ -1208,11 +1209,18 @@ export const MainWidget = function (options) {
     let date = '-';
 
     if (this.settings.lbWidget.settings.competition.activeContest) {
-      // const diff = moment(this.settings.lbWidget.settings.competition.activeContest.scheduledEndDate)
-      //   .diff(moment());
-      //
-      // date = moment.duration(diff, 'hours').humanize(true);
       date = new Date(this.settings.lbWidget.settings.competition.activeContest.scheduledEndDate)
+        .toLocaleString('en-GB', { timeZone: 'UTC', dateStyle: 'short', timeStyle: 'short' });
+    }
+
+    return date;
+  };
+
+  this.getActiveContestStartDate = function () {
+    let date = '-';
+
+    if (this.settings.lbWidget.settings.competition.activeContest) {
+      date = new Date(this.settings.lbWidget.settings.competition.activeContest.scheduledStartDate)
         .toLocaleString('en-GB', { timeZone: 'UTC', dateStyle: 'short', timeStyle: 'short' });
     }
 
@@ -1400,10 +1408,14 @@ export const MainWidget = function (options) {
     const rewardTitle = query(_this.settings.section, '.cl-main-widget-lb-details-reward-title');
     const duration = query(_this.settings.section, '.cl-main-widget-tournament-details-body .cl-main-widget-lb-details-duration');
     const actionsDate = query(this.settings.section, '.cl-main-widget-lb-details-body-cta-ends-date');
+    const actionsDateLabel = query(this.settings.section, '.cl-main-widget-lb-details .cl-main-widget-ach-details-body-cta-ends-label');
+    const actionsStartDate = query(this.settings.section, '.cl-main-widget-lb-details-body-cta-starts-date');
+    const actionsStartDateLabel = query(this.settings.section, '.cl-main-widget-ach-details-body-cta-starts-label');
     const description = query(this.settings.section, '.cl-main-widget-tournament-details-hw');
     const rewardItems = query(this.settings.section, '.cl-main-widget-lb-details-actions-reward-items');
     const rewardedEl = query(this.settings.section, '.cl-main-widget-lb-details-rewarded');
     const games = query(this.settings.section, '.cl-main-widget-ach-details-game-items.tour-games');
+    const liveIcon = query(this.settings.section, '.cl-main-widget-lb-details .cl-main-widget-ach-details-body-cta-live');
 
     rewardedEl.innerHTML = this.settings.lbWidget.settings.translation.tournaments.rewarded.replace('$', this.settings.lbWidget.settings.leaderboard.fullLeaderboardSize);
 
@@ -1433,12 +1445,28 @@ export const MainWidget = function (options) {
     rewardTitle.innerHTML = _this.getActiveContestRewardTitle();
     duration.innerHTML = _this.getActiveContestDuration();
     actionsDate.innerHTML = _this.getActiveContestDate();
+    actionsStartDate.innerHTML = _this.getActiveContestStartDate();
+
+    if (this.settings.lbWidget.settings.competition.activeContest && this.settings.lbWidget.settings.competition.activeContest.statusCode === 15) {
+      actionsDate.style.display = 'none';
+      actionsDateLabel.style.display = 'none';
+      actionsStartDate.style.display = 'block';
+      actionsStartDateLabel.style.display = 'block';
+    } else {
+      actionsDate.style.display = 'block';
+      actionsDateLabel.style.display = 'block';
+      actionsStartDate.style.display = 'none';
+      actionsStartDateLabel.style.display = 'none';
+    }
+
     description.innerHTML = _this.getActiveContestDescription();
     _this.getActiveContestProducts(games);
 
     if (this.settings.lbWidget.settings.competition.activeCompetition && this.settings.lbWidget.settings.competition.activeCompetition.statusCode === 15) {
       mainLabel.innerHTML = this.settings.lbWidget.settings.competition.activeCompetition.name;
+      liveIcon.style.display = 'none';
     } else {
+      liveIcon.style.display = 'flex';
       mainLabel.innerHTML = (_this.settings.lbWidget.settings.competition.activeContest !== null)
         ? _this.settings.lbWidget.settings.competition.activeContest.name
         : _this.settings.lbWidget.settings.translation.tournaments.noAvailableCompetitions;
@@ -1529,6 +1557,10 @@ export const MainWidget = function (options) {
       optedInLabel.style.display = 'flex';
       abortBtn.style.display = 'block';
       detailsData.style.display = 'flex';
+    }
+
+    if (this.settings.lbWidget.settings.competition.activeCompetition && this.settings.lbWidget.settings.competition.activeCompetition.statusCode === 15) {
+      detailsData.style.display = 'none';
     }
   };
 
