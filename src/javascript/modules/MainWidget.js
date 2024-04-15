@@ -97,24 +97,6 @@ export const MainWidget = function (options) {
           show: false,
           showTopResults: 1
         }
-        // {
-        //   label: 'Claimed Awards',
-        //   type: 'claimedAwards',
-        //   show: false,
-        //   showTopResults: 1
-        // },
-        // {
-        //   label: 'Expired Awards',
-        //   type: 'expiredAwards',
-        //   show: false,
-        //   showTopResults: 1
-        // },
-        // {
-        //   label: 'Instant Wins',
-        //   type: 'instantWins',
-        //   show: false,
-        //   showTopResults: 1
-        // }
       ]
     },
     achievementSection: {
@@ -168,13 +150,9 @@ export const MainWidget = function (options) {
 
     const availableTitle = document.createElement('div');
     const claimedTitle = document.createElement('div');
-    // const expiredTitle = document.createElement('div');
-    // const instantWinsTitle = document.createElement('div');
 
     availableTitle.setAttribute('class', 'cl-main-accordion-container-menu-item availableAwards');
     claimedTitle.setAttribute('class', 'cl-main-accordion-container-menu-item claimedAwards');
-    // expiredTitle.setAttribute('class', 'cl-main-accordion-container-menu-item expiredAwards');
-    // instantWinsTitle.setAttribute('class', 'cl-main-accordion-container-menu-item instantWins');
 
     const idx = data.findIndex(d => d.show === true);
     if (idx !== -1) {
@@ -185,32 +163,14 @@ export const MainWidget = function (options) {
         case 'pastAwards':
           claimedTitle.classList.add('active');
           break;
-        // case 'expiredAwards':
-        //   expiredTitle.classList.add('active');
-        //   break;
-        // case 'instantWins':
-        //   if (this.settings.lbWidget.settings.instantWins.enable) {
-        //     instantWinsTitle.classList.add('active');
-        //   } else {
-        //     claimedTitle.classList.add('active');
-        //   }
-        //   break;
       }
     }
 
     availableTitle.innerHTML = _this.settings.lbWidget.settings.translation.rewards.availableRewards;
     claimedTitle.innerHTML = _this.settings.lbWidget.settings.translation.rewards.claimed;
-    // expiredTitle.innerHTML = _this.settings.lbWidget.settings.translation.rewards.expired;
-    // instantWinsTitle.innerHTML = _this.settings.lbWidget.settings.translation.rewards.instantWins;
 
     statusMenu.appendChild(availableTitle);
     statusMenu.appendChild(claimedTitle);
-    // if (this.settings.lbWidget.settings.awards.showExpiredAwards) {
-    //   statusMenu.appendChild(expiredTitle);
-    // }
-    // if (this.settings.lbWidget.settings.instantWins.enable) {
-    //   statusMenu.appendChild(instantWinsTitle);
-    // }
 
     accordionWrapper.appendChild(statusMenu);
 
@@ -250,11 +210,9 @@ export const MainWidget = function (options) {
 
     const finishedTitle = document.createElement('div');
     const activeTitle = document.createElement('div');
-    // const readyTitle = document.createElement('div');
 
     finishedTitle.setAttribute('class', 'cl-main-accordion-container-menu-item finishedTournaments');
     activeTitle.setAttribute('class', 'cl-main-accordion-container-menu-item activeTournaments');
-    // readyTitle.setAttribute('class', 'cl-main-accordion-container-menu-item readyTournaments');
 
     const idx = data.findIndex(d => d.show === true);
     if (idx !== -1) {
@@ -281,36 +239,17 @@ export const MainWidget = function (options) {
       const accordionLabel = document.createElement('div');
       const topShownEntry = document.createElement('div');
       const accordionListContainer = document.createElement('div');
-      // const header = document.createElement('div');
-      // const headerLabel = document.createElement('div');
-      // const headerDate = document.createElement('div');
-      // const headerPrize = document.createElement('div');
       const accordionList = document.createElement('div');
 
       accordionSection.setAttribute('class', 'cl-accordion ' + entry.type + ((typeof entry.show === 'boolean' && entry.show) ? ' cl-shown' : ''));
       topShownEntry.setAttribute('class', 'cl-accordion-entry');
       accordionListContainer.setAttribute('class', 'cl-accordion-list-container');
-      // header.setAttribute('class', 'cl-accordion-list-container-header');
-      // headerLabel.setAttribute('class', 'cl-accordion-list-container-header-label');
-      // headerDate.setAttribute('class', 'cl-accordion-list-container-header-date');
-      // headerPrize.setAttribute('class', 'cl-accordion-list-container-header-prize');
       accordionList.setAttribute('class', 'cl-accordion-list');
-
-      // headerLabel.innerHTML = _this.settings.lbWidget.settings.translation.tournaments.label;
-      // headerDate.innerHTML = _this.settings.lbWidget.settings.translation.tournaments.date;
-      // headerPrize.innerHTML = _this.settings.lbWidget.settings.translation.leaderboard.prize;
 
       if (typeof onLayout === 'function') {
         onLayout(accordionSection, accordionList, topShownEntry, entry);
       }
 
-      // header.appendChild(headerLabel);
-      // header.appendChild(headerDate);
-      // if (_this.settings.lbWidget.settings.tournaments.showTournamentsMenuPrizeColumn) {
-      //   header.appendChild(headerPrize);
-      // }
-
-      // accordionListContainer.appendChild(header);
       accordionListContainer.appendChild(accordionList);
 
       accordionSection.appendChild(accordionLabel);
@@ -359,14 +298,6 @@ export const MainWidget = function (options) {
       const claimedContainer = container.querySelector('.cl-accordion.past');
       claimedContainer.classList.add('cl-shown');
     }
-    // if (element.classList.contains('expiredAwards')) {
-    //   const expiredContainer = container.querySelector('.cl-accordion.expiredAwards');
-    //   expiredContainer.classList.add('cl-shown');
-    // }
-    // if (element.classList.contains('instantWins')) {
-    //   const instantWinsContainer = container.querySelector('.cl-accordion.instantWins');
-    //   instantWinsContainer.classList.add('cl-shown');
-    // }
   };
 
   this.accordionNavigation = function (element) {
@@ -737,21 +668,8 @@ export const MainWidget = function (options) {
   };
 
   this.populateLeaderboardResultsWithDefaultEntries = function (clearPrize = false) {
-    // const topResults = [];
     const remainingResults = [];
 
-    // for (let i = 0; i < this.settings.leaderboard.topResultSize; i++) {
-    //   const rank = i + 1;
-    //
-    //   topResults.push({
-    //     name: '-',
-    //     rank: rank,
-    //     score: '-',
-    //     memberId: '',
-    //     memberRefId: ''
-    //   });
-    // }
-    //
     const emptyListLength = this.settings.lbWidget.settings.leaderboard.fullLeaderboardSize + 1;
 
     for (let s = 0; s < emptyListLength; s++) {
@@ -766,87 +684,8 @@ export const MainWidget = function (options) {
       });
     }
 
-    // this.updateLeaderboardTopResults(topResults, clearPrize);
     this.updateLeaderboardResults(remainingResults, clearPrize);
   };
-
-  // this.updateLeaderboardTopResults = function (topResults, clearPrize = false) {
-  //   const _this = this;
-  //   const rankCheck = [];
-  //   const cleanupRankCheck = [];
-  //
-  //   // cleanup
-  //   mapObject(topResults, function (lb) {
-  //     cleanupRankCheck.push(lb.rank);
-  //     objectIterator(query(_this.settings.leaderboard.topResults, '.cl-lb-rank-' + lb.rank + '.cl-shared-rank'), function (obj) {
-  //       remove(obj);
-  //     });
-  //   });
-  //
-  //   objectIterator(query(_this.settings.leaderboard.topResults, '.cl-lb-row'), function (obj) {
-  //     const rank = parseInt(obj.dataset.rank);
-  //     if (cleanupRankCheck.indexOf(rank) === -1 && rank > _this.settings.leaderboard.defaultEmptyList) {
-  //       remove(obj);
-  //     }
-  //   });
-  //
-  //   mapObject(topResults, function (lb) {
-  //     let memberNames = '';
-  //     let memberLbName = '';
-  //     if (lb.members && lb.members.length) {
-  //       memberNames = lb.members.map((m) => m.name);
-  //       memberLbName = memberNames.join();
-  //     } else {
-  //       memberLbName = lb.name;
-  //     }
-  //     let count = 0;
-  //     const memberFound = lb.members && lb.members.findIndex(m => m.memberRefId === _this.settings.lbWidget.settings.member.memberRefId) !== -1;
-  //
-  //     let memberName = (memberFound) ? _this.settings.lbWidget.settings.translation.leaderboard.you : memberLbName;
-  //     const memberNameLength = _this.settings.lbWidget.settings.memberNameLength;
-  //     const reward = clearPrize ? '' : _this.getRewardData(lb.rank);
-  //     const change = (typeof lb.change === 'undefined') ? 0 : lb.change;
-  //     const growthType = (change < 0) ? 'down' : (change > 0 ? 'up' : 'same');
-  //     const growthIcon = "<span class='cl-growth-icon cl-growth-" + growthType + "'></span>";
-  //     const formattedPoints = _this.settings.lbWidget.settings.leaderboard.pointsFormatter(lb.score);
-  //
-  //     if (rankCheck.indexOf(lb.rank) !== -1) {
-  //       for (let rc = 0; rc < rankCheck.length; rc++) {
-  //         if (lb.rank === rankCheck[rc]) {
-  //           count++;
-  //         }
-  //       }
-  //     }
-  //
-  //     if (memberNameLength && memberName !== _this.settings.lbWidget.settings.translation.leaderboard.you) {
-  //       memberName = memberName.slice(0, memberNameLength) + '*****';
-  //     }
-  //
-  //     _this.leaderboardRowUpdate(
-  //       lb.rank,
-  //       memberName ? memberName[0] : '', // icon
-  //       memberName,
-  //       change,
-  //       growthIcon, // growth
-  //       formattedPoints,
-  //       reward, // reward
-  //       count,
-  //       memberFound,
-  //       function (rank, icon, name, change, growth, points, reward, count, memberFound) {
-  //         const newRow = _this.leaderboardRow(rank, name ? name[0] : '', name, change, growth, points, reward, count, memberFound);
-  //         const prevCellRow = query(_this.settings.leaderboard.container, '.cl-lb-rank-' + rank + '.cl-lb-count-' + (count - 1));
-  //
-  //         if (prevCellRow !== null && typeof prevCellRow.length === 'undefined') {
-  //           appendNext(prevCellRow, newRow);
-  //         } else {
-  //           _this.settings.leaderboard.topResults.appendChild(newRow);
-  //         }
-  //       }
-  //     );
-  //
-  //     rankCheck.push(lb.rank);
-  //   });
-  // };
 
   this.getRewardData = function (rank) {
     const _this = this;
@@ -1267,26 +1106,6 @@ export const MainWidget = function (options) {
     }
   };
 
-  this.getActiveCompetitionBanner = function () {
-    let bannerImage = '';
-
-    if (this.settings.lbWidget.settings.competition.activeContest) {
-      if (this.settings.lbWidget.settings.competition.activeContest.bannerHighResolutionLink) {
-        bannerImage = this.settings.lbWidget.settings.competition.activeContest.bannerHighResolutionLink;
-      } else if (this.settings.lbWidget.settings.competition.activeContest.bannerLink) {
-        bannerImage = this.settings.lbWidget.settings.competition.activeContest.bannerLink;
-      }
-    } else if (this.settings.lbWidget.settings.competition.activeCompetition) {
-      if (this.settings.lbWidget.settings.competition.activeCompetition.bannerHighResolutionLink) {
-        bannerImage = this.settings.lbWidget.settings.competition.activeCompetition.bannerHighResolutionLink;
-      } else if (this.settings.lbWidget.settings.competition.activeCompetition.bannerLink) {
-        bannerImage = this.settings.lbWidget.settings.competition.activeCompetition.bannerLink;
-      }
-    }
-
-    return bannerImage;
-  };
-
   this.getActiveCompetitionDescription = function () {
     const description = (this.settings.lbWidget.settings.competition.activeContest !== null &&
         this.settings.lbWidget.settings.competition.activeContest.description &&
@@ -1474,38 +1293,19 @@ export const MainWidget = function (options) {
   };
 
   this.showEmbeddedCompetitionDetailsContent = async function (callback) {
-    // const listIcon = query(this.settings.container, '.cl-main-widget-lb-header-list-icon');
-    // const backIcon = query(this.settings.container, '.cl-main-widget-lb-header-back-icon');
-
-    // listIcon.style.display = 'none';
-    // backIcon.style.display = 'block';
-
     if (!hasClass(this.settings.section, 'cl-main-active-embedded-description')) {
       addClass(this.settings.section, 'cl-main-active-embedded-description');
     }
-
-    // await tournamentBrackets(
-    //   this.settings.lbWidget.apiClientStomp,
-    //   this.settings.lbWidget.settings.tournaments.activeCompetitionId,
-    //   this.settings.lbWidget.settings.language,
-    //   this.settings.lbWidget.settings.translation,
-    //   this.settings.lbWidget.settings.competition.activeContestId
-    // );
 
     if (typeof callback === 'function') callback();
   };
 
   this.hideEmbeddedCompetitionDetailsContent = function (callback) {
-    // const listIcon = query(this.settings.container, '.cl-main-widget-lb-header-list-icon');
-    // const backIcon = query(this.settings.container, '.cl-main-widget-lb-header-back-icon');
     const missingMember = document.querySelector('.cl-main-widget-lb-missing-member-details');
 
     if (missingMember) {
       missingMember.style.display = 'none';
     }
-
-    // listIcon.style.display = 'block';
-    // backIcon.style.display = 'none';
 
     removeClass(this.settings.section, 'cl-main-active-embedded-description');
     if (typeof callback === 'function') callback();
@@ -1655,18 +1455,6 @@ export const MainWidget = function (options) {
     _this.leaderboardDetailsUpdate();
     _this.updateLeaderboard();
 
-    // if (
-    //   _this.settings.lbWidget.settings.competition.activeContest !== null ||
-    //   (this.settings.lbWidget.settings.competition.activeCompetition && this.settings.lbWidget.settings.competition.activeCompetition.statusCode === 15)
-    // ) {
-    //   if (isTimeReload) {
-    //     _this.updateLeaderboardTime();
-    //   }
-    // } else {
-    //   _this.settings.labelDateHeaders.display = 'none';
-    //   _this.settings.detailsDateHeaders.display = 'none';
-    // }
-
     if (typeof callback === 'function') {
       callback();
     }
@@ -1752,29 +1540,6 @@ export const MainWidget = function (options) {
         area.style.display = 'flex';
       }
     }
-
-    // if (!isVisible) {
-    //   if (area !== null && member !== null) {
-    //     area.style.display = 'flex';
-    //   } else {
-    //     area.style.display = 'none';
-    //   }
-    //
-    //   if (areaDetails !== null && member !== null && sectionContainer.classList.contains('cl-main-active-embedded-description')) {
-    //     areaDetails.style.display = 'flex';
-    //   } else {
-    //     areaDetails.style.display = 'none';
-    //   }
-    // } else if (sectionContainer.classList.contains('cl-main-active-embedded-description')) {
-    //   if (areaDetails !== null && member !== null) {
-    //     areaDetails.style.display = 'flex';
-    //   } else {
-    //     areaDetails.style.display = 'none';
-    //   }
-    // } else {
-    //   area.style.display = 'none';
-    //   areaDetails.style.display = 'none';
-    // }
   };
 
   this.missingMemberReset = function () {
@@ -1813,18 +1578,6 @@ export const MainWidget = function (options) {
   let onresizeInitialised = false;
   this.eventListeners = function () {
     const _this = this;
-
-    // unique solution to support horizontal mobile orientation
-    // if (_this.settings.leaderboard.resultContainer !== null && _this.settings.leaderboard.resultContainer.onscroll === null) {
-    //   _this.settings.leaderboard.resultContainer.onscroll = function (evt) {
-    //     evt.preventDefault();
-    //     const member = query(_this.settings.leaderboard.resultContainer, '.cl-lb-member-row');
-    //
-    //     if (member !== null) {
-    //       _this.missingMember(_this.isElementVisibleInView(member, evt.target));
-    //     }
-    //   };
-    // }
 
     if (_this.settings.leaderboard.list !== null && _this.settings.leaderboard.list.parentNode.onscroll === null) {
       const detailsContainer = _this.settings.leaderboard.list.closest('.cl-main-widget-lb-details-description-container');
@@ -1928,11 +1681,6 @@ export const MainWidget = function (options) {
     const label = query(_this.settings.detailsContainer, '.cl-main-widget-lb-details-header-label');
     const body = query(_this.settings.detailsContainer, '.cl-main-widget-lb-details-body');
     const image = query(_this.settings.detailsContainer, '.cl-main-widget-lb-details-body-image-cont');
-    // const listIcon = query(this.settings.container, '.cl-main-widget-lb-header-list-icon');
-    // const backIcon = query(this.settings.container, '.cl-main-widget-lb-header-back-icon');
-
-    // listIcon.style.display = 'none';
-    // backIcon.style.display = 'block';
 
     image.innerHTML = '';
     label.innerHTML = (_this.settings.lbWidget.settings.competition.activeContest.label.length > 0) ? _this.settings.lbWidget.settings.competition.activeContest.label : _this.settings.lbWidget.settings.competition.activeCompetition.label;
@@ -1961,9 +1709,6 @@ export const MainWidget = function (options) {
   ) {
     const _this = this;
     const listResContainer = query(_this.settings.tournamentListContainer, '.cl-main-widget-tournaments-list-body-res');
-    // const listIcon = query(_this.settings.container, '.cl-main-widget-lb-header-list-icon');
-    // const backIcon = query(_this.settings.container, '.cl-main-widget-lb-header-back-icon');
-    // const preLoader = _this.preloader();
 
     const totalCount = _this.settings.lbWidget.settings.tournaments.totalCount;
     const readyTotalCount = _this.settings.lbWidget.settings.tournaments.readyTotalCount;
@@ -2119,8 +1864,6 @@ export const MainWidget = function (options) {
       }
     }
 
-    // listIcon.style.display = 'none';
-    // backIcon.style.display = 'block';
     const accordionObj = _this.tournamentsList(_this.settings.tournamentsSection.accordionLayout, function (accordionSection, listContainer, topEntryContainer, layout) {
       const tournamentData = cloneDeep(_this.settings.lbWidget.settings.tournaments[layout.type]);
 
@@ -2224,11 +1967,7 @@ export const MainWidget = function (options) {
 
   this.hideCompetitionList = function (callback) {
     const _this = this;
-    // const listIcon = query(_this.settings.container, '.cl-main-widget-lb-header-list-icon');
-    // const backIcon = query(_this.settings.container, '.cl-main-widget-lb-header-back-icon');
 
-    // listIcon.style.display = 'block';
-    // backIcon.style.display = 'none';
     _this.hideEmbeddedCompetitionDetailsContent();
     _this.missingMemberReset();
 
@@ -2491,6 +2230,8 @@ export const MainWidget = function (options) {
     item.classList.add('cl-main-widget-ach-details-game-item');
     if (product.iconLink) item.style.backgroundImage = `url(${product.iconLink})`;
     item.dataset.id = product.id;
+    item.dataset.refId = product.productRefId;
+    item.dataset.name = product.name;
 
     return item;
   };
@@ -2944,30 +2685,31 @@ export const MainWidget = function (options) {
     let rewardName = '';
 
     if (rewardsData && rewardsData.length) {
-      const idx = rewardsData.findIndex(reward => {
+      const rewardResponse = [];
+      const rank = 1;
+      mapObject(rewardsData, function (reward) {
         if (reward.rewardRank.indexOf('-') !== -1 || reward.rewardRank.indexOf(',') !== -1) {
           const rewardRankArr = reward.rewardRank.split(',');
           rewardRankArr.forEach(r => {
             const idx = r.indexOf('-');
             if (idx !== -1) {
               const start = parseInt(r);
-              if (start === 1) {
-                return true;
+              const end = parseInt(r.substring(idx + 1));
+              if (rank >= start && rank <= end) {
+                rewardResponse.push(reward);
               }
-            } else if (parseInt(r) === 1) {
-              return true;
+            } else if (parseInt(r) === rank) {
+              rewardResponse.push(reward);
             }
-            return false;
           });
-        } else if (parseInt(reward.rewardRank) === 1) {
-          return true;
+        } else if (rank !== 0 && parseInt(reward.rewardRank) === rank) {
+          rewardResponse.push(reward);
         }
-        return false;
       });
 
-      if (idx !== -1) {
-        rewardName = rewardsData[idx].name;
-        rewardValue = this.settings.lbWidget.settings.partialFunctions.rewardFormatter(rewardsData[idx]);
+      if (rewardResponse[0]) {
+        rewardName = rewardResponse[0].name;
+        rewardValue = this.settings.lbWidget.settings.partialFunctions.rewardFormatter(rewardResponse[0]);
       }
     }
 
@@ -3217,10 +2959,6 @@ export const MainWidget = function (options) {
       const listItem = this.dashboardAwardItemEmpty();
       awardsList.appendChild(listItem);
     }
-
-    // setTimeout(function () {
-    //   _this.updateDashboardRewardExpirationTime();
-    // }, 1000);
   };
 
   this.showAwardCelebration = async function (awardData) {
@@ -3320,41 +3058,6 @@ export const MainWidget = function (options) {
     }, 1000);
   };
 
-  // this.updateDashboardRewardExpirationTime = function () {
-  //   const _this = this;
-  //
-  //   if (_this.settings.reward.timerInterval) {
-  //     clearTimeout(_this.settings.reward.timerInterval);
-  //   }
-  //
-  //   this.settings.lbWidget.settings.awards.availableAwards.forEach(award => {
-  //     if (award.period) {
-  //       const diff = moment(award.created).add(award.period, 'm').diff(moment());
-  //       const date = _this.settings.lbWidget.formatAwardDateTime(moment.duration(diff));
-  //       const container = document.querySelector('.cl-main-widget-dashboard-rewards-list');
-  //       const listContainer = document.querySelector('.cl-accordion.availableAwards');
-  //       if (container) {
-  //         const el = container.querySelector(`.dashboard-rewards-list-item[data-id="${award.id}"]`);
-  //         if (!el) return;
-  //         const dateEl = el.querySelector('.dashboard-rewards-list-item-expires-value');
-  //         if (!dateEl) return;
-  //         dateEl.innerHTML = date;
-  //       }
-  //       if (listContainer) {
-  //         const el = listContainer.querySelector(`.dashboard-rewards-list-item[data-id="${award.id}"]`);
-  //         if (!el) return;
-  //         const dateEl = el.querySelector('.dashboard-rewards-list-item-expires-value');
-  //         if (!dateEl) return;
-  //         dateEl.innerHTML = date;
-  //       }
-  //     }
-  //   });
-  //
-  //   this.settings.reward.timerInterval = setTimeout(function () {
-  //     _this.updateDashboardRewardExpirationTime();
-  //   }, 1000);
-  // };
-
   this.loadDashboardTournaments = async function (callback) {
     // const _this = this;
     const tournamentsList = query(this.settings.section, '.cl-main-widget-dashboard-tournaments-list');
@@ -3378,35 +3081,7 @@ export const MainWidget = function (options) {
     if (typeof callback === 'function') {
       callback();
     }
-
-    // setTimeout(function () {
-    //   _this.updateDashboardTournamentExpirationTime();
-    // }, 1000);
   };
-
-  // this.updateDashboardTournamentExpirationTime = function () {
-  //   const _this = this;
-  //
-  //   if (_this.settings.tournament.timerInterval) {
-  //     clearTimeout(_this.settings.tournament.timerInterval);
-  //   }
-  //
-  //   this.settings.lbWidget.settings.tournaments.activeCompetitions.forEach(comp => {
-  //     if (comp.scheduledEndDate) {
-  //       const diff = moment(comp.scheduledEndDate).diff(moment());
-  //       const date = _this.settings.lbWidget.formatAwardDateTime(moment.duration(diff));
-  //       const el = document.querySelector(`.dashboard-tournament-item[data-id="${comp.id}"]`);
-  //       if (!el) return;
-  //       const dateEl = el.querySelector('.dashboard-tournament-list-details-expires-timer');
-  //       if (!dateEl) return;
-  //       dateEl.innerHTML = date;
-  //     }
-  //   });
-  //
-  //   this.settings.tournament.timerInterval = setTimeout(function () {
-  //     _this.updateDashboardTournamentExpirationTime();
-  //   }, 1000);
-  // };
 
   this.loadDashboardAchievements = function (achievementData, callback) {
     const _this = this;
@@ -3438,38 +3113,10 @@ export const MainWidget = function (options) {
       _this.updateAchievementProgressionAndIssued(issued, progression);
     });
 
-    // setTimeout(function () {
-    //   _this.updateDashboardAchievementExpirationTime();
-    // }, 1000);
-
     if (typeof callback === 'function') {
       callback();
     }
   };
-
-  // this.updateDashboardAchievementExpirationTime = function () {
-  //   const _this = this;
-  //
-  //   if (_this.settings.achievement.timerInterval) {
-  //     clearTimeout(_this.settings.achievement.timerInterval);
-  //   }
-  //
-  //   this.settings.lbWidget.settings.achievements.list.forEach(ach => {
-  //     if (ach.scheduling.endDate) {
-  //       const diff = moment(ach.scheduling.endDate).diff(moment());
-  //       const date = _this.settings.lbWidget.formatAwardDateTime(moment.duration(diff));
-  //       const el = document.querySelector(`.cl-ach-list-item[data-id="${ach.id}"]`);
-  //       if (!el) return;
-  //       const dateEl = el.querySelector('.cl-ach-list-details-expires-timer');
-  //       if (!dateEl) return;
-  //       dateEl.innerHTML = date;
-  //     }
-  //   });
-  //
-  //   this.settings.achievement.timerInterval = setTimeout(function () {
-  //     _this.updateDashboardAchievementExpirationTime();
-  //   }, 1000);
-  // };
 
   this.rewardItem = async function (award) {
     const listItem = document.createElement('div');
@@ -3753,79 +3400,6 @@ export const MainWidget = function (options) {
       paginatorClaimed.appendChild(next);
     }
 
-    // if (isClaimed) {
-    //   _this.settings.rewardsSection.accordionLayout.map(t => {
-    //     if (t.type === 'claimedAwards') {
-    //       t.show = true;
-    //       if (paginationArr && paginationArr.length) {
-    //         let page = '';
-    //         for (const i in paginationArr) {
-    //           page += '<span class="paginator-item" data-page=' + paginationArr[i] + '\>' + paginationArr[i] + '</span>';
-    //         }
-    //         paginatorClaimed.innerHTML = page;
-    //
-    //         paginatorClaimed.prepend(prev);
-    //         paginatorClaimed.appendChild(next);
-    //       }
-    //     } else {
-    //       t.show = false;
-    //     }
-    //   });
-    // } else {
-    //   _this.settings.rewardsSection.accordionLayout.map(t => {
-    //     if (t.type === 'pastAwards') {
-    //       t.show = true;
-    //       if (paginationArr && paginationArr.length) {
-    //         let page = '';
-    //         for (const i in paginationArr) {
-    //           page += '<span class="paginator-item" data-page=' + paginationArr[i] + '\>' + paginationArr[i] + '</span>';
-    //         }
-    //         paginator.innerHTML = page;
-    //
-    //         paginator.prepend(prev);
-    //         paginator.appendChild(next);
-    //       }
-    //     } else {
-    //       t.show = false;
-    //     }
-    //   });
-    // }
-
-    // if (!totalCount) {
-    //   if (claimedTotalCount) {
-    //     _this.settings.rewardsSection.accordionLayout.map(t => {
-    //       switch (t.type) {
-    //         case 'availableAwards':
-    //           t.show = false;
-    //           break;
-    //         case 'claimedAwards':
-    //           t.show = true;
-    //           break;
-    //       }
-    //     });
-    //   } else {
-    //     _this.settings.rewardsSection.accordionLayout.map(t => {
-    //       switch (t.type) {
-    //         case 'availableAwards':
-    //           t.show = false;
-    //           break;
-    //         case 'claimedAwards':
-    //           if (this.settings.lbWidget.settings.instantWins.enable) {
-    //             t.show = false;
-    //           } else {
-    //             t.show = true;
-    //           }
-    //           break;
-    //         case 'instantWins':
-    //           if (this.settings.lbWidget.settings.instantWins.enable) {
-    //             t.show = true;
-    //           }
-    //           break;
-    //       }
-    //     });
-    //   }
-    // }
-
     const accordionObj = _this.awardsList(_this.settings.rewardsSection.accordionLayout, function (accordionSection, listContainer, topEntryContainer, layout, paginator) {
       let rewardData = _this.settings.lbWidget.settings.awards[layout.type];
       if (rewardData && rewardData.length) {
@@ -3906,8 +3480,6 @@ export const MainWidget = function (options) {
         if (typeof callback === 'function') {
           callback();
         }
-
-        // _this.loadInstantWins();
       },
       pageNumber,
       claimedPageNumber

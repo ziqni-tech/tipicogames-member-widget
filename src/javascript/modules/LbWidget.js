@@ -2280,20 +2280,28 @@ export const LbWidget = function (options) {
 
       // Award game click
     } else if (hasClass(el, 'cl-main-widget-ach-details-game-item') && el.closest('.reward-games')) {
-      const id = el.dataset.id;
+      const product = {
+        id: el.dataset.id,
+        refId: el.dataset.refId,
+        name: el.dataset.name
+      };
 
-      this.settings.callbacks.onGameSelected(id);
+      this.settings.callbacks.onGameSelected(product);
 
       // Contest details game click
     } else if (hasClass(el, 'cl-main-widget-ach-details-game-item') && el.closest('.tour-games')) {
       const drawer = document.querySelector('.cl-main-widget-tour-optIn-drawer');
       const container = document.querySelector('.cl-main-widget-lb-optin-container');
-      const id = el.dataset.id;
+      const product = {
+        id: el.dataset.id,
+        refId: el.dataset.refId,
+        name: el.dataset.name
+      };
 
       if (container.style.display === 'flex') {
         drawer.classList.add('active');
       } else {
-        this.settings.callbacks.onGameSelected(id);
+        this.settings.callbacks.onGameSelected(product);
       }
 
       // Contest details pick a game action
@@ -2323,12 +2331,16 @@ export const LbWidget = function (options) {
       const drawer = document.querySelector('.cl-main-widget-ach-optIn-drawer');
       const container = document.querySelector('.cl-main-widget-ach-details-container');
       const optInBtn = container.querySelector('.cl-main-widget-ach-details-optin-action');
-      const id = el.dataset.id;
+      const product = {
+        id: el.dataset.id,
+        refId: el.dataset.refId,
+        name: el.dataset.name
+      };
 
       if (optInBtn.style.display === 'flex') {
         drawer.classList.add('active');
       } else {
-        this.settings.callbacks.onGameSelected(id);
+        this.settings.callbacks.onGameSelected(product);
       }
 
       // Achievement list opt-in action
