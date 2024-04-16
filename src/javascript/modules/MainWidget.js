@@ -4249,53 +4249,51 @@ export const MainWidget = function (options) {
 
       _this.resetNavigation(callback);
 
-      // const container = document.querySelector('.cl-main-widget-wrapper');
-      //
-      // container.onmousedown = function (e) {
-      //   if (e.target.closest('.cl-main-widget-dashboard-rewards') || e.target.closest('.cl-main-widget-dashboard-achievements') || e.target.closest('.cl-main-widget-dashboard-tournaments')) return;
-      //
-      //   const coords = getCoords(container);
-      //   const shiftX = e.pageX - coords.left;
-      //   const maxLeft = window.innerWidth;
-      //
-      //   container.style.position = 'absolute';
-      //
-      //   moveAt(e);
-      //
-      //   function moveAt (e) {
-      //     let shift = e.pageX - shiftX + 225;
-      //     if (shift < -100) shift = -100;
-      //     if (shift > maxLeft) shift = maxLeft;
-      //     container.style.left = shift + 'px';
-      //   }
-      //
-      //   document.onmousemove = function (e) {
-      //     moveAt(e);
-      //   };
-      // };
-      //
-      // container.onmouseup = () => {
-      //   document.onmousemove = null;
-      //   container.onmouseup = null;
-      // };
-      //
-      // document.onmouseup = () => {
-      //   document.onmousemove = null;
-      //   container.onmouseup = null;
-      // };
-      //
-      // container.ondragstart = function () {
-      //   return false;
-      // };
-      //
-      // function getCoords (elem) {
-      //   const box = elem.getBoundingClientRect();
-      //   return {
-      //     left: box.left
-      //   };
-      // }
+      const container = document.querySelector('.cl-main-widget-wrapper');
 
-      // bla bla bla
+      container.onmousedown = function (e) {
+        if (e.target.closest('.cl-main-widget-dashboard-rewards') || e.target.closest('.cl-main-widget-dashboard-achievements') || e.target.closest('.cl-main-widget-dashboard-tournaments')) return;
+
+        const coords = getCoords(container);
+        const shiftX = e.pageX - coords.left;
+        const maxLeft = window.innerWidth;
+
+        container.style.position = 'absolute';
+
+        moveAt(e);
+
+        function moveAt (e) {
+          let shift = e.pageX - shiftX + 225;
+          if (shift < -100) shift = -100;
+          if (shift > maxLeft) shift = maxLeft;
+          container.style.left = shift + 'px';
+        }
+
+        document.onmousemove = function (e) {
+          moveAt(e);
+        };
+      };
+
+      container.onmouseup = () => {
+        document.onmousemove = null;
+        container.onmouseup = null;
+      };
+
+      document.onmouseup = () => {
+        document.onmousemove = null;
+        container.onmouseup = null;
+      };
+
+      container.ondragstart = function () {
+        return false;
+      };
+
+      function getCoords (elem) {
+        const box = elem.getBoundingClientRect();
+        return {
+          left: box.left
+        };
+      }
     }, 200);
   };
 };
