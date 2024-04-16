@@ -3079,6 +3079,9 @@ export const LbWidget = function (options) {
 
       // load rewards details
     } else if (hasClass(el, 'dashboard-rewards-list-item') || closest(el, '.dashboard-rewards-list-item') !== null) {
+      if (el.closest('.cl-main-widget-dashboard-rewards-list')) {
+        if (el.closest('.cl-main-widget-dashboard-rewards-list').classList.contains('dragging')) return;
+      }
       const awardId = (hasClass(el, 'dashboard-rewards-list-item')) ? el.dataset.id : closest(el, '.dashboard-rewards-list-item').dataset.id;
       const preLoader = _this.settings.mainWidget.preloader();
 
@@ -3356,18 +3359,6 @@ export const LbWidget = function (options) {
     } else if (hasClass(el, 'cl-main-accordion-container-menu-item')) {
       if (el.classList.contains('not-available')) return;
       _this.settings.mainWidget.listsNavigation(el);
-
-      // mobile theme switcher
-    } else if (hasClass(el, 'cl-mobile-theme-switcher')) {
-      const mainContainer = document.querySelector('.cl-main-widget-wrapper');
-      const msContainer = document.querySelector('.cl-widget-ms-wrapper');
-      if (mainContainer.classList.contains('lightTheme')) {
-        mainContainer.classList.remove('lightTheme');
-        msContainer.classList.remove('lightTheme');
-      } else {
-        mainContainer.classList.add('lightTheme');
-        msContainer.classList.add('lightTheme');
-      }
     }
   };
 

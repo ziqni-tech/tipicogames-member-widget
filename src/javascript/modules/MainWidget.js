@@ -1565,15 +1565,15 @@ export const MainWidget = function (options) {
       ? elemContainer.top - (elemTop - indentation) <= elemHeight : elemBottom - elemContainer.bottom <= elemHeight;
   };
 
-  this.isDashboardMemberVisibleInView = function (container, dashboardHeaderMember, dashboardHeader) {
-    if (container.scrollTop > 32) {
-      dashboardHeaderMember.classList.add('active');
-      dashboardHeader.classList.add('filled');
-    } else {
-      dashboardHeaderMember.classList.remove('active');
-      dashboardHeader.classList.remove('filled');
-    }
-  };
+  // this.isDashboardMemberVisibleInView = function (container, dashboardHeaderMember, dashboardHeader) {
+  //   if (container.scrollTop > 32) {
+  //     dashboardHeaderMember.classList.add('active');
+  //     dashboardHeader.classList.add('filled');
+  //   } else {
+  //     dashboardHeaderMember.classList.remove('active');
+  //     dashboardHeader.classList.remove('filled');
+  //   }
+  // };
 
   let onresizeInitialised = false;
   this.eventListeners = function () {
@@ -1625,35 +1625,6 @@ export const MainWidget = function (options) {
         if (member !== null) {
           _this.missingMember(_this.isElementVisibleInView(member, _this.settings.leaderboard.resultContainer));
         }
-      };
-    }
-
-    const darkModeToggle = document.querySelector('input[id=darkmode-toggle]');
-    const mainContainer = document.querySelector('.cl-main-widget-wrapper');
-    const msContainer = document.querySelector('.cl-widget-ms-wrapper');
-    const notificationContainer = document.querySelector('.cl-widget-notif-wrapper');
-
-    if (darkModeToggle) {
-      darkModeToggle.addEventListener('change', function () {
-        if (this.checked) {
-          mainContainer.classList.add('lightTheme');
-          msContainer.classList.add('lightTheme');
-          if (notificationContainer) notificationContainer.classList.add('lightTheme');
-        } else {
-          mainContainer.classList.remove('lightTheme');
-          msContainer.classList.remove('lightTheme');
-          if (notificationContainer) notificationContainer.classList.remove('lightTheme');
-        }
-      });
-    }
-
-    const dashboardBody = document.querySelector('.cl-main-widget-dashboard-body');
-    const dashboardHeaderMember = document.querySelector('.cl-main-widget-dashboard-header-label');
-    const dashboardHeader = document.querySelector('.cl-main-widget-dashboard-header');
-
-    if (dashboardBody && dashboardHeaderMember && dashboardBody.onscroll === null) {
-      dashboardBody.onscroll = function (event) {
-        _this.isDashboardMemberVisibleInView(event.target, dashboardHeaderMember, dashboardHeader);
       };
     }
   };
@@ -2959,6 +2930,39 @@ export const MainWidget = function (options) {
       const listItem = this.dashboardAwardItemEmpty();
       awardsList.appendChild(listItem);
     }
+
+    let mouseDown = false;
+    let startX;
+    let scrollLeft;
+    const slider = document.querySelector('.cl-main-widget-dashboard-rewards-list');
+
+    const startDragging = (e) => {
+      mouseDown = true;
+      startX = e.pageX - slider.offsetLeft;
+      scrollLeft = slider.scrollLeft;
+      setTimeout(function () {
+        slider.classList.add('dragging');
+      }, 100);
+    };
+
+    const stopDragging = (e) => {
+      mouseDown = false;
+      setTimeout(function () {
+        slider.classList.remove('dragging');
+      }, 50);
+    };
+
+    const move = (e) => {
+      if (!mouseDown) return;
+      const x = e.pageX - slider.offsetLeft;
+      const scroll = x - startX;
+      slider.scrollLeft = scrollLeft - scroll;
+    };
+
+    slider.addEventListener('mousemove', move, false);
+    slider.addEventListener('mousedown', startDragging, false);
+    slider.addEventListener('mouseup', stopDragging, false);
+    slider.addEventListener('mouseleave', stopDragging, false);
   };
 
   this.showAwardCelebration = async function (awardData) {
@@ -4244,6 +4248,54 @@ export const MainWidget = function (options) {
       }
 
       _this.resetNavigation(callback);
+
+      // const container = document.querySelector('.cl-main-widget-wrapper');
+      //
+      // container.onmousedown = function (e) {
+      //   if (e.target.closest('.cl-main-widget-dashboard-rewards') || e.target.closest('.cl-main-widget-dashboard-achievements') || e.target.closest('.cl-main-widget-dashboard-tournaments')) return;
+      //
+      //   const coords = getCoords(container);
+      //   const shiftX = e.pageX - coords.left;
+      //   const maxLeft = window.innerWidth;
+      //
+      //   container.style.position = 'absolute';
+      //
+      //   moveAt(e);
+      //
+      //   function moveAt (e) {
+      //     let shift = e.pageX - shiftX + 225;
+      //     if (shift < -100) shift = -100;
+      //     if (shift > maxLeft) shift = maxLeft;
+      //     container.style.left = shift + 'px';
+      //   }
+      //
+      //   document.onmousemove = function (e) {
+      //     moveAt(e);
+      //   };
+      // };
+      //
+      // container.onmouseup = () => {
+      //   document.onmousemove = null;
+      //   container.onmouseup = null;
+      // };
+      //
+      // document.onmouseup = () => {
+      //   document.onmousemove = null;
+      //   container.onmouseup = null;
+      // };
+      //
+      // container.ondragstart = function () {
+      //   return false;
+      // };
+      //
+      // function getCoords (elem) {
+      //   const box = elem.getBoundingClientRect();
+      //   return {
+      //     left: box.left
+      //   };
+      // }
+
+      // bla bla bla
     }, 200);
   };
 };
