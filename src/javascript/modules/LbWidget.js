@@ -1490,8 +1490,11 @@ export const LbWidget = function (options) {
     }
   };
 
-  this.getAwardsApi = function (awardRequest) {
+  this.getAwardsApi = async function (awardRequest) {
     try {
+      if (!this.apiClientStomp) {
+        await this.initApiClientStomp();
+      }
       if (!this.settings.apiWs.awardsApiWsClient) {
         this.settings.apiWs.awardsApiWsClient = new AwardsApiWs(this.apiClientStomp);
       }
