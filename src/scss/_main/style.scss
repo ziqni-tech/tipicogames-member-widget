@@ -5036,7 +5036,7 @@
 
 .cl-main-widget-wrapper .cl-main-widget-ach-details-container .cl-main-widget-ach-details-body-description-tc.expanded .cl-main-widget-ach-details-tc {
   padding-bottom: 24px;
-  max-height: 100vh;
+  max-height: fit-content;
   opacity: 1;
 }
 
@@ -5068,12 +5068,12 @@
 
 .cl-main-widget-wrapper .cl-main-widget-ach-details-body-description-tc.expanded .cl-main-widget-tournament-details-tc {
   opacity: 1;
-  max-height: 100vh;
+  max-height: fit-content;
   padding-bottom: 24px;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-ach-details-body-description-tc.expanded .cl-main-widget-tournament-details-tc p {
-  max-height: 100vh;
+  max-height: fit-content;
   font-size: 12px;
 }
 
@@ -5126,11 +5126,11 @@
 .cl-main-widget-tournament-details-body-description-tc.expanded {
   .cl-main-widget-tournament-details-tc {
     opacity: 1;
-    max-height: 100vh;
+    max-height: fit-content;
     padding-bottom: 24px;
   }
   .cl-main-widget-tournament-details-tc p {
-    max-height: 100vh;
+    max-height: fit-content;
     font-size: 12px;
   }
 }
@@ -7500,7 +7500,7 @@
 
 .cl-main-widget-wrapper .cl-main-widget-reward-details-container .cl-main-widget-reward-details-tc-wrapp.expanded {
   .cl-main-widget-reward-details-tc-body {
-    max-height: 100vh;
+    max-height: fit-content;
     opacity: 1;
     padding: 24px 16px;
     font-size: 12px;
@@ -7514,7 +7514,7 @@
     font-style: normal;
     font-weight: 600;
     line-height: 18px;
-    max-height: 100vh;
+    max-height: fit-content;
   }
 }
 
