@@ -2983,8 +2983,9 @@ export const LbWidget = function (options) {
 
       // achievements details back button
     } else if (hasClass(el, 'cl-main-widget-ach-details-back-btn')) {
-      _this.settings.mainWidget.hideAchievementDetails(function () {
-      });
+      const container = document.querySelector('.cl-main-widget-ach-details-body-container');
+      container.scrollTop = 0;
+      _this.settings.mainWidget.hideAchievementDetails(function () {});
 
       // rewards details back button
     } else if (hasClass(el, 'cl-main-widget-reward-details-back-btn')) {

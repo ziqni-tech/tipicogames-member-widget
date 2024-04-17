@@ -1996,6 +1996,14 @@ export const MainWidget = function (options) {
       rewardName = ach.reward.name;
     }
 
+    let endsValue = '-';
+    if (ach.scheduling && ach.scheduling.endDate) {
+      endsValue = new Date(ach.scheduling.endDate).toLocaleString('en-GB', { timeZone: 'UTC', dateStyle: 'short', timeStyle: 'short' });
+      if (endsValue.includes(', 00:00')) {
+        endsValue = endsValue.replace(', 00:00', '');
+      }
+    }
+
     const template = require('../templates/mainWidget/achievementItem.hbs');
     listItem.innerHTML = template({
       id: ach.id,
@@ -2003,7 +2011,7 @@ export const MainWidget = function (options) {
       bgImage: bgImage,
       rewardValue: rewardValue,
       endsLabel: this.settings.lbWidget.settings.translation.achievements.endsLabel,
-      endsValue: new Date(ach.scheduling.endDate).toLocaleString('en-GB', { timeZone: 'UTC', dateStyle: 'short', timeStyle: 'short' }),
+      endsValue: endsValue,
       rewardName: rewardName,
       isOptedIn: isOptedIn,
       enterLabel: this.settings.lbWidget.settings.translation.achievements.enter
