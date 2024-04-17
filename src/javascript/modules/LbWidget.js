@@ -2851,6 +2851,10 @@ export const LbWidget = function (options) {
 
       // load achievement details
     } else if ((hasClass(el, 'cl-ach-list-more') || closest(el, '.cl-ach-list-details-cont') !== null) && !closest(el, '.past')) {
+      if (el.closest('.cl-main-widget-dashboard-achievements-list')) {
+        if (el.closest('.cl-main-widget-dashboard-achievements-list').classList.contains('dragging')) return;
+      }
+
       const id = closest(el, '.cl-ach-list-item').dataset.id;
       const preLoader = _this.settings.mainWidget.preloader();
       preLoader.show(() => {});
@@ -2941,6 +2945,9 @@ export const LbWidget = function (options) {
 
       // dashboard competition button
     } else if (hasClass(el, 'dashboard-tournament-item') || closest(el, '.dashboard-tournament-item')) {
+      if (el.closest('.cl-main-widget-dashboard-tournaments-list')) {
+        if (el.closest('.cl-main-widget-dashboard-tournaments-list').classList.contains('dragging')) return;
+      }
       const tournamentId = hasClass(el, 'dashboard-tournament-item')
         ? el.dataset.id
         : closest(el, '.dashboard-tournament-item').dataset.id;

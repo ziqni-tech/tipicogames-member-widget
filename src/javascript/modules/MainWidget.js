@@ -3085,6 +3085,39 @@ export const MainWidget = function (options) {
     if (typeof callback === 'function') {
       callback();
     }
+
+    let mouseDown = false;
+    let startX;
+    let scrollLeft;
+    const slider = tournamentsList;
+
+    const startDragging = (e) => {
+      mouseDown = true;
+      startX = e.pageX - slider.offsetLeft;
+      scrollLeft = slider.scrollLeft;
+      setTimeout(function () {
+        slider.classList.add('dragging');
+      }, 100);
+    };
+
+    const stopDragging = (e) => {
+      mouseDown = false;
+      setTimeout(function () {
+        slider.classList.remove('dragging');
+      }, 50);
+    };
+
+    const move = (e) => {
+      if (!mouseDown) return;
+      const x = e.pageX - slider.offsetLeft;
+      const scroll = x - startX;
+      slider.scrollLeft = scrollLeft - scroll;
+    };
+
+    slider.addEventListener('mousemove', move, false);
+    slider.addEventListener('mousedown', startDragging, false);
+    slider.addEventListener('mouseup', stopDragging, false);
+    slider.addEventListener('mouseleave', stopDragging, false);
   };
 
   this.loadDashboardAchievements = function (achievementData, callback) {
@@ -3120,6 +3153,39 @@ export const MainWidget = function (options) {
     if (typeof callback === 'function') {
       callback();
     }
+
+    let mouseDown = false;
+    let startX;
+    let scrollLeft;
+    const slider = achList;
+
+    const startDragging = (e) => {
+      mouseDown = true;
+      startX = e.pageX - slider.offsetLeft;
+      scrollLeft = slider.scrollLeft;
+      setTimeout(function () {
+        slider.classList.add('dragging');
+      }, 100);
+    };
+
+    const stopDragging = (e) => {
+      mouseDown = false;
+      setTimeout(function () {
+        slider.classList.remove('dragging');
+      }, 50);
+    };
+
+    const move = (e) => {
+      if (!mouseDown) return;
+      const x = e.pageX - slider.offsetLeft;
+      const scroll = x - startX;
+      slider.scrollLeft = scrollLeft - scroll;
+    };
+
+    slider.addEventListener('mousemove', move, false);
+    slider.addEventListener('mousedown', startDragging, false);
+    slider.addEventListener('mouseup', stopDragging, false);
+    slider.addEventListener('mouseleave', stopDragging, false);
   };
 
   this.rewardItem = async function (award) {
