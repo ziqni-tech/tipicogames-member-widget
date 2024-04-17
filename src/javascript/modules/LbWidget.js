@@ -3086,6 +3086,7 @@ export const LbWidget = function (options) {
     } else if (hasClass(el, 'cl-main-widget-reward-details-drawer-btn-decline')) {
       const drawer = closest(el, '.cl-main-widget-reward-details-drawer');
       drawer.classList.remove('active');
+      _this.settings.mainWidget.hideRewardDetails(function () {});
 
       // load rewards details
     } else if (hasClass(el, 'dashboard-rewards-list-item') || closest(el, '.dashboard-rewards-list-item') !== null) {

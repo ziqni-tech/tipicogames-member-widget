@@ -3320,7 +3320,7 @@ export const MainWidget = function (options) {
     const template = require('../templates/mainWidget/rewardItemPast.hbs');
     listItem.innerHTML = template({
       name: reward.name,
-      status: reward.status,
+      status: reward.status.toLowerCase(),
       campaign: campaign,
       expires: expires,
       pastFS: this.settings.lbWidget.settings.translation.rewards.pastFS,
