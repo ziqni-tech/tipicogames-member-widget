@@ -2609,6 +2609,7 @@ export const MainWidget = function (options) {
       languageKey: this.settings.language,
       contestFilter: {
         competitionIds: [tournament.id],
+        constraints: ['hasOptInStatus'],
         statusCode: {
           moreThan: 0,
           lessThan: 100
@@ -2705,6 +2706,13 @@ export const MainWidget = function (options) {
     const diff = moment(contest.scheduledEndDate).diff(moment(contest.scheduledStartDate));
     duration = moment.duration(diff).humanize();
 
+    let points = '-';
+    let position = '-';
+    if (contest.status === 'Active' && contest.optInStatus) {
+      points = contest.optInStatus.points;
+      position = contest.optInStatus.position;
+    }
+
     const date = isReadyStatus ? new Date(contest.scheduledStartDate) : new Date(contest.scheduledEndDate);
     const template = require('../templates/dashboard/tournamentItem.hbs');
     listItem.innerHTML = template({
@@ -2727,7 +2735,9 @@ export const MainWidget = function (options) {
       pointsLabel: this.settings.lbWidget.settings.translation.tournaments.pointsLabel,
       productsCount: productsCount,
       products: products,
-      duration: duration
+      duration: duration,
+      points: points,
+      position: position
     });
 
     return listItem;
@@ -2740,6 +2750,7 @@ export const MainWidget = function (options) {
       languageKey: this.settings.language,
       contestFilter: {
         competitionIds: [tournament.id],
+        constraints: ['hasOptInStatus'],
         statusCode: {
           moreThan: 0,
           lessThan: 100
@@ -2810,6 +2821,13 @@ export const MainWidget = function (options) {
     const date = new Date(contest.scheduledEndDate);
     const startedDate = new Date(contest.scheduledStartDate);
 
+    let points = '-';
+    let position = '-';
+    if (contest.optInStatus) {
+      points = contest.optInStatus.points;
+      position = contest.optInStatus.position;
+    }
+
     const template = require('../templates/mainWidget/tournamentResultItem.hbs');
     listItem.innerHTML = template({
       title: contest.name,
@@ -2830,7 +2848,9 @@ export const MainWidget = function (options) {
       icon: contest.iconLink ?? '',
       positionLabel: this.settings.lbWidget.settings.translation.tournaments.positionLabel,
       spinsLeftLabel: this.settings.lbWidget.settings.translation.tournaments.spinsLeftLabel,
-      pointsLabel: this.settings.lbWidget.settings.translation.tournaments.pointsLabel
+      pointsLabel: this.settings.lbWidget.settings.translation.tournaments.pointsLabel,
+      points: points,
+      position: position
     });
 
     return listItem;
