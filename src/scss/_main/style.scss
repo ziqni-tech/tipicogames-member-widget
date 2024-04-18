@@ -1958,6 +1958,7 @@
   border: 1px solid rgba(255, 255, 255, 0.4);
   border-radius: 100%;
   background: rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(8px);
   min-width: 20px;
   height: 20px;
   display: flex;
@@ -2415,6 +2416,7 @@
   border: 1px solid rgba(255,255,255,.4);
   border-radius: 100%;
   background: rgba(255,255,255,.16);
+  backdrop-filter: blur(8px);
   min-width: 20px;
   height: 20px;
   display: flex;

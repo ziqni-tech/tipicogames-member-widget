@@ -2309,6 +2309,21 @@ export const LbWidget = function (options) {
 
       // Contest details pick a game action
     } else if (hasClass(el, 'cl-main-widget-lb-details-body-cta-ends-btn-pick')) {
+      const body = document.querySelector('.cl-main-widget-tournament-details-body');
+      const leaderBoard = document.querySelector('.cl-main-widget-lb-leaderboard');
+      const menuItems = document.querySelectorAll('.cl-main-widget-lb-details-menu-item');
+
+      menuItems.forEach(item => {
+        if (item.classList.contains('info')) {
+          item.classList.add('active');
+        } else {
+          item.classList.remove('active');
+        }
+      });
+
+      body.style.display = 'block';
+      leaderBoard.style.display = 'none';
+
       const gamesEl = document.querySelector('.cl-main-widget-ach-details-games.tour-game');
       const container = gamesEl.closest('.cl-main-widget-lb-details-description-container');
       const topPos = gamesEl.offsetTop;
@@ -3215,6 +3230,23 @@ export const LbWidget = function (options) {
       gameItems.classList.remove('expanded');
       gameFull.style.display = 'flex';
       gameOverlay.style.display = 'block';
+
+      const body = document.querySelector('.cl-main-widget-tournament-details-body');
+      const leaderBoard = document.querySelector('.cl-main-widget-lb-leaderboard');
+      const menuItems = document.querySelectorAll('.cl-main-widget-lb-details-menu-item');
+      const container = document.querySelector('.cl-main-widget-lb-details-description-container');
+
+      menuItems.forEach(item => {
+        if (item.classList.contains('info')) {
+          item.classList.add('active');
+        } else {
+          item.classList.remove('active');
+        }
+      });
+
+      body.style.display = 'block';
+      leaderBoard.style.display = 'none';
+      container.scrollTop = 0;
 
       _this.settings.mainWidget.resetNavigation();
 
