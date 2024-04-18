@@ -2098,6 +2098,8 @@ export const MainWidget = function (options) {
     if (!ach) return;
 
     const bar = query(ach, '.cl-ach-list-progression-bar');
+    if (!bar) return;
+
     const barLabel = query(ach, '.cl-ach-list-progression-label');
     bar.style.width = ((percentageComplete > 1 || percentageComplete === 0) ? percentageComplete : 1) + '%';
     barLabel.innerHTML = percentageComplete + '/100';

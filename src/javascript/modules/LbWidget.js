@@ -2245,11 +2245,11 @@ export const LbWidget = function (options) {
         preLoader.show(async function () {
           await _this.settings.apiWs.optInApiWsClient.manageOptin(optInRequest, (json) => {
             setTimeout(function () {
-              preLoader.hide();
               _this.settings.mainWidget.hideAchievementDetails(
-                _this.checkForAvailableAchievements(1)
+                _this.settings.mainWidget.loadAchievements(1),
+                preLoader.hide()
               );
-            }, 2000);
+            }, 2500);
           });
         });
       }
@@ -2377,6 +2377,12 @@ export const LbWidget = function (options) {
         action: 'join'
       }, null);
 
+      let scrollTop = 0;
+      const container = document.querySelector('.cl-main-widget-ach-list .current .cl-accordion-list-container');
+      if (container) {
+        scrollTop = container.scrollTop;
+      }
+
       const preLoader = _this.settings.mainWidget.preloader();
       preLoader.show(async function () {
         await _this.settings.apiWs.optInApiWsClient.manageOptin(optInRequest, (json) => {
@@ -2390,9 +2396,11 @@ export const LbWidget = function (options) {
             } else {
               _this.settings.mainWidget.loadAchievements(1, function () {
                 preLoader.hide();
+                const container = document.querySelector('.cl-main-widget-ach-list .current .cl-accordion-list-container');
+                container.scrollTop = scrollTop;
               });
             }
-          }, 2000);
+          }, 2500);
         });
       });
 
