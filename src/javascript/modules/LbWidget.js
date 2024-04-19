@@ -160,7 +160,7 @@ export const LbWidget = function (options) {
       finishedTotalCount: 0
     },
     leaderboard: {
-      fullLeaderboardSize: 3,
+      fullLeaderboardSize: 1,
       refreshIntervalMillis: 1000000,
       refreshInterval: null,
       refreshLbDataInterval: null,
@@ -769,6 +769,31 @@ export const LbWidget = function (options) {
 
     this.settings.competition.activeCompetition.products = products.data;
 
+    let lastPlace = 1;
+
+    if (this.settings.competition.activeContest && this.settings.competition.activeContest.rewards && this.settings.competition.activeContest.rewards.length) {
+      this.settings.competition.activeContest.rewards.forEach(reward => {
+        if (reward.rewardRank.indexOf('-') !== -1 || reward.rewardRank.indexOf(',') !== -1) {
+          const rewardRankArr = reward.rewardRank.split(',');
+          rewardRankArr.forEach(r => {
+            const idx = r.indexOf('-');
+            if (idx !== -1) {
+              const end = parseInt(r.substring(idx + 1));
+              if (end > lastPlace) {
+                lastPlace = end;
+              }
+            } else if (parseInt(r) > lastPlace) {
+              lastPlace = parseInt(r);
+            }
+          });
+        } else if (parseInt(reward.rewardRank) > lastPlace) {
+          lastPlace = parseInt(reward.rewardRank);
+        }
+      });
+    }
+
+    this.settings.leaderboard.fullLeaderboardSize = lastPlace;
+
     if (typeof callback === 'function') {
       callback();
     }
@@ -824,7 +849,7 @@ export const LbWidget = function (options) {
   this.getLeaderboardData = async function (count, callback) {
     const _this = this;
 
-    let lastPlace = 3;
+    let lastPlace = 1;
 
     if (this.settings.competition.activeContest && this.settings.competition.activeContest.rewards && this.settings.competition.activeContest.rewards.length) {
       this.settings.competition.activeContest.rewards.forEach(reward => {

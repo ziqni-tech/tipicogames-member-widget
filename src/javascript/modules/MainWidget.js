@@ -1209,7 +1209,7 @@ export const MainWidget = function (options) {
 
     positionEl.classList.add('rank-' + reward.rewardRank);
     positionEl.innerHTML = reward.rewardRank;
-    valueEl.innerHTML = reward.rewardValue + ' ' + reward.rewardType.key;
+    valueEl.innerHTML = reward.rewardValue + ' ' + reward.name;
 
     item.appendChild(positionEl);
     item.appendChild(valueEl);
@@ -2412,7 +2412,7 @@ export const MainWidget = function (options) {
 
     rewardValue.innerHTML = data.rewardValue;
     detailRewardValue.innerHTML = data.rewardValue;
-    rewardType.innerHTML = data.rewardType.key;
+    rewardType.innerHTML = data.name;
 
     if (data.entityType === 'Achievement') {
       const achievement = await this.settings.lbWidget.getAchievementsByIds([data.entityId]);
@@ -2892,7 +2892,7 @@ export const MainWidget = function (options) {
     const template = require('../templates/dashboard/awardItem.hbs');
     listItem.innerHTML = template({
       rewardValue: award.rewardValue,
-      rewardType: award.rewardType.key ?? '',
+      rewardName: award.rewardData.name,
       expiresInLabel: this.settings.lbWidget.settings.translation.rewards.expiresInLabel,
       rewardImg: rewardImg,
       expires: expires,
@@ -3062,7 +3062,7 @@ export const MainWidget = function (options) {
     const template = require('../templates/mainWidget/rewardCelebration.hbs');
     rewardCelebration.innerHTML = template({
       id: awardData.id,
-      rewardType: awardData.rewardType.key,
+      rewardName: awardData.name,
       rewardValue: awardData.rewardValue,
       campaign: campaign,
       expires: expires,
@@ -3282,7 +3282,7 @@ export const MainWidget = function (options) {
     const template = require('../templates/mainWidget/rewardItem.hbs');
     listItem.innerHTML = template({
       rewardValue: award.rewardValue,
-      rewardType: award.rewardType.key ?? '',
+      rewardName: award.rewardData.name,
       expiresInLabel: this.settings.lbWidget.settings.translation.rewards.expiresInLabel,
       rewardImg: rewardImg,
       isClimeBtn: isClimeBtn,
