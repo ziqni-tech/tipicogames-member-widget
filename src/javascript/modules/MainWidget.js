@@ -1217,6 +1217,24 @@ export const MainWidget = function (options) {
     return item;
   };
 
+  this.rewardRankSort = (a, b) => {
+    const rankA = this.parseRewardRank(a.rewardRank);
+    const rankB = this.parseRewardRank(b.rewardRank);
+
+    if (rankA < rankB) {
+      return -1;
+    }
+    if (rankA > rankB) {
+      return 1;
+    }
+    return 0;
+  };
+
+  this.parseRewardRank = (rank) => {
+    const parts = rank.split('-');
+    return parseInt(parts[0]);
+  };
+
   this.leaderboardDetailsUpdate = function () {
     const _this = this;
     const mainLabel = query(_this.settings.section, '.cl-main-widget-lb-details-content-label-text');
@@ -1243,7 +1261,8 @@ export const MainWidget = function (options) {
     games.innerHTML = '';
 
     if (this.settings.lbWidget.settings.competition.activeContest && this.settings.lbWidget.settings.competition.activeContest.rewards) {
-      this.settings.lbWidget.settings.competition.activeContest.rewards.forEach(reward => {
+      const rewards = this.settings.lbWidget.settings.competition.activeContest.rewards.sort(this.rewardRankSort);
+      rewards.forEach(reward => {
         const rewardItem = this.createLbRewardItem(reward);
         rewardItems.appendChild(rewardItem);
       });
