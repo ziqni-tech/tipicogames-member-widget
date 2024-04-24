@@ -4420,7 +4420,7 @@ export const MainWidget = function (options) {
 
       _this.resetNavigation(callback);
 
-      _this.enableDragging();
+      // _this.enableDragging();
     }, 200);
   };
 };
