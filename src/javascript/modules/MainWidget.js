@@ -655,7 +655,7 @@ export const MainWidget = function (options) {
         const rewardCel = query(cellRow, '.lb-reward');
         if (rewardCel !== null) {
           rewardCel.innerHTML = (typeof reward !== 'undefined' && reward.length)
-            ? `<span class='lb-reward-value'>${reward[0].rewardValue}</span> ${reward[0].rewardType.key}`
+            ? `<span class='lb-reward-value'>${reward[0].rewardValue}</span> ${reward[0].name}`
             : '';
         }
       } else {
