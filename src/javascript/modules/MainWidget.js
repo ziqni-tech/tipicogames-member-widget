@@ -655,7 +655,7 @@ export const MainWidget = function (options) {
         const rewardCel = query(cellRow, '.lb-reward');
         if (rewardCel !== null) {
           rewardCel.innerHTML = (typeof reward !== 'undefined' && reward.length)
-            ? `<span class='lb-reward-value'>${reward[0].rewardValue}</span> ${reward[0].name}`
+            ? `${reward[0].name}`
             : '';
         }
       } else {
@@ -1209,7 +1209,7 @@ export const MainWidget = function (options) {
 
     positionEl.classList.add('rank-' + reward.rewardRank);
     positionEl.innerHTML = reward.rewardRank;
-    valueEl.innerHTML = reward.rewardValue + ' ' + reward.name;
+    valueEl.innerHTML = reward.name;
 
     item.appendChild(positionEl);
     item.appendChild(valueEl);

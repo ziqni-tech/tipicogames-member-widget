@@ -48,7 +48,7 @@
   },
   "dependencies": {
     "@babel/plugin-transform-object-rest-spread": "^7.22.15",
-    "@ziqni-tech/member-api-client": "^1.0.19",
+    "@ziqni-tech/member-api-client": "^1.0.20",
     "css-vars-ponyfill": "^2.3.2",
     "cytoscape": "^3.25.0",
     "cytoscape-dagre": "^2.5.0",
