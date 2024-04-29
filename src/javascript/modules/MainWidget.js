@@ -1136,6 +1136,26 @@ export const MainWidget = function (options) {
       : '<p>' + this.settings.lbWidget.settings.translation.global.tAndCEmpty + '</p>';
   };
 
+  this.getActiveCompetitionHPC = function () {
+    let hpc = '';
+
+    if (this.settings.lbWidget.settings.competition.activeCompetition && this.settings.lbWidget.settings.competition.activeCompetition.customFields.howArePointCalculated) {
+      hpc = this.settings.lbWidget.settings.competition.activeCompetition.customFields.howArePointCalculated;
+    }
+
+    return hpc;
+  };
+
+  this.getActiveCompetitionMinBet = function () {
+    let minBet = '';
+
+    if (this.settings.lbWidget.settings.competition.activeCompetition && this.settings.lbWidget.settings.competition.activeCompetition.customFields.minBet) {
+      minBet = this.settings.lbWidget.settings.competition.activeCompetition.customFields.minBet;
+    }
+
+    return minBet;
+  };
+
   this.showTermsAndConditions = (type, id, contestId = null) => {
     const drawer = document.createElement('div');
     const wrapp = document.querySelector('.cl-main-widget-inner-wrapper');
@@ -1244,6 +1264,7 @@ export const MainWidget = function (options) {
     let icon = null;
     const rewardTitle = query(_this.settings.section, '.cl-main-widget-lb-details-reward-title');
     const duration = query(_this.settings.section, '.cl-main-widget-tournament-details-body .cl-main-widget-lb-details-duration');
+    const minBet = query(_this.settings.section, '.cl-main-widget-tournament-details-body .cl-main-widget-lb-details-min-bet');
     const actionsDate = query(this.settings.section, '.cl-main-widget-lb-details-body-cta-ends-date');
     const actionsDateLabel = query(this.settings.section, '.cl-main-widget-lb-details .cl-main-widget-ach-details-body-cta-ends-label');
     const actionsStartDate = query(this.settings.section, '.cl-main-widget-lb-details-body-cta-starts-date');
@@ -1253,6 +1274,7 @@ export const MainWidget = function (options) {
     const rewardedEl = query(this.settings.section, '.cl-main-widget-lb-details-rewarded');
     const games = query(this.settings.section, '.cl-main-widget-ach-details-game-items.tour-games');
     const liveIcon = query(this.settings.section, '.cl-main-widget-lb-details .cl-main-widget-ach-details-body-cta-live');
+    const howPC = query(_this.settings.section, '.cl-main-widget-tournament-details-hc');
 
     rewardedEl.innerHTML = this.settings.lbWidget.settings.translation.tournaments.rewarded.replace('$', this.settings.lbWidget.settings.leaderboard.fullLeaderboardSize);
 
@@ -1276,12 +1298,22 @@ export const MainWidget = function (options) {
     if (!title) return;
 
     tc.innerHTML = _this.getActiveCompetitionTAndC();
+    howPC.innerHTML = _this.getActiveCompetitionHPC();
     title.innerHTML = _this.getActiveContestTitle();
     headerLabel.innerHTML = _this.getActiveContestTitle();
     const iconUrl = _this.getActiveContestIcon();
     icon.style = `background-image: url(${iconUrl})`;
     rewardTitle.innerHTML = _this.getActiveContestRewardTitle();
     duration.innerHTML = _this.getActiveContestDuration();
+
+    const minBetValue = _this.getActiveCompetitionMinBet();
+    if (minBetValue) {
+      minBet.parentElement.style.display = 'block';
+      minBet.innerHTML = minBetValue;
+    } else {
+      minBet.parentElement.style.display = 'none';
+    }
+
     actionsDate.innerHTML = _this.getActiveContestDate();
     actionsStartDate.innerHTML = _this.getActiveContestStartDate();
 

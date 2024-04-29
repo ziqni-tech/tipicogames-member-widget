@@ -5092,6 +5092,39 @@
   font-size: 12px;
 }
 
+.cl-main-widget-wrapper .cl-main-widget-tournament-details-hc {
+  color: var(--ui-color-text-secondary);
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 18px;
+  padding: 0;
+  opacity: 0;
+  max-height: 0;
+  transition: all .3s;
+}
+
+.cl-main-widget-wrapper .cl-main-widget-tournament-details-hc p {
+  color: var(--ui-color-text-secondary);
+  font-style: normal;
+  font-weight: 600;
+  line-height: 18px;
+  max-height: 0;
+  font-size: 0;
+  transition: all .3s;
+}
+
+.cl-main-widget-wrapper .cl-main-widget-tournament-details-body-description-tc.hc.expanded .cl-main-widget-tournament-details-hc {
+  opacity: 1;
+  max-height: fit-content;
+  padding-bottom: 24px;
+}
+
+.cl-main-widget-wrapper .cl-main-widget-tournament-details-body-description-tc.hc.expanded .cl-main-widget-tournament-details-hc p {
+  max-height: fit-content;
+  font-size: 12px;
+}
+
 .cl-main-widget-ach-details-body-description-tc {
   width: 100%;
   padding: 0 8px 0 16px;

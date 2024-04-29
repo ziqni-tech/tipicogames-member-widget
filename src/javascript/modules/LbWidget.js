@@ -1001,6 +1001,10 @@ export const LbWidget = function (options) {
           moreThan: moreValue,
           lessThan: 30
         },
+        optInStatusCodes: {
+          gt: -5,
+          lt: 35
+        },
         sortBy: [{
           queryField: 'created',
           order: 'Desc'
