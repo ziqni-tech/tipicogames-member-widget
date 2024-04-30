@@ -271,7 +271,7 @@ export const LbWidget = function (options) {
       onCompetitionStatusChanged: function (competitionId, currentState, previousState) {},
       onDisconnect: function () {},
       onLoadComplete: function () {},
-      onClose: function () {},
+      onClose: null,
       onGameSelected: function () {}
     },
     callback: null
@@ -2457,7 +2457,9 @@ export const LbWidget = function (options) {
       hasClass(el, 'cl-main-widget-dashboard-header-close') ||
       hasClass(el, 'cl-landscape-close')
     ) {
-      this.settings.callbacks.onClose();
+      if (this.settings.callbacks.onClose && typeof this.settings.callbacks.onClose === 'function') {
+        this.settings.callbacks.onClose();
+      }
       // _this.settings.mainWidget.hide(function () {
       //   _this.activeDataRefresh();
       // });

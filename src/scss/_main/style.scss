@@ -36,6 +36,18 @@
   overflow: hidden;
 }
 
+.cl-main-widget-wrapper.no-close {
+  .cl-main-widget-lb-header-close,
+  .cl-main-widget-ach-header-close,
+  .cl-main-widget-reward-header-close,
+  .cl-main-widget-inbox-header-close,
+  .cl-widget-main-widget-overlay-wrapper,
+  .cl-main-widget-dashboard-header-close,
+  .cl-landscape-close {
+    display: none !important;
+  }
+}
+
 .cl-widget-ms-wrapper, .cl-widget-notif-wrapper {
   float: left;
   width: 100%;

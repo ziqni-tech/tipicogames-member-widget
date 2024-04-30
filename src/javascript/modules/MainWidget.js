@@ -2774,6 +2774,11 @@ export const MainWidget = function (options) {
       position = contest.optInStatus.position;
     }
 
+    let minBetValue = null;
+    if (tournament.customFields.minBet) {
+      minBetValue = tournament.customFields.minBet;
+    }
+
     const date = isReadyStatus ? new Date(contest.scheduledStartDate) : new Date(contest.scheduledEndDate);
     const template = require('../templates/dashboard/tournamentItem.hbs');
     listItem.innerHTML = template({
@@ -2797,6 +2802,7 @@ export const MainWidget = function (options) {
       productsCount: productsCount,
       products: products,
       duration: duration,
+      minBetValue: minBetValue,
       points: points,
       position: position
     });
@@ -4442,6 +4448,10 @@ export const MainWidget = function (options) {
       _this.settings.container.style.display = 'block';
       _this.settings.overlayContainer.style.display = 'block';
       addClass(_this.settings.container, 'cl-show');
+
+      if (!_this.settings.lbWidget.settings.callbacks.onClose || typeof _this.settings.lbWidget.settings.callbacks.onClose !== 'function') {
+        addClass(_this.settings.container, 'no-close');
+      }
 
       const member = query(_this.settings.leaderboard.resultContainer, '.cl-lb-member-row');
       if (member !== null) {
