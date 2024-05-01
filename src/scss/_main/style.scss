@@ -1747,6 +1747,7 @@
   display: flex;
   flex-wrap: nowrap;
   overflow-y: auto;
+  scroll-behavior: smooth;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-tournaments-list::-webkit-scrollbar {
@@ -2293,6 +2294,7 @@
   display: flex;
   flex-wrap: nowrap;
   overflow-y: auto;
+  scroll-behavior: smooth;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-achievements-list::-webkit-scrollbar {
@@ -2327,6 +2329,7 @@
   flex-wrap: nowrap;
   overflow-y: auto;
   margin-top: 8px;
+  scroll-behavior: smooth;
 }
 
 .cl-main-widget-dashboard-rewards-list::-webkit-scrollbar {
@@ -8819,4 +8822,47 @@
   border: none;
   left: 0;
   top: 0;
+}
+
+@media screen and (min-width: 431px) {
+  .cl-main-widget-dashboard-tournaments-wrapp,
+  .cl-main-widget-dashboard-rewards-wrapp,
+  .cl-main-widget-dashboard-achievements-wrapp {
+    position: relative;
+  }
+
+  .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-tournaments-list-right,
+  .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-rewards-list-right,
+  .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-achievements-list-right {
+    width: 30px;
+    height: 30px;
+    background-color: var(--Primary-White);
+    background-image: url(../../images/arrow-right.svg);
+    background-repeat: no-repeat;
+    background-position: center;
+    border-radius: 100%;
+    position: absolute;
+    right: 6px;
+    top: calc(50% - 15px);
+    cursor: pointer;
+    z-index: 2;
+  }
+
+  .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-tournaments-list-left,
+  .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-rewards-list-left,
+  .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-achievements-list-left {
+    width: 30px;
+    height: 30px;
+    background-color: var(--Primary-White);
+    background-image: url(../../images/arrow-right.svg);
+    background-repeat: no-repeat;
+    background-position: center;
+    border-radius: 100%;
+    position: absolute;
+    left: 6px;
+    top: calc(50% - 15px);
+    transform: scaleX(-1);
+    cursor: pointer;
+    z-index: 2;
+  }
 }

@@ -3018,40 +3018,35 @@ export const MainWidget = function (options) {
       awardsList.appendChild(listItem);
     }
 
-    if (window.screen.width > 400) {
-      let mouseDown = false;
-      let startX;
-      let scrollLeft;
-      const slider = document.querySelector('.cl-main-widget-dashboard-rewards-list');
+    const slidesContainer = document.querySelector('.cl-main-widget-dashboard-rewards-list');
+    const slide = document.querySelector('.cl-main-widget-dashboard-rewards-list .dashboard-rewards-list-item');
+    const prevButton = document.querySelector('.cl-main-widget-dashboard-rewards-list-left');
+    const nextButton = document.querySelector('.cl-main-widget-dashboard-rewards-list-right');
 
-      const startDragging = (e) => {
-        mouseDown = true;
-        startX = e.pageX - slider.offsetLeft;
-        scrollLeft = slider.scrollLeft;
-        setTimeout(function () {
-          slider.classList.add('dragging');
-        }, 100);
-      };
+    if (slidesContainer.scrollLeft === 0) prevButton.style.display = 'none';
 
-      const stopDragging = (e) => {
-        mouseDown = false;
-        setTimeout(function () {
-          slider.classList.remove('dragging');
-        }, 50);
-      };
+    slidesContainer.addEventListener('scroll', (event) => {
+      if (slidesContainer.scrollLeft > 0) {
+        prevButton.style.display = 'block';
+      } else {
+        prevButton.style.display = 'none';
+      }
 
-      const move = (e) => {
-        if (!mouseDown) return;
-        const x = e.pageX - slider.offsetLeft;
-        const scroll = x - startX;
-        slider.scrollLeft = scrollLeft - scroll;
-      };
+      if (slidesContainer.offsetWidth + slidesContainer.scrollLeft >= slidesContainer.scrollWidth) {
+        nextButton.style.display = 'none';
+      }
+    });
 
-      slider.addEventListener('mousemove', move, false);
-      slider.addEventListener('mousedown', startDragging, false);
-      slider.addEventListener('mouseup', stopDragging, false);
-      slider.addEventListener('mouseleave', stopDragging, false);
-    }
+    nextButton.addEventListener('click', (event) => {
+      const slideWidth = slide.clientWidth;
+      slidesContainer.scrollLeft += slideWidth;
+    });
+
+    prevButton.addEventListener('click', () => {
+      const slideWidth = slide.clientWidth;
+      slidesContainer.scrollLeft -= slideWidth;
+      nextButton.style.display = 'block';
+    });
   };
 
   this.showAwardCelebration = async function (awardData) {
@@ -3175,40 +3170,35 @@ export const MainWidget = function (options) {
       callback();
     }
 
-    if (window.screen.width > 400) {
-      let mouseDown = false;
-      let startX;
-      let scrollLeft;
-      const slider = tournamentsList;
+    const slidesContainer = document.querySelector('.cl-main-widget-dashboard-tournaments-list');
+    const slide = document.querySelector('.cl-main-widget-dashboard-tournaments-list .dashboard-tournament-item');
+    const prevButton = document.querySelector('.cl-main-widget-dashboard-tournaments-list-left');
+    const nextButton = document.querySelector('.cl-main-widget-dashboard-tournaments-list-right');
 
-      const startDragging = (e) => {
-        mouseDown = true;
-        startX = e.pageX - slider.offsetLeft;
-        scrollLeft = slider.scrollLeft;
-        setTimeout(function () {
-          slider.classList.add('dragging');
-        }, 100);
-      };
+    if (slidesContainer.scrollLeft === 0) prevButton.style.display = 'none';
 
-      const stopDragging = (e) => {
-        mouseDown = false;
-        setTimeout(function () {
-          slider.classList.remove('dragging');
-        }, 50);
-      };
+    slidesContainer.addEventListener('scroll', (event) => {
+      if (slidesContainer.scrollLeft > 0) {
+        prevButton.style.display = 'block';
+      } else {
+        prevButton.style.display = 'none';
+      }
 
-      const move = (e) => {
-        if (!mouseDown) return;
-        const x = e.pageX - slider.offsetLeft;
-        const scroll = x - startX;
-        slider.scrollLeft = scrollLeft - scroll;
-      };
+      if (slidesContainer.offsetWidth + slidesContainer.scrollLeft >= slidesContainer.scrollWidth) {
+        nextButton.style.display = 'none';
+      }
+    });
 
-      slider.addEventListener('mousemove', move, false);
-      slider.addEventListener('mousedown', startDragging, false);
-      slider.addEventListener('mouseup', stopDragging, false);
-      slider.addEventListener('mouseleave', stopDragging, false);
-    }
+    nextButton.addEventListener('click', (event) => {
+      const slideWidth = slide.clientWidth;
+      slidesContainer.scrollLeft += slideWidth;
+    });
+
+    prevButton.addEventListener('click', () => {
+      const slideWidth = slide.clientWidth;
+      slidesContainer.scrollLeft -= slideWidth;
+      nextButton.style.display = 'block';
+    });
   };
 
   this.loadDashboardAchievements = function (achievementData, callback) {
@@ -3245,40 +3235,35 @@ export const MainWidget = function (options) {
       callback();
     }
 
-    if (window.screen.width > 400) {
-      let mouseDown = false;
-      let startX;
-      let scrollLeft;
-      const slider = achList;
+    const slidesContainer = document.querySelector('.cl-main-widget-dashboard-achievements-list');
+    const slide = document.querySelector('.cl-main-widget-dashboard-achievements-list .cl-ach-list-item');
+    const prevButton = document.querySelector('.cl-main-widget-dashboard-achievements-list-left');
+    const nextButton = document.querySelector('.cl-main-widget-dashboard-achievements-list-right');
 
-      const startDragging = (e) => {
-        mouseDown = true;
-        startX = e.pageX - slider.offsetLeft;
-        scrollLeft = slider.scrollLeft;
-        setTimeout(function () {
-          slider.classList.add('dragging');
-        }, 100);
-      };
+    if (slidesContainer.scrollLeft === 0) prevButton.style.display = 'none';
 
-      const stopDragging = (e) => {
-        mouseDown = false;
-        setTimeout(function () {
-          slider.classList.remove('dragging');
-        }, 50);
-      };
+    slidesContainer.addEventListener('scroll', (event) => {
+      if (slidesContainer.scrollLeft > 0) {
+        prevButton.style.display = 'block';
+      } else {
+        prevButton.style.display = 'none';
+      }
 
-      const move = (e) => {
-        if (!mouseDown) return;
-        const x = e.pageX - slider.offsetLeft;
-        const scroll = x - startX;
-        slider.scrollLeft = scrollLeft - scroll;
-      };
+      if (slidesContainer.offsetWidth + slidesContainer.scrollLeft >= slidesContainer.scrollWidth) {
+        nextButton.style.display = 'none';
+      }
+    });
 
-      slider.addEventListener('mousemove', move, false);
-      slider.addEventListener('mousedown', startDragging, false);
-      slider.addEventListener('mouseup', stopDragging, false);
-      slider.addEventListener('mouseleave', stopDragging, false);
-    }
+    nextButton.addEventListener('click', (event) => {
+      const slideWidth = slide.clientWidth;
+      slidesContainer.scrollLeft += slideWidth;
+    });
+
+    prevButton.addEventListener('click', () => {
+      const slideWidth = slide.clientWidth;
+      slidesContainer.scrollLeft -= slideWidth;
+      nextButton.style.display = 'block';
+    });
   };
 
   this.rewardItem = async function (award) {
