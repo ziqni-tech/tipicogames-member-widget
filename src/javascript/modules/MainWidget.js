@@ -3020,8 +3020,11 @@ export const MainWidget = function (options) {
 
     const slidesContainer = document.querySelector('.cl-main-widget-dashboard-rewards-list');
     const slide = document.querySelector('.cl-main-widget-dashboard-rewards-list .dashboard-rewards-list-item');
+    const slides = document.querySelectorAll('.cl-main-widget-dashboard-rewards-list .dashboard-rewards-list-item');
     const prevButton = document.querySelector('.cl-main-widget-dashboard-rewards-list-left');
     const nextButton = document.querySelector('.cl-main-widget-dashboard-rewards-list-right');
+
+    if (slides.length < 2) nextButton.style.display = 'none';
 
     if (slidesContainer.scrollLeft === 0) prevButton.style.display = 'none';
 
@@ -3172,8 +3175,11 @@ export const MainWidget = function (options) {
 
     const slidesContainer = document.querySelector('.cl-main-widget-dashboard-tournaments-list');
     const slide = document.querySelector('.cl-main-widget-dashboard-tournaments-list .dashboard-tournament-item');
+    const slides = document.querySelectorAll('.cl-main-widget-dashboard-tournaments-list .dashboard-tournament-item');
     const prevButton = document.querySelector('.cl-main-widget-dashboard-tournaments-list-left');
     const nextButton = document.querySelector('.cl-main-widget-dashboard-tournaments-list-right');
+
+    if (slides.length < 2) nextButton.style.display = 'none';
 
     if (slidesContainer.scrollLeft === 0) prevButton.style.display = 'none';
 
@@ -3237,8 +3243,11 @@ export const MainWidget = function (options) {
 
     const slidesContainer = document.querySelector('.cl-main-widget-dashboard-achievements-list');
     const slide = document.querySelector('.cl-main-widget-dashboard-achievements-list .cl-ach-list-item');
+    const slides = document.querySelectorAll('.cl-main-widget-dashboard-achievements-list .cl-ach-list-item');
     const prevButton = document.querySelector('.cl-main-widget-dashboard-achievements-list-left');
     const nextButton = document.querySelector('.cl-main-widget-dashboard-achievements-list-right');
+
+    if (slides.length < 2) nextButton.style.display = 'none';
 
     if (slidesContainer.scrollLeft === 0) prevButton.style.display = 'none';
 

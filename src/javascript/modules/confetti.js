@@ -17,7 +17,7 @@ const confettiParams = {
 };
 
 const colors = [
-  { front: '#9348C1', back: '#5EDAFF' }
+  { front: '#FF8888', back: '#5EDAFF' }
 ];
 
 setupCanvas();
