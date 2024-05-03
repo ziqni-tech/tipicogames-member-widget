@@ -815,7 +815,9 @@ export const MainWidget = function (options) {
         memberFound,
         function (rank, icon, name, change, growth, points, reward, count, memberFound, isLast) {
           const newRow = _this.leaderboardRow(rank, icon, name, name, growth, points, reward, count, memberFound);
-          if (isLast) newRow.classList.add('lb-last');
+          if (isLast) {
+            newRow.classList.add('lb-last');
+          }
           const prevCellRow = query(_this.settings.leaderboard.container, '.cl-lb-rank-' + rank + '.cl-lb-count-' + (count - 1));
 
           if (prevCellRow !== null && typeof prevCellRow.length === 'undefined') {
@@ -1674,7 +1676,10 @@ export const MainWidget = function (options) {
         const member = query(_this.settings.leaderboard.resultContainer, '.cl-lb-member-row');
 
         if (member !== null) {
-          _this.missingMember(_this.isElementVisibleInView(member, _this.settings.leaderboard.resultContainer));
+          const detailsContainer = document.querySelector('.cl-main-widget-lb-details-description-container');
+          if (detailsContainer) {
+            _this.missingMember(_this.isElementVisibleInView(member, detailsContainer));
+          }
         }
       };
     }
