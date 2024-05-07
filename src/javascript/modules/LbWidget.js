@@ -3786,7 +3786,7 @@ export const LbWidget = function (options) {
 
       setInterval(async () => {
         await this.initApiClientStomp();
-      }, this.settings.expires);
+      }, 5 * 60 * 1000);
 
       this.loadStylesheet(() => {
         this.applyAppearance();
