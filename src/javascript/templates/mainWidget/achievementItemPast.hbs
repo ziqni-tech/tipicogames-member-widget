@@ -2,7 +2,7 @@
   <div class="cl-ach-list-icon" style="{{ bgImage }}"></div>
   <div class="cl-ach-list-details-wrap">
     <div class="cl-ach-list-details-expires {{#if isCompleted}} completed {{else if isEntrant}} expired {{else}} aborted {{/if}}">
-      <span class="cl-ach-list-details-expires-timer">{{ endsValue }} - </span>{{#if isCompleted}}{{ completedLabel }}{{else if isEntrant}}{{ expiredLabel }}{{else}}{{ abortedLabel }}{{/if}}
+      {{#if endsValue}}<span class="cl-ach-list-details-expires-timer">{{ endsValue }} - </span>{{/if}}{{#if isCompleted}}{{ completedLabel }}{{else if isEntrant}}{{ expiredLabel }}{{else}}{{ abortedLabel }}{{/if}}
     </div>
     <div class="cl-ach-list-details-label">{{ title }}</div>
   </div>

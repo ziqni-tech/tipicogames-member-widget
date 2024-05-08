@@ -2094,7 +2094,7 @@ export const MainWidget = function (options) {
     }
 
     const startDate = new Date(ach.scheduling.startDate);
-    let endsValue = '-';
+    let endsValue = '';
     if (ach.scheduling.endDate) {
       endsValue = new Date(ach.scheduling.endDate).toLocaleString('fr-CH', { timeZone: 'UTC', year: '2-digit', month: '2-digit', day: '2-digit' });
     }

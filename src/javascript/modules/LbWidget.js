@@ -1037,6 +1037,32 @@ export const LbWidget = function (options) {
       }
     }, null);
 
+    const complitedAchievementRequest = AchievementRequest.constructFromObject({
+      languageKey: this.settings.language,
+      achievementFilter: {
+        productTags: [],
+        tags: [],
+        startDate: null,
+        endDate: null,
+        ids: [],
+        statusCode: {
+          moreThan: 20,
+          lessThan: 30
+        },
+        optInStatusCodes: {
+          gt: 30,
+          lt: 40
+        },
+        sortBy: [{
+          queryField: 'created',
+          order: 'Desc'
+        }],
+        skip: (pageNumber - 1) * 20,
+        limit: 20,
+        constraints: []
+      }
+    }, null);
+
     const json = await this.getAchievements(achievementRequest);
     this.settings.achievements.list = json.data;
     this.settings.achievements.totalCount = json.meta.totalRecordsFound || 0;
@@ -1112,6 +1138,34 @@ export const LbWidget = function (options) {
         return achievement;
       });
     }
+
+    const jsonCompleted = await this.getAchievements(complitedAchievementRequest);
+    let completedList = jsonCompleted.data;
+    if (completedList.length) {
+      const ids = completedList.map(a => a.id);
+      const rewardRequest = {
+        entityFilter: [{
+          entityType: 'Achievement',
+          entityIds: ids
+        }],
+        currencyKey: this.settings.currency,
+        skip: 0,
+        limit: 20
+      };
+      const rewards = await this.getRewardsApi(rewardRequest);
+      const rewardsData = rewards.data;
+
+      completedList = completedList.map(achievement => {
+        const idx = rewardsData.findIndex(r => r.entityId === achievement.id);
+        if (idx !== -1) {
+          achievement.reward = rewardsData[idx];
+        }
+
+        return achievement;
+      });
+    }
+
+    this.settings.achievements.pastList = [...this.settings.achievements.pastList, ...completedList];
 
     const list = {
       current: this.settings.achievements.list,
