@@ -76,7 +76,8 @@
         "drawerDescription": "Join the Tournament before you play and every spin brings you closer to the top.",
         "drawerOntInBtn": "Join Tournament",
         "drawerPlayBtn": "Play without joining",
-        "rewarded": "Top $ rewarded"
+        "rewarded": "Top $ rewarded",
+        "noReward": "Sorry, no reward this time"
     },
     "leaderboard": {
         "rank": "Pos.",
@@ -120,7 +121,7 @@
         "upcomingTournamentsTitle": "Upcoming Tournaments",
         "tournamentBtn": "See more",
         "endsTitle": "Ends",
-        "startsTitle": "Starts",
+        "startsTitle": "Begins",
         "prizeTitle": "Prize",
         "singleWheelTitle": "The Single Wheel",
         "singleWheelButton": "Play",

@@ -716,6 +716,32 @@ export const MainWidget = function (options) {
     return rewardResponse;
   };
 
+  this.getPastRewardData = function (rank, rewards) {
+    const rewardResponse = [];
+
+    mapObject(rewards, function (reward) {
+      if (reward.rewardRank.indexOf('-') !== -1 || reward.rewardRank.indexOf(',') !== -1) {
+        const rewardRankArr = reward.rewardRank.split(',');
+        rewardRankArr.forEach(r => {
+          const idx = r.indexOf('-');
+          if (idx !== -1) {
+            const start = parseInt(r);
+            const end = parseInt(r.substring(idx + 1));
+            if (rank >= start && rank <= end) {
+              rewardResponse.push(reward);
+            }
+          } else if (parseInt(r) === rank) {
+            rewardResponse.push(reward);
+          }
+        });
+      } else if (rank !== 0 && parseInt(reward.rewardRank) === rank) {
+        rewardResponse.push(reward);
+      }
+    });
+
+    return rewardResponse;
+  };
+
   this.getReward = function (rank) {
     const _this = this;
     const rewardResponse = [];
@@ -2668,7 +2694,7 @@ export const MainWidget = function (options) {
     confirm.addEventListener('click', leaveAchievement);
   };
 
-  this.dashboardTournamentItem = async function (tournament, isReadyStatus = false) {
+  this.dashboardTournamentItem = async function (tournament) {
     const listItem = document.createElement('div');
     listItem.setAttribute('class', 'dashboard-tournament-item');
     const contestRequest = ContestRequest.constructFromObject({
@@ -2690,6 +2716,8 @@ export const MainWidget = function (options) {
     if (!contests.length) return;
 
     const contest = contests[0];
+
+    const isReadyStatus = contest.status === 'Ready';
 
     let isOptIn = false;
 
@@ -2784,6 +2812,11 @@ export const MainWidget = function (options) {
       minBetValue = tournament.customFields.minBet;
     }
 
+    let spinsLimitValue = '-';
+    if (contest.strategies.strategyType === 'LimitedTo') {
+      spinsLimitValue = contest.strategies.scoringStrategy.limitUpdatesTo;
+    }
+
     const date = isReadyStatus ? new Date(contest.scheduledStartDate) : new Date(contest.scheduledEndDate);
     const template = require('../templates/dashboard/tournamentItem.hbs');
     listItem.innerHTML = template({
@@ -2806,6 +2839,7 @@ export const MainWidget = function (options) {
       pointsLabel: this.settings.lbWidget.settings.translation.tournaments.pointsLabel,
       productsCount: productsCount,
       products: products,
+      spinsLimitValue: spinsLimitValue,
       duration: duration,
       minBetValue: minBetValue,
       points: points,
@@ -2855,34 +2889,6 @@ export const MainWidget = function (options) {
     let rewardValue = '';
     let rewardName = '';
 
-    if (rewardsData && rewardsData.length) {
-      const idx = rewardsData.findIndex(reward => {
-        if (reward.rewardRank.indexOf('-') !== -1 || reward.rewardRank.indexOf(',') !== -1) {
-          const rewardRankArr = reward.rewardRank.split(',');
-          rewardRankArr.forEach(r => {
-            const idx = r.indexOf('-');
-            if (idx !== -1) {
-              const start = parseInt(r);
-              if (start === 1) {
-                return true;
-              }
-            } else if (parseInt(r) === 1) {
-              return true;
-            }
-            return false;
-          });
-        } else if (parseInt(reward.rewardRank) === 1) {
-          return true;
-        }
-        return false;
-      });
-
-      if (idx !== -1) {
-        rewardName = rewardsData[idx].name;
-        rewardValue = this.settings.lbWidget.settings.partialFunctions.rewardFormatter(rewardsData[idx]);
-      }
-    }
-
     let itemBg = '';
     if (tournament.bannerLowResolutionLink) {
       itemBg = tournament.bannerLowResolutionLink;
@@ -2899,6 +2905,16 @@ export const MainWidget = function (options) {
       points = contest.optInStatus.points;
       position = contest.optInStatus.position;
     }
+
+    if (position && rewardsData && rewardsData.length) {
+      const rewards = this.getPastRewardData(position, rewardsData);
+      if (rewards && rewards.length) {
+        rewardName = rewards[0].name;
+        rewardValue = rewards[0].rewardValue;
+      }
+    }
+
+    if (!rewardName) rewardName = this.settings.lbWidget.settings.translation.tournaments.noReward;
 
     const template = require('../templates/mainWidget/tournamentResultItem.hbs');
     listItem.innerHTML = template({
