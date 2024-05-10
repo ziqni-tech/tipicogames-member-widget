@@ -1072,6 +1072,18 @@ export const MainWidget = function (options) {
     return duration;
   };
 
+  this.getActiveContestSpinLimit = function () {
+    let spinLimit = '-';
+
+    if (this.settings.lbWidget.settings.competition.activeContest) {
+      if (this.settings.lbWidget.settings.competition.activeContest.strategies.strategyType === 'LimitedTo') {
+        spinLimit = this.settings.lbWidget.settings.competition.activeContest.strategies.scoringStrategy.limitUpdatesTo;
+      }
+    }
+
+    return spinLimit;
+  };
+
   this.getActiveContestDate = function () {
     let date = '-';
 
@@ -1292,6 +1304,7 @@ export const MainWidget = function (options) {
     let icon = null;
     const rewardTitle = query(_this.settings.section, '.cl-main-widget-lb-details-reward-title');
     const duration = query(_this.settings.section, '.cl-main-widget-tournament-details-body .cl-main-widget-lb-details-duration');
+    const spinLimit = query(_this.settings.section, '.cl-main-widget-tournament-details-body .cl-main-widget-lb-details-spin-limit');
     const minBet = query(_this.settings.section, '.cl-main-widget-tournament-details-body .cl-main-widget-lb-details-min-bet');
     const actionsDate = query(this.settings.section, '.cl-main-widget-lb-details-body-cta-ends-date');
     const actionsDateLabel = query(this.settings.section, '.cl-main-widget-lb-details .cl-main-widget-ach-details-body-cta-ends-label');
@@ -1333,6 +1346,7 @@ export const MainWidget = function (options) {
     icon.style = `background-image: url(${iconUrl})`;
     rewardTitle.innerHTML = _this.getActiveContestRewardTitle();
     duration.innerHTML = _this.getActiveContestDuration();
+    spinLimit.innerHTML = _this.getActiveContestSpinLimit();
 
     const minBetValue = _this.getActiveCompetitionMinBet();
     if (minBetValue) {
@@ -2196,8 +2210,10 @@ export const MainWidget = function (options) {
 
     const bar = query(ach, '.cl-ach-list-progression-bar');
     const barLabel = query(ach, '.cl-ach-list-progression-label');
-    bar.style.width = ((percentageComplete > 1 || percentageComplete === 0) ? percentageComplete : 1) + '%';
-    barLabel.innerHTML = percentageComplete + '/100';
+    if (bar && barLabel) {
+      bar.style.width = ((percentageComplete > 1 || percentageComplete === 0) ? percentageComplete : 1) + '%';
+      barLabel.innerHTML = percentageComplete + '/100';
+    }
   };
 
   this.achievementList = function (data, onLayout) {
@@ -2475,7 +2491,7 @@ export const MainWidget = function (options) {
       _this.settings.achievement.detailsContainer.style.display = 'none';
 
       if (typeof callback === 'function') callback();
-    }, 200);
+    }, 500);
   };
 
   this.loadRewardDetails = async function (data, callback) {
@@ -2578,7 +2594,7 @@ export const MainWidget = function (options) {
     }, 200);
   };
 
-  this.updateAchievementProgressionAndIssued = function (issued, progression) {
+  this.updateAchievementProgressionAndIssued = function (issued, progression, callback = null) {
     const _this = this;
     const achList = query(_this.settings.section, '.' + _this.settings.lbWidget.settings.navigation.achievements.containerClass + ' .cl-main-widget-ach-list-body-res' + ' .cl-accordion.current');
     const dashboardAchList = document.querySelector('.cl-main-widget-dashboard-achievements-list');
@@ -2648,12 +2664,12 @@ export const MainWidget = function (options) {
   this.loadAchievements = function (pageNumber, callback, paginationArr = null) {
     const _this = this;
 
-    _this.settings.lbWidget.checkForAvailableAchievements(pageNumber, function (achievementData) {
+    _this.settings.lbWidget.checkForAvailableAchievements(pageNumber, async function (achievementData) {
       _this.achievementListLayout(pageNumber, achievementData, paginationArr);
 
       const idList = _this.settings.lbWidget.settings.achievements.list.map(a => a.id);
 
-      _this.settings.lbWidget.checkForMemberAchievementsProgression(idList, function (issued, progression) {
+      await _this.settings.lbWidget.checkForMemberAchievementsProgression(idList, function (issued, progression) {
         _this.updateAchievementProgressionAndIssued(issued, progression);
       });
 

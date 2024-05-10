@@ -2205,29 +2205,26 @@ export const LbWidget = function (options) {
           this.settings.apiWs.optInApiWsClient = new OptInApiWs(this.apiClientStomp);
         }
 
-        let optInRequest = ManageOptinRequest.constructFromObject({
+        const optInRequest = ManageOptinRequest.constructFromObject({
           entityId: _this.settings.achievements.activeAchievementId,
           entityType: 'Achievement',
           action: 'join'
         }, null);
 
-        if (hasClass(el, 'leave-achievement')) {
-          optInRequest = ManageOptinRequest.constructFromObject({
-            entityId: _this.settings.achievements.activeAchievementId,
-            entityType: 'Achievement',
-            action: 'leave'
-          }, null);
-        }
+        // if (hasClass(el, 'leave-achievement')) {
+        //   optInRequest = ManageOptinRequest.constructFromObject({
+        //     entityId: _this.settings.achievements.activeAchievementId,
+        //     entityType: 'Achievement',
+        //     action: 'leave'
+        //   }, null);
+        // }
 
         const preLoader = _this.settings.mainWidget.preloader();
 
         preLoader.show(async function () {
           await _this.settings.apiWs.optInApiWsClient.manageOptin(optInRequest, (json) => {
             setTimeout(function () {
-              preLoader.hide();
-              _this.settings.mainWidget.hideAchievementDetails(
-                _this.checkForAvailableAchievements(1)
-              );
+              _this.settings.mainWidget.loadAchievements(1, function () { _this.settings.mainWidget.hideAchievementDetails(preLoader.hide()); });
             }, 2000);
           });
         });
@@ -2455,6 +2452,8 @@ export const LbWidget = function (options) {
     } else if (
       hasClass(el, 'cl-main-widget-lb-header-close') ||
       hasClass(el, 'cl-main-widget-ach-header-close') ||
+      hasClass(el, 'cl-main-widget-ach-details-close') ||
+      hasClass(el, 'cl-main-widget-reward-details-close') ||
       hasClass(el, 'cl-main-widget-reward-header-close') ||
       hasClass(el, 'cl-main-widget-inbox-header-close') ||
       hasClass(el, 'cl-widget-main-widget-overlay-wrapper') ||
