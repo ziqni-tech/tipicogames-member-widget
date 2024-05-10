@@ -361,7 +361,7 @@ export const LbWidget = function (options) {
           queryField: 'created',
           order: 'Desc'
         }],
-        limit: 3,
+        limit: 5,
         skip: 0
       }
     }, null);
@@ -2932,7 +2932,7 @@ export const LbWidget = function (options) {
 
           _this.getAchievement(id, function (data) {
             _this.settings.achievements.activeAchievementId = data.id;
-            _this.settings.mainWidget.loadAchievementDetails(data, preLoader.hide());
+            _this.settings.mainWidget.loadAchievementDetails(data, preLoader.hide(), true);
           });
 
           _this.settings.navigationSwitchInProgress = false;
@@ -3002,19 +3002,17 @@ export const LbWidget = function (options) {
 
       // dashboard competition button
     } else if (hasClass(el, 'dashboard-tournament-item') || closest(el, '.dashboard-tournament-item')) {
+      let backToDashboard = false;
       if (el.closest('.cl-main-widget-dashboard-tournaments-list')) {
+        backToDashboard = true;
         if (el.closest('.cl-main-widget-dashboard-tournaments-list').classList.contains('dragging')) return;
       }
       const tournamentId = hasClass(el, 'dashboard-tournament-item')
         ? el.dataset.id
         : closest(el, '.dashboard-tournament-item').dataset.id;
       const dashboard = document.querySelector('.cl-main-widget-section-dashboard');
-      // const dashboardIcon = document.querySelector('.cl-main-widget-navigation-dashboard');
-      // const lbIcon = document.querySelector('.cl-main-widget-navigation-lb');
-
       dashboard.style.display = 'none';
-      // dashboardIcon.classList.remove('cl-active-nav');
-      // lbIcon.classList.add('cl-active-nav');
+
       const preLoader = _this.settings.mainWidget.preloader();
 
       preLoader.show(function () {
@@ -3023,7 +3021,7 @@ export const LbWidget = function (options) {
         _this.settings.tournaments.activeCompetitionId = tournamentId;
         _this.activeDataRefresh(function () {
           _this.settings.mainWidget.hideCompetitionList(async function () {
-            await _this.settings.mainWidget.showEmbeddedCompetitionDetailsContent(function () {});
+            await _this.settings.mainWidget.showEmbeddedCompetitionDetailsContent(function () {}, backToDashboard);
 
             const lbContainer = query(_this.settings.mainWidget.settings.container, '.cl-main-widget-section-container .' + _this.settings.navigation.tournaments.containerClass);
             lbContainer.style.display = 'flex';
@@ -3044,10 +3042,17 @@ export const LbWidget = function (options) {
       container.scrollTop = 0;
       _this.settings.mainWidget.hideAchievementDetails(function () {});
 
+      if (el.classList.contains('backToDashboard')) {
+        _this.settings.mainWidget.resetNavigation();
+      }
+
       // rewards details back button
     } else if (hasClass(el, 'cl-main-widget-reward-details-back-btn')) {
-      _this.settings.mainWidget.hideRewardDetails(function () {
-      });
+      _this.settings.mainWidget.hideRewardDetails(function () {});
+
+      if (el.classList.contains('backToDashboard')) {
+        _this.settings.mainWidget.resetNavigation();
+      }
 
       // competition details info button
     } else if (hasClass(el, 'cl-main-widget-lb-details-description-info')) {
@@ -3166,9 +3171,8 @@ export const LbWidget = function (options) {
                   const rewardsContainer = query(_this.settings.mainWidget.settings.container, '.cl-main-widget-section-container .' + _this.settings.navigation.rewards.containerClass);
                   rewardsContainer.style.display = 'flex';
                   addClass(rewardsContainer, 'cl-main-active-section');
-
                   preLoader.hide();
-                });
+                }, true);
               });
 
               _this.settings.navigationSwitchInProgress = false;
@@ -3261,6 +3265,65 @@ export const LbWidget = function (options) {
           });
         });
       });
+
+      // hide competition details
+    } else if (hasClass(el, 'cl-main-widget-lb-details-header-back-icon')) {
+      const gamesWrapp = document.querySelector('.cl-main-widget-ach-details-games.tour-game');
+      const gameItems = gamesWrapp.querySelector('.cl-main-widget-ach-details-game-items');
+      const gameFull = gamesWrapp.querySelector('.cl-main-widget-ach-details-game-full');
+      const gameOverlay = gamesWrapp.querySelector('.cl-main-widget-ach-details-game-overlay');
+
+      gameItems.classList.remove('expanded');
+      gameFull.style.display = 'flex';
+      gameOverlay.style.display = 'block';
+
+      const body = document.querySelector('.cl-main-widget-tournament-details-body');
+      const leaderBoard = document.querySelector('.cl-main-widget-lb-leaderboard');
+      const menuItems = document.querySelectorAll('.cl-main-widget-lb-details-menu-item');
+      const container = document.querySelector('.cl-main-widget-lb-details-description-container');
+
+      menuItems.forEach(item => {
+        if (item.classList.contains('info')) {
+          item.classList.add('active');
+        } else {
+          item.classList.remove('active');
+        }
+      });
+
+      body.style.display = 'block';
+      leaderBoard.style.display = 'none';
+      container.scrollTop = 0;
+
+      if (el.classList.contains('backToDashboard')) {
+        _this.settings.mainWidget.resetNavigation();
+      } else {
+        const preLoader = _this.settings.mainWidget.preloader();
+
+        preLoader.show(function () {
+          try {
+            const dashboard = document.querySelector('.cl-main-widget-section-dashboard');
+            dashboard.style.display = 'none';
+            const lbContainer = query(_this.settings.mainWidget.settings.container, '.cl-main-widget-section-container .' + _this.settings.navigation.tournaments.containerClass);
+            lbContainer.style.display = 'flex';
+
+            setTimeout(function () {
+              addClass(lbContainer, 'cl-main-active-section');
+            }, 30);
+
+            _this.settings.mainWidget.hideEmbeddedCompetitionDetailsContent();
+
+            _this.checkForAvailableCompetitions(function () {
+              _this.settings.mainWidget.loadCompetitionList();
+              preLoader.hide();
+            });
+          } catch (e) {
+            console.warn(e);
+            const errorPage = document.querySelector('.cl-main-widget-error');
+            errorPage.classList.add('active');
+            preLoader.hide();
+          }
+        });
+      }
 
       // hide competition list view
     } else if (hasClass(el, 'cl-main-widget-tournaments-back-btn') || hasClass(el, 'cl-main-widget-lb-header-back-icon')) {

@@ -1385,9 +1385,17 @@ export const MainWidget = function (options) {
     }
   };
 
-  this.showEmbeddedCompetitionDetailsContent = async function (callback) {
+  this.showEmbeddedCompetitionDetailsContent = async function (callback, backToDashboard = false) {
     if (!hasClass(this.settings.section, 'cl-main-active-embedded-description')) {
       addClass(this.settings.section, 'cl-main-active-embedded-description');
+    }
+
+    const backBtn = document.querySelector('.cl-main-widget-lb-details-header-back-icon');
+
+    if (backToDashboard) {
+      backBtn.classList.add('backToDashboard');
+    } else {
+      backBtn.classList.remove('backToDashboard');
     }
 
     if (typeof callback === 'function') callback();
@@ -2144,11 +2152,16 @@ export const MainWidget = function (options) {
     let isCompleted = false;
     let isEntrant = false;
     let percentageComplete = 0;
+    const pointsValue = ach.strategies.pointsStrategy.pointsValue;
+    let spinsLeft = 0;
+    let points = 0;
 
     if (statuses && statuses.length) {
       percentageComplete = statuses[0].percentageComplete;
       if (statuses[0].status === 'Completed') { isCompleted = true; isEntrant = true; };
       if (statuses[0].status === 'Entrant') isEntrant = true;
+      points = statuses[0].points;
+      spinsLeft = pointsValue - points;
     }
 
     const template = require('../templates/mainWidget/achievementItemPast.hbs');
@@ -2159,6 +2172,9 @@ export const MainWidget = function (options) {
       isCompleted: isCompleted,
       isEntrant: isEntrant,
       percentageComplete: percentageComplete,
+      pointsValue: pointsValue,
+      spinsLeft: spinsLeft,
+      spinsLeftLabel: this.settings.lbWidget.settings.translation.achievements.spinsLeftLabel,
       rewardValue: rewardValue,
       completedLabel: this.settings.lbWidget.settings.translation.achievements.completedLabel,
       expiredLabel: this.settings.lbWidget.settings.translation.achievements.expiredLabel,
@@ -2315,7 +2331,7 @@ export const MainWidget = function (options) {
     return item;
   };
 
-  this.loadAchievementDetails = async function (data, callback) {
+  this.loadAchievementDetails = async function (data, callback, backToDashboard = false) {
     const _this = this;
     const label = query(_this.settings.achievement.detailsContainer, '.cl-main-widget-ach-details-header-label');
     const topLabel = query(_this.settings.achievement.detailsContainer, '.cl-main-widget-ach-details-top-label');
@@ -2335,6 +2351,7 @@ export const MainWidget = function (options) {
 
     const headerActions = query(_this.settings.achievement.detailsContainer, '.cl-ach-list-actions');
     const footerActions = query(_this.settings.achievement.detailsContainer, '.cl-main-widget-ach-details-body-cta');
+    const backBtn = query(_this.settings.achievement.detailsContainer, '.cl-main-widget-ach-details-back-btn');
 
     const optInHeader = query(headerActions, '.cl-main-widget-ach-details-optin-action');
     const optInFooter = query(footerActions, '.cl-main-widget-ach-details-optin-action');
@@ -2348,6 +2365,12 @@ export const MainWidget = function (options) {
     gameItems.classList.remove('expanded');
 
     games.innerHTML = '';
+
+    if (backToDashboard) {
+      backBtn.classList.add('backToDashboard');
+    } else {
+      backBtn.classList.remove('backToDashboard');
+    }
 
     if (data.products && data.products.length) {
       if (data.products.length > 9) {
@@ -2494,7 +2517,7 @@ export const MainWidget = function (options) {
     }, 500);
   };
 
-  this.loadRewardDetails = async function (data, callback) {
+  this.loadRewardDetails = async function (data, callback, backToDashboard = false) {
     const rewardValue = query(this.settings.reward.detailsContainer, '.cl-main-widget-reward-details-value');
     const detailRewardValue = query(this.settings.reward.detailsContainer, '.cl-main-widget-reward-details-content-body-item-value.reward');
     const rewardType = query(this.settings.reward.detailsContainer, '.cl-main-widget-reward-details-type');
@@ -2505,12 +2528,19 @@ export const MainWidget = function (options) {
     const games = query(this.settings.reward.detailsContainer, '.cl-main-widget-ach-details-game-items.reward-games');
     const expand = query(this.settings.reward.detailsContainer, '.cl-main-widget-ach-details-game-full');
     const expandOverlay = query(this.settings.reward.detailsContainer, '.cl-main-widget-ach-details-game-overlay');
+    const backBtn = query(this.settings.reward.detailsContainer, '.cl-main-widget-reward-details-back-btn');
     let products = null;
     let isExpand = false;
 
     rewardValue.innerHTML = data.rewardValue;
     detailRewardValue.innerHTML = data.rewardValue;
     rewardType.innerHTML = data.name;
+
+    if (backToDashboard) {
+      backBtn.classList.add('backToDashboard');
+    } else {
+      backBtn.classList.remove('backToDashboard');
+    }
 
     if (data.entityType === 'Achievement') {
       const achievement = await this.settings.lbWidget.getAchievementsByIds([data.entityId]);
@@ -2603,6 +2633,22 @@ export const MainWidget = function (options) {
       const id = ach.dataset.id;
       const issuedStatus = (issued.findIndex(i => i.entityId === id) !== -1);
 
+      let achievementData = null;
+      let pointsValue = null;
+      let spinsLeft = 0;
+      let points = 0;
+      const idx = _this.settings.lbWidget.settings.achievements.list.findIndex(a => a.id === id);
+      if (idx !== -1) {
+        achievementData = _this.settings.lbWidget.settings.achievements.list[idx];
+        pointsValue = achievementData.strategies.pointsStrategy.pointsValue;
+        mapObject(progression, function (pr) {
+          if (pr.entityId === id) {
+            points = pr.points ? parseInt(pr.points) : 0;
+          }
+        });
+        spinsLeft = pointsValue - points;
+      }
+
       let perc = 0;
       mapObject(progression, function (pr) {
         if (pr.entityId === id) {
@@ -2616,7 +2662,7 @@ export const MainWidget = function (options) {
         if (bar) {
           if (issuedStatus) {
             addClass(bar, 'cl-ach-complete');
-            barLabel.innerHTML = '100/100';
+            barLabel.innerHTML = '0' + ' ' + _this.settings.lbWidget.settings.translation.achievements.spinsLeftLabel;
             bar.style.width = '100%';
             if (ach.classList.contains('past')) {
               const reward = ach.querySelector('.cl-ach-list-actions-reward');
@@ -2624,7 +2670,7 @@ export const MainWidget = function (options) {
             }
           } else {
             const percValue = ((perc > 1 || perc === 0) ? perc : 1) + '%';
-            barLabel.innerHTML = perc + '/100';
+            barLabel.innerHTML = spinsLeft + ' ' + _this.settings.lbWidget.settings.translation.achievements.spinsLeftLabel;
             bar.style.width = percValue;
           }
         }
@@ -2635,6 +2681,22 @@ export const MainWidget = function (options) {
       const id = ach.dataset.id;
       const issuedStatus = (issued.findIndex(i => i.entityId === id) !== -1);
 
+      let achievementData = null;
+      let pointsValue = null;
+      let spinsLeft = 0;
+      let points = 0;
+      const idx = _this.settings.lbWidget.settings.achievements.list.findIndex(a => a.id === id);
+      if (idx !== -1) {
+        achievementData = _this.settings.lbWidget.settings.achievements.list[idx];
+        pointsValue = achievementData.strategies.pointsStrategy.pointsValue;
+        mapObject(progression, function (pr) {
+          if (pr.entityId === id) {
+            points = pr.points ? parseInt(pr.points) : 0;
+          }
+        });
+        spinsLeft = pointsValue - points;
+      }
+
       let perc = 0;
       mapObject(progression, function (pr) {
         if (pr.entityId === id) {
@@ -2642,20 +2704,18 @@ export const MainWidget = function (options) {
         }
       });
 
-      if (ach !== null) {
-        const bar = query(ach, '.cl-ach-list-progression-bar');
-        const barLabel = query(ach, '.cl-ach-list-progression-label');
+      const bar = query(ach, '.cl-ach-list-progression-bar');
+      const barLabel = query(ach, '.cl-ach-list-progression-label');
 
-        if (issuedStatus) {
-          addClass(bar, 'cl-ach-complete');
-          barLabel.innerHTML = '100/100';
-          bar.style.width = '100%';
-        } else {
-          if (bar) {
-            const percValue = ((perc > 1 || perc === 0) ? perc : 1) + '%';
-            barLabel.innerHTML = perc + '/100';
-            bar.style.width = percValue;
-          }
+      if (issuedStatus) {
+        addClass(bar, 'cl-ach-complete');
+        barLabel.innerHTML = '0' + ' ' + _this.settings.lbWidget.settings.translation.achievements.spinsLeftLabel;
+        bar.style.width = '100%';
+      } else {
+        if (bar) {
+          const percValue = ((perc > 1 || perc === 0) ? perc : 1) + '%';
+          barLabel.innerHTML = spinsLeft + ' ' + _this.settings.lbWidget.settings.translation.achievements.spinsLeftLabel;
+          bar.style.width = percValue;
         }
       }
     });
@@ -2820,7 +2880,9 @@ export const MainWidget = function (options) {
     let position = '-';
     if (contest.status === 'Active' && contest.optInStatus) {
       points = contest.optInStatus.points;
-      position = contest.optInStatus.position;
+      if (contest.optInStatus.position) {
+        position = contest.optInStatus.position;
+      }
     }
 
     let minBetValue = null;
@@ -3017,7 +3079,7 @@ export const MainWidget = function (options) {
     availableAwards = availableAwards.filter(a => a.rewardData);
 
     if (availableAwards.length) {
-      availableAwards = availableAwards.slice(0, 3);
+      availableAwards = availableAwards.slice(0, 5);
 
       for (const award of availableAwards) {
         let products = null;
@@ -3257,8 +3319,8 @@ export const MainWidget = function (options) {
 
     achContainer.classList.remove('hidden');
 
-    if (achievementData.length > 3) {
-      achievementData = achievementData.slice(0, 3);
+    if (achievementData.length > 5) {
+      achievementData = achievementData.slice(0, 5);
     }
 
     mapObject(achievementData, function (ach) {

@@ -40,7 +40,8 @@
         "drawerLabel": "Opt-in before you play",
         "drawerDescription": "Make sure to opt into the mission before starting to play, otherwise, your progress won't be counted.",
         "drawerPlayBtn": "Play anyways",
-        "optedInLabel": "Opted-in"
+        "optedInLabel": "Opted-in",
+        "spinsLeftLabel": "left"
     },
     "tournaments": {
         "label": "Tournaments",

@@ -2884,8 +2884,27 @@
   margin-left: -6px;
 }
 
-.cl-main-widget-wrapper .cl-main-widget-section-container.cl-main-active-embedded-description .cl-main-widget-lb-header .cl-main-widget-lb-header-back-icon {
+.cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-lb-header .cl-main-widget-lb-details-header-back-icon {
+  background-image: url(../../images/navigation-back.svg);
+  background-repeat: no-repeat;
+  width: 32px;
+  height: 32px;
+  background-size: 100%;
+  cursor: pointer;
+  margin-left: -6px;
+  display: none;
+}
+
+.cl-main-widget-wrapper .cl-main-widget-section-container.cl-main-active-embedded-description .cl-main-widget-lb-header .cl-main-widget-lb-details-header-back-icon {
   display: block;
+}
+
+.cl-main-widget-wrapper .cl-main-widget-section-container.cl-main-active-embedded-description .cl-main-widget-lb-header .cl-main-widget-lb-details-header-back-icon {
+  display: block;
+}
+
+.cl-main-widget-wrapper .cl-main-widget-section-container.cl-main-active-embedded-description .cl-main-widget-lb-header .cl-main-widget-lb-header-back-icon {
+  display: none;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-lb-header .cl-main-widget-lb-header-label {
