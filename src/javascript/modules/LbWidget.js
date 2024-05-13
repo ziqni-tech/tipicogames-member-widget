@@ -1758,24 +1758,30 @@ export const LbWidget = function (options) {
       }
     }
 
-    if (
-      (
-        _this.settings.competition.activeCompetition !== null &&
-        (
-          !_this.settings.competition.activeCompetition.constraints ||
-          !_this.settings.competition.activeCompetition.constraints.includes('optinRequiredForEntrants')
-        )
-      ) ||
-      (
-        _this.settings.competition.activeCompetition !== null &&
-        typeof _this.settings.competition.activeCompetition.optin === 'boolean' &&
-        _this.settings.competition.activeCompetition.optin
-      )
-    ) {
+    if (_this.settings.competition.activeCompetition) {
       _this.getLeaderboardData(_this.settings.leaderboard.fullLeaderboardSize, function (data) {
         if (_this.settings.mainWidget.settings.active) _this.settings.mainWidget.loadLeaderboard(() => {}, false);
       });
     }
+
+    // if (
+    //   (
+    //     _this.settings.competition.activeCompetition !== null &&
+    //     (
+    //       !_this.settings.competition.activeCompetition.constraints ||
+    //       !_this.settings.competition.activeCompetition.constraints.includes('optinRequiredForEntrants')
+    //     )
+    //   ) ||
+    //   (
+    //     _this.settings.competition.activeCompetition !== null &&
+    //     typeof _this.settings.competition.activeCompetition.optin === 'boolean' &&
+    //     _this.settings.competition.activeCompetition.optin
+    //   )
+    // ) {
+    //   _this.getLeaderboardData(_this.settings.leaderboard.fullLeaderboardSize, function (data) {
+    //     if (_this.settings.mainWidget.settings.active) _this.settings.mainWidget.loadLeaderboard(() => {}, false);
+    //   });
+    // }
 
     _this.settings.leaderboard.refreshLbDataInterval = setTimeout(function () {
       _this.leaderboardDataRefresh();
@@ -3760,7 +3766,8 @@ export const LbWidget = function (options) {
         }
         if (json && json.entityType === 'Contest') {
           _this.checkForAvailableCompetitions(async function () {
-            // _this.updateLeaderboardNavigationCounts();
+            _this.settings.mainWidget.loadDashboardTournaments();
+            _this.settings.mainWidget.loadCompetitionList();
           });
           if (headers.callback && headers.callback === 'entityStateChanged') {
             if (typeof this.settings.callbacks.onContestStatusChanged === 'function') {
@@ -3786,8 +3793,12 @@ export const LbWidget = function (options) {
           if (headers.callback === 'optinStatus') {
             _this.settings.mainWidget.achievementItemUpdateProgression(json.entityId, json.percentageComplete);
             _this.settings.mainWidget.achievementDashboardItemUpdateProgression(json.entityId, json.percentageComplete);
+            _this.settings.mainWidget.updateAchievementDetailsProgress(json);
           } else {
-            _this.settings.mainWidget.loadAchievements();
+            _this.checkForAvailableAchievements(1, function (achievementData) {
+              _this.settings.mainWidget.loadDashboardAchievements(achievementData.current);
+            });
+            _this.settings.mainWidget.loadAchievements(1);
           }
         }
       });

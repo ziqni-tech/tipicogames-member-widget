@@ -32,6 +32,10 @@
   background: radial-gradient(circle, transparent 20%, #141414 70%) !important;
 }
 
+li {
+  list-style-position: inside;
+}
+
 .no-scroll {
   overflow: hidden;
 }
@@ -5113,6 +5117,21 @@
   max-height: 0;
   font-size: 0;
   transition: all .3s;
+}
+
+.cl-main-widget-wrapper .cl-main-widget-tournament-details-tc ol li,
+.cl-main-widget-wrapper .cl-main-widget-tournament-details-tc ul li {
+  color: var(--ui-color-text-secondary);
+  font-size: 0;
+  max-height: 0;
+}
+
+.cl-main-widget-wrapper .cl-main-widget-ach-details-body-description-tc.expanded .cl-main-widget-tournament-details-tc ol li,
+.cl-main-widget-wrapper .cl-main-widget-ach-details-body-description-tc.expanded .cl-main-widget-tournament-details-tc ul li,
+.cl-main-widget-wrapper .cl-main-widget-tournament-details-body-description-tc.tc.expanded .cl-main-widget-tournament-details-tc ol li,
+.cl-main-widget-wrapper .cl-main-widget-tournament-details-body-description-tc.tc.expanded .cl-main-widget-tournament-details-tc ul li {
+  font-size: 12px;
+  max-height: fit-content;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-ach-details-body-description-tc.expanded .cl-main-widget-tournament-details-tc {

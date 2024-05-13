@@ -1295,7 +1295,7 @@ export const MainWidget = function (options) {
     return parseInt(parts[0]);
   };
 
-  this.leaderboardDetailsUpdate = function () {
+  this.leaderboardDetailsUpdate = async function () {
     const _this = this;
     const mainLabel = query(_this.settings.section, '.cl-main-widget-lb-details-content-label-text');
     let tc = null;
@@ -2331,14 +2331,47 @@ export const MainWidget = function (options) {
     return item;
   };
 
+  this.updateAchievementDetailsProgress = function (data) {
+    const _this = this;
+    const progress = query(this.settings.achievement.detailsContainer, '.cl-ach-list-progression');
+    if (progress) {
+      const id = progress.dataset.id;
+      if (id === data.entityId) {
+        const progressBar = query(this.settings.achievement.detailsContainer, '.cl-ach-list-progression-bar');
+        const progressLabel = query(this.settings.achievement.detailsContainer, '.cl-ach-list-progression-label');
+        const achievementData = this.settings.lbWidget.settings.achievements.list.filter(a => a.id === id)[0];
+
+        let pointsValue = null;
+        let spinsLeft = 0;
+        let points = 0;
+
+        this.settings.lbWidget.checkForMemberAchievementsProgression([id], function (issued, progression) {
+          pointsValue = achievementData.strategies.pointsStrategy.pointsValue;
+          points = progression[0].points;
+          spinsLeft = pointsValue - points;
+
+          if (issued && issued.length && issued[0].status === 'Completed') {
+            progressLabel.innerHTML = '0' + ' ' + _this.settings.lbWidget.settings.translation.achievements.spinsLeftLabel;
+            progressBar.style.width = '100%';
+          } else if (progression && progression.length) {
+            const perc = progression[0].percentageComplete ? parseInt(progression[0].percentageComplete) : 0;
+            const percValue = ((perc > 1 || perc === 0) ? perc : 1) + '%';
+            progressLabel.innerHTML = spinsLeft + ' ' + _this.settings.lbWidget.settings.translation.achievements.spinsLeftLabel;
+            progressBar.style.width = percValue;
+          }
+        });
+      }
+    }
+  };
+
   this.loadAchievementDetails = async function (data, callback, backToDashboard = false) {
     const _this = this;
     const label = query(_this.settings.achievement.detailsContainer, '.cl-main-widget-ach-details-header-label');
     const topLabel = query(_this.settings.achievement.detailsContainer, '.cl-main-widget-ach-details-top-label');
     const tc = query(_this.settings.achievement.detailsContainer, '.cl-main-widget-ach-details-tc');
     const image = query(_this.settings.achievement.detailsContainer, '.cl-main-widget-ach-details-body-image-cont');
-    const pregressBar = query(_this.settings.achievement.detailsContainer, '.cl-ach-list-progression-bar');
-    const pregressLabel = query(_this.settings.achievement.detailsContainer, '.cl-ach-list-progression-label');
+    const progressBar = query(_this.settings.achievement.detailsContainer, '.cl-ach-list-progression-bar');
+    const progressLabel = query(_this.settings.achievement.detailsContainer, '.cl-ach-list-progression-label');
     const rewardTitle = query(_this.settings.achievement.detailsContainer, '.cl-ach-list-actions-reward-title');
     const pickUpBtn = query(_this.settings.achievement.detailsContainer, '.cl-main-widget-ach-details-body-cta-ends-btn-pick');
     const optedInLabel = query(_this.settings.achievement.detailsContainer, '.cl-main-widget-ach-details-header-label-opted-in');
@@ -2361,6 +2394,8 @@ export const MainWidget = function (options) {
     const gameFull = gamesWrapp.querySelector('.cl-main-widget-ach-details-game-full');
     const gameOverlay = gamesWrapp.querySelector('.cl-main-widget-ach-details-game-overlay');
     let isExpand = false;
+
+    progress.dataset.id = data.id;
 
     gameItems.classList.remove('expanded');
 
@@ -2486,15 +2521,23 @@ export const MainWidget = function (options) {
       image.setAttribute('style', `background-image: url(${data.iconLink})`);
     }
 
+    let pointsValue = null;
+    let spinsLeft = 0;
+    let points = 0;
+
     this.settings.lbWidget.checkForMemberAchievementsProgression([data.id], function (issued, progression) {
+      pointsValue = data.strategies.pointsStrategy.pointsValue;
+      points = progression[0].points;
+      spinsLeft = pointsValue - points;
+
       if (issued && issued.length && issued[0].status === 'Completed') {
-        pregressLabel.innerHTML = '100/100';
-        pregressBar.style.width = '100%';
+        progressLabel.innerHTML = '0' + ' ' + _this.settings.lbWidget.settings.translation.achievements.spinsLeftLabel;
+        progressBar.style.width = '100%';
       } else if (progression && progression.length) {
         const perc = progression[0].percentageComplete ? parseInt(progression[0].percentageComplete) : 0;
         const percValue = ((perc > 1 || perc === 0) ? perc : 1) + '%';
-        pregressLabel.innerHTML = perc + '/100';
-        pregressBar.style.width = percValue;
+        progressLabel.innerHTML = spinsLeft + ' ' + _this.settings.lbWidget.settings.translation.achievements.spinsLeftLabel;
+        progressBar.style.width = percValue;
       }
     });
 
@@ -2789,7 +2832,7 @@ export const MainWidget = function (options) {
 
     const contests = await this.settings.lbWidget.getContests(contestRequest);
 
-    if (!contests.length) return;
+    if (!contests || !contests.length) return;
 
     const contest = contests[0];
 
@@ -2799,7 +2842,7 @@ export const MainWidget = function (options) {
 
     if (tournament.constraints.includes('optinRequiredForEntrants')) {
       const optInStatus = await this.settings.lbWidget.getCompetitionOptInStatus(tournament.id);
-      if (optInStatus.length) {
+      if (optInStatus && optInStatus.length) {
         if (optInStatus[0].statusCode === 5) {
           isOptIn = true;
         }
@@ -3396,33 +3439,39 @@ export const MainWidget = function (options) {
 
     if (award.entityType === 'Achievement') {
       const achievement = await this.settings.lbWidget.getAchievementsByIds([award.entityId]);
-      const productRequest = {
-        languageKey: this.settings.lbWidget.settings.language,
-        productFilter: {
-          entityIds: [achievement[0].id],
-          entityType: 'achievement',
-          limit: 100,
-          skip: 0
-        }
-      };
-
-      products = await this.settings.lbWidget.getProductsApi(productRequest);
+      if (achievement && achievement.length) {
+        const productRequest = {
+          languageKey: this.settings.lbWidget.settings.language,
+          productFilter: {
+            entityIds: [achievement[0].id],
+            entityType: 'achievement',
+            limit: 100,
+            skip: 0
+          }
+        };
+        products = await this.settings.lbWidget.getProductsApi(productRequest);
+      } else {
+        console.warn('Аchievement not found. ID:', award.entityId);
+      }
     } else if (award.entityType === 'Contest') {
       const contest = await this.settings.lbWidget.getContestsByIds([award.entityId]);
-      const productRequest = {
-        languageKey: this.settings.lbWidget.settings.language,
-        productFilter: {
-          entityIds: [contest[0].id],
-          entityType: 'competition',
-          limit: 100,
-          skip: 0
-        }
-      };
-
-      products = await this.settings.lbWidget.getProductsApi(productRequest);
+      if (contest && contest.length) {
+        const productRequest = {
+          languageKey: this.settings.lbWidget.settings.language,
+          productFilter: {
+            entityIds: [contest[0].id],
+            entityType: 'competition',
+            limit: 100,
+            skip: 0
+          }
+        };
+        products = await this.settings.lbWidget.getProductsApi(productRequest);
+      } else {
+        console.warn('Contest not found. ID:', award.entityId);
+      }
     }
 
-    awardProducts = products.data;
+    awardProducts = products && products.data ? products.data : [];
 
     if (awardProducts && awardProducts.length > 3) {
       awardProducts = awardProducts.slice(0, 3);
