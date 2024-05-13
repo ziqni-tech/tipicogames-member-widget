@@ -2524,18 +2524,25 @@ export const MainWidget = function (options) {
     let pointsValue = null;
     let spinsLeft = 0;
     let points = 0;
+    pointsValue = data.strategies.pointsStrategy.pointsValue;
 
     this.settings.lbWidget.checkForMemberAchievementsProgression([data.id], function (issued, progression) {
-      pointsValue = data.strategies.pointsStrategy.pointsValue;
-      points = progression[0].points;
-      spinsLeft = pointsValue - points;
-
       if (issued && issued.length && issued[0].status === 'Completed') {
         progressLabel.innerHTML = '0' + ' ' + _this.settings.lbWidget.settings.translation.achievements.spinsLeftLabel;
         progressBar.style.width = '100%';
       } else if (progression && progression.length) {
+        points = progression[0].points;
+        spinsLeft = pointsValue - points;
+
         const perc = progression[0].percentageComplete ? parseInt(progression[0].percentageComplete) : 0;
         const percValue = ((perc > 1 || perc === 0) ? perc : 1) + '%';
+        progressLabel.innerHTML = spinsLeft + ' ' + _this.settings.lbWidget.settings.translation.achievements.spinsLeftLabel;
+        progressBar.style.width = percValue;
+      } else {
+        const perc = data.optInStatus.percentageComplete ? parseInt(data.optInStatus.percentageComplete) : 0;
+        const percValue = ((perc > 1 || perc === 0) ? perc : 1) + '%';
+        spinsLeft = pointsValue - data.optInStatus.points;
+
         progressLabel.innerHTML = spinsLeft + ' ' + _this.settings.lbWidget.settings.translation.achievements.spinsLeftLabel;
         progressBar.style.width = percValue;
       }
