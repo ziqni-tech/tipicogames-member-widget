@@ -11,7 +11,7 @@
 
   <div class="dashboard-tournament-list-statuses">
     {{#unless isOptIn}}<div class="dashboard-tournament-list-joined">{{ joinedLabel }}</div>{{/unless}}
-    {{#if isLive}}<div class="dashboard-tournament-list-live">{{ liveLabel }}</div>{{/if}}
+    {{#if isLive}}<div class="dashboard-tournament-list-live"><div class="live-label active">{{ liveLabel }}</div><div class="players-label">{{ playersValue }} {{ playersLabel }}</div></div>{{/if}}
   </div>
 
   <div class="dashboard-tournament-list-bg-blur"></div>

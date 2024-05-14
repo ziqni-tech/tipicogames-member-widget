@@ -2000,6 +2000,18 @@ export const MainWidget = function (options) {
       addClass(_this.settings.tournamentListContainer, 'cl-show');
       if (typeof callback === 'function') callback();
     }, 50);
+
+    setTimeout(function () {
+      const liveLabels = listResContainer.querySelectorAll('.dashboard-tournament-list-live');
+      setInterval(async () => {
+        liveLabels.forEach((item) => {
+          const liveLabel = item.querySelector('.live-label');
+          const playersLabel = item.querySelector('.players-label');
+          liveLabel.classList.toggle('active');
+          playersLabel.classList.toggle('active');
+        });
+      }, 5 * 1000);
+    }, 500);
   };
 
   this.toggleCompetitionDescription = function () {
@@ -2094,7 +2106,7 @@ export const MainWidget = function (options) {
     }
 
     let rewardValue = '';
-    let rewardName = '';
+    let rewardName = '-';
     if (ach.reward) {
       rewardValue = this.settings.lbWidget.settings.partialFunctions.rewardFormatter(ach.reward);
       rewardName = ach.reward.name;
@@ -2962,6 +2974,8 @@ export const MainWidget = function (options) {
       isLive: contest.status === 'Active',
       joinedLabel: this.settings.lbWidget.settings.translation.tournaments.joinedLabel,
       liveLabel: this.settings.lbWidget.settings.translation.tournaments.liveLabel,
+      playersLabel: this.settings.lbWidget.settings.translation.tournaments.playersLabel,
+      playersValue: '3,5K',
       positionLabel: this.settings.lbWidget.settings.translation.tournaments.positionLabel,
       spinsLeftLabel: this.settings.lbWidget.settings.translation.tournaments.spinsLeftLabel,
       pointsLabel: this.settings.lbWidget.settings.translation.tournaments.pointsLabel,
@@ -3354,6 +3368,17 @@ export const MainWidget = function (options) {
       slidesContainer.scrollLeft -= slideWidth;
       nextButton.style.display = 'block';
     });
+
+    const liveLabels = document.querySelectorAll('.cl-main-widget-dashboard-tournaments-list .dashboard-tournament-list-live');
+
+    setInterval(async () => {
+      liveLabels.forEach((item) => {
+        const liveLabel = item.querySelector('.live-label');
+        const playersLabel = item.querySelector('.players-label');
+        liveLabel.classList.toggle('active');
+        playersLabel.classList.toggle('active');
+      });
+    }, 5 * 1000);
   };
 
   this.loadDashboardAchievements = function (achievementData, callback) {

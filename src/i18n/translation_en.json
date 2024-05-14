@@ -62,6 +62,7 @@
         "pointsLabel" : "Points",
         "joinedLabel": "Joined",
         "liveLabel": "Live",
+        "playersLabel": "Players",
         "infoLabel": "Info",
         "leaderboardLabel": "Leaderboard",
         "durationLabel": "Duration",

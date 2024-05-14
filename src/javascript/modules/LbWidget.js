@@ -830,6 +830,7 @@ export const LbWidget = function (options) {
             moreThan: 0,
             lessThan: 100
           },
+          // constraints: ['includeOptInStatus'],
           limit: 20,
           skip: 0
         }
@@ -3105,6 +3106,7 @@ export const LbWidget = function (options) {
         await _this.claimAward(awardId, function () {
           setTimeout(function () {
             page.remove();
+            _this.settings.mainWidget.resetNavigation();
             preLoader.hide();
           }, 2000);
         });
