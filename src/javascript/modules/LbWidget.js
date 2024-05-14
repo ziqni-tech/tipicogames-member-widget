@@ -1388,6 +1388,7 @@ export const LbWidget = function (options) {
     statuses.forEach(s => {
       if (s.status === 'Completed') {
         issued.push(s);
+        progression.push(s);
       } else {
         progression.push(s);
       }
