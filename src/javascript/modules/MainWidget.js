@@ -478,6 +478,7 @@ export const MainWidget = function (options) {
       drawerTitle: this.settings.lbWidget.settings.translation.tournaments.drawerTitle,
       drawerDescription: this.settings.lbWidget.settings.translation.tournaments.drawerDescription,
       drawerOntInBtn: this.settings.lbWidget.settings.translation.tournaments.drawerOntInBtn,
+      drawerPlayBtn: this.settings.lbWidget.settings.translation.tournaments.drawerPlayBtn,
       optedInLabel: this.settings.lbWidget.settings.translation.tournaments.joinedLabel,
       liveLabel: this.settings.lbWidget.settings.translation.tournaments.liveLabel
     });
@@ -3091,7 +3092,7 @@ export const MainWidget = function (options) {
     listItem.setAttribute('class', 'dashboard-rewards-list-item');
     listItem.setAttribute('data-id', award.id);
 
-    const rewardImg = `background-image: url(${award.rewardData.iconLink ?? ''})`;
+    // const rewardImg = `background-image: url(${award.rewardData.iconLink ?? ''})`;
 
     let expires = '&#8734;';
     if (award.period) {
@@ -3114,7 +3115,7 @@ export const MainWidget = function (options) {
       rewardValue: award.rewardValue,
       rewardName: award.rewardData.name,
       expiresInLabel: this.settings.lbWidget.settings.translation.rewards.expiresInLabel,
-      rewardImg: rewardImg,
+      // rewardImg: rewardImg,
       expires: expires,
       productsCount: productsCount,
       products: productsData
@@ -4527,6 +4528,76 @@ export const MainWidget = function (options) {
         callback();
       }
     }
+  };
+
+  this.climeAwardAction = async function (awardData) {
+    const _this = this;
+    const award = await this.settings.lbWidget.getAwardById(awardData.data[0].id);
+
+    objectIterator(query(_this.settings.container, '.cl-main-widget-navigation-items .cl-active-nav'), function (obj) {
+      removeClass(obj, 'cl-active-nav');
+    });
+
+    objectIterator(query(_this.settings.container, '.cl-main-widget-section-container .cl-main-active-section'), function (obj) {
+      obj.style.display = 'none';
+      removeClass(obj, 'cl-main-active-section');
+    });
+
+    let activeNave = false;
+    objectIterator(query(_this.settings.container, '.cl-main-widget-navigation-container .cl-main-widget-navigation-item'), function (navItem, key, count) {
+      if (!activeNave && !hasClass(navItem, 'cl-hidden-navigation-item')) {
+        _this.navigationSwitch(query(navItem, '.cl-main-navigation-item'));
+        activeNave = true;
+      }
+    });
+
+    _this.hideEmbeddedCompetitionDetailsContent();
+    _this.hideCompetitionList();
+
+    const dashboardContainer = query(this.settings.container, '.cl-main-widget-section-container .' + this.settings.lbWidget.settings.navigation.dashboard.containerClass);
+    dashboardContainer.style.display = 'flex';
+    dashboardContainer.classList.add('cl-main-active-section');
+
+    let products = null;
+    if (award.entityType === 'Achievement') {
+      const achievement = await this.settings.lbWidget.getAchievementsByIds([award.entityId]);
+      const productRequest = {
+        languageKey: this.settings.language,
+        productFilter: {
+          entityIds: [achievement[0].id],
+          entityType: 'achievement',
+          limit: 100,
+          skip: 0
+        }
+      };
+      products = await this.settings.lbWidget.getProductsApi(productRequest);
+    } else if (award.entityType === 'Contest') {
+      const contest = await this.settings.lbWidget.getContestsByIds([award.entityId]);
+      const productRequest = {
+        languageKey: this.settings.language,
+        productFilter: {
+          entityIds: [contest[0].id],
+          entityType: 'competition',
+          limit: 100,
+          skip: 0
+        }
+      };
+      products = await this.settings.lbWidget.getProductsApi(productRequest);
+    }
+
+    const listItem = this.dashboardAwardItem(award, products);
+    listItem.style.marginLeft = '-296px';
+    listItem.style.transition = 'box-shadow .5s ease';
+
+    const awardsList = document.querySelector('.cl-main-widget-dashboard-rewards-list');
+    awardsList.insertBefore(listItem, awardsList.firstChild);
+    awardsList.style.marginLeft = '-10px';
+
+    setTimeout(function () {
+      listItem.style.transition = 'margin-left .5s ease';
+      listItem.style.marginLeft = '0px';
+      awardsList.style.marginLeft = '0px';
+    }, 500);
   };
 
   this.resetNavigation = function (callback) {

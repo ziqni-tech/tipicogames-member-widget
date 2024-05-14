@@ -1264,6 +1264,36 @@ export const LbWidget = function (options) {
     }
   };
 
+  this.getAwardById = async function (awardId) {
+    const awardRequest = AwardRequest.constructFromObject({
+      languageKey: this.settings.language,
+      awardFilter: {
+        ids: [awardId],
+        skip: 0,
+        limit: 1
+      },
+      currencyKey: this.settings.currency
+    });
+
+    let awardData = await this.getAwardsApi(awardRequest);
+    awardData = awardData.data[0];
+
+    const rewardRequest = {
+      languageKey: this.settings.language,
+      entityFilter: [{
+        entityType: 'Reward',
+        entityIds: [awardData.rewardId]
+      }],
+      currencyKey: this.settings.currency,
+      skip: 0,
+      limit: 1
+    };
+    const reward = await this.getRewardsApi(rewardRequest);
+    awardData.rewardData = reward.data[0];
+
+    return awardData;
+  };
+
   this.getAward = async function (awardId, callback) {
     let awardData = null;
     const awards = [...this.settings.awards.availableAwards, ...this.settings.awards.claimedAwards, ...this.settings.awards.expiredAwards];
@@ -1371,12 +1401,31 @@ export const LbWidget = function (options) {
     this.settings.awards.pastAwards = [];
     this.settings.awards.rewards = [];
 
+    // Available
+    // const availableAwardRequest = AwardRequest.constructFromObject({
+    //   languageKey: this.settings.language,
+    //   awardFilter: {
+    //     statusCode: {
+    //       moreThan: 14,
+    //       lessThan: 16
+    //     },
+    //     sortBy: [{
+    //       queryField: 'created',
+    //       order: 'Desc'
+    //     }],
+    //     skip: (pageNumber - 1) * 20,
+    //     limit: 20
+    //   },
+    //   currencyKey: this.settings.currency
+    // });
+
+    // Current
     const availableAwardRequest = AwardRequest.constructFromObject({
       languageKey: this.settings.language,
       awardFilter: {
         statusCode: {
-          moreThan: 14,
-          lessThan: 16
+          moreThan: 34,
+          lessThan: 36
         },
         sortBy: [{
           queryField: 'created',
@@ -1395,6 +1444,7 @@ export const LbWidget = function (options) {
           moreThan: 34,
           lessThan: 36
         },
+        tags: ['consumed'],
         sortBy: [{
           queryField: 'created',
           order: 'Desc'
@@ -2218,20 +2268,15 @@ export const LbWidget = function (options) {
           action: 'join'
         }, null);
 
-        // if (hasClass(el, 'leave-achievement')) {
-        //   optInRequest = ManageOptinRequest.constructFromObject({
-        //     entityId: _this.settings.achievements.activeAchievementId,
-        //     entityType: 'Achievement',
-        //     action: 'leave'
-        //   }, null);
-        // }
-
         const preLoader = _this.settings.mainWidget.preloader();
 
         preLoader.show(async function () {
           await _this.settings.apiWs.optInApiWsClient.manageOptin(optInRequest, (json) => {
             setTimeout(function () {
-              _this.settings.mainWidget.loadAchievements(1, function () { _this.settings.mainWidget.hideAchievementDetails(preLoader.hide()); });
+              _this.getAchievement(_this.settings.achievements.activeAchievementId, function (data) {
+                _this.settings.mainWidget.loadAchievementDetails(data, preLoader.hide(), false);
+              });
+              // _this.settings.mainWidget.loadAchievements(1, function () { _this.settings.mainWidget.hideAchievementDetails(preLoader.hide()); });
             }, 2000);
           });
         });
@@ -3051,6 +3096,29 @@ export const LbWidget = function (options) {
 
       if (el.classList.contains('backToDashboard')) {
         _this.settings.mainWidget.resetNavigation();
+      } else {
+        const preLoader = _this.settings.mainWidget.preloader();
+        preLoader.show(function () {
+          try {
+            _this.settings.mainWidget.loadAchievements(1, function () {
+              const achContainer = query(_this.settings.mainWidget.settings.container, '.cl-main-widget-section-container .' + _this.settings.navigation.achievements.containerClass);
+
+              _this.settings.mainWidget.settings.achievement.detailsContainer.style.display = 'none';
+
+              achContainer.style.display = 'flex';
+              setTimeout(function () {
+                addClass(achContainer, 'cl-main-active-section');
+              }, 30);
+
+              preLoader.hide();
+            });
+          } catch (e) {
+            console.warn(e);
+            const errorPage = document.querySelector('.cl-main-widget-error');
+            errorPage.classList.add('active');
+            preLoader.hide();
+          }
+        });
       }
 
       // rewards details back button
@@ -3103,10 +3171,10 @@ export const LbWidget = function (options) {
       const preLoader = _this.settings.mainWidget.preloader();
 
       preLoader.show(async function () {
-        await _this.claimAward(awardId, function () {
+        await _this.claimAward(awardId, function (award) {
           setTimeout(function () {
             page.remove();
-            _this.settings.mainWidget.resetNavigation();
+            _this.settings.mainWidget.climeAwardAction(award);
             preLoader.hide();
           }, 2000);
         });
@@ -3746,6 +3814,8 @@ export const LbWidget = function (options) {
           }
         }
         if (json && json.entityType === 'Award') {
+          if (json.metadata.claimed) return;
+
           const awardRequest = AwardRequest.constructFromObject({
             languageKey: this.settings.language,
             awardFilter: {

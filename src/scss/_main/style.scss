@@ -2365,6 +2365,7 @@ li {
   overflow-y: auto;
   margin-top: 8px;
   scroll-behavior: smooth;
+  transition: margin-left 0.5s ease;
 }
 
 .cl-main-widget-dashboard-rewards-list::-webkit-scrollbar {
@@ -2387,6 +2388,7 @@ li {
   flex-shrink: 0;
   border-radius: 8px;
   background: var(--card-active);
+  position: relative;
 }
 
 .cl-main-widget-reward-list-body-res .dashboard-rewards-list-item {
