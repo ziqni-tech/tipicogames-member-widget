@@ -4611,6 +4611,9 @@ export const MainWidget = function (options) {
       products = await this.settings.lbWidget.getProductsApi(productRequest);
     }
 
+    const emptyItem = document.querySelector('.dashboard-rewards-list-item-empty');
+    if (emptyItem) emptyItem.remove();
+
     const listItem = this.dashboardAwardItem(award, products);
     listItem.style.marginLeft = '-296px';
     listItem.style.transition = 'box-shadow .5s ease';
