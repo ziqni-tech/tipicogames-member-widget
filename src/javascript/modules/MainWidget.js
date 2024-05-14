@@ -2212,7 +2212,7 @@ export const MainWidget = function (options) {
     return listItem;
   };
 
-  this.achievementItemUpdateProgression = function (id, percentageComplete) {
+  this.achievementItemUpdateProgression = function (id, percentageComplete, json) {
     const achList = query(
       this.settings.section,
       '.' + this.settings.lbWidget.settings.navigation.achievements.containerClass + ' .cl-main-widget-ach-list-body-res'
@@ -2225,12 +2225,25 @@ export const MainWidget = function (options) {
     const bar = query(ach, '.cl-ach-list-progression-bar');
     if (!bar) return;
 
-    const barLabel = query(ach, '.cl-ach-list-progression-label');
-    bar.style.width = ((percentageComplete > 1 || percentageComplete === 0) ? percentageComplete : 1) + '%';
-    barLabel.innerHTML = percentageComplete + '/100';
+    const achievementData = this.settings.lbWidget.getAchievementDataById(id);
+
+    let pointsValue = null;
+    let spinsLeft = 0;
+    let points = 0;
+
+    pointsValue = achievementData.strategies.pointsStrategy.pointsValue;
+    points = json.points;
+    spinsLeft = pointsValue - points;
+
+    const progressLabel = query(ach, '.cl-ach-list-progression-label');
+
+    const perc = json.percentageComplete ? parseInt(json.percentageComplete) : 0;
+    const percValue = ((perc > 1 || perc === 0) ? perc : 1) + '%';
+    progressLabel.innerHTML = spinsLeft + ' ' + this.settings.lbWidget.settings.translation.achievements.spinsLeftLabel;
+    bar.style.width = percValue;
   };
 
-  this.achievementDashboardItemUpdateProgression = function (id, percentageComplete) {
+  this.achievementDashboardItemUpdateProgression = function (id, percentageComplete, json) {
     const achList = document.querySelector('.cl-main-widget-dashboard-achievements-list');
     if (!achList) return;
 
@@ -2240,8 +2253,21 @@ export const MainWidget = function (options) {
     const bar = query(ach, '.cl-ach-list-progression-bar');
     const barLabel = query(ach, '.cl-ach-list-progression-label');
     if (bar && barLabel) {
-      bar.style.width = ((percentageComplete > 1 || percentageComplete === 0) ? percentageComplete : 1) + '%';
-      barLabel.innerHTML = percentageComplete + '/100';
+      const achievementData = this.settings.lbWidget.getAchievementDataById(id);
+
+      let pointsValue = null;
+      let spinsLeft = 0;
+      let points = 0;
+
+      pointsValue = achievementData.strategies.pointsStrategy.pointsValue;
+      points = json.points;
+      spinsLeft = pointsValue - points;
+
+      const perc = json.percentageComplete ? parseInt(json.percentageComplete) : 0;
+      const percValue = ((perc > 1 || perc === 0) ? perc : 1) + '%';
+
+      barLabel.innerHTML = spinsLeft + ' ' + this.settings.lbWidget.settings.translation.achievements.spinsLeftLabel;
+      bar.style.width = percValue;
     }
   };
 

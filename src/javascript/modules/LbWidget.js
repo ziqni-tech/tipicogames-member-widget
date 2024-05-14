@@ -1154,6 +1154,10 @@ export const LbWidget = function (options) {
     }
   };
 
+  this.getAchievementDataById = function (achievementId) {
+    return this.settings.achievements.list.filter(a => a.id === achievementId)[0];
+  };
+
   this.getAchievement = async function (achievementId, callback) {
     const achievementData = this.settings.achievements.list.filter(a => a.id === achievementId);
 
@@ -3863,8 +3867,8 @@ export const LbWidget = function (options) {
         }
         if (json && json.entityType === 'Achievement') {
           if (headers.callback === 'optinStatus') {
-            _this.settings.mainWidget.achievementItemUpdateProgression(json.entityId, json.percentageComplete);
-            _this.settings.mainWidget.achievementDashboardItemUpdateProgression(json.entityId, json.percentageComplete);
+            _this.settings.mainWidget.achievementItemUpdateProgression(json.entityId, json.percentageComplete, json);
+            _this.settings.mainWidget.achievementDashboardItemUpdateProgression(json.entityId, json.percentageComplete, json);
             _this.settings.mainWidget.updateAchievementDetailsProgress(json);
           } else {
             _this.checkForAvailableAchievements(1, function (achievementData) {
