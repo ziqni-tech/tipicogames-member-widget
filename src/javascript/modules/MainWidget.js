@@ -834,7 +834,6 @@ export const MainWidget = function (options) {
       if (memberFound) {
         const idx = lb.members.findIndex(m => m.memberRefId === _this.settings.lbWidget.settings.member.memberRefId);
         const memberData = lb.members[idx];
-        console.log('memberData:', memberData);
         params = memberData.params;
       }
 
