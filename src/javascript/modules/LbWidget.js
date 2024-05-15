@@ -740,7 +740,7 @@ export const LbWidget = function (options) {
     if (this.settings.competition.activeContestId) {
       const rewardRequest = {
         entityFilter: [{
-          entityType: 'contest',
+          entityType: 'Contest',
           entityIds: [this.settings.competition.activeContestId]
         }],
         currencyKey: this.settings.currency,
@@ -1625,7 +1625,7 @@ export const LbWidget = function (options) {
     if (this.settings.competition.activeContestId) {
       const rewardRequest = {
         entityFilter: [{
-          entityType: 'contest',
+          entityType: 'Contest',
           entityIds: [this.settings.competition.activeContestId]
         }],
         currencyKey: this.settings.currency,

@@ -2921,7 +2921,7 @@ export const MainWidget = function (options) {
 
     const rewardRequest = {
       entityFilter: [{
-        entityType: 'contest',
+        entityType: 'Contest',
         entityIds: [contest.id]
       }],
       currencyKey: this.settings.currency,
