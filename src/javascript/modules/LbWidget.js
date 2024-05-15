@@ -740,7 +740,7 @@ export const LbWidget = function (options) {
     if (this.settings.competition.activeContestId) {
       const rewardRequest = {
         entityFilter: [{
-          entityType: 'Contest',
+          entityType: 'contest',
           entityIds: [this.settings.competition.activeContestId]
         }],
         currencyKey: this.settings.currency,
@@ -771,8 +771,10 @@ export const LbWidget = function (options) {
 
     let lastPlace = 1;
 
+    console.log('this.settings.competition.activeContest:', this.settings.competition.activeContest);
     if (this.settings.competition.activeContest && this.settings.competition.activeContest.rewards && this.settings.competition.activeContest.rewards.length) {
       this.settings.competition.activeContest.rewards.forEach(reward => {
+        console.log('reward:', reward);
         if (reward.rewardRank.indexOf('-') !== -1 || reward.rewardRank.indexOf(',') !== -1) {
           const rewardRankArr = reward.rewardRank.split(',');
           rewardRankArr.forEach(r => {
@@ -791,7 +793,7 @@ export const LbWidget = function (options) {
         }
       });
     }
-
+    console.log('lastPlace:', lastPlace);
     this.settings.leaderboard.fullLeaderboardSize = lastPlace;
 
     if (typeof callback === 'function') {
@@ -1625,7 +1627,7 @@ export const LbWidget = function (options) {
     if (this.settings.competition.activeContestId) {
       const rewardRequest = {
         entityFilter: [{
-          entityType: 'Contest',
+          entityType: 'contest',
           entityIds: [this.settings.competition.activeContestId]
         }],
         currencyKey: this.settings.currency,

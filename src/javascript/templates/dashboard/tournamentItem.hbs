@@ -41,7 +41,24 @@
     <div class="dashboard-tournament-list-details-reward-title">{{ rewardName }}</div>
   </div>
 
-  {{#if isLive}}
+  {{#if isOptIn }}
+  <div class="dashboard-tournament-list-details-data disabled">
+    <div class="dashboard-tournament-list-details-data-item dashboard-tournament-list-details-position">
+      <div class="dashboard-tournament-list-details-data-item-value dashboard-tournament-list-details-position-value cl-main-widget-lb-details-duration">{{ duration }}</div>
+      <div class="dashboard-tournament-list-details-data-item-label dashboard-tournament-list-details-position-label">Duration</div>
+    </div>
+    <div class="dashboard-tournament-list-details-data-item dashboard-tournament-list-details-left">
+      <div class="dashboard-tournament-list-details-data-item-value dashboard-tournament-list-details-left-value cl-main-widget-lb-details-spin-limit">{{ spinsLimitValue }}</div>
+      <div class="dashboard-tournament-list-details-data-item-label dashboard-tournament-list-details-left-label">Spin Limit</div>
+    </div>
+    {{#if minBetValue}}
+      <div class="dashboard-tournament-list-details-data-item dashboard-tournament-list-details-points">
+        <div class="dashboard-tournament-list-details-data-item-value dashboard-tournament-list-details-points-value cl-main-widget-lb-details-min-bet">{{ minBetValue }}</div>
+        <div class="dashboard-tournament-list-details-data-item-label dashboard-tournament-list-details-points-label">Min bet</div>
+      </div>
+    {{/if}}
+  </div>
+  {{else if isLive}}
   <div class="dashboard-tournament-list-details-data">
     <div class="dashboard-tournament-list-details-data-item dashboard-tournament-list-details-position">
       <div class="dashboard-tournament-list-details-data-item-value dashboard-tournament-list-details-position-value">{{ position }}</div>

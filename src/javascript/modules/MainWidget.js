@@ -590,7 +590,7 @@ export const MainWidget = function (options) {
     });
   };
 
-  this.leaderboardRow = function (rank, icon, name, change, growth, points, reward, count, memberFound) {
+  this.leaderboardRow = function (rank, icon, name, change, growth, points, reward, count, memberFound, params) {
     const cellWrapper = document.createElement('div');
     const memberFoundClass = (memberFound) ? ' cl-lb-member-row' : '';
     cellWrapper.setAttribute('class', 'cl-lb-row cl-lb-rank-' + rank + ' cl-lb-count-' + count + memberFoundClass);
@@ -603,6 +603,11 @@ export const MainWidget = function (options) {
 
     const rewardValue = (typeof reward !== 'undefined' && reward !== null) ? reward : '';
 
+    let spinsLeft = '-';
+    if (params && params.hasOwnProperty('$remaining_count')) {
+      spinsLeft = params.$remaining_count;
+    }
+
     const template = require('../templates/mainWidget/leaderboardRow.hbs');
     cellWrapper.innerHTML = template({
       rank: rank,
@@ -614,18 +619,19 @@ export const MainWidget = function (options) {
       points: points,
       rewardEnabled: rewardEnabled,
       rewardEnabledClass: 'cl-col-reward-enabled',
-      rewardValue: rewardValue
+      rewardValue: rewardValue,
+      spinsLeft: spinsLeft
     });
 
     return cellWrapper;
   };
 
-  this.leaderboardRowUpdate = function (rank, icon, name, change, growth, points, reward, count, memberFound, onMissing, isLast) {
+  this.leaderboardRowUpdate = function (rank, icon, name, change, growth, points, reward, count, memberFound, onMissing, isLast, params) {
     const _this = this;
     const cellRow = query(_this.settings.leaderboard.container, '.cl-lb-rank-' + rank + '.cl-lb-count-' + count);
 
     if (cellRow === null) {
-      onMissing(rank, name ? name[0] : '', name, change, growth, points, reward, count, memberFound, isLast);
+      onMissing(rank, name ? name[0] : '', name, change, growth, points, reward, count, memberFound, isLast, params);
     } else {
       const rankCel = query(cellRow, '.cl-rank-col-value');
       const nameCel = query(cellRow, '.lb-name');
@@ -647,7 +653,13 @@ export const MainWidget = function (options) {
         removeClass(cellRow, memberFoundClass);
       }
 
+      let spinsLeft = '-';
+      if (params && params.hasOwnProperty('$remaining_count')) {
+        spinsLeft = params.$remaining_count;
+      }
+
       cellRow.dataset.rank = rank;
+      cellRow.dataset.spinsLeft = spinsLeft;
       rankCel.innerHTML = rank;
       nameCel.innerHTML = name;
       pointsCel.innerHTML = points;
@@ -818,6 +830,14 @@ export const MainWidget = function (options) {
       const growthIcon = "<span class='cl-growth-icon cl-growth-" + growthType + "'></span>";
       const formattedPoints = _this.settings.lbWidget.settings.leaderboard.pointsFormatter(lb.score);
 
+      let params = {};
+      if (memberFound) {
+        const idx = lb.members.findIndex(m => m.memberRefId === _this.settings.lbWidget.settings.member.memberRefId);
+        const memberData = lb.members[idx];
+        console.log('memberData:', memberData);
+        params = memberData.params;
+      }
+
       if (rankCheck.indexOf(lb.rank) !== -1) {
         for (let rc = 0; rc < rankCheck.length; rc++) {
           if (lb.rank === rankCheck[rc]) {
@@ -840,8 +860,8 @@ export const MainWidget = function (options) {
         reward,
         count,
         memberFound,
-        function (rank, icon, name, change, growth, points, reward, count, memberFound, isLast) {
-          const newRow = _this.leaderboardRow(rank, icon, name, name, growth, points, reward, count, memberFound);
+        function (rank, icon, name, change, growth, points, reward, count, memberFound, isLast, params) {
+          const newRow = _this.leaderboardRow(rank, icon, name, name, growth, points, reward, count, memberFound, params);
           if (isLast) {
             newRow.classList.add('lb-last');
           }
@@ -853,7 +873,8 @@ export const MainWidget = function (options) {
             _this.settings.leaderboard.list.appendChild(newRow);
           }
         },
-        lb.isLast
+        lb.isLast,
+        params
       );
 
       rankCheck.push(lb.rank);
@@ -1620,9 +1641,11 @@ export const MainWidget = function (options) {
       const memberPoins = member.querySelector('.cl-points-col').innerHTML;
       const rankEl = detailsData.querySelector('.dashboard-tournament-list-details-position-value');
       const pointsEl = detailsData.querySelector('.dashboard-tournament-list-details-points-value');
+      const spinsLeftEl = detailsData.querySelector('.dashboard-tournament-list-details-left-value');
 
       rankEl.innerHTML = memberRank;
       pointsEl.innerHTML = memberPoins;
+      spinsLeftEl.innerHTML = member.dataset.spinsLeft;
     }
 
     if (area !== null && member !== null) {
@@ -2899,7 +2922,7 @@ export const MainWidget = function (options) {
 
     const rewardRequest = {
       entityFilter: [{
-        entityType: 'Contest',
+        entityType: 'contest',
         entityIds: [contest.id]
       }],
       currencyKey: this.settings.currency,
