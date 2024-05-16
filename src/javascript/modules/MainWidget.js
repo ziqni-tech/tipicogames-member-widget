@@ -1434,6 +1434,7 @@ export const MainWidget = function (options) {
   };
 
   this.leaderboardOptInCheck = async function () {
+    const _this = this;
     const optIn = query(this.settings.section, '.cl-main-widget-lb-optin-action');
     const pickBtn = query(this.settings.section, '.cl-main-widget-lb-details-body-cta-ends-btn-pick');
     const abortBtn = query(this.settings.section, '.cl-main-widget-tournament-details-body-abort');
@@ -1446,9 +1447,18 @@ export const MainWidget = function (options) {
       this.settings.lbWidget.settings.competition.activeCompetition.constraints &&
       this.settings.lbWidget.settings.competition.activeCompetition.constraints.includes('optinRequiredForEntrants')
     ) {
-      const optInStatus = await this.settings.lbWidget.getCompetitionOptInStatus(
-        this.settings.lbWidget.settings.competition.activeCompetition.id
-      );
+      let optInStatus = [];
+      if (this.settings.lbWidget.settings.competition.activeCompetition.id === this.settings.lbWidget.settings.competition.lastOptInChange.id) {
+        optInStatus[0] = {};
+        optInStatus[0].statusCode = this.settings.lbWidget.settings.competition.lastOptInChange.statusCode;
+      } else {
+        optInStatus = await this.settings.lbWidget.getCompetitionOptInStatus(
+          this.settings.lbWidget.settings.competition.activeCompetition.id
+        );
+      }
+
+      this.settings.lbWidget.settings.competition.lastOptInChange.id = null;
+      this.settings.lbWidget.settings.competition.lastOptInChange.statusCode = null;
 
       if (optInStatus.length && optInStatus[0].statusCode >= 15 && optInStatus[0].statusCode <= 35) {
         optIn.parentNode.style.display = 'none';
@@ -1464,6 +1474,9 @@ export const MainWidget = function (options) {
         optedInLabel.style.display = 'none';
         abortBtn.style.display = 'none';
         detailsData.style.display = 'none';
+        setTimeout(function () {
+          _this.leaderboardOptInCheck();
+        }, 3000);
       } else {
         optIn.innerHTML = this.settings.lbWidget.settings.translation.tournaments.enter;
         optIn.parentNode.style.display = 'flex';
@@ -3390,8 +3403,11 @@ export const MainWidget = function (options) {
     const slides = document.querySelectorAll('.cl-main-widget-dashboard-tournaments-list .dashboard-tournament-item');
     const prevButton = document.querySelector('.cl-main-widget-dashboard-tournaments-list-left');
     const nextButton = document.querySelector('.cl-main-widget-dashboard-tournaments-list-right');
-
-    if (slides.length < 2) nextButton.style.display = 'none';
+    if (slides.length < 2) {
+      nextButton.style.display = 'none';
+    } else {
+      nextButton.style.display = 'block';
+    }
 
     if (slidesContainer.scrollLeft === 0) prevButton.style.display = 'none';
 

@@ -113,7 +113,10 @@ export const LbWidget = function (options) {
       refreshIntervalMillis: 1000000,
       allowNegativeCountdown: false, // false: will mark competition as finishing, true: will continue to countdown into negative
       includeMetadata: false,
-      extractImageHeader: true // will extract the first found image inside the body tag and move it on top
+      lastOptInChange: {
+        id: null,
+        statusCode: null
+      }
     },
     achievements: {
       activeAchievementId: null,
@@ -124,8 +127,7 @@ export const LbWidget = function (options) {
       pastList: [],
       availableRewards: [],
       rewards: [],
-      expiredRewards: [],
-      extractImageHeader: true // will extract the first found image inside the body tag and move it on top
+      expiredRewards: []
     },
     rewards: {
       availableRewards: [],
@@ -2225,7 +2227,7 @@ export const LbWidget = function (options) {
           setTimeout(function () {
             preLoader.hide();
             _this.settings.mainWidget.loadLeaderboard(() => {}, true);
-          }, 2000);
+          }, 600);
         });
       });
 
@@ -2256,7 +2258,7 @@ export const LbWidget = function (options) {
           setTimeout(function () {
             preLoader.hide();
             _this.settings.mainWidget.loadLeaderboard(() => {}, true);
-          }, 2000);
+          }, 600);
         });
       });
 
@@ -3807,6 +3809,13 @@ export const LbWidget = function (options) {
       }
       await this.apiClientStomp.connect({ token: this.settings.authToken });
       this.apiClientStomp.sendSys('', {}, async (json, headers) => {
+        if (headers && headers.objectType === 'OptinStatus') {
+          if (json.entityType === 'Competition') {
+            this.settings.competition.lastOptInChange.id = json.entityId;
+            this.settings.competition.lastOptInChange.statusCode = json.statusCode;
+          }
+        }
+
         if (headers && headers.objectType === 'Leaderboard') {
           if (json.id && json.id === this.settings.competition.activeContestId) {
             const leaderboardEntries = json.leaderboardEntries ?? [];
@@ -3844,7 +3853,10 @@ export const LbWidget = function (options) {
         if (json && json.entityType === 'Contest') {
           _this.checkForAvailableCompetitions(async function () {
             _this.settings.mainWidget.loadDashboardTournaments();
-            _this.settings.mainWidget.loadCompetitionList();
+            const tournamentList = document.querySelector('.cl-main-widget-tournaments-list');
+            if (tournamentList && tournamentList.classList.contains('cl-show')) {
+              _this.settings.mainWidget.loadCompetitionList();
+            }
           });
           if (headers.callback && headers.callback === 'entityStateChanged') {
             if (typeof this.settings.callbacks.onContestStatusChanged === 'function') {
