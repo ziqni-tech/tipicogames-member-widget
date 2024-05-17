@@ -2526,7 +2526,16 @@ export const MainWidget = function (options) {
       optinRequiredForEntrants = data.constraints.includes('optinRequiredForEntrants');
     }
 
-    const memberAchievementOptInStatus = await _this.settings.lbWidget.getMemberAchievementOptInStatus(data.id);
+    let memberAchievementOptInStatus = [];
+    if (data.id === this.settings.lbWidget.settings.achievements.lastOptInChange.id) {
+      memberAchievementOptInStatus[0] = {};
+      memberAchievementOptInStatus[0].statusCode = this.settings.lbWidget.settings.achievements.lastOptInChange.statusCode;
+    } else {
+      memberAchievementOptInStatus = await _this.settings.lbWidget.getMemberAchievementOptInStatus(data.id);
+    }
+
+    this.settings.lbWidget.settings.achievements.lastOptInChange.id = null;
+    this.settings.lbWidget.settings.achievements.lastOptInChange.statusCode = null;
 
     if (optinRequiredForEntrants) {
       if (
@@ -3457,11 +3466,13 @@ export const MainWidget = function (options) {
     }, 5 * 1000);
   };
 
-  this.loadDashboardAchievements = function (achievementData, callback) {
+  this.loadDashboardAchievements = async function (callback) {
     const _this = this;
     const achList = query(this.settings.section, '.cl-main-widget-dashboard-achievements-list');
     const achContainer = query(this.settings.section, '.cl-main-widget-dashboard-achievements');
     achList.innerHTML = '';
+
+    let achievementData = await this.settings.lbWidget.getDashboardAchievements();
 
     if (!achievementData.length) {
       achContainer.classList.add('hidden');
@@ -3621,13 +3632,17 @@ export const MainWidget = function (options) {
     listItem.setAttribute('data-entity-id', reward.entityId);
     listItem.setAttribute('data-entity-type', reward.entityType);
 
-    let campaign = '';
+    let campaign = '-';
     if (reward.entityType === 'Achievement') {
       const achievement = await this.settings.lbWidget.getAchievementsByIds([reward.entityId]);
-      campaign = achievement[0].name;
+      if (achievement && achievement.length) {
+        campaign = achievement[0].name;
+      }
     } else if (reward.entityType === 'Contest') {
       const contest = await this.settings.lbWidget.getContestsByIds([reward.entityId]);
-      campaign = contest[0].name;
+      if (contest && contest.length) {
+        campaign = contest[0].name;
+      }
     }
 
     let expires = '-';
@@ -4488,9 +4503,7 @@ export const MainWidget = function (options) {
     });
 
     if (this.settings.lbWidget.settings.navigation.achievements.enable) {
-      this.settings.lbWidget.checkForAvailableAchievements(1, function (achievementData) {
-        _this.loadDashboardAchievements(achievementData.current);
-      });
+      _this.loadDashboardAchievements();
     }
 
     if (this.settings.lbWidget.settings.navigation.tournaments.enable) {
@@ -4540,9 +4553,7 @@ export const MainWidget = function (options) {
               dashboardContainer.style.display = 'flex';
 
               if (_this.settings.lbWidget.settings.navigation.achievements.enable) {
-                _this.settings.lbWidget.checkForAvailableAchievements(1, function (achievementData) {
-                  _this.loadDashboardAchievements(achievementData.current);
-                });
+                _this.loadDashboardAchievements();
               }
 
               if (_this.settings.lbWidget.settings.navigation.tournaments.enable) {

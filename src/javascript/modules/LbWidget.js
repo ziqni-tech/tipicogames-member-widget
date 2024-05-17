@@ -127,7 +127,11 @@ export const LbWidget = function (options) {
       pastList: [],
       availableRewards: [],
       rewards: [],
-      expiredRewards: []
+      expiredRewards: [],
+      lastOptInChange: {
+        id: null,
+        statusCode: null
+      }
     },
     rewards: {
       availableRewards: [],
@@ -989,6 +993,64 @@ export const LbWidget = function (options) {
     }
   };
 
+  this.getDashboardAchievements = async function () {
+    const achievementRequest = AchievementRequest.constructFromObject({
+      languageKey: this.settings.language,
+      achievementFilter: {
+        productTags: [],
+        tags: [],
+        startDate: null,
+        endDate: null,
+        ids: [],
+        statusCode: {
+          moreThan: 20,
+          lessThan: 30
+        },
+        optInStatusCodes: {
+          gt: -5,
+          lt: 35
+        },
+        sortBy: [{
+          queryField: 'created',
+          order: 'Desc'
+        }],
+        skip: 0,
+        limit: 5,
+        constraints: []
+      }
+    }, null);
+
+    let achievements = await this.getAchievements(achievementRequest);
+    achievements = achievements.data;
+
+    const optInAchievements = achievements.filter(a => a.constraints && a.constraints.includes('optinRequiredForEntrants'));
+    let optInIds = [];
+    if (optInAchievements.length) {
+      optInIds = optInAchievements.map(a => {
+        if (a.constraints && a.constraints.includes('optinRequiredForEntrants')) {
+          return a.id;
+        }
+      });
+    }
+
+    this.settings.achievements.lastOptInChange.id = null;
+    this.settings.achievements.lastOptInChange.statusCode = null;
+
+    if (optInIds.length) {
+      const statuses = await this.getMemberAchievementsOptInStatuses(optInIds);
+      if (statuses.length) {
+        statuses.forEach(s => {
+          const idx = achievements.findIndex(a => a.id === s.entityId);
+          if (idx !== -1) {
+            achievements[idx].optInStatus = s.statusCode;
+          }
+        });
+      }
+    }
+
+    return achievements;
+  };
+
   this.checkForAvailableAchievements = async function (pageNumber, callback) {
     const moreValue = this.settings.navigation.achievements.showReadyAchievements ? 10 : 20;
 
@@ -1251,11 +1313,7 @@ export const LbWidget = function (options) {
         await _this.settings.apiWs.optInApiWsClient.manageOptin(optInRequest, (json) => {
           setTimeout(function () {
             if (isDashboard) {
-              _this.checkForAvailableAchievements(1, function (achievementData) {
-                _this.settings.mainWidget.loadDashboardAchievements(achievementData.current, function () {
-                  preLoader.hide();
-                });
-              });
+              _this.settings.mainWidget.loadDashboardAchievements(function () { preLoader.hide(); });
             } else {
               _this.settings.mainWidget.loadAchievements(1, function () {
                 preLoader.hide();
@@ -2283,8 +2341,7 @@ export const LbWidget = function (options) {
               _this.getAchievement(_this.settings.achievements.activeAchievementId, function (data) {
                 _this.settings.mainWidget.loadAchievementDetails(data, preLoader.hide(), false);
               });
-              // _this.settings.mainWidget.loadAchievements(1, function () { _this.settings.mainWidget.hideAchievementDetails(preLoader.hide()); });
-            }, 2000);
+            }, 600);
           });
         });
       }
@@ -2338,7 +2395,7 @@ export const LbWidget = function (options) {
                 _this.settings.mainWidget.loadAchievements(1),
                 preLoader.hide()
               );
-            }, 2500);
+            }, 600);
           });
         });
       }
@@ -2477,11 +2534,7 @@ export const LbWidget = function (options) {
         await _this.settings.apiWs.optInApiWsClient.manageOptin(optInRequest, (json) => {
           setTimeout(function () {
             if (isDashboard) {
-              _this.checkForAvailableAchievements(1, function (achievementData) {
-                _this.settings.mainWidget.loadDashboardAchievements(achievementData.current, function () {
-                  preLoader.hide();
-                });
-              });
+              _this.settings.mainWidget.loadDashboardAchievements(function () { preLoader.hide(); });
             } else {
               _this.settings.mainWidget.loadAchievements(1, function () {
                 preLoader.hide();
@@ -2489,7 +2542,7 @@ export const LbWidget = function (options) {
                 container.scrollTop = scrollTop;
               });
             }
-          }, 2500);
+          }, 600);
         });
       });
 
@@ -3813,6 +3866,9 @@ export const LbWidget = function (options) {
           if (json.entityType === 'Competition') {
             this.settings.competition.lastOptInChange.id = json.entityId;
             this.settings.competition.lastOptInChange.statusCode = json.statusCode;
+          } else if (json.entityType === 'Achievement') {
+            this.settings.achievements.lastOptInChange.id = json.entityId;
+            this.settings.achievements.lastOptInChange.statusCode = json.statusCode;
           }
         }
 
@@ -3884,9 +3940,7 @@ export const LbWidget = function (options) {
             _this.settings.mainWidget.achievementDashboardItemUpdateProgression(json.entityId, json.percentageComplete, json);
             _this.settings.mainWidget.updateAchievementDetailsProgress(json);
           } else {
-            _this.checkForAvailableAchievements(1, function (achievementData) {
-              _this.settings.mainWidget.loadDashboardAchievements(achievementData.current);
-            });
+            _this.settings.mainWidget.loadDashboardAchievements();
             _this.settings.mainWidget.loadAchievements(1);
           }
         }
