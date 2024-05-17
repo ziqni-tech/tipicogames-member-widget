@@ -2247,7 +2247,7 @@ export const LbWidget = function (options) {
               _this.settings.mainWidget.loadCompetitionList();
             });
           }
-        }, 3000);
+        }, 600);
       });
 
       // Leaderboard details opt-out action

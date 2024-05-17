@@ -2922,7 +2922,14 @@ export const MainWidget = function (options) {
     let isOptIn = false;
 
     if (tournament.constraints.includes('optinRequiredForEntrants')) {
-      const optInStatus = await this.settings.lbWidget.getCompetitionOptInStatus(tournament.id);
+      let optInStatus = [];
+      if (tournament.id === this.settings.lbWidget.settings.competition.lastOptInChange.id) {
+        optInStatus[0] = {};
+        optInStatus[0].statusCode = this.settings.lbWidget.settings.competition.lastOptInChange.statusCode;
+      } else {
+        optInStatus = await this.settings.lbWidget.getCompetitionOptInStatus(tournament.id);
+      }
+
       if (optInStatus && optInStatus.length) {
         if (optInStatus[0].statusCode === 5) {
           isOptIn = true;
