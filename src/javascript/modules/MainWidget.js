@@ -3249,7 +3249,11 @@ export const MainWidget = function (options) {
     const prevButton = document.querySelector('.cl-main-widget-dashboard-rewards-list-left');
     const nextButton = document.querySelector('.cl-main-widget-dashboard-rewards-list-right');
 
-    if (slides.length < 2) nextButton.style.display = 'none';
+    if (slides.length < 2) {
+      nextButton.style.display = 'none';
+    } else {
+      nextButton.style.display = 'block';
+    }
 
     if (slidesContainer.scrollLeft === 0) prevButton.style.display = 'none';
 
@@ -3486,7 +3490,11 @@ export const MainWidget = function (options) {
     const prevButton = document.querySelector('.cl-main-widget-dashboard-achievements-list-left');
     const nextButton = document.querySelector('.cl-main-widget-dashboard-achievements-list-right');
 
-    if (slides.length < 2) nextButton.style.display = 'none';
+    if (slides.length < 2) {
+      nextButton.style.display = 'none';
+    } else {
+      nextButton.style.display = 'block';
+    }
 
     if (slidesContainer.scrollLeft === 0) prevButton.style.display = 'none';
 
