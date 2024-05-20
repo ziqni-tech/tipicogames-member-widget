@@ -3261,40 +3261,68 @@ export const MainWidget = function (options) {
 
     const slidesContainer = document.querySelector('.cl-main-widget-dashboard-rewards-list');
     const slide = document.querySelector('.cl-main-widget-dashboard-rewards-list .dashboard-rewards-list-item');
-    const slides = document.querySelectorAll('.cl-main-widget-dashboard-rewards-list .dashboard-rewards-list-item');
+    // const slides = document.querySelectorAll('.cl-main-widget-dashboard-rewards-list .dashboard-rewards-list-item');
     const prevButton = document.querySelector('.cl-main-widget-dashboard-rewards-list-left');
     const nextButton = document.querySelector('.cl-main-widget-dashboard-rewards-list-right');
 
-    if (slides.length < 2) {
-      nextButton.style.display = 'none';
-    } else {
+    if (this.settings.lbWidget.settings.scrollButtons.rewards) {
       nextButton.style.display = 'block';
+
+      if (slidesContainer.scrollLeft === 0) prevButton.style.display = 'none';
+
+      slidesContainer.addEventListener('scroll', (event) => {
+        if (slidesContainer.scrollLeft > 0) {
+          prevButton.style.display = 'block';
+        } else {
+          prevButton.style.display = 'none';
+        }
+
+        if (slidesContainer.offsetWidth + slidesContainer.scrollLeft >= slidesContainer.scrollWidth) {
+          nextButton.style.display = 'none';
+        }
+      });
+
+      nextButton.addEventListener('click', (event) => {
+        const slideWidth = slide.clientWidth;
+        slidesContainer.scrollLeft += slideWidth;
+      });
+
+      prevButton.addEventListener('click', () => {
+        const slideWidth = slide.clientWidth;
+        slidesContainer.scrollLeft -= slideWidth;
+        nextButton.style.display = 'block';
+      });
     }
+    // if (slides.length < 2) {
+    //   nextButton.style.display = 'none';
+    // } else {
+    //   nextButton.style.display = 'block';
+    // }
 
-    if (slidesContainer.scrollLeft === 0) prevButton.style.display = 'none';
-
-    slidesContainer.addEventListener('scroll', (event) => {
-      if (slidesContainer.scrollLeft > 0) {
-        prevButton.style.display = 'block';
-      } else {
-        prevButton.style.display = 'none';
-      }
-
-      if (slidesContainer.offsetWidth + slidesContainer.scrollLeft >= slidesContainer.scrollWidth) {
-        nextButton.style.display = 'none';
-      }
-    });
-
-    nextButton.addEventListener('click', (event) => {
-      const slideWidth = slide.clientWidth;
-      slidesContainer.scrollLeft += slideWidth;
-    });
-
-    prevButton.addEventListener('click', () => {
-      const slideWidth = slide.clientWidth;
-      slidesContainer.scrollLeft -= slideWidth;
-      nextButton.style.display = 'block';
-    });
+    // if (slidesContainer.scrollLeft === 0) prevButton.style.display = 'none';
+    //
+    // slidesContainer.addEventListener('scroll', (event) => {
+    //   if (slidesContainer.scrollLeft > 0) {
+    //     prevButton.style.display = 'block';
+    //   } else {
+    //     prevButton.style.display = 'none';
+    //   }
+    //
+    //   if (slidesContainer.offsetWidth + slidesContainer.scrollLeft >= slidesContainer.scrollWidth) {
+    //     nextButton.style.display = 'none';
+    //   }
+    // });
+    //
+    // nextButton.addEventListener('click', (event) => {
+    //   const slideWidth = slide.clientWidth;
+    //   slidesContainer.scrollLeft += slideWidth;
+    // });
+    //
+    // prevButton.addEventListener('click', () => {
+    //   const slideWidth = slide.clientWidth;
+    //   slidesContainer.scrollLeft -= slideWidth;
+    //   nextButton.style.display = 'block';
+    // });
   };
 
   this.showAwardCelebration = async function (awardData) {
@@ -3420,39 +3448,69 @@ export const MainWidget = function (options) {
 
     const slidesContainer = document.querySelector('.cl-main-widget-dashboard-tournaments-list');
     const slide = document.querySelector('.cl-main-widget-dashboard-tournaments-list .dashboard-tournament-item');
-    const slides = document.querySelectorAll('.cl-main-widget-dashboard-tournaments-list .dashboard-tournament-item');
+    // const slides = document.querySelectorAll('.cl-main-widget-dashboard-tournaments-list .dashboard-tournament-item');
     const prevButton = document.querySelector('.cl-main-widget-dashboard-tournaments-list-left');
     const nextButton = document.querySelector('.cl-main-widget-dashboard-tournaments-list-right');
-    if (slides.length < 2) {
-      nextButton.style.display = 'none';
-    } else {
+
+    if (this.settings.lbWidget.settings.scrollButtons.tournaments) {
       nextButton.style.display = 'block';
+
+      if (slidesContainer.scrollLeft === 0) prevButton.style.display = 'none';
+
+      slidesContainer.addEventListener('scroll', (event) => {
+        if (slidesContainer.scrollLeft > 0) {
+          prevButton.style.display = 'block';
+        } else {
+          prevButton.style.display = 'none';
+        }
+
+        if (slidesContainer.offsetWidth + slidesContainer.scrollLeft >= slidesContainer.scrollWidth) {
+          nextButton.style.display = 'none';
+        }
+      });
+
+      nextButton.addEventListener('click', (event) => {
+        const slideWidth = slide.clientWidth;
+        slidesContainer.scrollLeft += slideWidth;
+      });
+
+      prevButton.addEventListener('click', () => {
+        const slideWidth = slide.clientWidth;
+        slidesContainer.scrollLeft -= slideWidth;
+        nextButton.style.display = 'block';
+      });
     }
 
-    if (slidesContainer.scrollLeft === 0) prevButton.style.display = 'none';
+    // if (slides.length < 2) {
+    //   nextButton.style.display = 'none';
+    // } else {
+    //   nextButton.style.display = 'block';
+    // }
 
-    slidesContainer.addEventListener('scroll', (event) => {
-      if (slidesContainer.scrollLeft > 0) {
-        prevButton.style.display = 'block';
-      } else {
-        prevButton.style.display = 'none';
-      }
-
-      if (slidesContainer.offsetWidth + slidesContainer.scrollLeft >= slidesContainer.scrollWidth) {
-        nextButton.style.display = 'none';
-      }
-    });
-
-    nextButton.addEventListener('click', (event) => {
-      const slideWidth = slide.clientWidth;
-      slidesContainer.scrollLeft += slideWidth;
-    });
-
-    prevButton.addEventListener('click', () => {
-      const slideWidth = slide.clientWidth;
-      slidesContainer.scrollLeft -= slideWidth;
-      nextButton.style.display = 'block';
-    });
+    // if (slidesContainer.scrollLeft === 0) prevButton.style.display = 'none';
+    //
+    // slidesContainer.addEventListener('scroll', (event) => {
+    //   if (slidesContainer.scrollLeft > 0) {
+    //     prevButton.style.display = 'block';
+    //   } else {
+    //     prevButton.style.display = 'none';
+    //   }
+    //
+    //   if (slidesContainer.offsetWidth + slidesContainer.scrollLeft >= slidesContainer.scrollWidth) {
+    //     nextButton.style.display = 'none';
+    //   }
+    // });
+    //
+    // nextButton.addEventListener('click', (event) => {
+    //   const slideWidth = slide.clientWidth;
+    //   slidesContainer.scrollLeft += slideWidth;
+    // });
+    //
+    // prevButton.addEventListener('click', () => {
+    //   const slideWidth = slide.clientWidth;
+    //   slidesContainer.scrollLeft -= slideWidth;
+    //   nextButton.style.display = 'block';
+    // });
 
     const liveLabels = document.querySelectorAll('.cl-main-widget-dashboard-tournaments-list .dashboard-tournament-list-live');
 
@@ -3504,40 +3562,68 @@ export const MainWidget = function (options) {
 
     const slidesContainer = document.querySelector('.cl-main-widget-dashboard-achievements-list');
     const slide = document.querySelector('.cl-main-widget-dashboard-achievements-list .cl-ach-list-item');
-    const slides = document.querySelectorAll('.cl-main-widget-dashboard-achievements-list .cl-ach-list-item');
+    // const slides = document.querySelectorAll('.cl-main-widget-dashboard-achievements-list .cl-ach-list-item');
     const prevButton = document.querySelector('.cl-main-widget-dashboard-achievements-list-left');
     const nextButton = document.querySelector('.cl-main-widget-dashboard-achievements-list-right');
 
-    if (slides.length < 2) {
-      nextButton.style.display = 'none';
-    } else {
+    if (this.settings.lbWidget.settings.scrollButtons.missions) {
       nextButton.style.display = 'block';
+
+      if (slidesContainer.scrollLeft === 0) prevButton.style.display = 'none';
+
+      slidesContainer.addEventListener('scroll', (event) => {
+        if (slidesContainer.scrollLeft > 0) {
+          prevButton.style.display = 'block';
+        } else {
+          prevButton.style.display = 'none';
+        }
+
+        if (slidesContainer.offsetWidth + slidesContainer.scrollLeft >= slidesContainer.scrollWidth) {
+          nextButton.style.display = 'none';
+        }
+      });
+
+      nextButton.addEventListener('click', (event) => {
+        const slideWidth = slide.clientWidth;
+        slidesContainer.scrollLeft += slideWidth;
+      });
+
+      prevButton.addEventListener('click', () => {
+        const slideWidth = slide.clientWidth;
+        slidesContainer.scrollLeft -= slideWidth;
+        nextButton.style.display = 'block';
+      });
     }
+    // if (slides.length < 2) {
+    //   nextButton.style.display = 'none';
+    // } else {
+    //   nextButton.style.display = 'block';
+    // }
 
-    if (slidesContainer.scrollLeft === 0) prevButton.style.display = 'none';
-
-    slidesContainer.addEventListener('scroll', (event) => {
-      if (slidesContainer.scrollLeft > 0) {
-        prevButton.style.display = 'block';
-      } else {
-        prevButton.style.display = 'none';
-      }
-
-      if (slidesContainer.offsetWidth + slidesContainer.scrollLeft >= slidesContainer.scrollWidth) {
-        nextButton.style.display = 'none';
-      }
-    });
-
-    nextButton.addEventListener('click', (event) => {
-      const slideWidth = slide.clientWidth;
-      slidesContainer.scrollLeft += slideWidth;
-    });
-
-    prevButton.addEventListener('click', () => {
-      const slideWidth = slide.clientWidth;
-      slidesContainer.scrollLeft -= slideWidth;
-      nextButton.style.display = 'block';
-    });
+    // if (slidesContainer.scrollLeft === 0) prevButton.style.display = 'none';
+    //
+    // slidesContainer.addEventListener('scroll', (event) => {
+    //   if (slidesContainer.scrollLeft > 0) {
+    //     prevButton.style.display = 'block';
+    //   } else {
+    //     prevButton.style.display = 'none';
+    //   }
+    //
+    //   if (slidesContainer.offsetWidth + slidesContainer.scrollLeft >= slidesContainer.scrollWidth) {
+    //     nextButton.style.display = 'none';
+    //   }
+    // });
+    //
+    // nextButton.addEventListener('click', (event) => {
+    //   const slideWidth = slide.clientWidth;
+    //   slidesContainer.scrollLeft += slideWidth;
+    // });
+    //
+    // prevButton.addEventListener('click', () => {
+    //   const slideWidth = slide.clientWidth;
+    //   slidesContainer.scrollLeft -= slideWidth;
+    //   nextButton.style.display = 'block';
+    // });
   };
 
   this.rewardItem = async function (award) {

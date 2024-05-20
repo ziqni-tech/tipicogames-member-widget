@@ -103,6 +103,11 @@ export const LbWidget = function (options) {
       finalisedCompetitions: 30,
       messagesForTheLast: 30
     },
+    scrollButtons: {
+      rewards: false,
+      missions: false,
+      tournaments: false
+    },
     competition: {
       activeCompetitionId: null,
       activeContestId: null,
