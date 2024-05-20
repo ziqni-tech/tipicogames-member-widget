@@ -2304,7 +2304,28 @@ export const LbWidget = function (options) {
       await _this.optInMemberToActiveCompetitionById(tournamentId, function () {
         setTimeout(function () {
           if (isDashboard) {
-            _this.settings.mainWidget.loadDashboardTournaments();
+            const dashboard = document.querySelector('.cl-main-widget-section-dashboard');
+            dashboard.style.display = 'none';
+
+            const preLoader = _this.settings.mainWidget.preloader();
+
+            preLoader.show(function () {
+              _this.settings.mainWidget.populateLeaderboardResultsWithDefaultEntries(true);
+              _this.settings.mainWidget.settings.active = true;
+              _this.settings.tournaments.activeCompetitionId = tournamentId;
+              _this.activeDataRefresh(function () {
+                _this.settings.mainWidget.hideCompetitionList(async function () {
+                  await _this.settings.mainWidget.showEmbeddedCompetitionDetailsContent(function () {}, true);
+
+                  const lbContainer = query(_this.settings.mainWidget.settings.container, '.cl-main-widget-section-container .' + _this.settings.navigation.tournaments.containerClass);
+                  lbContainer.style.display = 'flex';
+                  addClass(lbContainer, 'cl-main-active-section');
+
+                  preLoader.hide();
+                });
+              }, true);
+            });
+            // _this.settings.mainWidget.loadDashboardTournaments();
           } else {
             _this.checkForAvailableCompetitions(function () {
               _this.settings.mainWidget.loadCompetitionList();
@@ -2539,7 +2560,27 @@ export const LbWidget = function (options) {
         await _this.settings.apiWs.optInApiWsClient.manageOptin(optInRequest, (json) => {
           setTimeout(function () {
             if (isDashboard) {
-              _this.settings.mainWidget.loadDashboardAchievements(function () { preLoader.hide(); });
+              const dashboard = document.querySelector('.cl-main-widget-section-dashboard');
+              const detailsContainer = document.querySelector('.cl-main-widget-ach-details-container');
+
+              dashboard.style.display = 'none';
+              detailsContainer.classList.add('cl-show');
+              detailsContainer.style.display = 'block';
+
+              _this.settings.mainWidget.loadAchievements(1, function () {
+                const achContainer = query(_this.settings.mainWidget.settings.container, '.cl-main-widget-section-container .' + _this.settings.navigation.achievements.containerClass);
+
+                achContainer.style.display = 'flex';
+                addClass(achContainer, 'cl-main-active-section');
+
+                _this.getAchievement(activeAchievementId, function (data) {
+                  _this.settings.achievements.activeAchievementId = data.id;
+                  _this.settings.mainWidget.loadAchievementDetails(data, preLoader.hide(), true);
+                });
+
+                _this.settings.navigationSwitchInProgress = false;
+              });
+              // _this.settings.mainWidget.loadDashboardAchievements(function () { preLoader.hide(); });
             } else {
               _this.settings.mainWidget.loadAchievements(1, function () {
                 preLoader.hide();

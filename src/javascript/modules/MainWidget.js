@@ -3530,7 +3530,7 @@ export const MainWidget = function (options) {
     const achContainer = query(this.settings.section, '.cl-main-widget-dashboard-achievements');
     achList.innerHTML = '';
 
-    let achievementData = await this.settings.lbWidget.getDashboardAchievements();
+    const achievementData = await this.settings.lbWidget.getDashboardAchievements();
 
     if (!achievementData.length) {
       achContainer.classList.add('hidden');
@@ -3538,10 +3538,6 @@ export const MainWidget = function (options) {
     }
 
     achContainer.classList.remove('hidden');
-
-    if (achievementData.length > 5) {
-      achievementData = achievementData.slice(0, 5);
-    }
 
     mapObject(achievementData, function (ach) {
       if (query(achList, '.cl-ach-' + ach.id) === null) {
