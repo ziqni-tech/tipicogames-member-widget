@@ -2651,7 +2651,7 @@ export const MainWidget = function (options) {
   };
 
   this.loadRewardDetails = async function (data, callback, backToDashboard = false) {
-    const rewardValue = query(this.settings.reward.detailsContainer, '.cl-main-widget-reward-details-value');
+    // const rewardValue = query(this.settings.reward.detailsContainer, '.cl-main-widget-reward-details-value');
     const detailRewardValue = query(this.settings.reward.detailsContainer, '.cl-main-widget-reward-details-content-body-item-value.reward');
     const rewardType = query(this.settings.reward.detailsContainer, '.cl-main-widget-reward-details-type');
     const campaign = query(this.settings.reward.detailsContainer, '.cl-main-widget-reward-details-content-body-item-value.campaign');
@@ -2665,7 +2665,7 @@ export const MainWidget = function (options) {
     let products = null;
     let isExpand = false;
 
-    rewardValue.innerHTML = data.rewardValue;
+    // rewardValue.innerHTML = data.rewardValue;
     detailRewardValue.innerHTML = data.rewardValue;
     rewardType.innerHTML = data.name;
 

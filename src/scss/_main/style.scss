@@ -1558,7 +1558,7 @@ li {
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-body {
-  height: calc(100% - 40px);
+  height: 100%;
   overflow: auto;
   overscroll-behavior: contain;
   padding-top: 48px;
@@ -1775,6 +1775,7 @@ li {
   cursor: pointer;
   margin-right: 8px;
   backdrop-filter: blur(0);
+  margin-bottom: 10px;
 }
 
 .cl-accordion-list .dashboard-tournament-item {
@@ -7244,7 +7245,7 @@ li {
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-accordion-container .cl-accordion.cl-shown {
-  height: calc(100% - 80px);
+  height: calc(100% - 40px);
   padding-top: 20px;
 }
 
@@ -7529,7 +7530,7 @@ li {
   width: 100%;
   overflow-y: scroll;
   overscroll-behavior: contain;
-  height: calc(100% - 92px);
+  height: calc(100% - 48px);
 }
 
 .cl-main-widget-wrapper .cl-main-widget-reward-details-container .cl-main-widget-reward-details-body-container::-webkit-scrollbar {
@@ -7552,10 +7553,11 @@ li {
 .cl-main-widget-wrapper .cl-main-widget-reward-details-container .cl-main-widget-reward-details-type {
   color: #ffffff;
   text-align: center;
-  font-size: 18px;
+  font-size: 32px;
   font-style: normal;
   font-weight: 600;
-  line-height: 23px;
+  line-height: 42px;
+  margin-top: 40px;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-reward-details-container .cl-main-widget-reward-details-expires {
@@ -7664,6 +7666,7 @@ li {
   line-height: 21px;
   text-decoration: underline;
   margin-top: 24px;
+  padding-bottom: 10px;
 }
 
 .expand-item {

@@ -1053,6 +1053,28 @@ export const LbWidget = function (options) {
       }
     }
 
+    const ids = achievements.map(a => a.id);
+    const rewardRequest = {
+      entityFilter: [{
+        entityType: 'achievement',
+        entityIds: ids
+      }],
+      currencyKey: this.settings.currency,
+      skip: 0,
+      limit: 20
+    };
+    const rewards = await this.getRewardsApi(rewardRequest);
+    const rewardsData = rewards.data;
+
+    achievements = achievements.map(achievement => {
+      const idx = rewardsData.findIndex(r => r.entityId === achievement.id);
+      if (idx !== -1) {
+        achievement.reward = rewardsData[idx];
+      }
+
+      return achievement;
+    });
+
     return achievements;
   };
 
