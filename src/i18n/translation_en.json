@@ -110,7 +110,7 @@
         "drawerDescription": "If you forfeit the reward you won’t be able to claim it again.",
         "drawerKeepBtn": "Keep reward",
         "drawerForfeitBtn": "Forfeit reward",
-        "pastFS": "Number of Free Spins used",
+        "pastFS": "Total Rewarded Freespins",
         "pastFSWinnings": "Free Spins Winnings",
         "expiredOnLabel": "Expired on"
     },
