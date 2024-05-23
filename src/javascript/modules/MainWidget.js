@@ -2290,6 +2290,11 @@ export const MainWidget = function (options) {
     if (bar && barLabel) {
       const achievementData = this.settings.lbWidget.getAchievementDataById(id);
 
+      if (!achievementData) {
+        console.log('not found');
+        return;
+      }
+
       let pointsValue = null;
       let spinsLeft = 0;
       let points = 0;
@@ -3339,6 +3344,9 @@ export const MainWidget = function (options) {
 
     if (awardData.entityType === 'Achievement') {
       const achievement = await this.settings.lbWidget.getAchievementsByIds([awardData.entityId]);
+
+      if (!achievement.length) return;
+
       campaign = achievement[0].name;
       title = 'Mission Completed';
       this.awardTAndC = achievement[0].termsAndConditions;
@@ -3356,6 +3364,9 @@ export const MainWidget = function (options) {
       products = await this.settings.lbWidget.getProductsApi(productRequest);
     } else if (awardData.entityType === 'Contest') {
       const contest = await this.settings.lbWidget.getContestsByIds([awardData.entityId]);
+
+      if (!contest.length) return;
+
       campaign = contest[0].name;
       title = 'Tournament Completed';
       this.awardTAndC = contest[0].termsAndConditions;
@@ -3411,6 +3422,22 @@ export const MainWidget = function (options) {
     mainSectionContainer.appendChild(rewardCelebration);
 
     const rewardCelebrationPage = document.querySelector('.cl-main-widget-reward-celebration');
+    setTimeout(function () {
+      rewardCelebrationPage.classList.add('active');
+    }, 500);
+
+    const confetti = require('./confetti');
+
+    setTimeout(() => {
+      confetti.startConfetti();
+    }, 1000);
+  };
+
+  this.checkCelebrationPages = function () {
+    const rewardCelebrationPage = document.querySelector('.cl-main-widget-reward-celebration');
+
+    if (!rewardCelebrationPage) return;
+
     setTimeout(function () {
       rewardCelebrationPage.classList.add('active');
     }, 500);

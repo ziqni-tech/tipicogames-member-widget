@@ -1486,6 +1486,36 @@ export const LbWidget = function (options) {
     }
   };
 
+  this.checkForNotClaimedAwards = async function () {
+    const notClaimedAwardRequest = AwardRequest.constructFromObject({
+      languageKey: this.settings.language,
+      awardFilter: {
+        statusCode: {
+          moreThan: 14,
+          lessThan: 16
+        },
+        sortBy: [{
+          queryField: 'created',
+          order: 'Desc'
+        }],
+        skip: 0,
+        limit: 20
+      },
+      currencyKey: this.settings.currency
+    });
+
+    const notClaimedAwardsResponse = await this.getAwardsApi(notClaimedAwardRequest);
+    const notClaimedAwards = notClaimedAwardsResponse.data;
+
+    if (notClaimedAwards && notClaimedAwards.length) {
+      for (const award of notClaimedAwards) {
+        await this.settings.mainWidget.showAwardCelebration(award);
+      }
+    }
+
+    console.log('notClaimedAwards:', notClaimedAwards);
+  };
+
   this.checkForAvailableAwards = async function (callback, pageNumber = 1, claimedPageNumber = 1) {
     this.settings.awards.availableAwards = [];
     this.settings.awards.claimedAwards = [];
@@ -3304,6 +3334,7 @@ export const LbWidget = function (options) {
             page.remove();
             _this.settings.mainWidget.climeAwardAction(award);
             preLoader.hide();
+            _this.settings.mainWidget.checkCelebrationPages();
           }, 2000);
         });
       });
@@ -3319,6 +3350,7 @@ export const LbWidget = function (options) {
           setTimeout(function () {
             page.remove();
             preLoader.hide();
+            _this.settings.mainWidget.checkCelebrationPages();
           }, 2000);
         });
       });
@@ -3337,6 +3369,7 @@ export const LbWidget = function (options) {
       page.classList.remove('active');
       setTimeout(function () {
         page.remove();
+        _this.settings.mainWidget.checkCelebrationPages();
       }, 1000);
 
       // Award Details Forfeit
@@ -4095,6 +4128,8 @@ export const LbWidget = function (options) {
             this.eventListeners();
 
             this.settings.mainWidget.initLayout(function () {});
+
+            await this.checkForNotClaimedAwards();
 
             // await this.checkForAvailableCompetitions();
 
