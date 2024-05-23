@@ -3769,6 +3769,7 @@ export const MainWidget = function (options) {
       campaign: campaign,
       expires: expires,
       pastFS: this.settings.lbWidget.settings.translation.rewards.pastFS,
+      pastFsValue: reward.rewardValue,
       pastFSWinnings: this.settings.lbWidget.settings.translation.rewards.pastFSWinnings,
       expiredOnLabel: this.settings.lbWidget.settings.translation.rewards.expiredOnLabel,
       campaignLabel: this.settings.lbWidget.settings.translation.rewards.campaignLabel,
