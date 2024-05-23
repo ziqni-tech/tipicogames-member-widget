@@ -1512,8 +1512,6 @@ export const LbWidget = function (options) {
         await this.settings.mainWidget.showAwardCelebration(award);
       }
     }
-
-    console.log('notClaimedAwards:', notClaimedAwards);
   };
 
   this.checkForAvailableAwards = async function (callback, pageNumber = 1, claimedPageNumber = 1) {
