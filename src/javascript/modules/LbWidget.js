@@ -2449,6 +2449,23 @@ export const LbWidget = function (options) {
         });
       }
 
+      // Achievement drawer Play anyway
+    } else if (hasClass(el, 'cl-main-widget-ach-optIn-drawer-btn-play')) {
+      const drawer = document.querySelector('.cl-main-widget-ach-optIn-drawer');
+
+      const product = {
+        id: drawer.dataset.id,
+        refId: drawer.dataset.refId,
+        name: drawer.dataset.name
+      };
+
+      this.settings.callbacks.onGameSelected(product);
+
+      drawer.classList.remove('active');
+      drawer.dataset.id = '';
+      drawer.dataset.refId = '';
+      drawer.dataset.name = '';
+
       // Achievement details opt-out action
     } else if (hasClass(el, 'cl-main-widget-ach-details-body-abort')) {
       if (_this.settings.achievements.activeAchievementId) {
@@ -2523,8 +2540,15 @@ export const LbWidget = function (options) {
         name: el.dataset.name
       };
 
+      drawer.dataset.id = '';
+      drawer.dataset.refId = '';
+      drawer.dataset.name = '';
+
       if (container.style.display === 'flex') {
         drawer.classList.add('active');
+        drawer.dataset.id = el.dataset.id;
+        drawer.dataset.refId = el.dataset.refId;
+        drawer.dataset.name = el.dataset.name;
       } else {
         this.settings.callbacks.onGameSelected(product);
       }
@@ -2566,6 +2590,23 @@ export const LbWidget = function (options) {
         });
       });
 
+      // Contest drawer opt-in action
+    } else if (hasClass(el, 'cl-main-widget-tour-optIn-drawer-btn-play')) {
+      const drawer = document.querySelector('.cl-main-widget-tour-optIn-drawer');
+
+      const product = {
+        id: drawer.dataset.id,
+        refId: drawer.dataset.refId,
+        name: drawer.dataset.name
+      };
+
+      this.settings.callbacks.onGameSelected(product);
+
+      drawer.classList.remove('active');
+      drawer.dataset.id = '';
+      drawer.dataset.refId = '';
+      drawer.dataset.name = '';
+
       // Achievement details game click
     } else if (hasClass(el, 'cl-main-widget-ach-details-game-item') && el.closest('.ach-games')) {
       const drawer = document.querySelector('.cl-main-widget-ach-optIn-drawer');
@@ -2577,8 +2618,15 @@ export const LbWidget = function (options) {
         name: el.dataset.name
       };
 
+      drawer.dataset.id = '';
+      drawer.dataset.refId = '';
+      drawer.dataset.name = '';
+
       if (optInBtn.style.display === 'flex') {
         drawer.classList.add('active');
+        drawer.dataset.id = el.dataset.id;
+        drawer.dataset.refId = el.dataset.refId;
+        drawer.dataset.name = el.dataset.name;
       } else {
         this.settings.callbacks.onGameSelected(product);
       }
