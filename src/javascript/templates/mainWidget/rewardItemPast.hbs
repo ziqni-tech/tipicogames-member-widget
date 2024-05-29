@@ -10,14 +10,19 @@
   <div class="rewards-list-item-past-info-expand expand-item"></div>
 </div>
 
-<div class="rewards-list-item-past-info-body">
+<div class="rewards-list-item-past-info-body" data-id="{{ id }}">
   <div class="rewards-list-item-past-info-body-item">
     <div class="rewards-list-item-past-info-body-item-label">{{ pastFS }}</div>
     <div class="rewards-list-item-past-info-body-item-value">{{ pastFsValue }}</div>
   </div>
-  <div class="rewards-list-item-past-info-body-item">
-    <div class="rewards-list-item-past-info-body-item-label">{{ pastFSWinnings }}</div>
-    <div class="rewards-list-item-past-info-body-item-value">-</div>
+  <div class="rewards-list-item-past-info-body-item fs">
+    <div class="rewards-list-item-past-info-body-item-wrapp">
+      <div class="rewards-list-item-past-info-body-item-label">{{ pastFSWinnings }}</div>
+      <div class="rewards-list-item-past-info-body-item-value">-</div>
+    </div>
+    {{#if isMyBonuses}}
+      <div class="rewards-list-item-past-info-body-item-bonus">Go to <span class="my-bonuses">My Bonuses</span> for more information</div>
+    {{/if}}
   </div>
   <div class="rewards-list-item-past-info-body-item">
     <div class="rewards-list-item-past-info-body-item-label">{{ expiredOnLabel }}</div>

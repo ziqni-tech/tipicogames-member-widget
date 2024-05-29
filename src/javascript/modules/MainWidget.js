@@ -3030,8 +3030,6 @@ export const MainWidget = function (options) {
       }
     }
 
-    console.log('contest:', contest);
-
     let minBetValue = null;
     if (tournament.customFields.minBet) {
       minBetValue = tournament.customFields.minBet;
@@ -3772,6 +3770,7 @@ export const MainWidget = function (options) {
 
     const template = require('../templates/mainWidget/rewardItemPast.hbs');
     listItem.innerHTML = template({
+      id: reward.id,
       name: reward.name,
       status: reward.status.toLowerCase(),
       campaign: campaign,
@@ -3781,7 +3780,8 @@ export const MainWidget = function (options) {
       pastFSWinnings: this.settings.lbWidget.settings.translation.rewards.pastFSWinnings,
       expiredOnLabel: this.settings.lbWidget.settings.translation.rewards.expiredOnLabel,
       campaignLabel: this.settings.lbWidget.settings.translation.rewards.campaignLabel,
-      tAndCLabel: this.settings.lbWidget.settings.translation.global.tAndCLabel
+      tAndCLabel: this.settings.lbWidget.settings.translation.global.tAndCLabel,
+      isMyBonuses: reward.status.toLowerCase() === 'claimed' // consumed
     });
 
     return listItem;

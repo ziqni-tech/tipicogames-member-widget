@@ -283,7 +283,8 @@ export const LbWidget = function (options) {
       onDisconnect: function () {},
       onLoadComplete: function () {},
       onClose: null,
-      onGameSelected: function () {}
+      onGameSelected: function () {},
+      onRewardSelected: function () {}
     },
     callback: null
   };
@@ -3689,6 +3690,17 @@ export const LbWidget = function (options) {
           wrapper.classList.remove('expanded');
         } else {
           wrapper.classList.add('expanded');
+        }
+      }
+
+      // My Bonuses
+    } else if (hasClass(el, 'my-bonuses')) {
+      const rewardId = el.closest('.rewards-list-item-past-info-body').dataset.id;
+      const idx = this.settings.awards.pastAwards.findIndex(a => a.id === rewardId);
+      if (idx !== -1) {
+        const award = this.settings.awards.pastAwards[idx];
+        if (typeof this.settings.callbacks.onRewardSelected === 'function') {
+          this.settings.callbacks.onRewardSelected(award);
         }
       }
 
