@@ -3030,6 +3030,8 @@ export const MainWidget = function (options) {
       }
     }
 
+    console.log('contest:', contest);
+
     let minBetValue = null;
     if (tournament.customFields.minBet) {
       minBetValue = tournament.customFields.minBet;
@@ -3068,7 +3070,10 @@ export const MainWidget = function (options) {
       duration: duration,
       minBetValue: minBetValue,
       points: points,
-      position: position
+      position: position,
+      durationLabel: this.settings.lbWidget.settings.translation.tournaments.durationLabel,
+      spinLimitLabel: this.settings.lbWidget.settings.translation.tournaments.spinLimitLabel,
+      minBetLabel: this.settings.lbWidget.settings.translation.tournaments.minBetLabel
     });
 
     return listItem;
@@ -3730,7 +3735,10 @@ export const MainWidget = function (options) {
     listItem.setAttribute('class', 'rewards-list-item-empty');
 
     const template = require('../templates/mainWidget/rewardItemEmpty.hbs');
-    listItem.innerHTML = template({});
+    listItem.innerHTML = template({
+      emptyTitle: this.settings.lbWidget.settings.translation.rewards.emptyLabel,
+      emptyDescription: this.settings.lbWidget.settings.translation.rewards.emptyDescription
+    });
 
     return listItem;
   };
