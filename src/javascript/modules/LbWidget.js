@@ -1391,7 +1391,7 @@ export const LbWidget = function (options) {
 
   this.getAward = async function (awardId, callback) {
     let awardData = null;
-    const awards = [...this.settings.awards.availableAwards, ...this.settings.awards.claimedAwards, ...this.settings.awards.expiredAwards];
+    const awards = [...this.settings.awards.currentAwards, ...this.settings.awards.claimedAwards, ...this.settings.awards.expiredAwards];
     const idx = awards.findIndex(r => r.id === awardId);
     if (idx !== -1) {
       awardData = awards[idx];
