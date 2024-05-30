@@ -86,8 +86,8 @@ export const MainWidget = function (options) {
     rewardsSection: {
       accordionLayout: [
         {
-          label: 'Available Awards',
-          type: 'availableAwards',
+          label: 'Current Awards',
+          type: 'currentAwards',
           show: true,
           showTopResults: 1
         },
@@ -151,13 +151,13 @@ export const MainWidget = function (options) {
     const availableTitle = document.createElement('div');
     const claimedTitle = document.createElement('div');
 
-    availableTitle.setAttribute('class', 'cl-main-accordion-container-menu-item availableAwards');
+    availableTitle.setAttribute('class', 'cl-main-accordion-container-menu-item currentAwards');
     claimedTitle.setAttribute('class', 'cl-main-accordion-container-menu-item claimedAwards');
 
     const idx = data.findIndex(d => d.show === true);
     if (idx !== -1) {
       switch (data[idx].type) {
-        case 'availableAwards':
+        case 'currentAwards':
           availableTitle.classList.add('active');
           break;
         case 'pastAwards':
@@ -281,8 +281,8 @@ export const MainWidget = function (options) {
       activeContainer.classList.add('cl-shown');
     }
 
-    if (element.classList.contains('availableAwards')) {
-      const availableContainer = container.querySelector('.cl-accordion.availableAwards');
+    if (element.classList.contains('currentAwards')) {
+      const availableContainer = container.querySelector('.cl-accordion.currentAwards');
       availableContainer.classList.add('cl-shown');
     }
     if (element.classList.contains('claimedAwards')) {
@@ -3222,16 +3222,16 @@ export const MainWidget = function (options) {
     return listItem;
   };
 
-  this.loadDashboardAwards = async function (claimedAwards = [], availableAwards = [], expiredAwards = []) {
+  this.loadDashboardAwards = async function (claimedAwards = [], currentAwards = [], expiredAwards = []) {
     const awardsList = query(this.settings.section, '.cl-main-widget-dashboard-rewards-list');
     awardsList.innerHTML = '';
 
-    availableAwards = availableAwards.filter(a => a.rewardData);
+    currentAwards = currentAwards.filter(a => a.rewardData);
 
-    if (availableAwards.length) {
-      availableAwards = availableAwards.slice(0, 5);
+    if (currentAwards.length) {
+      currentAwards = currentAwards.slice(0, 5);
 
-      for (const award of availableAwards) {
+      for (const award of currentAwards) {
         let products = null;
         if (award.entityType === 'Achievement') {
           const achievement = await this.settings.lbWidget.getAchievementsByIds([award.entityId]);
@@ -3870,10 +3870,10 @@ export const MainWidget = function (options) {
   ) {
     const _this = this;
     const rewardList = query(_this.settings.section, '.' + _this.settings.lbWidget.settings.navigation.rewards.containerClass + ' .cl-main-widget-reward-list-body-res');
-    const totalCount = _this.settings.lbWidget.settings.awards.totalCount;
+    const totalCount = _this.settings.lbWidget.settings.awards.currentTotalCount;
     const claimedTotalCount = _this.settings.lbWidget.settings.awards.claimedTotalCount;
     const itemsPerPage = 20;
-    let paginator = query(rewardList, '.paginator-available');
+    let paginator = query(rewardList, '.paginator-current');
 
     const prev = document.createElement('span');
     prev.setAttribute('class', 'paginator-item prev');
@@ -3883,7 +3883,7 @@ export const MainWidget = function (options) {
     if (!paginator && totalCount > itemsPerPage) {
       const pagesCount = Math.ceil(totalCount / itemsPerPage);
       paginator = document.createElement('div');
-      paginator.setAttribute('class', 'paginator-available');
+      paginator.setAttribute('class', 'paginator-current');
       addClass(paginator, 'paginator');
       addClass(paginator, 'accordion');
 
@@ -3955,7 +3955,7 @@ export const MainWidget = function (options) {
       if (rewardData && rewardData.length) {
         rewardData = rewardData.filter(a => a.rewardData);
       }
-      if (typeof rewardData !== 'undefined' && rewardData.length && layout.type === 'availableAwards') {
+      if (typeof rewardData !== 'undefined' && rewardData.length && layout.type === 'currentAwards') {
         if (rewardData.length === 0) {
           accordionSection.style.display = 'none';
         }
@@ -3988,9 +3988,9 @@ export const MainWidget = function (options) {
         }
       });
 
-      const availableRewards = query(rewardList, '.cl-accordion.availableAwards');
-      if (availableRewards) {
-        const container = query(availableRewards, '.cl-accordion-list-container');
+      const currentRewards = query(rewardList, '.cl-accordion.currentAwards');
+      if (currentRewards) {
+        const container = query(currentRewards, '.cl-accordion-list-container');
         container.appendChild(paginator);
       }
     }
@@ -4014,13 +4014,13 @@ export const MainWidget = function (options) {
   this.loadAwards = function (callback, pageNumber, claimedPageNumber, expiredPageNumber, paginationArr = null, isClaimed = false, isExpired = false) {
     const _this = this;
     _this.settings.lbWidget.checkForAvailableAwards(
-      function (claimedRewards, availableRewards, expiredRewards) {
+      function (claimedRewards, currentRewards, expiredRewards) {
         _this.rewardsListLayout(
           pageNumber,
           claimedPageNumber,
           expiredPageNumber,
           claimedRewards,
-          availableRewards,
+          currentRewards,
           expiredRewards,
           paginationArr,
           isClaimed,
@@ -4616,8 +4616,8 @@ export const MainWidget = function (options) {
 
     dashboardContainer.style.display = 'flex';
 
-    this.settings.lbWidget.checkForAvailableAwards(function (claimedAwards, availableAwards, expiredAwards) {
-      _this.loadDashboardAwards(claimedAwards, availableAwards, expiredAwards);
+    this.settings.lbWidget.checkForAvailableAwards(function (claimedAwards, currentAwards, expiredAwards) {
+      _this.loadDashboardAwards(claimedAwards, currentAwards, expiredAwards);
     });
 
     if (this.settings.lbWidget.settings.navigation.achievements.enable) {

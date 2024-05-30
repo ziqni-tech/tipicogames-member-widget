@@ -145,11 +145,13 @@ export const LbWidget = function (options) {
       expiredRewards: []
     },
     awards: {
+      currentAwards: [],
       availableAwards: [],
       claimedAwards: [],
       expiredAwards: [],
       pastAwards: [],
       rewards: [],
+      currentTotalCount: 0,
       totalCount: 0,
       claimedTotalCount: 0,
       intervalId: null,
@@ -995,7 +997,7 @@ export const LbWidget = function (options) {
         _this.settings.mainWidget.settings.navigation,
         '.' + _this.settings.navigation.rewards.navigationClass + ' .cl-main-navigation-item-count'
       );
-      menuItemCount.innerHTML = _this.settings.awards.totalCount;
+      menuItemCount.innerHTML = _this.settings.awards.currentTotalCount;
     }
   };
 
@@ -1522,26 +1524,8 @@ export const LbWidget = function (options) {
     this.settings.awards.pastAwards = [];
     this.settings.awards.rewards = [];
 
-    // Available
-    // const availableAwardRequest = AwardRequest.constructFromObject({
-    //   languageKey: this.settings.language,
-    //   awardFilter: {
-    //     statusCode: {
-    //       moreThan: 14,
-    //       lessThan: 16
-    //     },
-    //     sortBy: [{
-    //       queryField: 'created',
-    //       order: 'Desc'
-    //     }],
-    //     skip: (pageNumber - 1) * 20,
-    //     limit: 20
-    //   },
-    //   currencyKey: this.settings.currency
-    // });
-
     // Current
-    const availableAwardRequest = AwardRequest.constructFromObject({
+    const currentAwardRequest = AwardRequest.constructFromObject({
       languageKey: this.settings.language,
       awardFilter: {
         statusCode: {
@@ -1624,10 +1608,10 @@ export const LbWidget = function (options) {
       ? claimedAwards.meta.totalRecordsFound
       : 0;
 
-    const availableAwards = await this.getAwardsApi(availableAwardRequest);
-    this.settings.awards.availableAwards = availableAwards.data;
+    const currentAwards = await this.getAwardsApi(currentAwardRequest);
+    this.settings.awards.currentAwards = currentAwards.data;
 
-    const rewardIds = this.settings.awards.availableAwards.map(c => c.rewardId);
+    const rewardIds = this.settings.awards.currentAwards.map(c => c.rewardId);
     if (rewardIds.length) {
       const rewardRequest = {
         entityFilter: [{
@@ -1642,7 +1626,7 @@ export const LbWidget = function (options) {
       const rewards = await this.getRewardsApi(rewardRequest);
       const rewardsData = rewards.data;
 
-      this.settings.awards.availableAwards = this.settings.awards.availableAwards.map(award => {
+      this.settings.awards.currentAwards = this.settings.awards.currentAwards.map(award => {
         const idx = rewardsData.findIndex(r => r.id === award.rewardId);
         if (idx !== -1) {
           award.rewardData = rewardsData[idx];
@@ -1652,8 +1636,8 @@ export const LbWidget = function (options) {
       });
     }
 
-    this.settings.awards.totalCount = (availableAwards.meta && availableAwards.meta.totalRecordsFound)
-      ? availableAwards.meta.totalRecordsFound
+    this.settings.awards.currentTotalCount = (currentAwards.meta && currentAwards.meta.totalRecordsFound)
+      ? currentAwards.meta.totalRecordsFound
       : 0;
 
     const expiredAwards = await this.getAwardsApi(expiredAwardRequest);
@@ -1689,7 +1673,7 @@ export const LbWidget = function (options) {
     if (typeof callback === 'function') {
       callback(
         this.settings.awards.claimedAwards,
-        this.settings.awards.availableAwards,
+        this.settings.awards.currentAwards,
         this.settings.awards.expiredAwards
       );
     }
@@ -2903,9 +2887,9 @@ export const LbWidget = function (options) {
             _this.settings.mainWidget.loadAwards(preLoader.hide(), 1, pageNumber, 1, paginationArr, true, false);
           });
         }
-        if (el.closest('.paginator-available')) {
+        if (el.closest('.paginator-current')) {
           let pageNumber;
-          const pagesCount = Math.ceil(_this.settings.awards.totalCount / 20);
+          const pagesCount = Math.ceil(_this.settings.awards.currentTotalCount / 20);
           let isPrev = false;
           let isNext = false;
 
