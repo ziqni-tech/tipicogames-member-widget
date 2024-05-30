@@ -152,7 +152,7 @@ export const MainWidget = function (options) {
     const claimedTitle = document.createElement('div');
 
     availableTitle.setAttribute('class', 'cl-main-accordion-container-menu-item currentAwards');
-    claimedTitle.setAttribute('class', 'cl-main-accordion-container-menu-item claimedAwards');
+    claimedTitle.setAttribute('class', 'cl-main-accordion-container-menu-item pastAwards');
 
     const idx = data.findIndex(d => d.show === true);
     if (idx !== -1) {
@@ -285,7 +285,7 @@ export const MainWidget = function (options) {
       const availableContainer = container.querySelector('.cl-accordion.currentAwards');
       availableContainer.classList.add('cl-shown');
     }
-    if (element.classList.contains('claimedAwards')) {
+    if (element.classList.contains('pastAwards')) {
       const claimedContainer = container.querySelector('.cl-accordion.pastAwards');
       claimedContainer.classList.add('cl-shown');
     }
@@ -3871,6 +3871,7 @@ export const MainWidget = function (options) {
     const _this = this;
     const rewardList = query(_this.settings.section, '.' + _this.settings.lbWidget.settings.navigation.rewards.containerClass + ' .cl-main-widget-reward-list-body-res');
     const totalCount = _this.settings.lbWidget.settings.awards.currentTotalCount;
+    const pastTotalCount = _this.settings.lbWidget.settings.awards.pastTotalCount;
     const claimedTotalCount = _this.settings.lbWidget.settings.awards.claimedTotalCount;
     const itemsPerPage = 20;
     let paginator = query(rewardList, '.paginator-current');
@@ -3950,6 +3951,77 @@ export const MainWidget = function (options) {
       paginatorClaimed.appendChild(next);
     }
 
+    let paginatorPast = query(rewardList, '.paginator-past');
+    if (!paginatorPast && pastTotalCount > itemsPerPage) {
+      const pagesCount = Math.ceil(pastTotalCount / itemsPerPage);
+      paginatorPast = document.createElement('div');
+      paginatorPast.setAttribute('class', 'paginator-past');
+      addClass(paginatorPast, 'paginator');
+      addClass(paginatorPast, 'accordion');
+
+      let page = '';
+      const isEllipsis = pagesCount > 7;
+
+      if (isEllipsis) {
+        for (let i = 0; i < 7; i++) {
+          if (i === 5) {
+            page += '<span class="paginator-item" data-page="..."\>...</span>';
+          } else if (i === 6) {
+            page += '<span class="paginator-item" data-page=' + pagesCount + '\>' + pagesCount + '</span>';
+          } else {
+            page += '<span class="paginator-item" data-page=' + (i + 1) + '\>' + (i + 1) + '</span>';
+          }
+        }
+      } else {
+        for (let i = 0; i < pagesCount; i++) {
+          page += '<span class="paginator-item" data-page=' + (i + 1) + '\>' + (i + 1) + '</span>';
+        }
+      }
+
+      paginatorPast.innerHTML = page;
+
+      paginatorPast.prepend(prev);
+      paginatorPast.appendChild(next);
+    }
+
+    if (isExpired) {
+      _this.settings.rewardsSection.accordionLayout.map(t => {
+        if (t.type === 'pastAwards') {
+          t.show = true;
+          if (paginationArr && paginationArr.length) {
+            let page = '';
+            for (const i in paginationArr) {
+              page += '<span class="paginator-item" data-page=' + paginationArr[i] + '\>' + paginationArr[i] + '</span>';
+            }
+            paginatorPast.innerHTML = page;
+
+            paginatorPast.prepend(prev);
+            paginatorPast.appendChild(next);
+          }
+        } else {
+          t.show = false;
+        }
+      });
+    } else {
+      _this.settings.rewardsSection.accordionLayout.map(t => {
+        if (t.type === 'currentAwards') {
+          t.show = true;
+          if (paginationArr && paginationArr.length) {
+            let page = '';
+            for (const i in paginationArr) {
+              page += '<span class="paginator-item" data-page=' + paginationArr[i] + '\>' + paginationArr[i] + '</span>';
+            }
+            paginator.innerHTML = page;
+
+            paginator.prepend(prev);
+            paginator.appendChild(next);
+          }
+        } else {
+          t.show = false;
+        }
+      });
+    }
+
     const accordionObj = _this.awardsList(_this.settings.rewardsSection.accordionLayout, function (accordionSection, listContainer, topEntryContainer, layout, paginator) {
       let rewardData = _this.settings.lbWidget.settings.awards[layout.type];
       if (rewardData && rewardData.length) {
@@ -4009,6 +4081,21 @@ export const MainWidget = function (options) {
         container.appendChild(paginatorClaimed);
       }
     }
+
+    if (paginatorPast) {
+      const paginatorItems = query(paginatorPast, '.paginator-item');
+      paginatorItems.forEach(item => {
+        removeClass(item, 'active');
+        if (Number(item.dataset.page) === Number(expiredPageNumber)) {
+          addClass(item, 'active');
+        }
+      });
+      const pastRewards = query(rewardList, '.cl-accordion.pastAwards');
+      if (pastRewards) {
+        const container = query(pastRewards, '.cl-accordion-list-container');
+        container.appendChild(paginatorPast);
+      }
+    }
   };
 
   this.loadAwards = function (callback, pageNumber, claimedPageNumber, expiredPageNumber, paginationArr = null, isClaimed = false, isExpired = false) {
@@ -4032,7 +4119,8 @@ export const MainWidget = function (options) {
         }
       },
       pageNumber,
-      claimedPageNumber
+      claimedPageNumber,
+      expiredPageNumber
     );
   };
 
