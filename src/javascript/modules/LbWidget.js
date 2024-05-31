@@ -2824,45 +2824,47 @@ export const LbWidget = function (options) {
     } else if (hasClass(el, 'paginator-item')) {
       const preLoader = _this.settings.mainWidget.preloader();
       if (el.closest('.cl-main-widget-ach-list-body-res')) {
-        let pageNumber;
-        const pagesCount = Math.ceil(_this.settings.achievements.totalCount / 6);
-        let isPrev = false;
-        let isNext = false;
+        if (el.closest('.paginator-current')) {
+          let pageNumber;
+          const pagesCount = Math.ceil(_this.settings.achievements.totalCount / 20);
+          let isPrev = false;
+          let isNext = false;
 
-        if (el.dataset && el.dataset.page === '...') {
-          if (el.previousSibling.dataset && el.previousSibling.dataset.page && el.previousSibling.dataset.page === '1') {
-            isPrev = true;
-          } else {
-            isNext = true;
+          if (el.dataset && el.dataset.page === '...') {
+            if (el.previousSibling.dataset && el.previousSibling.dataset.page && el.previousSibling.dataset.page === '1') {
+              isPrev = true;
+            } else {
+              isNext = true;
+            }
           }
-        }
 
-        if (el.classList.contains('prev') || isPrev) {
-          const activePage = Number(el.closest('.paginator').querySelector('.active').dataset.page);
-          if (activePage > 1) {
-            pageNumber = activePage - 1;
+          if (el.classList.contains('prev') || isPrev) {
+            const activePage = Number(el.closest('.paginator').querySelector('.active').dataset.page);
+            if (activePage > 1) {
+              pageNumber = activePage - 1;
+            } else {
+              return;
+            }
+          } else if (el.classList.contains('next') || isNext) {
+            const activePage = Number(el.closest('.paginator').querySelector('.active').dataset.page);
+            if (activePage < pagesCount) {
+              pageNumber = activePage + 1;
+            } else {
+              return;
+            }
           } else {
-            return;
+            pageNumber = Number(el.dataset.page);
           }
-        } else if (el.classList.contains('next') || isNext) {
-          const activePage = Number(el.closest('.paginator').querySelector('.active').dataset.page);
-          if (activePage < pagesCount) {
-            pageNumber = activePage + 1;
-          } else {
-            return;
+
+          let paginationArr = null;
+          if (pagesCount > 7) {
+            paginationArr = pagination(6, pageNumber, pagesCount);
           }
-        } else {
-          pageNumber = Number(el.dataset.page);
-        }
 
-        let paginationArr = null;
-        if (pagesCount > 7) {
-          paginationArr = pagination(6, pageNumber, pagesCount);
+          preLoader.show(async function () {
+            _this.settings.mainWidget.loadAchievements(pageNumber, preLoader.hide(), paginationArr);
+          });
         }
-
-        preLoader.show(async function () {
-          _this.settings.mainWidget.loadAchievements(pageNumber, preLoader.hide(), paginationArr);
-        });
       }
       if (el.closest('.cl-main-widget-reward-list-body-res')) {
         if (el.closest('.paginator-claimed')) {

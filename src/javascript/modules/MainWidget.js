@@ -2371,9 +2371,50 @@ export const MainWidget = function (options) {
     return accordionWrapper;
   };
 
-  this.achievementListLayout = function (pageNumber, achievementData, paginationArr = null) {
+  this.achievementListLayout = function (pageNumber, achievementData, paginationArr = null, isPast = false) {
     const _this = this;
     const achList = query(_this.settings.section, '.' + _this.settings.lbWidget.settings.navigation.achievements.containerClass + ' .cl-main-widget-ach-list-body-res');
+
+    const totalCount = _this.settings.lbWidget.settings.achievements.totalCount;
+    const itemsPerPage = 20;
+
+    let paginator = query(achList, '.paginator');
+    if (!paginator && totalCount > itemsPerPage) {
+      const pagesCount = Math.ceil(totalCount / itemsPerPage);
+      paginator = document.createElement('div');
+      paginator.setAttribute('class', 'paginator-current');
+      addClass(paginator, 'paginator');
+      addClass(paginator, 'accordion');
+
+      let page = '';
+      const isEllipsis = pagesCount > 7;
+
+      if (isEllipsis) {
+        for (let i = 0; i < 7; i++) {
+          if (i === 5) {
+            page += '<span class="paginator-item" data-page="..."\>...</span>';
+          } else if (i === 6) {
+            page += '<span class="paginator-item" data-page=' + pagesCount + '\>' + pagesCount + '</span>';
+          } else {
+            page += '<span class="paginator-item" data-page=' + (i + 1) + '\>' + (i + 1) + '</span>';
+          }
+        }
+      } else {
+        for (let i = 0; i < pagesCount; i++) {
+          page += '<span class="paginator-item" data-page=' + (i + 1) + '\>' + (i + 1) + '</span>';
+        }
+      }
+
+      paginator.innerHTML = page;
+
+      const prev = document.createElement('span');
+      prev.setAttribute('class', 'paginator-item prev');
+      const next = document.createElement('span');
+      next.setAttribute('class', 'paginator-item next');
+
+      paginator.prepend(prev);
+      paginator.appendChild(next);
+    }
 
     const accordionObj = _this.achievementList(_this.settings.achievementSection.accordionLayout, function (accordionSection, listContainer, topEntryContainer, layout) {
       const data = achievementData[layout.type];
@@ -2384,8 +2425,6 @@ export const MainWidget = function (options) {
         });
       } else if (typeof data !== 'undefined' && data.length && layout.type === 'past') {
         mapObject(data, function (rew) {
-          // const listItem =  _this.achievementItemPast(rew);
-          // listContainer.appendChild(listItem);
           _this.achievementItemPast(rew)
             .then((listItem) => listContainer.appendChild(listItem));
         });
@@ -2397,6 +2436,22 @@ export const MainWidget = function (options) {
 
     achList.innerHTML = '';
     achList.appendChild(accordionObj);
+
+    if (paginator) {
+      const paginatorItems = query(paginator, '.paginator-item');
+      paginatorItems.forEach(item => {
+        removeClass(item, 'active');
+        if (Number(item.dataset.page) === Number(pageNumber)) {
+          addClass(item, 'active');
+        }
+      });
+
+      const currentAchievenets = query(achList, '.cl-accordion.current');
+      if (currentAchievenets) {
+        const container = query(currentAchievenets, '.cl-accordion-list-container');
+        container.appendChild(paginator);
+      }
+    }
   };
 
   this.createGameItem = (product) => {
