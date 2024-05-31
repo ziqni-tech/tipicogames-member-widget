@@ -1703,6 +1703,21 @@ export const LbWidget = function (options) {
     }
   };
 
+  this.getProductsByRefIds = async function (productRefIds) {
+    const productRequest = {
+      languageKey: this.settings.language,
+      productFilter: {
+        constraints: ['productRefId'],
+        entityIds: productRefIds,
+        entityType: 'product',
+        limit: 100,
+        skip: 0
+      }
+    };
+
+    return await this.getProductsApi(productRequest);
+  };
+
   this.getProductsApi = function (productRequest) {
     try {
       if (!this.settings.apiWs.productApiWsClient) {
