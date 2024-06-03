@@ -1082,7 +1082,7 @@ export const LbWidget = function (options) {
     return achievements;
   };
 
-  this.checkForAvailableAchievements = async function (pageNumber, callback) {
+  this.checkForAvailableAchievements = async function (pageNumber, callback, pastPageNumber = 1) {
     const moreValue = this.settings.navigation.achievements.showReadyAchievements ? 10 : 20;
 
     const achievementRequest = AchievementRequest.constructFromObject({
@@ -1132,7 +1132,7 @@ export const LbWidget = function (options) {
           queryField: 'created',
           order: 'Desc'
         }],
-        skip: (pageNumber - 1) * 20,
+        skip: (pastPageNumber - 1) * 20,
         limit: 20
       }
     }, null);
@@ -2863,6 +2863,48 @@ export const LbWidget = function (options) {
 
           preLoader.show(async function () {
             _this.settings.mainWidget.loadAchievements(pageNumber, preLoader.hide(), paginationArr);
+          });
+        }
+
+        if (el.closest('.paginator-past')) {
+          let pageNumber;
+          const pagesCount = Math.ceil(_this.settings.achievements.pastTotalCount / 20);
+          let isPrev = false;
+          let isNext = false;
+
+          if (el.dataset && el.dataset.page === '...') {
+            if (el.previousSibling.dataset && el.previousSibling.dataset.page && el.previousSibling.dataset.page === '1') {
+              isPrev = true;
+            } else {
+              isNext = true;
+            }
+          }
+
+          if (el.classList.contains('prev') || isPrev) {
+            const activePage = Number(el.closest('.paginator').querySelector('.active').dataset.page);
+            if (activePage > 1) {
+              pageNumber = activePage - 1;
+            } else {
+              return;
+            }
+          } else if (el.classList.contains('next') || isNext) {
+            const activePage = Number(el.closest('.paginator').querySelector('.active').dataset.page);
+            if (activePage < pagesCount) {
+              pageNumber = activePage + 1;
+            } else {
+              return;
+            }
+          } else {
+            pageNumber = Number(el.dataset.page);
+          }
+
+          let paginationArr = null;
+          if (pagesCount > 7) {
+            paginationArr = pagination(6, pageNumber, pagesCount);
+          }
+
+          preLoader.show(async function () {
+            _this.settings.mainWidget.loadAchievements(1, preLoader.hide(), paginationArr, pageNumber, true);
           });
         }
       }

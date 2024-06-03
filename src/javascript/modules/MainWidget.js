@@ -2371,14 +2371,26 @@ export const MainWidget = function (options) {
     return accordionWrapper;
   };
 
-  this.achievementListLayout = function (pageNumber, achievementData, paginationArr = null, isPast = false) {
+  this.achievementListLayout = function (
+    pageNumber,
+    achievementData,
+    paginationArr = null,
+    isPast = false,
+    pastPageNumber = 1
+  ) {
     const _this = this;
     const achList = query(_this.settings.section, '.' + _this.settings.lbWidget.settings.navigation.achievements.containerClass + ' .cl-main-widget-ach-list-body-res');
 
     const totalCount = _this.settings.lbWidget.settings.achievements.totalCount;
+    const pastTotalCount = _this.settings.lbWidget.settings.achievements.pastTotalCount;
     const itemsPerPage = 20;
 
-    let paginator = query(achList, '.paginator');
+    const prev = document.createElement('span');
+    prev.setAttribute('class', 'paginator-item prev');
+    const next = document.createElement('span');
+    next.setAttribute('class', 'paginator-item next');
+
+    let paginator = query(achList, '.paginator-current');
     if (!paginator && totalCount > itemsPerPage) {
       const pagesCount = Math.ceil(totalCount / itemsPerPage);
       paginator = document.createElement('div');
@@ -2407,13 +2419,84 @@ export const MainWidget = function (options) {
 
       paginator.innerHTML = page;
 
+      paginator.prepend(prev);
+      paginator.appendChild(next);
+    }
+
+    let paginatorPast = query(achList, '.paginator-past');
+    if (!paginatorPast && pastTotalCount > itemsPerPage) {
+      const pagesCount = Math.ceil(pastTotalCount / itemsPerPage);
+      paginatorPast = document.createElement('div');
+      paginatorPast.setAttribute('class', 'paginator-past');
+      addClass(paginatorPast, 'paginator');
+      addClass(paginatorPast, 'accordion');
+
+      let page = '';
+      const isEllipsis = pagesCount > 7;
+
+      if (isEllipsis) {
+        for (let i = 0; i < 7; i++) {
+          if (i === 5) {
+            page += '<span class="paginator-item" data-page="..."\>...</span>';
+          } else if (i === 6) {
+            page += '<span class="paginator-item" data-page=' + pagesCount + '\>' + pagesCount + '</span>';
+          } else {
+            page += '<span class="paginator-item" data-page=' + (i + 1) + '\>' + (i + 1) + '</span>';
+          }
+        }
+      } else {
+        for (let i = 0; i < pagesCount; i++) {
+          page += '<span class="paginator-item" data-page=' + (i + 1) + '\>' + (i + 1) + '</span>';
+        }
+      }
+
+      paginatorPast.innerHTML = page;
+
       const prev = document.createElement('span');
       prev.setAttribute('class', 'paginator-item prev');
       const next = document.createElement('span');
       next.setAttribute('class', 'paginator-item next');
 
-      paginator.prepend(prev);
-      paginator.appendChild(next);
+      paginatorPast.prepend(prev);
+      paginatorPast.appendChild(next);
+    }
+
+    if (isPast) {
+      _this.settings.achievementSection.accordionLayout.map(t => {
+        if (t.type === 'past') {
+          t.show = true;
+          if (paginationArr && paginationArr.length) {
+            let page = '';
+            for (const i in paginationArr) {
+              page += '<span class="paginator-item" data-page=' + paginationArr[i] + '\>' + paginationArr[i] + '</span>';
+            }
+            paginatorPast.innerHTML = page;
+
+            paginatorPast.prepend(prev);
+            paginatorPast.appendChild(next);
+          }
+        } else {
+          t.show = false;
+        }
+      });
+    } else {
+      _this.settings.achievementSection.accordionLayout.map(t => {
+        if (t.type === 'current') {
+          t.show = true;
+          if (paginationArr && paginationArr.length) {
+            let page = '';
+            for (const i in paginationArr) {
+              page += '<span class="paginator-item" data-page=' + paginationArr[i] + '\>' + paginationArr[i] + '</span>';
+            }
+            paginator.innerHTML = page;
+
+            paginator.prepend(prev);
+            paginator.appendChild(next);
+          }
+        } else {
+          t.show = false;
+        }
+      });
     }
 
     const accordionObj = _this.achievementList(_this.settings.achievementSection.accordionLayout, function (accordionSection, listContainer, topEntryContainer, layout) {
@@ -2450,6 +2533,21 @@ export const MainWidget = function (options) {
       if (currentAchievenets) {
         const container = query(currentAchievenets, '.cl-accordion-list-container');
         container.appendChild(paginator);
+      }
+    }
+
+    if (paginatorPast) {
+      const paginatorItems = query(paginatorPast, '.paginator-item');
+      paginatorItems.forEach(item => {
+        removeClass(item, 'active');
+        if (Number(item.dataset.page) === Number(pastPageNumber)) {
+          addClass(item, 'active');
+        }
+      });
+      const pastAchievenmets = query(achList, '.cl-accordion.past');
+      if (pastAchievenmets) {
+        const container = query(pastAchievenmets, '.cl-accordion-list-container');
+        container.appendChild(paginatorPast);
       }
     }
   };
@@ -2914,22 +3012,26 @@ export const MainWidget = function (options) {
     });
   };
 
-  this.loadAchievements = function (pageNumber, callback, paginationArr = null) {
+  this.loadAchievements = function (pageNumber, callback, paginationArr = null, pastPageNumber = 1, isPast = false) {
     const _this = this;
 
-    _this.settings.lbWidget.checkForAvailableAchievements(pageNumber, async function (achievementData) {
-      _this.achievementListLayout(pageNumber, achievementData, paginationArr);
+    _this.settings.lbWidget.checkForAvailableAchievements(
+      pageNumber,
+      async function (achievementData) {
+        _this.achievementListLayout(pageNumber, achievementData, paginationArr, isPast, pastPageNumber);
 
-      const idList = _this.settings.lbWidget.settings.achievements.list.map(a => a.id);
+        const idList = _this.settings.lbWidget.settings.achievements.list.map(a => a.id);
 
-      await _this.settings.lbWidget.checkForMemberAchievementsProgression(idList, function (issued, progression) {
-        _this.updateAchievementProgressionAndIssued(issued, progression);
-      });
+        await _this.settings.lbWidget.checkForMemberAchievementsProgression(idList, function (issued, progression) {
+          _this.updateAchievementProgressionAndIssued(issued, progression);
+        });
 
-      if (typeof callback === 'function') {
-        callback();
-      }
-    });
+        if (typeof callback === 'function') {
+          callback();
+        }
+      },
+      pastPageNumber
+    );
   };
 
   this.showLeaveAchievementPopup = function (activeAchievementId, isDashboard = false) {
