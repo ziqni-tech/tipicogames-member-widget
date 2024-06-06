@@ -2290,10 +2290,7 @@ export const MainWidget = function (options) {
     if (bar && barLabel) {
       const achievementData = this.settings.lbWidget.getAchievementDataById(id);
 
-      if (!achievementData) {
-        console.log('not found');
-        return;
-      }
+      if (!achievementData) return;
 
       let pointsValue = null;
       let spinsLeft = 0;
@@ -2835,34 +2832,16 @@ export const MainWidget = function (options) {
 
     if (data.entityType === 'Achievement') {
       const achievement = await this.settings.lbWidget.getAchievementsByIds([data.entityId]);
-      const productRequest = {
-        languageKey: this.settings.lbWidget.settings.language,
-        productFilter: {
-          entityIds: [achievement[0].id],
-          entityType: 'achievement',
-          limit: 20,
-          skip: 0
-        }
-      };
-      products = await this.settings.lbWidget.getProductsApi(productRequest);
-
       campaign.innerHTML = achievement[0].name;
       tAndC.innerHTML = achievement[0].termsAndConditions ?? this.settings.lbWidget.settings.translation.global.tAndCEmpty;
     } else if (data.entityType === 'Contest') {
       const contest = await this.settings.lbWidget.getContestsByIds([data.entityId]);
-      const productRequest = {
-        languageKey: this.settings.lbWidget.settings.language,
-        productFilter: {
-          entityIds: [contest[0].id],
-          entityType: 'competition',
-          limit: 20,
-          skip: 0
-        }
-      };
-      products = await this.settings.lbWidget.getProductsApi(productRequest);
-
       campaign.innerHTML = contest[0].name;
       tAndC.innerHTML = contest[0].termsAndConditions ?? this.settings.lbWidget.settings.translation.global.tAndCEmpty;
+    }
+
+    if (data.rewardType.customFields.productReferenceIds && Array.isArray(data.rewardType.customFields.productReferenceIds)) {
+      products = await this.settings.lbWidget.getProductsByRefIds(data.rewardType.customFields.productReferenceIds);
     }
 
     games.innerHTML = '';
@@ -3197,6 +3176,11 @@ export const MainWidget = function (options) {
       spinsLimitValue = contest.strategies.scoringStrategy.limitUpdatesTo;
     }
 
+    let spinsLeftValue = '-';
+    if (contest.optInStatus && contest.optInStatus.params && contest.optInStatus.params.hasOwnProperty('$remaining_count')) {
+      spinsLeftValue = contest.optInStatus.params.$remaining_count;
+    }
+
     const date = isReadyStatus ? new Date(contest.scheduledStartDate) : new Date(contest.scheduledEndDate);
     const template = require('../templates/dashboard/tournamentItem.hbs');
     listItem.innerHTML = template({
@@ -3226,6 +3210,7 @@ export const MainWidget = function (options) {
       minBetValue: minBetValue,
       points: points,
       position: position,
+      spinsLeftValue: spinsLeftValue,
       durationLabel: this.settings.lbWidget.settings.translation.tournaments.durationLabel,
       spinLimitLabel: this.settings.lbWidget.settings.translation.tournaments.spinLimitLabel,
       minBetLabel: this.settings.lbWidget.settings.translation.tournaments.minBetLabel
@@ -3301,6 +3286,11 @@ export const MainWidget = function (options) {
 
     if (!rewardName) rewardName = this.settings.lbWidget.settings.translation.tournaments.noReward;
 
+    let spinsLeftValue = '-';
+    if (contest.optInStatus && contest.optInStatus.params && contest.optInStatus.params.hasOwnProperty('$remaining_count')) {
+      spinsLeftValue = contest.optInStatus.params.$remaining_count;
+    }
+
     const template = require('../templates/mainWidget/tournamentResultItem.hbs');
     listItem.innerHTML = template({
       title: contest.name,
@@ -3323,7 +3313,8 @@ export const MainWidget = function (options) {
       spinsLeftLabel: this.settings.lbWidget.settings.translation.tournaments.spinsLeftLabel,
       pointsLabel: this.settings.lbWidget.settings.translation.tournaments.pointsLabel,
       points: points,
-      position: position
+      position: position,
+      spinsLeftValue: spinsLeftValue
     });
 
     return listItem;
@@ -3389,31 +3380,10 @@ export const MainWidget = function (options) {
       currentAwards = currentAwards.slice(0, 5);
 
       for (const award of currentAwards) {
-        let products = null;
-        if (award.entityType === 'Achievement') {
-          const achievement = await this.settings.lbWidget.getAchievementsByIds([award.entityId]);
-          const productRequest = {
-            languageKey: this.settings.language,
-            productFilter: {
-              entityIds: [achievement[0].id],
-              entityType: 'achievement',
-              limit: 100,
-              skip: 0
-            }
-          };
-          products = await this.settings.lbWidget.getProductsApi(productRequest);
-        } else if (award.entityType === 'Contest') {
-          const contest = await this.settings.lbWidget.getContestsByIds([award.entityId]);
-          const productRequest = {
-            languageKey: this.settings.language,
-            productFilter: {
-              entityIds: [contest[0].id],
-              entityType: 'competition',
-              limit: 100,
-              skip: 0
-            }
-          };
-          products = await this.settings.lbWidget.getProductsApi(productRequest);
+        let products = [];
+
+        if (award.rewardType.customFields.productReferenceIds && Array.isArray(award.rewardType.customFields.productReferenceIds)) {
+          products = await this.settings.lbWidget.getProductsByRefIds(award.rewardType.customFields.productReferenceIds);
         }
 
         const listItem = this.dashboardAwardItem(award, products);
@@ -3510,18 +3480,6 @@ export const MainWidget = function (options) {
       campaign = achievement[0].name;
       title = 'Mission Completed';
       this.awardTAndC = achievement[0].termsAndConditions;
-
-      const productRequest = {
-        languageKey: this.settings.language,
-        productFilter: {
-          entityIds: [achievement[0].id],
-          entityType: 'achievement',
-          limit: 100,
-          skip: 0
-        }
-      };
-
-      products = await this.settings.lbWidget.getProductsApi(productRequest);
     } else if (awardData.entityType === 'Contest') {
       const contest = await this.settings.lbWidget.getContestsByIds([awardData.entityId]);
 
@@ -3530,17 +3488,10 @@ export const MainWidget = function (options) {
       campaign = contest[0].name;
       title = 'Tournament Completed';
       this.awardTAndC = contest[0].termsAndConditions;
+    }
 
-      const productRequest = {
-        languageKey: this.settings.language,
-        productFilter: {
-          entityIds: [contest[0].id],
-          entityType: 'competition',
-          limit: 100,
-          skip: 0
-        }
-      };
-      products = await this.settings.lbWidget.getProductsApi(productRequest);
+    if (awardData.rewardType.customFields.productReferenceIds && Array.isArray(awardData.rewardType.customFields.productReferenceIds)) {
+      products = await this.settings.lbWidget.getProductsByRefIds(awardData.rewardType.customFields.productReferenceIds);
     }
 
     let awardProducts = products ? products.data : null;
@@ -3826,44 +3777,13 @@ export const MainWidget = function (options) {
     }
 
     let products = null;
-    let awardProducts = null;
     let productsCount = null;
 
-    if (award.entityType === 'Achievement') {
-      const achievement = await this.settings.lbWidget.getAchievementsByIds([award.entityId]);
-      if (achievement && achievement.length) {
-        const productRequest = {
-          languageKey: this.settings.lbWidget.settings.language,
-          productFilter: {
-            entityIds: [achievement[0].id],
-            entityType: 'achievement',
-            limit: 100,
-            skip: 0
-          }
-        };
-        products = await this.settings.lbWidget.getProductsApi(productRequest);
-      } else {
-        console.warn('Аchievement not found. ID:', award.entityId);
-      }
-    } else if (award.entityType === 'Contest') {
-      const contest = await this.settings.lbWidget.getContestsByIds([award.entityId]);
-      if (contest && contest.length) {
-        const productRequest = {
-          languageKey: this.settings.lbWidget.settings.language,
-          productFilter: {
-            entityIds: [contest[0].id],
-            entityType: 'competition',
-            limit: 100,
-            skip: 0
-          }
-        };
-        products = await this.settings.lbWidget.getProductsApi(productRequest);
-      } else {
-        console.warn('Contest not found. ID:', award.entityId);
-      }
+    if (award.rewardType.customFields.productReferenceIds && Array.isArray(award.rewardType.customFields.productReferenceIds)) {
+      products = await this.settings.lbWidget.getProductsByRefIds(award.rewardType.customFields.productReferenceIds);
     }
 
-    awardProducts = products && products.data ? products.data : [];
+    let awardProducts = products && products.data ? products.data : [];
 
     if (awardProducts && awardProducts.length > 3) {
       awardProducts = awardProducts.slice(0, 3);
@@ -5011,31 +4931,9 @@ export const MainWidget = function (options) {
     dashboardContainer.style.display = 'flex';
     dashboardContainer.classList.add('cl-main-active-section');
 
-    let products = null;
-    if (award.entityType === 'Achievement') {
-      const achievement = await this.settings.lbWidget.getAchievementsByIds([award.entityId]);
-      const productRequest = {
-        languageKey: this.settings.language,
-        productFilter: {
-          entityIds: [achievement[0].id],
-          entityType: 'achievement',
-          limit: 100,
-          skip: 0
-        }
-      };
-      products = await this.settings.lbWidget.getProductsApi(productRequest);
-    } else if (award.entityType === 'Contest') {
-      const contest = await this.settings.lbWidget.getContestsByIds([award.entityId]);
-      const productRequest = {
-        languageKey: this.settings.language,
-        productFilter: {
-          entityIds: [contest[0].id],
-          entityType: 'competition',
-          limit: 100,
-          skip: 0
-        }
-      };
-      products = await this.settings.lbWidget.getProductsApi(productRequest);
+    let products = [];
+    if (award.rewardType.customFields.productReferenceIds && Array.isArray(award.rewardType.customFields.productReferenceIds)) {
+      products = await this.settings.lbWidget.getProductsByRefIds(award.rewardType.customFields.productReferenceIds);
     }
 
     const emptyItem = document.querySelector('.dashboard-rewards-list-item-empty');

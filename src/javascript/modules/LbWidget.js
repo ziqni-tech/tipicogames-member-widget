@@ -30,6 +30,7 @@ import {
   AwardRequest,
   AwardsApiWs,
   ClaimAwardRequest,
+  DeclineAwardRequest,
   CompetitionRequest,
   CompetitionsApiWs,
   ContestRequest,
@@ -1461,6 +1462,30 @@ export const LbWidget = function (options) {
       });
 
       this.settings.apiWs.awardsApiWsClient.claimAwards(claimAwardRequest, (json) => {
+        if (typeof callback === 'function') {
+          callback(json);
+        }
+      });
+    } catch (e) {
+      const errorPage = document.querySelector('.cl-main-widget-error');
+      errorPage.classList.add('active');
+    }
+  };
+
+  this.declineAward = async function (rewardId, callback) {
+    try {
+      if (!this.settings.apiWs.awardsApiWsClient) {
+        this.settings.apiWs.awardsApiWsClient = new AwardsApiWs(this.apiClientStomp);
+      }
+
+      const declineAwardRequest = DeclineAwardRequest.constructFromObject({
+        awardIds: [rewardId]
+      });
+
+      console.log('declineAwardRequest:', declineAwardRequest);
+
+      this.settings.apiWs.awardsApiWsClient.declineAwards(declineAwardRequest, (json) => {
+        console.log('json:', json);
         if (typeof callback === 'function') {
           callback(json);
         }
@@ -3506,6 +3531,18 @@ export const LbWidget = function (options) {
         page.remove();
         _this.settings.mainWidget.checkCelebrationPages();
       }, 1000);
+
+      // const awardId = closest(el, '.cl-main-widget-reward-celebration-drawer').dataset.id;
+      // const page = closest(el, '.cl-main-widget-reward-celebration');
+      // const preLoader = _this.settings.mainWidget.preloader();
+      //
+      // preLoader.show(async function () {
+      //   await _this.declineAward(awardId, function () {
+      //     page.remove();
+      //     preLoader.hide();
+      //     _this.settings.mainWidget.checkCelebrationPages();
+      //   });
+      // });
 
       // Award Details Forfeit
     } else if (hasClass(el, 'cl-main-widget-reward-details-forfeit')) {
