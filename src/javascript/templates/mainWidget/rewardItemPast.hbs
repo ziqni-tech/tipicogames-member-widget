@@ -11,6 +11,7 @@
 </div>
 
 <div class="rewards-list-item-past-info-body" data-id="{{ id }}">
+  {{#if isFreeSpins}}
   <div class="rewards-list-item-past-info-body-item">
     <div class="rewards-list-item-past-info-body-item-label">{{ pastFS }}</div>
     <div class="rewards-list-item-past-info-body-item-value">{{ pastFsValue }}</div>
@@ -24,6 +25,15 @@
       <div class="rewards-list-item-past-info-body-item-bonus">Go to <span class="my-bonuses">My Bonuses</span> for more information</div>
     {{/if}}
   </div>
+  {{else}}
+  <div class="rewards-list-item-past-info-body-item fs">
+    <div class="rewards-list-item-past-info-body-item-wrapp">
+      <div class="rewards-list-item-past-info-body-item-label">Credited Bonus</div>
+      <div class="rewards-list-item-past-info-body-item-value">{{ bonusValue }}{{ bonusSymbol }}</div>
+    </div>
+    <div class="rewards-list-item-past-info-body-item-bonus">Go to <span class="my-bonuses">My Bonuses</span> for more information</div>
+  </div>
+  {{/if}}
   <div class="rewards-list-item-past-info-body-item">
     <div class="rewards-list-item-past-info-body-item-label">{{ expiredOnLabel }}</div>
     <div class="rewards-list-item-past-info-body-item-value">{{ expires }}</div>

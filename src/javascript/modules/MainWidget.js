@@ -3858,7 +3858,10 @@ export const MainWidget = function (options) {
       expiredOnLabel: this.settings.lbWidget.settings.translation.rewards.expiredOnLabel,
       campaignLabel: this.settings.lbWidget.settings.translation.rewards.campaignLabel,
       tAndCLabel: this.settings.lbWidget.settings.translation.global.tAndCLabel,
-      isMyBonuses: reward.status.toLowerCase() === 'claimed' // consumed
+      isMyBonuses: reward.status.toLowerCase() === 'claimed', // consumed
+      isFreeSpins: reward.rewardType.key === 'Free-Spins',
+      bonusValue: reward.rewardValue,
+      bonusSymbol: reward.rewardType.uomSymbol ?? ''
     });
 
     return listItem;

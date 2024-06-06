@@ -1568,14 +1568,14 @@ export const LbWidget = function (options) {
       currencyKey: this.settings.currency
     });
 
-    const claimedAwardRequest = AwardRequest.constructFromObject({
+    const consumedAwardRequest = AwardRequest.constructFromObject({
       languageKey: this.settings.language,
       awardFilter: {
         statusCode: {
           moreThan: 34,
           lessThan: 36
         },
-        tags: ['consumed'],
+        // tags: ['consumed'],
         sortBy: [{
           queryField: 'created',
           order: 'Desc'
@@ -1603,7 +1603,7 @@ export const LbWidget = function (options) {
       currencyKey: this.settings.currency
     });
 
-    const claimedAwards = await this.getAwardsApi(claimedAwardRequest);
+    const claimedAwards = await this.getAwardsApi(consumedAwardRequest);
     this.settings.awards.claimedAwards = claimedAwards.data;
     const claimedRewardIds = this.settings.awards.claimedAwards.map(c => c.rewardId);
     if (claimedRewardIds.length) {
