@@ -1575,7 +1575,7 @@ export const LbWidget = function (options) {
           moreThan: 34,
           lessThan: 36
         },
-        // tags: ['consumed'],
+        tags: ['consumed'],
         sortBy: [{
           queryField: 'created',
           order: 'Desc'
