@@ -3764,6 +3764,8 @@ export const MainWidget = function (options) {
 
     const status = reward.status.toLowerCase() === 'claimed' ? 'consumed' : reward.status.toLowerCase();
 
+    const isMyBonuses = status === 'consumed' && reward.rewardType.key !== 'Free-Spins';
+
     const template = require('../templates/mainWidget/rewardItemPast.hbs');
     listItem.innerHTML = template({
       id: reward.id,
@@ -3777,7 +3779,7 @@ export const MainWidget = function (options) {
       expiredOnLabel: this.settings.lbWidget.settings.translation.rewards.expiredOnLabel,
       campaignLabel: this.settings.lbWidget.settings.translation.rewards.campaignLabel,
       tAndCLabel: this.settings.lbWidget.settings.translation.global.tAndCLabel,
-      isMyBonuses: reward.status.toLowerCase() === 'claimed', // consumed
+      isMyBonuses: isMyBonuses,
       isFreeSpins: reward.rewardType.key === 'Free-Spins',
       bonusValue: reward.rewardValue,
       bonusSymbol: reward.rewardType.uomSymbol ?? ''
