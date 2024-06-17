@@ -2817,6 +2817,7 @@ export const MainWidget = function (options) {
     const expand = query(this.settings.reward.detailsContainer, '.cl-main-widget-ach-details-game-full');
     const expandOverlay = query(this.settings.reward.detailsContainer, '.cl-main-widget-ach-details-game-overlay');
     const backBtn = query(this.settings.reward.detailsContainer, '.cl-main-widget-reward-details-back-btn');
+    const drawerDeclineBn = query(this.settings.reward.container, '.cl-main-widget-reward-details-drawer-btn-decline');
     let products = null;
     let isExpand = false;
 
@@ -2874,6 +2875,8 @@ export const MainWidget = function (options) {
 
     expires.innerHTML = expiresValue;
     detailExpires.innerHTML = expiresValue;
+
+    drawerDeclineBn.dataset.id = data.id;
 
     this.settings.reward.detailsContainer.style.display = 'block';
     addClass(this.settings.reward.detailsContainer, 'cl-show');
@@ -3396,68 +3399,40 @@ export const MainWidget = function (options) {
 
     const slidesContainer = document.querySelector('.cl-main-widget-dashboard-rewards-list');
     const slide = document.querySelector('.cl-main-widget-dashboard-rewards-list .dashboard-rewards-list-item');
-    // const slides = document.querySelectorAll('.cl-main-widget-dashboard-rewards-list .dashboard-rewards-list-item');
+    const slides = document.querySelectorAll('.cl-main-widget-dashboard-rewards-list .dashboard-rewards-list-item');
     const prevButton = document.querySelector('.cl-main-widget-dashboard-rewards-list-left');
     const nextButton = document.querySelector('.cl-main-widget-dashboard-rewards-list-right');
 
     if (this.settings.lbWidget.settings.scrollButtons.rewards) {
-      nextButton.style.display = 'block';
-
-      if (slidesContainer.scrollLeft === 0) prevButton.style.display = 'none';
-
-      slidesContainer.addEventListener('scroll', (event) => {
-        if (slidesContainer.scrollLeft > 0) {
-          prevButton.style.display = 'block';
-        } else {
-          prevButton.style.display = 'none';
-        }
-
-        if (slidesContainer.offsetWidth + slidesContainer.scrollLeft >= slidesContainer.scrollWidth) {
-          nextButton.style.display = 'none';
-        }
-      });
-
-      nextButton.addEventListener('click', (event) => {
-        const slideWidth = slide.clientWidth;
-        slidesContainer.scrollLeft += slideWidth;
-      });
-
-      prevButton.addEventListener('click', () => {
-        const slideWidth = slide.clientWidth;
-        slidesContainer.scrollLeft -= slideWidth;
+      if ((slides.length * slide.clientWidth) > slidesContainer.clientWidth) {
         nextButton.style.display = 'block';
-      });
-    }
-    // if (slides.length < 2) {
-    //   nextButton.style.display = 'none';
-    // } else {
-    //   nextButton.style.display = 'block';
-    // }
 
-    // if (slidesContainer.scrollLeft === 0) prevButton.style.display = 'none';
-    //
-    // slidesContainer.addEventListener('scroll', (event) => {
-    //   if (slidesContainer.scrollLeft > 0) {
-    //     prevButton.style.display = 'block';
-    //   } else {
-    //     prevButton.style.display = 'none';
-    //   }
-    //
-    //   if (slidesContainer.offsetWidth + slidesContainer.scrollLeft >= slidesContainer.scrollWidth) {
-    //     nextButton.style.display = 'none';
-    //   }
-    // });
-    //
-    // nextButton.addEventListener('click', (event) => {
-    //   const slideWidth = slide.clientWidth;
-    //   slidesContainer.scrollLeft += slideWidth;
-    // });
-    //
-    // prevButton.addEventListener('click', () => {
-    //   const slideWidth = slide.clientWidth;
-    //   slidesContainer.scrollLeft -= slideWidth;
-    //   nextButton.style.display = 'block';
-    // });
+        if (slidesContainer.scrollLeft === 0) prevButton.style.display = 'none';
+
+        slidesContainer.addEventListener('scroll', (event) => {
+          if (slidesContainer.scrollLeft > 0) {
+            prevButton.style.display = 'block';
+          } else {
+            prevButton.style.display = 'none';
+          }
+
+          if (slidesContainer.offsetWidth + slidesContainer.scrollLeft >= slidesContainer.scrollWidth) {
+            nextButton.style.display = 'none';
+          }
+        });
+
+        nextButton.addEventListener('click', (event) => {
+          const slideWidth = slide.clientWidth;
+          slidesContainer.scrollLeft += slideWidth;
+        });
+
+        prevButton.addEventListener('click', () => {
+          const slideWidth = slide.clientWidth;
+          slidesContainer.scrollLeft -= slideWidth;
+          nextButton.style.display = 'block';
+        });
+      }
+    }
   };
 
   this.showAwardCelebration = async function (awardData) {
@@ -3586,70 +3561,40 @@ export const MainWidget = function (options) {
 
     const slidesContainer = document.querySelector('.cl-main-widget-dashboard-tournaments-list');
     const slide = document.querySelector('.cl-main-widget-dashboard-tournaments-list .dashboard-tournament-item');
-    // const slides = document.querySelectorAll('.cl-main-widget-dashboard-tournaments-list .dashboard-tournament-item');
+    const slides = document.querySelectorAll('.cl-main-widget-dashboard-tournaments-list .dashboard-tournament-item');
     const prevButton = document.querySelector('.cl-main-widget-dashboard-tournaments-list-left');
     const nextButton = document.querySelector('.cl-main-widget-dashboard-tournaments-list-right');
 
     if (this.settings.lbWidget.settings.scrollButtons.tournaments) {
-      nextButton.style.display = 'block';
-
-      if (slidesContainer.scrollLeft === 0) prevButton.style.display = 'none';
-
-      slidesContainer.addEventListener('scroll', (event) => {
-        if (slidesContainer.scrollLeft > 0) {
-          prevButton.style.display = 'block';
-        } else {
-          prevButton.style.display = 'none';
-        }
-
-        if (slidesContainer.offsetWidth + slidesContainer.scrollLeft >= slidesContainer.scrollWidth) {
-          nextButton.style.display = 'none';
-        }
-      });
-
-      nextButton.addEventListener('click', (event) => {
-        const slideWidth = slide.clientWidth;
-        slidesContainer.scrollLeft += slideWidth;
-      });
-
-      prevButton.addEventListener('click', () => {
-        const slideWidth = slide.clientWidth;
-        slidesContainer.scrollLeft -= slideWidth;
+      if ((slides.length * slide.clientWidth) > slidesContainer.clientWidth) {
         nextButton.style.display = 'block';
-      });
+
+        if (slidesContainer.scrollLeft === 0) prevButton.style.display = 'none';
+
+        slidesContainer.addEventListener('scroll', (event) => {
+          if (slidesContainer.scrollLeft > 0) {
+            prevButton.style.display = 'block';
+          } else {
+            prevButton.style.display = 'none';
+          }
+
+          if (slidesContainer.offsetWidth + slidesContainer.scrollLeft >= slidesContainer.scrollWidth) {
+            nextButton.style.display = 'none';
+          }
+        });
+
+        nextButton.addEventListener('click', (event) => {
+          const slideWidth = slide.clientWidth;
+          slidesContainer.scrollLeft += slideWidth;
+        });
+
+        prevButton.addEventListener('click', () => {
+          const slideWidth = slide.clientWidth;
+          slidesContainer.scrollLeft -= slideWidth;
+          nextButton.style.display = 'block';
+        });
+      }
     }
-
-    // if (slides.length < 2) {
-    //   nextButton.style.display = 'none';
-    // } else {
-    //   nextButton.style.display = 'block';
-    // }
-
-    // if (slidesContainer.scrollLeft === 0) prevButton.style.display = 'none';
-    //
-    // slidesContainer.addEventListener('scroll', (event) => {
-    //   if (slidesContainer.scrollLeft > 0) {
-    //     prevButton.style.display = 'block';
-    //   } else {
-    //     prevButton.style.display = 'none';
-    //   }
-    //
-    //   if (slidesContainer.offsetWidth + slidesContainer.scrollLeft >= slidesContainer.scrollWidth) {
-    //     nextButton.style.display = 'none';
-    //   }
-    // });
-    //
-    // nextButton.addEventListener('click', (event) => {
-    //   const slideWidth = slide.clientWidth;
-    //   slidesContainer.scrollLeft += slideWidth;
-    // });
-    //
-    // prevButton.addEventListener('click', () => {
-    //   const slideWidth = slide.clientWidth;
-    //   slidesContainer.scrollLeft -= slideWidth;
-    //   nextButton.style.display = 'block';
-    // });
-
     const liveLabels = document.querySelectorAll('.cl-main-widget-dashboard-tournaments-list .dashboard-tournament-list-live');
 
     setInterval(async () => {
@@ -3696,68 +3641,40 @@ export const MainWidget = function (options) {
 
     const slidesContainer = document.querySelector('.cl-main-widget-dashboard-achievements-list');
     const slide = document.querySelector('.cl-main-widget-dashboard-achievements-list .cl-ach-list-item');
-    // const slides = document.querySelectorAll('.cl-main-widget-dashboard-achievements-list .cl-ach-list-item');
+    const slides = document.querySelectorAll('.cl-main-widget-dashboard-achievements-list .cl-ach-list-item');
     const prevButton = document.querySelector('.cl-main-widget-dashboard-achievements-list-left');
     const nextButton = document.querySelector('.cl-main-widget-dashboard-achievements-list-right');
 
     if (this.settings.lbWidget.settings.scrollButtons.missions) {
-      nextButton.style.display = 'block';
-
-      if (slidesContainer.scrollLeft === 0) prevButton.style.display = 'none';
-
-      slidesContainer.addEventListener('scroll', (event) => {
-        if (slidesContainer.scrollLeft > 0) {
-          prevButton.style.display = 'block';
-        } else {
-          prevButton.style.display = 'none';
-        }
-
-        if (slidesContainer.offsetWidth + slidesContainer.scrollLeft >= slidesContainer.scrollWidth) {
-          nextButton.style.display = 'none';
-        }
-      });
-
-      nextButton.addEventListener('click', (event) => {
-        const slideWidth = slide.clientWidth;
-        slidesContainer.scrollLeft += slideWidth;
-      });
-
-      prevButton.addEventListener('click', () => {
-        const slideWidth = slide.clientWidth;
-        slidesContainer.scrollLeft -= slideWidth;
+      if ((slides.length * slide.clientWidth) > slidesContainer.clientWidth) {
         nextButton.style.display = 'block';
-      });
-    }
-    // if (slides.length < 2) {
-    //   nextButton.style.display = 'none';
-    // } else {
-    //   nextButton.style.display = 'block';
-    // }
 
-    // if (slidesContainer.scrollLeft === 0) prevButton.style.display = 'none';
-    //
-    // slidesContainer.addEventListener('scroll', (event) => {
-    //   if (slidesContainer.scrollLeft > 0) {
-    //     prevButton.style.display = 'block';
-    //   } else {
-    //     prevButton.style.display = 'none';
-    //   }
-    //
-    //   if (slidesContainer.offsetWidth + slidesContainer.scrollLeft >= slidesContainer.scrollWidth) {
-    //     nextButton.style.display = 'none';
-    //   }
-    // });
-    //
-    // nextButton.addEventListener('click', (event) => {
-    //   const slideWidth = slide.clientWidth;
-    //   slidesContainer.scrollLeft += slideWidth;
-    // });
-    //
-    // prevButton.addEventListener('click', () => {
-    //   const slideWidth = slide.clientWidth;
-    //   slidesContainer.scrollLeft -= slideWidth;
-    //   nextButton.style.display = 'block';
-    // });
+        if (slidesContainer.scrollLeft === 0) prevButton.style.display = 'none';
+
+        slidesContainer.addEventListener('scroll', (event) => {
+          if (slidesContainer.scrollLeft > 0) {
+            prevButton.style.display = 'block';
+          } else {
+            prevButton.style.display = 'none';
+          }
+
+          if (slidesContainer.offsetWidth + slidesContainer.scrollLeft >= slidesContainer.scrollWidth) {
+            nextButton.style.display = 'none';
+          }
+        });
+
+        nextButton.addEventListener('click', (event) => {
+          const slideWidth = slide.clientWidth;
+          slidesContainer.scrollLeft += slideWidth;
+        });
+
+        prevButton.addEventListener('click', () => {
+          const slideWidth = slide.clientWidth;
+          slidesContainer.scrollLeft -= slideWidth;
+          nextButton.style.display = 'block';
+        });
+      }
+    }
   };
 
   this.rewardItem = async function (award) {
@@ -3779,7 +3696,7 @@ export const MainWidget = function (options) {
     let products = null;
     let productsCount = null;
 
-    if (award.rewardType.customFields.productReferenceIds && Array.isArray(award.rewardType.customFields.productReferenceIds)) {
+    if (award.rewardType.customFields && award.rewardType.customFields.productReferenceIds && Array.isArray(award.rewardType.customFields.productReferenceIds)) {
       products = await this.settings.lbWidget.getProductsByRefIds(award.rewardType.customFields.productReferenceIds);
     }
 
@@ -3845,11 +3762,13 @@ export const MainWidget = function (options) {
       });
     }
 
+    const status = reward.status.toLowerCase() === 'claimed' ? 'consumed' : reward.status.toLowerCase();
+
     const template = require('../templates/mainWidget/rewardItemPast.hbs');
     listItem.innerHTML = template({
       id: reward.id,
       name: reward.name,
-      status: reward.status.toLowerCase(),
+      status: status,
       campaign: campaign,
       expires: expires,
       pastFS: this.settings.lbWidget.settings.translation.rewards.pastFS,

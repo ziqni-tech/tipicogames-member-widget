@@ -1519,10 +1519,7 @@ export const LbWidget = function (options) {
     const notClaimedAwardRequest = AwardRequest.constructFromObject({
       languageKey: this.settings.language,
       awardFilter: {
-        statusCode: {
-          moreThan: 14,
-          lessThan: 16
-        },
+        lifecycleStatus: 'Upcoming',
         sortBy: [{
           queryField: 'created',
           order: 'Desc'
@@ -1554,10 +1551,11 @@ export const LbWidget = function (options) {
     const currentAwardRequest = AwardRequest.constructFromObject({
       languageKey: this.settings.language,
       awardFilter: {
-        statusCode: {
-          moreThan: 34,
-          lessThan: 36
-        },
+        // statusCode: {
+        //   moreThan: 34,
+        //   lessThan: 36
+        // },
+        lifecycleStatus: 'Active',
         sortBy: [{
           queryField: 'created',
           order: 'Desc'
@@ -1568,31 +1566,28 @@ export const LbWidget = function (options) {
       currencyKey: this.settings.currency
     });
 
-    const consumedAwardRequest = AwardRequest.constructFromObject({
-      languageKey: this.settings.language,
-      awardFilter: {
-        statusCode: {
-          moreThan: 34,
-          lessThan: 36
-        },
-        tags: ['consumed'],
-        sortBy: [{
-          queryField: 'created',
-          order: 'Desc'
-        }],
-        skip: (claimedPageNumber - 1) * 20,
-        limit: 20
-      },
-      currencyKey: this.settings.currency
-    });
+    // const consumedAwardRequest = AwardRequest.constructFromObject({
+    //   languageKey: this.settings.language,
+    //   awardFilter: {
+    //     statusCode: {
+    //       moreThan: 34,
+    //       lessThan: 36
+    //     },
+    //     tags: ['consumed'],
+    //     sortBy: [{
+    //       queryField: 'created',
+    //       order: 'Desc'
+    //     }],
+    //     skip: (claimedPageNumber - 1) * 20,
+    //     limit: 20
+    //   },
+    //   currencyKey: this.settings.currency
+    // });
 
-    const expiredAwardRequest = AwardRequest.constructFromObject({
+    const pastAwardRequest = AwardRequest.constructFromObject({
       languageKey: this.settings.language,
       awardFilter: {
-        statusCode: {
-          moreThan: 114,
-          lessThan: 116
-        },
+        lifecycleStatus: 'Archived',
         sortBy: [{
           queryField: 'created',
           order: 'Desc'
@@ -1603,36 +1598,36 @@ export const LbWidget = function (options) {
       currencyKey: this.settings.currency
     });
 
-    const claimedAwards = await this.getAwardsApi(consumedAwardRequest);
-    this.settings.awards.claimedAwards = claimedAwards.data;
-    const claimedRewardIds = this.settings.awards.claimedAwards.map(c => c.rewardId);
-    if (claimedRewardIds.length) {
-      const rewardRequest = {
-        entityFilter: [{
-          entityType: 'Reward',
-          entityIds: claimedRewardIds
-        }],
-        currencyKey: this.settings.currency,
-        skip: 0,
-        limit: 20
-      };
+    // const claimedAwards = await this.getAwardsApi(consumedAwardRequest);
+    // this.settings.awards.claimedAwards = claimedAwards.data;
+    // const claimedRewardIds = this.settings.awards.claimedAwards.map(c => c.rewardId);
+    // if (claimedRewardIds.length) {
+    //   const rewardRequest = {
+    //     entityFilter: [{
+    //       entityType: 'Reward',
+    //       entityIds: claimedRewardIds
+    //     }],
+    //     currencyKey: this.settings.currency,
+    //     skip: 0,
+    //     limit: 20
+    //   };
+    //
+    //   const rewards = await this.getRewardsApi(rewardRequest);
+    //   const rewardsData = rewards.data;
+    //
+    //   this.settings.awards.claimedAwards = this.settings.awards.claimedAwards.map(award => {
+    //     const idx = rewardsData.findIndex(r => r.id === award.rewardId);
+    //     if (idx !== -1) {
+    //       award.rewardData = rewardsData[idx];
+    //     }
+    //
+    //     return award;
+    //   });
+    // }
 
-      const rewards = await this.getRewardsApi(rewardRequest);
-      const rewardsData = rewards.data;
-
-      this.settings.awards.claimedAwards = this.settings.awards.claimedAwards.map(award => {
-        const idx = rewardsData.findIndex(r => r.id === award.rewardId);
-        if (idx !== -1) {
-          award.rewardData = rewardsData[idx];
-        }
-
-        return award;
-      });
-    }
-
-    this.settings.awards.claimedTotalCount = (claimedAwards.meta && claimedAwards.meta.totalRecordsFound)
-      ? claimedAwards.meta.totalRecordsFound
-      : 0;
+    // this.settings.awards.claimedTotalCount = (claimedAwards.meta && claimedAwards.meta.totalRecordsFound)
+    //   ? claimedAwards.meta.totalRecordsFound
+    //   : 0;
 
     const currentAwards = await this.getAwardsApi(currentAwardRequest);
     this.settings.awards.currentAwards = currentAwards.data;
@@ -1666,15 +1661,15 @@ export const LbWidget = function (options) {
       ? currentAwards.meta.totalRecordsFound
       : 0;
 
-    const expiredAwards = await this.getAwardsApi(expiredAwardRequest);
-    this.settings.awards.expiredAwards = expiredAwards.data ?? [];
+    const pastAwards = await this.getAwardsApi(pastAwardRequest);
+    this.settings.awards.pastAwards = pastAwards.data ?? [];
 
-    const expiredRewardIds = this.settings.awards.expiredAwards.map(c => c.rewardId);
-    if (expiredRewardIds.length) {
+    const pastRewardIds = this.settings.awards.pastAwards.map(c => c.rewardId);
+    if (pastRewardIds.length) {
       const rewardRequest = {
         entityFilter: [{
           entityType: 'Reward',
-          entityIds: expiredRewardIds
+          entityIds: pastRewardIds
         }],
         currencyKey: this.settings.currency,
         skip: 0,
@@ -1684,7 +1679,7 @@ export const LbWidget = function (options) {
       const rewards = await this.getRewardsApi(rewardRequest);
       const rewardsData = rewards.data;
 
-      this.settings.awards.expiredAwards = this.settings.awards.expiredAwards.map(award => {
+      this.settings.awards.pastAwards = this.settings.awards.pastAwards.map(award => {
         const idx = rewardsData.findIndex(r => r.id === award.rewardId);
         if (idx !== -1) {
           award.rewardData = rewardsData[idx];
@@ -1694,10 +1689,8 @@ export const LbWidget = function (options) {
       });
     }
 
-    this.settings.awards.pastAwards = [...this.settings.awards.claimedAwards, ...this.settings.awards.expiredAwards];
-    this.settings.awards.pastTotalCount = (expiredAwards.meta && expiredAwards.meta.totalRecordsFound)
-      ? expiredAwards.meta.totalRecordsFound
-      : 0;
+    // this.settings.awards.pastAwards = [...this.settings.awards.claimedAwards, ...this.settings.awards.expiredAwards];
+    this.settings.awards.pastTotalCount = pastAwards.meta ? pastAwards.meta.totalRecordsFound : 0;
 
     if (typeof callback === 'function') {
       callback(
@@ -3524,25 +3517,25 @@ export const LbWidget = function (options) {
 
       // decline Award CelebrationPage Drawer
     } else if (hasClass(el, 'cl-main-widget-reward-celebration-drawer-btn-decline')) {
-      const page = closest(el, '.cl-main-widget-reward-celebration');
-
-      page.classList.remove('active');
-      setTimeout(function () {
-        page.remove();
-        _this.settings.mainWidget.checkCelebrationPages();
-      }, 1000);
-
-      // const awardId = closest(el, '.cl-main-widget-reward-celebration-drawer').dataset.id;
       // const page = closest(el, '.cl-main-widget-reward-celebration');
-      // const preLoader = _this.settings.mainWidget.preloader();
       //
-      // preLoader.show(async function () {
-      //   await _this.declineAward(awardId, function () {
-      //     page.remove();
-      //     preLoader.hide();
-      //     _this.settings.mainWidget.checkCelebrationPages();
-      //   });
-      // });
+      // page.classList.remove('active');
+      // setTimeout(function () {
+      //   page.remove();
+      //   _this.settings.mainWidget.checkCelebrationPages();
+      // }, 1000);
+
+      const awardId = closest(el, '.cl-main-widget-reward-celebration-drawer').dataset.id;
+      const page = closest(el, '.cl-main-widget-reward-celebration');
+      const preLoader = _this.settings.mainWidget.preloader();
+
+      preLoader.show(async function () {
+        await _this.declineAward(awardId, function () {
+          page.remove();
+          preLoader.hide();
+          _this.settings.mainWidget.checkCelebrationPages();
+        });
+      });
 
       // Award Details Forfeit
     } else if (hasClass(el, 'cl-main-widget-reward-details-forfeit')) {
@@ -3557,8 +3550,16 @@ export const LbWidget = function (options) {
       // Award Details Drawer Forfeit
     } else if (hasClass(el, 'cl-main-widget-reward-details-drawer-btn-decline')) {
       const drawer = closest(el, '.cl-main-widget-reward-details-drawer');
-      drawer.classList.remove('active');
-      _this.settings.mainWidget.hideRewardDetails(function () {});
+      const awardId = el.dataset.id;
+      const preLoader = _this.settings.mainWidget.preloader();
+
+      preLoader.show(async function () {
+        await _this.declineAward(awardId, function () {
+          drawer.classList.remove('active');
+          preLoader.hide();
+          _this.settings.mainWidget.hideRewardDetails(function () {});
+        });
+      });
 
       // load rewards details
     } else if (hasClass(el, 'dashboard-rewards-list-item') || closest(el, '.dashboard-rewards-list-item') !== null) {
