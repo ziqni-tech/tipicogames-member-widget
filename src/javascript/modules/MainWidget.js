@@ -2866,8 +2866,8 @@ export const MainWidget = function (options) {
     }
 
     let expiresValue = '-';
-    if (data.period) {
-      const date = new Date(moment(data.created).add(data.period, 'm'));
+    if (data.activeUntil) {
+      const date = new Date(data.activeUntil);
       expiresValue = date.toLocaleDateString('fr-CH', {
         timeZone: 'UTC', year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'
       });
@@ -3331,8 +3331,8 @@ export const MainWidget = function (options) {
     // const rewardImg = `background-image: url(${award.rewardData.iconLink ?? ''})`;
 
     let expires = '&#8734;';
-    if (award.period) {
-      const date = new Date(moment(award.created).add(award.period, 'm'));
+    if (award.activeUntil) {
+      const date = new Date(award.activeUntil);
       expires = date.toLocaleDateString('fr-CH', {
         timeZone: 'UTC', year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'
       });
@@ -3477,8 +3477,8 @@ export const MainWidget = function (options) {
     }
 
     let expires = '-';
-    if (awardData.period) {
-      const date = new Date(moment(awardData.created).add(awardData.period, 'm'));
+    if (awardData.activeUntil) {
+      const date = new Date(awardData.activeUntil);
       expires = date.toLocaleDateString('fr-CH', {
         timeZone: 'UTC', year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'
       });
@@ -3686,8 +3686,8 @@ export const MainWidget = function (options) {
     const isClimeBtn = !award.claimed && award.statusCode !== 115;
 
     let expires = '&#8734;';
-    if (award.period) {
-      const date = new Date(moment(award.created).add(award.period, 'm'));
+    if (award.activeUntil) {
+      const date = new Date(award.activeUntil);
       expires = date.toLocaleDateString('fr-CH', {
         timeZone: 'UTC', year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'
       });
@@ -3755,8 +3755,8 @@ export const MainWidget = function (options) {
     }
 
     let expires = '-';
-    if (reward.period) {
-      const date = new Date(moment(reward.created).add(reward.period, 'm'));
+    if (reward.activeUntil) {
+      const date = new Date(reward.activeUntil);
       expires = date.toLocaleDateString('fr-CH', {
         timeZone: 'UTC', year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'
       });
@@ -3764,7 +3764,15 @@ export const MainWidget = function (options) {
 
     const status = reward.status.toLowerCase() === 'claimed' ? 'consumed' : reward.status.toLowerCase();
 
-    const isMyBonuses = status === 'consumed' && reward.rewardType.key !== 'Free-Spins';
+    let isMyBonuses = false;
+
+    if (status === 'consumed') {
+      if (reward.rewardType.key !== 'Free-Spins') {
+        isMyBonuses = true;
+      } else if (reward.tags && reward.tags.length && reward.tags.includes('ShowBonus')) {
+        isMyBonuses = true;
+      }
+    }
 
     const template = require('../templates/mainWidget/rewardItemPast.hbs');
     listItem.innerHTML = template({

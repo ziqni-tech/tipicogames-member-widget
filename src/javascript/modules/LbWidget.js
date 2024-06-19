@@ -1530,6 +1530,23 @@ export const LbWidget = function (options) {
       currencyKey: this.settings.currency
     });
 
+    // const notClaimedAwardRequest = AwardRequest.constructFromObject({
+    //   languageKey: this.settings.language,
+    //   awardFilter: {
+    //     statusCode: {
+    //       moreThan: 14,
+    //       lessThan: 16
+    //     },
+    //     sortBy: [{
+    //       queryField: 'created',
+    //       order: 'Desc'
+    //     }],
+    //     skip: 0,
+    //     limit: 20
+    //   },
+    //   currencyKey: this.settings.currency
+    // });
+
     const notClaimedAwardsResponse = await this.getAwardsApi(notClaimedAwardRequest);
     const notClaimedAwards = notClaimedAwardsResponse.data;
 
