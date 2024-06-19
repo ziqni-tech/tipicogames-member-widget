@@ -2594,6 +2594,9 @@ li {
   &.expired {
     color: var(--ui-color-error);
   }
+  &.forfeit {
+    color: var(--ui-color-aborted);
+  }
 }
 
 .rewards-list-item-past-info-body {
