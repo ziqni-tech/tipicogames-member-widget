@@ -3767,9 +3767,11 @@ export const MainWidget = function (options) {
     let isMyBonuses = false;
 
     if (status === 'consumed') {
-      if (reward.rewardType.key !== 'Free-Spins') {
-        isMyBonuses = true;
-      } else if (reward.tags && reward.tags.length && reward.tags.includes('ShowBonus')) {
+      if (
+        reward.tags &&
+        reward.tags.length &&
+        (reward.tags.includes('freewin') || reward.tags.includes('moneywin'))
+      ) {
         isMyBonuses = true;
       }
     }
