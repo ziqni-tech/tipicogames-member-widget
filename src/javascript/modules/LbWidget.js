@@ -1482,10 +1482,7 @@ export const LbWidget = function (options) {
         awardIds: [rewardId]
       });
 
-      console.log('declineAwardRequest:', declineAwardRequest);
-
       this.settings.apiWs.awardsApiWsClient.declineAwards(declineAwardRequest, (json) => {
-        console.log('json:', json);
         if (typeof callback === 'function') {
           callback(json);
         }
@@ -1516,27 +1513,10 @@ export const LbWidget = function (options) {
   };
 
   this.checkForNotClaimedAwards = async function () {
-    const notClaimedAwardRequest = AwardRequest.constructFromObject({
-      languageKey: this.settings.language,
-      awardFilter: {
-        lifecycleStatus: 'Upcoming',
-        sortBy: [{
-          queryField: 'created',
-          order: 'Desc'
-        }],
-        skip: 0,
-        limit: 20
-      },
-      currencyKey: this.settings.currency
-    });
-
     // const notClaimedAwardRequest = AwardRequest.constructFromObject({
     //   languageKey: this.settings.language,
     //   awardFilter: {
-    //     statusCode: {
-    //       moreThan: 14,
-    //       lessThan: 16
-    //     },
+    //     lifecycleStatus: 'Upcoming',
     //     sortBy: [{
     //       queryField: 'created',
     //       order: 'Desc'
@@ -1546,6 +1526,23 @@ export const LbWidget = function (options) {
     //   },
     //   currencyKey: this.settings.currency
     // });
+
+    const notClaimedAwardRequest = AwardRequest.constructFromObject({
+      languageKey: this.settings.language,
+      awardFilter: {
+        statusCode: {
+          moreThan: 14,
+          lessThan: 16
+        },
+        sortBy: [{
+          queryField: 'created',
+          order: 'Desc'
+        }],
+        skip: 0,
+        limit: 20
+      },
+      currencyKey: this.settings.currency
+    });
 
     const notClaimedAwardsResponse = await this.getAwardsApi(notClaimedAwardRequest);
     const notClaimedAwards = notClaimedAwardsResponse.data;
@@ -3573,8 +3570,12 @@ export const LbWidget = function (options) {
       preLoader.show(async function () {
         await _this.declineAward(awardId, function () {
           drawer.classList.remove('active');
-          preLoader.hide();
-          _this.settings.mainWidget.hideRewardDetails(function () {});
+          setTimeout(function () {
+            _this.settings.mainWidget.loadAwards(function () {
+              _this.settings.mainWidget.hideRewardDetails(function () {});
+            }, 1, 1, 1);
+            preLoader.hide();
+          }, 2000);
         });
       });
 

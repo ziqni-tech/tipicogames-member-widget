@@ -23,7 +23,8 @@
         "leavePopupDescription": "Sind Sie sicher, dass Sie diesen Erfolg verlassen möchten?",
         "leavePopupClose": "Schließen",
         "leavePopupConfirm": "Verlassen",
-        "progress": "Fortschritt"
+        "progress": "Fortschritt",
+        "endsLabel": "Endet"
     },
     "tournaments": {
         "label": "Turniere",
@@ -63,6 +64,7 @@
     },
     "rewards": {
         "label": "Prämien",
+        "expiresInLabel": "Läuft ab",
         "claim": "Jetzt beanspruchen",
         "claimed": "Beansprucht",
         "availableRewards": "Verfügbare Prämien",
@@ -83,8 +85,9 @@
         "label": "Mitteilungen"
     },
     "dashboard": {
-        "label": "Armaturenbrett",
+        "label": "Hallo",
         "instantWinsTitle": "Sofortige Gewinne",
+        "rewardsTitle": "Prämien",
         "achievementsTitle": "Erfolge",
         "tournamentsTitle": "Aktuelle Turniere",
         "upcomingTournamentsTitle": "Kommende Turniere",
@@ -96,7 +99,9 @@
         "singleWheelButton": "Spielen",
         "scratchcardsTitle": "Rubbelkarten",
         "scratchcardsButton": "Spielen",
-        "seeAll": "Alles sehen"
+        "seeAll": "Alles sehen",
+        "playTournamentLabel": "Turnier spielen",
+        "optInTournamentLabel": "Am Turnier teilnehmen"
     },
     "missions": {
         "label": "Missionen",

@@ -3762,7 +3762,14 @@ export const MainWidget = function (options) {
       });
     }
 
-    const status = reward.status.toLowerCase() === 'claimed' ? 'consumed' : reward.status.toLowerCase();
+    let status = '';
+    if (reward.status.toLowerCase() === 'claimed') {
+      status = 'consumed';
+    } else if (reward.status.toLowerCase() === 'declined') {
+      status = 'forfeit';
+    } else {
+      status = reward.status.toLowerCase();
+    }
 
     let isMyBonuses = false;
 
