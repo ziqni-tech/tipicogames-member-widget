@@ -38,6 +38,7 @@ export const MainWidget = function (options) {
     detailsDateHeaders: null,
     descriptionDate: null,
     awardTAndC: null,
+    timeZone: 'UTC',
     preLoader: {
       preLoaderActive: false,
       preLoaderlastAttempt: null,
@@ -1110,7 +1111,7 @@ export const MainWidget = function (options) {
 
     if (this.settings.lbWidget.settings.competition.activeContest) {
       date = new Date(this.settings.lbWidget.settings.competition.activeContest.scheduledEndDate)
-        .toLocaleString('en-GB', { timeZone: 'UTC', dateStyle: 'short', timeStyle: 'short' });
+        .toLocaleString('en-GB', { timeZone: this.timeZone, dateStyle: 'short', timeStyle: 'short' });
     }
 
     return date;
@@ -1121,7 +1122,7 @@ export const MainWidget = function (options) {
 
     if (this.settings.lbWidget.settings.competition.activeContest) {
       date = new Date(this.settings.lbWidget.settings.competition.activeContest.scheduledStartDate)
-        .toLocaleString('en-GB', { timeZone: 'UTC', dateStyle: 'short', timeStyle: 'short' });
+        .toLocaleString('en-GB', { timeZone: this.timeZone, dateStyle: 'short', timeStyle: 'short' });
     }
 
     return date;
@@ -1651,13 +1652,14 @@ export const MainWidget = function (options) {
     if (member) {
       const memberRank = member.querySelector('.cl-rank-col-value').innerHTML;
       const memberPoins = member.querySelector('.cl-points-col').innerHTML;
+      const spinsLeft = member.querySelector('.cl-points-col').dataset.spinsLeft;
       const rankEl = detailsData.querySelector('.dashboard-tournament-list-details-position-value');
       const pointsEl = detailsData.querySelector('.dashboard-tournament-list-details-points-value');
       const spinsLeftEl = detailsData.querySelector('.dashboard-tournament-list-details-left-value');
 
       rankEl.innerHTML = memberRank;
       pointsEl.innerHTML = memberPoins;
-      spinsLeftEl.innerHTML = member.dataset.spinsLeft;
+      spinsLeftEl.innerHTML = spinsLeft ?? '-';
     }
 
     if (area !== null && member !== null) {
@@ -2150,7 +2152,7 @@ export const MainWidget = function (options) {
 
     let endsValue = '-';
     if (ach.scheduling && ach.scheduling.endDate) {
-      endsValue = new Date(ach.scheduling.endDate).toLocaleString('en-GB', { timeZone: 'UTC', dateStyle: 'short', timeStyle: 'short' });
+      endsValue = new Date(ach.scheduling.endDate).toLocaleString('en-GB', { timeZone: this.timeZone, dateStyle: 'short', timeStyle: 'short' });
       if (endsValue.includes(', 00:00')) {
         endsValue = endsValue.replace(', 00:00', '');
       }
@@ -2192,7 +2194,7 @@ export const MainWidget = function (options) {
     const startDate = new Date(ach.scheduling.startDate);
     let endsValue = '';
     if (ach.scheduling.endDate) {
-      endsValue = new Date(ach.scheduling.endDate).toLocaleString('fr-CH', { timeZone: 'UTC', year: '2-digit', month: '2-digit', day: '2-digit' });
+      endsValue = new Date(ach.scheduling.endDate).toLocaleString('fr-CH', { timeZone: this.timeZone, year: '2-digit', month: '2-digit', day: '2-digit' });
     }
 
     const statuses = await this.settings.lbWidget.getMemberAchievementsOptInStatuses([ach.id]);
@@ -2233,7 +2235,7 @@ export const MainWidget = function (options) {
       rewardLabel: this.settings.lbWidget.settings.translation.achievements.rewardLabel,
       tAndCLabel: this.settings.lbWidget.settings.translation.global.tAndCLabel,
       rewardName: rewardName,
-      startsValue: startDate.toLocaleDateString('fr-CH', { timeZone: 'UTC', year: '2-digit', month: '2-digit', day: '2-digit' }),
+      startsValue: startDate.toLocaleDateString('fr-CH', { timeZone: this.timeZone, year: '2-digit', month: '2-digit', day: '2-digit' }),
       endsValue: endsValue
     });
 
@@ -2669,7 +2671,7 @@ export const MainWidget = function (options) {
     if (data.scheduling.endDate) {
       const date = new Date(data.scheduling.endDate);
       endsDate.innerHTML = date.toLocaleDateString('fr-CH', {
-        timeZone: 'UTC', year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'
+        timeZone: this.timeZone, year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'
       });
     } else {
       endsDate.innerHTML = '-';
@@ -2869,7 +2871,7 @@ export const MainWidget = function (options) {
     if (data.activeUntil) {
       const date = new Date(data.activeUntil);
       expiresValue = date.toLocaleDateString('fr-CH', {
-        timeZone: 'UTC', year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'
+        timeZone: this.timeZone, year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'
       });
     }
 
@@ -3190,7 +3192,7 @@ export const MainWidget = function (options) {
       title: contest.name,
       itemBg: itemBg,
       endsLabel: endsLabel,
-      endsValue: date.toLocaleString('en-GB', { timeZone: 'UTC', dateStyle: 'short', timeStyle: 'short' }),
+      endsValue: date.toLocaleString('en-GB', { timeZone: this.timeZone, dateStyle: 'short', timeStyle: 'short' }),
       prizeLabel: this.settings.lbWidget.settings.translation.dashboard.prizeTitle,
       prizeValue: rewardValue,
       rewardName: rewardName,
@@ -3300,12 +3302,12 @@ export const MainWidget = function (options) {
       itemBg: itemBg,
       endedLabel: this.settings.lbWidget.settings.translation.tournaments.endedLabel,
       startedLabel: this.settings.lbWidget.settings.translation.tournaments.startedLabel,
-      endedValue: date.toLocaleDateString('fr-CH', { timeZone: 'UTC', year: '2-digit', month: '2-digit', day: '2-digit' }),
+      endedValue: date.toLocaleDateString('fr-CH', { timeZone: this.timeZone, year: '2-digit', month: '2-digit', day: '2-digit' }),
       detailsEndedValue: date.toLocaleDateString('fr-CH', {
-        timeZone: 'UTC', year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'
+        timeZone: this.timeZone, year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'
       }),
       startedValue: startedDate.toLocaleDateString('fr-CH', {
-        timeZone: 'UTC', year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'
+        timeZone: this.timeZone, year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'
       }),
       prizeLabel: this.settings.lbWidget.settings.translation.dashboard.prizeTitle,
       prizeValue: rewardValue,
@@ -3334,7 +3336,7 @@ export const MainWidget = function (options) {
     if (award.activeUntil) {
       const date = new Date(award.activeUntil);
       expires = date.toLocaleDateString('fr-CH', {
-        timeZone: 'UTC', year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'
+        timeZone: this.timeZone, year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'
       });
     }
 
@@ -3480,7 +3482,7 @@ export const MainWidget = function (options) {
     if (awardData.activeUntil) {
       const date = new Date(awardData.activeUntil);
       expires = date.toLocaleDateString('fr-CH', {
-        timeZone: 'UTC', year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'
+        timeZone: this.timeZone, year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'
       });
     }
 
@@ -3689,7 +3691,7 @@ export const MainWidget = function (options) {
     if (award.activeUntil) {
       const date = new Date(award.activeUntil);
       expires = date.toLocaleDateString('fr-CH', {
-        timeZone: 'UTC', year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'
+        timeZone: this.timeZone, year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'
       });
     }
 
@@ -3758,7 +3760,7 @@ export const MainWidget = function (options) {
     if (reward.activeUntil) {
       const date = new Date(reward.activeUntil);
       expires = date.toLocaleDateString('fr-CH', {
-        timeZone: 'UTC', year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'
+        timeZone: this.timeZone, year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'
       });
     }
 
@@ -3859,7 +3861,7 @@ export const MainWidget = function (options) {
       title: tournament.name,
       itemBg: itemBg,
       endsLabel: endsLabel,
-      endsValue: date.toLocaleString('en-GB', { timeZone: 'UTC', dateStyle: 'short', timeStyle: 'short' }),
+      endsValue: date.toLocaleString('en-GB', { timeZone: this.timeZone, dateStyle: 'short', timeStyle: 'short' }),
       prizeLabel: this.settings.lbWidget.settings.translation.dashboard.prizeTitle,
       prizeValue: rewardValue,
       rewardName: rewardName,
@@ -4983,6 +4985,8 @@ export const MainWidget = function (options) {
     _this.settings.active = true;
 
     _this.loadLeaderboard(() => {}, true);
+
+    this.timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
     setTimeout(function () {
       _this.settings.container.style.display = 'block';
