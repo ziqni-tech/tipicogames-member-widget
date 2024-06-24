@@ -3405,7 +3405,7 @@ export const MainWidget = function (options) {
     const prevButton = document.querySelector('.cl-main-widget-dashboard-rewards-list-left');
     const nextButton = document.querySelector('.cl-main-widget-dashboard-rewards-list-right');
 
-    if (this.settings.lbWidget.settings.scrollButtons.rewards) {
+    if (this.settings.lbWidget.settings.scrollButtons.rewards && slides.length) {
       if ((slides.length * slide.clientWidth) > slidesContainer.clientWidth) {
         nextButton.style.display = 'block';
 
@@ -3567,7 +3567,7 @@ export const MainWidget = function (options) {
     const prevButton = document.querySelector('.cl-main-widget-dashboard-tournaments-list-left');
     const nextButton = document.querySelector('.cl-main-widget-dashboard-tournaments-list-right');
 
-    if (this.settings.lbWidget.settings.scrollButtons.tournaments) {
+    if (this.settings.lbWidget.settings.scrollButtons.tournaments && slides.length) {
       if ((slides.length * slide.clientWidth) > slidesContainer.clientWidth) {
         nextButton.style.display = 'block';
 
