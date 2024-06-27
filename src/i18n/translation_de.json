@@ -99,7 +99,7 @@
         "rewards": "Eingelöste Belohnungen",
         "expiredRewards": "Abgelaufene Belohnungen",
         "emptyLabel": "Derzeit keine Belohnungen",
-        "emptyDescription": "Schließen Sie <a href=\"javascript:void(0);\" data-link=\"missions\">Missionen</a> ab oder spielen Sie <a href=\"javascript:void(0);\" data-link=\"tournaments\">Turniere</a>, um Belohnungen zu verdienen.",
+        "emptyDescription": "Schließen Sie Missionen ab oder spielen Sie Turniere, um Belohnungen zu verdienen.",
         "gamesLabel": "In folgenden Spielen verwenden",
         "freeSpinDetailsLabel": "Freispiel-Details",
         "totalLabel": "Insgesamt erhaltene Freispins",
@@ -112,7 +112,12 @@
         "drawerForfeitBtn": "Belohnung aufgeben",
         "pastFS": "Insgesamt erhaltene Freispins",
         "pastFSWinnings": "Freispiel-Gewinne",
-        "expiredOnLabel": "Abgelaufen am"
+        "expiredOnLabel": "Abgelaufen am",
+        "statuses": {
+            "consumed": "Verbraucht",
+            "forfeit": "Verfallen",
+            "expired": "Abgelaufen"
+        }
     },
     "dashboard": {
         "label": "Hallo",

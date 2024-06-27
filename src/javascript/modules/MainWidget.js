@@ -3790,6 +3790,7 @@ export const MainWidget = function (options) {
       id: reward.id,
       name: reward.name,
       status: status,
+      statusLabel: this.settings.lbWidget.settings.translation.rewards.statuses[status],
       campaign: campaign,
       expires: expires,
       pastFS: this.settings.lbWidget.settings.translation.rewards.pastFS,

@@ -99,7 +99,7 @@
         "rewards": "Claimed Awards",
         "expiredRewards": "Expired Awards",
         "emptyLabel": "Currently no rewards",
-        "emptyDescription": "Complete <a href=\"javascript:void(0);\" data-link=\"missions\">Missions</a> or play <a href=\"javascript:void(0);\" data-link=\"tournaments\">Tournaments</a> to earn rewards.",
+        "emptyDescription": "Complete Missions or play Tournaments to earn rewards.",
         "gamesLabel": "Use in following games",
         "freeSpinDetailsLabel": "Free spin Details",
         "totalLabel": "Total Rewarded Freespins",
@@ -112,7 +112,12 @@
         "drawerForfeitBtn": "Forfeit reward",
         "pastFS": "Total Rewarded Freespins",
         "pastFSWinnings": "Free Spins Winnings",
-        "expiredOnLabel": "Expired on"
+        "expiredOnLabel": "Expired on",
+        "statuses": {
+            "consumed": "Consumed",
+            "forfeit": "Forfeit",
+            "expired": "Expired"
+        }
     },
     "dashboard": {
         "label": "Hi",
