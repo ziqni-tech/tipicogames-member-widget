@@ -1128,7 +1128,7 @@ export const LbWidget = function (options) {
           gt: 30,
           lt: 40
         },
-        constraints: ['allFinished'],
+        constraints: [],
         sortBy: [{
           queryField: 'created',
           order: 'Desc'
