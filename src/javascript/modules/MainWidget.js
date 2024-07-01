@@ -3757,10 +3757,14 @@ export const MainWidget = function (options) {
     }
 
     let expires = '-';
+    let expiresHead = '-';
     if (reward.activeUntil) {
       const date = new Date(reward.activeUntil);
       expires = date.toLocaleDateString('fr-CH', {
         timeZone: this.timeZone, year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'
+      });
+      expiresHead = date.toLocaleDateString('fr-CH', {
+        timeZone: this.timeZone, year: '2-digit', month: '2-digit', day: '2-digit'
       });
     }
 
@@ -3792,6 +3796,7 @@ export const MainWidget = function (options) {
       status: status,
       statusLabel: this.settings.lbWidget.settings.translation.rewards.statuses[status],
       campaign: campaign,
+      expiresHead: expiresHead,
       expires: expires,
       pastFS: this.settings.lbWidget.settings.translation.rewards.pastFS,
       pastFsValue: reward.rewardValue,

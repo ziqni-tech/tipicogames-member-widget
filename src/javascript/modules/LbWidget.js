@@ -2465,6 +2465,14 @@ export const LbWidget = function (options) {
           this.settings.apiWs.optInApiWsClient = new OptInApiWs(this.apiClientStomp);
         }
 
+        const drawer = document.querySelector('.cl-main-widget-ach-optIn-drawer');
+
+        const product = {
+          id: drawer.dataset.id,
+          refId: drawer.dataset.refId,
+          name: drawer.dataset.name
+        };
+
         const optInRequest = ManageOptinRequest.constructFromObject({
           entityId: _this.settings.achievements.activeAchievementId,
           entityType: 'Achievement',
@@ -2476,10 +2484,14 @@ export const LbWidget = function (options) {
         preLoader.show(async function () {
           await _this.settings.apiWs.optInApiWsClient.manageOptin(optInRequest, (json) => {
             setTimeout(function () {
-              preLoader.hide();
-              _this.settings.mainWidget.hideAchievementDetails(
-                _this.checkForAvailableAchievements(1)
-              );
+              _this.getAchievement(_this.settings.achievements.activeAchievementId, function (data) {
+                _this.settings.mainWidget.loadAchievementDetails(data, preLoader.hide(), false);
+              });
+              drawer.classList.remove('active');
+              drawer.dataset.id = '';
+              drawer.dataset.refId = '';
+              drawer.dataset.name = '';
+              _this.settings.callbacks.onGameSelected(product);
             }, 2000);
           });
         });
