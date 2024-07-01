@@ -2820,6 +2820,7 @@ export const MainWidget = function (options) {
     const expandOverlay = query(this.settings.reward.detailsContainer, '.cl-main-widget-ach-details-game-overlay');
     const backBtn = query(this.settings.reward.detailsContainer, '.cl-main-widget-reward-details-back-btn');
     const drawerDeclineBn = query(this.settings.reward.container, '.cl-main-widget-reward-details-drawer-btn-decline');
+    const forfeitBtn = query(this.settings.reward.container, '.cl-main-widget-reward-details-forfeit');
     let products = null;
     let isExpand = false;
 
@@ -2879,6 +2880,11 @@ export const MainWidget = function (options) {
     detailExpires.innerHTML = expiresValue;
 
     drawerDeclineBn.dataset.id = data.id;
+
+    forfeitBtn.style.display = 'block';
+    if (data.rewardType.key === 'Free-Spins') {
+      forfeitBtn.style.display = 'none';
+    }
 
     this.settings.reward.detailsContainer.style.display = 'block';
     addClass(this.settings.reward.detailsContainer, 'cl-show');
