@@ -3775,12 +3775,19 @@ export const MainWidget = function (options) {
     }
 
     let status = '';
-    if (reward.status.toLowerCase() === 'claimed') {
-      status = 'consumed';
-    } else if (reward.status.toLowerCase() === 'declined') {
-      status = 'forfeit';
-    } else {
-      status = reward.status.toLowerCase();
+
+    switch (reward.status.toLowerCase()) {
+      case 'declined':
+        status = 'forfeit';
+        break;
+      case 'completed':
+        status = 'consumed';
+        break;
+      case 'claimed':
+        status = 'consumed';
+        break;
+      default:
+        status = reward.status.toLowerCase();
     }
 
     let isMyBonuses = false;
