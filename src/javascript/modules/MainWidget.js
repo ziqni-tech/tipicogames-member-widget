@@ -659,6 +659,13 @@ export const MainWidget = function (options) {
         spinsLeft = params.$remaining_count;
       }
 
+      if (memberFound) {
+        const spinsLeftEl = document.querySelector('.dashboard-tournament-list-details-left-value');
+        if (spinsLeftEl) {
+          spinsLeftEl.innerHTML = spinsLeft ?? '-';
+        }
+      }
+
       cellRow.dataset.rank = rank;
       cellRow.dataset.spinsLeft = spinsLeft;
       rankCel.innerHTML = rank;
@@ -1652,14 +1659,11 @@ export const MainWidget = function (options) {
     if (member) {
       const memberRank = member.querySelector('.cl-rank-col-value').innerHTML;
       const memberPoins = member.querySelector('.cl-points-col').innerHTML;
-      const spinsLeft = member.querySelector('.cl-points-col').dataset.spinsLeft;
       const rankEl = detailsData.querySelector('.dashboard-tournament-list-details-position-value');
       const pointsEl = detailsData.querySelector('.dashboard-tournament-list-details-points-value');
-      const spinsLeftEl = detailsData.querySelector('.dashboard-tournament-list-details-left-value');
 
       rankEl.innerHTML = memberRank;
       pointsEl.innerHTML = memberPoins;
-      spinsLeftEl.innerHTML = spinsLeft ?? '-';
     }
 
     if (area !== null && member !== null) {
