@@ -3779,7 +3779,6 @@ export const MainWidget = function (options) {
     }
 
     let status = '';
-
     switch (reward.status.toLowerCase()) {
       case 'declined':
         status = 'forfeit';
@@ -3788,7 +3787,7 @@ export const MainWidget = function (options) {
         status = 'consumed';
         break;
       case 'claimed':
-        status = 'consumed';
+        status = 'expired';
         break;
       default:
         status = reward.status.toLowerCase();
