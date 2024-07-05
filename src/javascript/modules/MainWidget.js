@@ -2275,6 +2275,7 @@ export const MainWidget = function (options) {
     pointsValue = achievementData.strategies.pointsStrategy.pointsValue;
     points = json.points;
     spinsLeft = pointsValue - points;
+    if (spinsLeft < 0) spinsLeft = 0;
 
     const progressLabel = query(ach, '.cl-ach-list-progression-label');
 
@@ -2305,6 +2306,7 @@ export const MainWidget = function (options) {
       pointsValue = achievementData.strategies.pointsStrategy.pointsValue;
       points = json.points;
       spinsLeft = pointsValue - points;
+      if (spinsLeft < 0) spinsLeft = 0;
 
       const perc = json.percentageComplete ? parseInt(json.percentageComplete) : 0;
       const percValue = ((perc > 1 || perc === 0) ? perc : 1) + '%';
@@ -2584,6 +2586,7 @@ export const MainWidget = function (options) {
           pointsValue = achievementData.strategies.pointsStrategy.pointsValue;
           points = progression[0].points;
           spinsLeft = pointsValue - points;
+          if (spinsLeft < 0) spinsLeft = 0;
 
           if (issued && issued.length && issued[0].status === 'Completed') {
             progressLabel.innerHTML = '0' + ' ' + _this.settings.lbWidget.settings.translation.achievements.spinsLeftLabel;
@@ -2932,6 +2935,7 @@ export const MainWidget = function (options) {
           }
         });
         spinsLeft = pointsValue - points;
+        if (spinsLeft < 0) spinsLeft = 0;
       }
 
       let perc = 0;

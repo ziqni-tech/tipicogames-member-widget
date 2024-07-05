@@ -3450,6 +3450,8 @@ export const LbWidget = function (options) {
             page.remove();
             _this.settings.mainWidget.climeAwardAction(award);
             preLoader.hide();
+            _this.settings.mainWidget.loadDashboardAchievements();
+            _this.settings.mainWidget.loadAchievements(1);
             _this.settings.mainWidget.checkCelebrationPages();
           }, 2000);
         });
@@ -3466,6 +3468,8 @@ export const LbWidget = function (options) {
           setTimeout(function () {
             page.remove();
             preLoader.hide();
+            _this.settings.mainWidget.loadDashboardAchievements();
+            _this.settings.mainWidget.loadAchievements(1);
             _this.settings.mainWidget.checkCelebrationPages();
           }, 2000);
         });
@@ -3496,6 +3500,8 @@ export const LbWidget = function (options) {
         await _this.declineAward(awardId, function () {
           page.remove();
           preLoader.hide();
+          _this.settings.mainWidget.loadDashboardAchievements();
+          _this.settings.mainWidget.loadAchievements(1);
           _this.settings.mainWidget.checkCelebrationPages();
         });
       });
