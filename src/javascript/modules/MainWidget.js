@@ -3196,6 +3196,13 @@ export const MainWidget = function (options) {
       spinsLeftValue = contest.optInStatus.params.$remaining_count;
     }
 
+    let playersValue = 0;
+    if (contest.entrantsCount) {
+      playersValue = Math.abs(contest.entrantsCount) > 999
+        ? Math.sign(contest.entrantsCount) * ((Math.abs(contest.entrantsCount) / 1000).toFixed(1)) + 'K'
+        : contest.entrantsCount;
+    }
+
     const date = isReadyStatus ? new Date(contest.scheduledStartDate) : new Date(contest.scheduledEndDate);
     const template = require('../templates/dashboard/tournamentItem.hbs');
     listItem.innerHTML = template({
@@ -3214,7 +3221,7 @@ export const MainWidget = function (options) {
       joinedLabel: this.settings.lbWidget.settings.translation.tournaments.joinedLabel,
       liveLabel: this.settings.lbWidget.settings.translation.tournaments.liveLabel,
       playersLabel: this.settings.lbWidget.settings.translation.tournaments.playersLabel,
-      playersValue: '3,5K',
+      playersValue: playersValue,
       positionLabel: this.settings.lbWidget.settings.translation.tournaments.positionLabel,
       spinsLeftLabel: this.settings.lbWidget.settings.translation.tournaments.spinsLeftLabel,
       pointsLabel: this.settings.lbWidget.settings.translation.tournaments.pointsLabel,
