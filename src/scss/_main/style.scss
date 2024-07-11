@@ -4481,12 +4481,14 @@ li {
   text-align: center;
   color: var(--Primary-Dark);
   text-decoration: none;
+  cursor: pointer;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-ach-details-container .cl-ach-list-actions .cl-main-widget-ach-details-optin-action {
   border: solid 1px #ffffff;
   background: none;
   color: var(--Primary-White);
+  cursor: pointer;
 }
 
 .cl-main-widget-wrapper .cl-main-widget-lb-details-container .cl-main-widget-lb-details-optin-action:hover {
