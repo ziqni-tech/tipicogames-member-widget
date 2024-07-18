@@ -1,4 +1,6 @@
 import moment from 'moment';
+import 'moment/locale/de';
+
 import mapObject from '../utils/mapObject';
 import hasClass from '../utils/hasClass';
 import removeClass from '../utils/removeClass';
@@ -1095,7 +1097,7 @@ export const MainWidget = function (options) {
       const diff = moment(this.settings.lbWidget.settings.competition.activeContest.scheduledEndDate)
         .diff(moment(this.settings.lbWidget.settings.competition.activeContest.scheduledStartDate));
 
-      duration = moment.duration(diff).humanize();
+      duration = moment.duration(diff).locale(this.settings.lbWidget.settings.language).humanize();
     }
 
     return duration;
@@ -3174,7 +3176,7 @@ export const MainWidget = function (options) {
 
     let duration = '';
     const diff = moment(contest.scheduledEndDate).diff(moment(contest.scheduledStartDate));
-    duration = moment.duration(diff).humanize();
+    duration = moment.duration(diff).locale(this.settings.lbWidget.settings.language).humanize();
 
     let points = '-';
     let position = '-';
