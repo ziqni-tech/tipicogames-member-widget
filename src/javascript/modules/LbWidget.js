@@ -510,24 +510,24 @@ export const LbWidget = function (options) {
     }
 
     if (this.settings.tournaments.activeCompetitions.length) {
-      const ids = this.settings.tournaments.activeCompetitions.map(a => a.id);
-      const rewardRequest = {
-        entityFilter: [{
-          entityType: 'competition',
-          entityIds: ids
-        }],
-        currencyKey: this.settings.currency,
-        skip: 0,
-        limit: 20
-      };
-      const rewards = await this.getRewardsApi(rewardRequest);
-      const rewardsData = rewards.data;
-
-      this.settings.tournaments.activeCompetitions = this.settings.tournaments.activeCompetitions.map(comp => {
-        comp.rewards = rewardsData.filter(r => r.entityId === comp.id);
-
-        return comp;
-      });
+      // const ids = this.settings.tournaments.activeCompetitions.map(a => a.id);
+      // const rewardRequest = {
+      //   entityFilter: [{
+      //     entityType: 'competition',
+      //     entityIds: ids
+      //   }],
+      //   currencyKey: this.settings.currency,
+      //   skip: 0,
+      //   limit: 20
+      // };
+      // const rewards = await this.getRewardsApi(rewardRequest);
+      // const rewardsData = rewards.data;
+      //
+      // this.settings.tournaments.activeCompetitions = this.settings.tournaments.activeCompetitions.map(comp => {
+      //   comp.rewards = rewardsData.filter(r => r.entityId === comp.id);
+      //
+      //   return comp;
+      // });
 
       const activeCompetitionsDataWithProducts = [];
 
@@ -550,47 +550,47 @@ export const LbWidget = function (options) {
       this.settings.tournaments.activeCompetitions = cloneDeep(activeCompetitionsDataWithProducts);
     }
 
-    if (this.settings.tournaments.readyCompetitions.length) {
-      const ids = this.settings.tournaments.readyCompetitions.map(a => a.id);
-      const rewardRequest = {
-        entityFilter: [{
-          entityType: 'Competition',
-          entityIds: ids
-        }],
-        currencyKey: this.settings.currency,
-        skip: 0,
-        limit: 20
-      };
-      const rewards = await this.getRewardsApi(rewardRequest);
-      const rewardsData = rewards.data;
+    // if (this.settings.tournaments.readyCompetitions.length) {
+    //   const ids = this.settings.tournaments.readyCompetitions.map(a => a.id);
+    //   const rewardRequest = {
+    //     entityFilter: [{
+    //       entityType: 'Competition',
+    //       entityIds: ids
+    //     }],
+    //     currencyKey: this.settings.currency,
+    //     skip: 0,
+    //     limit: 20
+    //   };
+    //   const rewards = await this.getRewardsApi(rewardRequest);
+    //   const rewardsData = rewards.data;
+    //
+    //   this.settings.tournaments.readyCompetitions = this.settings.tournaments.readyCompetitions.map(comp => {
+    //     comp.rewards = rewardsData.filter(r => r.entityId === comp.id);
+    //
+    //     return comp;
+    //   });
+    // }
 
-      this.settings.tournaments.readyCompetitions = this.settings.tournaments.readyCompetitions.map(comp => {
-        comp.rewards = rewardsData.filter(r => r.entityId === comp.id);
-
-        return comp;
-      });
-    }
-
-    if (this.settings.navigation.tournaments.showFinishedTournaments && this.settings.tournaments.finishedCompetitions.length) {
-      const ids = this.settings.tournaments.finishedCompetitions.map(a => a.id);
-      const rewardRequest = {
-        entityFilter: [{
-          entityType: 'Competition',
-          entityIds: ids
-        }],
-        currencyKey: this.settings.currency,
-        skip: 0,
-        limit: 20
-      };
-      const rewards = await this.getRewardsApi(rewardRequest);
-      const rewardsData = rewards.data;
-
-      this.settings.tournaments.finishedCompetitions = this.settings.tournaments.finishedCompetitions.map(comp => {
-        comp.rewards = rewardsData.filter(r => r.entityId === comp.id);
-
-        return comp;
-      });
-    }
+    // if (this.settings.navigation.tournaments.showFinishedTournaments && this.settings.tournaments.finishedCompetitions.length) {
+    //   const ids = this.settings.tournaments.finishedCompetitions.map(a => a.id);
+    //   const rewardRequest = {
+    //     entityFilter: [{
+    //       entityType: 'Competition',
+    //       entityIds: ids
+    //     }],
+    //     currencyKey: this.settings.currency,
+    //     skip: 0,
+    //     limit: 20
+    //   };
+    //   const rewards = await this.getRewardsApi(rewardRequest);
+    //   const rewardsData = rewards.data;
+    //
+    //   this.settings.tournaments.finishedCompetitions = this.settings.tournaments.finishedCompetitions.map(comp => {
+    //     comp.rewards = rewardsData.filter(r => r.entityId === comp.id);
+    //
+    //     return comp;
+    //   });
+    // }
 
     if (typeof callback === 'function') {
       callback();
