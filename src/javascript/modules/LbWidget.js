@@ -1080,6 +1080,8 @@ export const LbWidget = function (options) {
       return achievement;
     });
 
+    this.settings.achievements.list = achievements;
+
     return achievements;
   };
 
