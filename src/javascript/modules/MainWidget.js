@@ -1983,7 +1983,7 @@ export const MainWidget = function (options) {
       }
     }
 
-    const accordionObj = _this.tournamentsList(_this.settings.tournamentsSection.accordionLayout, function (accordionSection, listContainer, topEntryContainer, layout) {
+    const accordionObj = _this.tournamentsList(_this.settings.tournamentsSection.accordionLayout, async function (accordionSection, listContainer, topEntryContainer, layout) {
       const tournamentData = cloneDeep(_this.settings.lbWidget.settings.tournaments[layout.type]);
 
       if (typeof tournamentData !== 'undefined') {
@@ -1991,15 +1991,23 @@ export const MainWidget = function (options) {
           accordionSection.style.display = 'none';
         }
         if (layout.type === 'activeCompetitions') {
-          mapObject(tournamentData, async function (tournament, key, count) {
+          for (const tournament of tournamentData) {
             const listItem = await _this.dashboardTournamentItem(tournament);
             if (listItem) listContainer.appendChild(listItem);
-          });
+          }
+          // mapObject(tournamentData, async function (tournament, key, count) {
+          //   const listItem = await _this.dashboardTournamentItem(tournament);
+          //   if (listItem) listContainer.appendChild(listItem);
+          // });
         } else if (layout.type === 'finishedCompetitions') {
-          mapObject(tournamentData, async function (tournament, key, count) {
+          for (const tournament of tournamentData) {
             const listItem = await _this.tournamentResultItem(tournament);
             if (listItem) listContainer.appendChild(listItem);
-          });
+          }
+          // mapObject(tournamentData, async function (tournament, key, count) {
+          //   const listItem = await _this.tournamentResultItem(tournament);
+          //   if (listItem) listContainer.appendChild(listItem);
+          // });
         }
       }
     });
