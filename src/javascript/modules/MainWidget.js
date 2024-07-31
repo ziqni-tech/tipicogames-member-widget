@@ -691,6 +691,16 @@ export const MainWidget = function (options) {
   };
 
   this.populateLeaderboardResultsWithDefaultEntries = function (clearPrize = false) {
+    const detailsBody = document.querySelector('.cl-main-widget-tournament-details-body');
+    const detailsData = detailsBody.querySelector('.cl-main-widget-lb-details-data');
+    const rankEl = detailsData.querySelector('.dashboard-tournament-list-details-position-value');
+    const pointsEl = detailsData.querySelector('.dashboard-tournament-list-details-points-value');
+    const spinsLeftEl = detailsData.querySelector('.dashboard-tournament-list-details-left-value');
+
+    rankEl.innerHTML = '-';
+    pointsEl.innerHTML = '-';
+    spinsLeftEl.innerHTML = '-';
+
     const remainingResults = [];
 
     const emptyListLength = this.settings.lbWidget.settings.leaderboard.fullLeaderboardSize + 1;
