@@ -4143,6 +4143,7 @@ export const LbWidget = function (options) {
             this.settings.mainWidget.loadLeaderboard(() => {}, false);
           }
         }
+
         if (json && json.entityType === 'Award') {
           if (!json.metadata.claimed && json.metadata.statusCode === 15) {
             const awardRequest = AwardRequest.constructFromObject({
@@ -4181,7 +4182,10 @@ export const LbWidget = function (options) {
             }
           }
         }
+
         if (json && json.entityType === 'Contest') {
+          if (headers.callback && headers.callback === 'optinStatus') return;
+
           _this.checkForAvailableCompetitions(async function () {
             _this.settings.mainWidget.loadDashboardTournaments();
             const tournamentList = document.querySelector('.cl-main-widget-tournaments-list');
@@ -4197,6 +4201,7 @@ export const LbWidget = function (options) {
             }
           }
         }
+
         if (json && json.entityType === 'Competition') {
           _this.checkForAvailableCompetitions(async function () {
             // _this.updateLeaderboardNavigationCounts();
@@ -4209,6 +4214,7 @@ export const LbWidget = function (options) {
             }
           }
         }
+
         if (json && json.entityType === 'Achievement') {
           if (headers.callback === 'optinStatus') {
             _this.settings.mainWidget.achievementItemUpdateProgression(json.entityId, json.percentageComplete, json);
