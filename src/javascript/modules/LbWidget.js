@@ -3344,6 +3344,11 @@ export const LbWidget = function (options) {
       const preLoader = _this.settings.mainWidget.preloader();
 
       preLoader.show(function () {
+        const last = document.querySelector('.lb-last');
+        if (last) {
+          last.remove();
+        }
+
         _this.settings.mainWidget.populateLeaderboardResultsWithDefaultEntries(true);
         _this.settings.mainWidget.settings.active = true;
         _this.settings.tournaments.activeCompetitionId = tournamentId;
