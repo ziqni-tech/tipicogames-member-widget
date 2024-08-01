@@ -22,17 +22,17 @@
       <div class="rewards-list-item-past-info-body-item-value">-</div>
     </div>
     {{#if isMyBonuses}}
-      <div class="rewards-list-item-past-info-body-item-bonus">Go to <span class="my-bonuses">My Bonuses</span> for more information</div>
+      <div class="rewards-list-item-past-info-body-item-bonus">{{{ myBonusesLabel }}}</div>
     {{/if}}
   </div>
   {{else}}
   <div class="rewards-list-item-past-info-body-item fs">
     <div class="rewards-list-item-past-info-body-item-wrapp">
-      <div class="rewards-list-item-past-info-body-item-label">Credited Bonus</div>
+      <div class="rewards-list-item-past-info-body-item-label">{{ creditedBonusLabel }}</div>
       <div class="rewards-list-item-past-info-body-item-value">{{ bonusValue }}{{ bonusSymbol }}</div>
     </div>
     {{#if isMyBonuses}}
-      <div class="rewards-list-item-past-info-body-item-bonus">Go to <span class="my-bonuses">My Bonuses</span> for more information</div>
+      <div class="rewards-list-item-past-info-body-item-bonus">{{{ myBonusesLabel }}}</div>
     {{/if}}
   </div>
   {{/if}}

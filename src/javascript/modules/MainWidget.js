@@ -3854,7 +3854,9 @@ export const MainWidget = function (options) {
       isMyBonuses: isMyBonuses,
       isFreeSpins: reward.rewardType.key === 'Free-Spins',
       bonusValue: reward.rewardValue,
-      bonusSymbol: reward.rewardType.uomSymbol ?? ''
+      bonusSymbol: reward.rewardType.uomSymbol ?? '',
+      myBonusesLabel: this.settings.lbWidget.settings.translation.rewards.myBonuses,
+      creditedBonusLabel: this.settings.lbWidget.settings.translation.rewards.creditedBonus
     });
 
     return listItem;

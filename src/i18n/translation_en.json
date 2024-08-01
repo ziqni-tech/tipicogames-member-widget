@@ -117,7 +117,9 @@
             "consumed": "Consumed",
             "forfeit": "Forfeit",
             "expired": "Expired"
-        }
+        },
+        "myBonuses": "Go to <span class=\"my-bonuses\">My Bonuses</span> for more information",
+        "creditedBonus": "Credited Bonus"
     },
     "dashboard": {
         "label": "Hi",

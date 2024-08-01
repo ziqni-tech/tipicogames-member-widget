@@ -117,7 +117,9 @@
             "consumed": "Verbraucht",
             "forfeit": "Verfallen",
             "expired": "Abgelaufen"
-        }
+        },
+        "myBonuses": "Gehe zu <span class=\"my-bonuses\">Meine Boni</span> für mehr Informationen",
+        "creditedBonus": "Gutgeschriebener Bonus"
     },
     "dashboard": {
         "label": "Hallo",
