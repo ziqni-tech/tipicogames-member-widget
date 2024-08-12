@@ -2909,7 +2909,7 @@ export const MainWidget = function (options) {
     drawerDeclineBn.dataset.id = data.id;
 
     forfeitBtn.style.display = 'block';
-    if (data.rewardType.key === 'Free-Spins') {
+    if (data.rewardType.uom === 'FREE_SPIN') {
       forfeitBtn.style.display = 'none';
     }
 
