@@ -2861,14 +2861,21 @@ export const MainWidget = function (options) {
       backBtn.classList.remove('backToDashboard');
     }
 
+    campaign.innerHTML = '-';
+    tAndC.innerHTML = this.settings.lbWidget.settings.translation.global.tAndCEmpty;
+
     if (data.entityType === 'Achievement') {
       const achievement = await this.settings.lbWidget.getAchievementsByIds([data.entityId]);
-      campaign.innerHTML = achievement[0].name;
-      tAndC.innerHTML = achievement[0].termsAndConditions ?? this.settings.lbWidget.settings.translation.global.tAndCEmpty;
+      if (achievement && achievement[0]) {
+        campaign.innerHTML = achievement[0].name;
+        tAndC.innerHTML = achievement[0].termsAndConditions ?? this.settings.lbWidget.settings.translation.global.tAndCEmpty;
+      }
     } else if (data.entityType === 'Contest') {
       const contest = await this.settings.lbWidget.getContestsByIds([data.entityId]);
-      campaign.innerHTML = contest[0].name;
-      tAndC.innerHTML = contest[0].termsAndConditions ?? this.settings.lbWidget.settings.translation.global.tAndCEmpty;
+      if (contest && contest[0]) {
+        campaign.innerHTML = contest[0].name;
+        tAndC.innerHTML = contest[0].termsAndConditions ?? this.settings.lbWidget.settings.translation.global.tAndCEmpty;
+      }
     }
 
     if (data.rewardType.customFields.productReferenceIds && Array.isArray(data.rewardType.customFields.productReferenceIds)) {
