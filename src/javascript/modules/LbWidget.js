@@ -1224,16 +1224,6 @@ export const LbWidget = function (options) {
     if (typeof callback === 'function') callback(list);
   };
 
-  this.playInstantWin = async function () {
-    const request = InstantWinPlayRequest.constructFromObject({
-      awardId: '',
-      languageKey: this.settings.language,
-      currencyKey: this.settings.currency
-    }, null);
-
-    return await this.playInstantWinsApi(request);
-  };
-
   this.getSingleWheels = async function (callback) {
     const request = InstantWinRequest.constructFromObject({
       languageKey: this.settings.language,
@@ -1250,6 +1240,74 @@ export const LbWidget = function (options) {
     if (typeof callback === 'function') {
       callback(singleWheels.data);
     }
+  };
+
+  this.getSingleWheel = async function (id) {
+    const request = InstantWinRequest.constructFromObject({
+      languageKey: this.settings.language,
+      currencyKey: this.settings.currency,
+      instantWinFilter: {
+        ids: [id],
+        limit: 1,
+        skip: 0
+      }
+    }, null);
+
+    const wheel = await this.getInstantWinsApi(request);
+
+    return wheel.data;
+  };
+
+  this.playInstantWin = async function (id) {
+    if (!this.settings.apiWs.instantWinsApiWsClient) {
+      this.settings.apiWs.instantWinsApiWsClient = new InstantWinsApiWs(this.apiClientStomp);
+    }
+
+    const request = InstantWinPlayRequest.constructFromObject({
+      instantWinId: id,
+      languageKey: this.settings.language,
+      currencyKey: this.settings.currency
+    }, null);
+
+    return new Promise((resolve, reject) => {
+      this.settings.apiWs.instantWinsApiWsClient.playInstantWin(request, (json) => {
+        resolve(json);
+      });
+    });
+  };
+
+  this.getSettingsFile = async function (fileName) {
+    if (!this.settings.apiWs.filesApiWsClient) {
+      this.settings.apiWs.filesApiWsClient = new FilesApiWs(this.apiClientStomp);
+    }
+
+    return new Promise((resolve, reject) => {
+      const fileRequest = {
+        ids: [],
+        limit: 20,
+        skip: 0,
+        parentFolderPath: '/instant-wins',
+        repositoryId: '-7KLxoMBDhZrpIHgC4eP'
+      };
+
+      this.settings.apiWs.filesApiWsClient.getFiles(fileRequest, async (res) => {
+        const settingsFile = res.data.find(item => item.name.trim() === fileName);
+
+        if (settingsFile) {
+          fetch(settingsFile.uri)
+            .then((data) => {
+              return data.json();
+            })
+            .then((data) => {
+              resolve(data);
+            })
+            .catch((err) => {
+              console.log('instant win settings file err', err);
+              reject(err);
+            });
+        }
+      });
+    });
   };
 
   this.getAchievementDataById = function (achievementId) {
@@ -1762,13 +1820,19 @@ export const LbWidget = function (options) {
     }
   };
 
-  this.playInstantWinsApi = async function (playRequest) {
+  this.playInstantWin = async function (id) {
     if (!this.settings.apiWs.instantWinsApiWsClient) {
       this.settings.apiWs.instantWinsApiWsClient = new InstantWinsApiWs(this.apiClientStomp);
     }
 
+    const request = InstantWinPlayRequest.constructFromObject({
+      instantWinId: id,
+      languageKey: this.settings.language,
+      currencyKey: this.settings.currency
+    }, null);
+
     return new Promise((resolve, reject) => {
-      this.settings.apiWs.instantWinsApiWsClient.playInstantWin(playRequest, (json) => {
+      this.settings.apiWs.instantWinsApiWsClient.playInstantWin(request, (json) => {
         resolve(json);
       });
     });
@@ -3204,6 +3268,14 @@ export const LbWidget = function (options) {
         }
       });
 
+      // load spinner wheel
+    } else if (hasClass(el, 'cl-main-widget-dashboard-instant-wins-wheel-button')) {
+      this.settings.mainWidget.loadSingleWheel('iMWab5IBrvel7IsqyXWd');
+
+      // play spinner back button
+    } else if (hasClass(el, 'play-single-wheel-back-btn')) {
+      _this.settings.mainWidget.hideSingleWheel();
+
       // load dashboard rewards
     } else if (hasClass(el, 'cl-main-widget-dashboard-rewards-list-more')) {
       const preLoader = _this.settings.mainWidget.preloader();
@@ -3271,62 +3343,6 @@ export const LbWidget = function (options) {
           _this.settings.mainWidget.loadAchievementDetails(data, preLoader.hide());
         });
       }
-
-      // dashboard wheel button
-    } else if (hasClass(el, 'cl-main-widget-dashboard-instant-wins-wheel-button')) {
-      const dashboard = document.querySelector('.cl-main-widget-section-dashboard');
-      // const dashboardIcon = document.querySelector('.cl-main-widget-navigation-dashboard');
-      // const awardsIcon = document.querySelector('.cl-main-widget-navigation-rewards');
-
-      dashboard.style.display = 'none';
-      // dashboardIcon.classList.remove('cl-active-nav');
-      // awardsIcon.classList.add('cl-active-nav');
-
-      const rewardsContainer = query(_this.settings.mainWidget.settings.container, '.cl-main-widget-section-container .' + _this.settings.navigation.rewards.containerClass);
-      rewardsContainer.style.display = 'flex';
-      addClass(rewardsContainer, 'cl-main-active-section');
-
-      const container = document.querySelector('.cl-main-widget-reward-list-body-res');
-      const sections = container.querySelectorAll('.cl-accordion');
-      const instantWinsSection = container.querySelector('.cl-accordion.instantWins');
-      const menuItems = container.querySelectorAll('.cl-main-accordion-container-menu-item');
-      const instantMenuItem = container.querySelector('.cl-main-accordion-container-menu-item.instantWins');
-
-      menuItems.forEach(i => i.classList.remove('active'));
-      instantMenuItem.classList.add('active');
-      sections.forEach(s => s.classList.remove('cl-shown'));
-      instantWinsSection.classList.add('cl-shown');
-
-      await _this.getSingleWheels(function (data) {
-        _this.settings.mainWidget.loadSingleWheels(data);
-      });
-
-      // dashboard scratchcards button
-    } else if (hasClass(el, 'cl-main-widget-dashboard-instant-wins-cards-button')) {
-      const dashboard = document.querySelector('.cl-main-widget-section-dashboard');
-      // const dashboardIcon = document.querySelector('.cl-main-widget-navigation-dashboard');
-      // const awardsIcon = document.querySelector('.cl-main-widget-navigation-rewards');
-
-      dashboard.style.display = 'none';
-      // dashboardIcon.classList.remove('cl-active-nav');
-      // awardsIcon.classList.add('cl-active-nav');
-
-      const rewardsContainer = query(_this.settings.mainWidget.settings.container, '.cl-main-widget-section-container .' + _this.settings.navigation.rewards.containerClass);
-      rewardsContainer.style.display = 'flex';
-      addClass(rewardsContainer, 'cl-main-active-section');
-
-      const container = document.querySelector('.cl-main-widget-reward-list-body-res');
-      const sections = container.querySelectorAll('.cl-accordion');
-      const instantWinsSection = container.querySelector('.cl-accordion.instantWins');
-      const menuItems = container.querySelectorAll('.cl-main-accordion-container-menu-item');
-      const instantMenuItem = container.querySelector('.cl-main-accordion-container-menu-item.instantWins');
-
-      menuItems.forEach(i => i.classList.remove('active'));
-      instantMenuItem.classList.add('active');
-      sections.forEach(s => s.classList.remove('cl-shown'));
-      instantWinsSection.classList.add('cl-shown');
-
-      _this.settings.mainWidget.loadScratchCards();
 
       // dashboard competition button
     } else if (hasClass(el, 'dashboard-tournament-item') || closest(el, '.dashboard-tournament-item')) {
@@ -3417,16 +3433,6 @@ export const LbWidget = function (options) {
       // achievement details info button
     } else if (hasClass(el, 'cl-main-widget-ach-details-header-info')) {
       _this.settings.mainWidget.toggleAchievementDescription();
-
-      // Single Wheel
-    } else if (hasClass(el, 'wheel-button')) {
-      await _this.getSingleWheels(function (data) {
-        _this.settings.mainWidget.loadSingleWheels(data);
-      });
-
-      // Single Wheel
-    } else if (hasClass(el, 'scratchcards-button')) {
-      _this.settings.mainWidget.loadScratchCards();
 
       // load rewards details
     } else if (hasClass(el, 'cl-rew-list-details-claim')) {
