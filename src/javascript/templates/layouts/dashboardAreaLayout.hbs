@@ -3,18 +3,21 @@
   <div class="cl-main-widget-dashboard-header-close"></div>
 </div>
 <div class="cl-main-widget-dashboard-body">
-  <div class="cl-main-widget-dashboard-body-label">{{ headerLabel }}</div>
-    <div class="cl-main-widget-ach-list-popup-wrapp">
-      <div class="cl-main-widget-ach-list-popup">
-        <div class="cl-main-widget-ach-list-popup-title">{{ leavePopupTitle }}</div>
-        <div class="cl-main-widget-ach-list-popup-close"></div>
-        <div class="cl-main-widget-ach-list-popup-description">{{ leavePopupDescription }}</div>
-        <div class="cl-main-widget-ach-list-popup-actions">
-          <div class="cl-main-widget-ach-list-popup-cancel">{{ leavePopupActionCancel }}</div>
-          <div class="cl-main-widget-ach-list-popup-confirm">{{ leavePopupActionConfirm }}</div>
-        </div>
+  <div class="cl-main-widget-dashboard-body-label-wrapp">
+    <div class="cl-main-widget-dashboard-body-label">{{ headerLabel }}</div>
+    <div class="cl-main-widget-dashboard-body-wheel"></div>
+  </div>
+  <div class="cl-main-widget-ach-list-popup-wrapp">
+    <div class="cl-main-widget-ach-list-popup">
+      <div class="cl-main-widget-ach-list-popup-title">{{ leavePopupTitle }}</div>
+      <div class="cl-main-widget-ach-list-popup-close"></div>
+      <div class="cl-main-widget-ach-list-popup-description">{{ leavePopupDescription }}</div>
+      <div class="cl-main-widget-ach-list-popup-actions">
+        <div class="cl-main-widget-ach-list-popup-cancel">{{ leavePopupActionCancel }}</div>
+        <div class="cl-main-widget-ach-list-popup-confirm">{{ leavePopupActionConfirm }}</div>
       </div>
     </div>
+  </div>
   <div class="cl-main-widget-dashboard-rewards">
     <div class="cl-main-widget-dashboard-rewards-header">
       <div class="cl-main-widget-dashboard-rewards-title">{{ rewardsTitle }}</div>
@@ -26,21 +29,6 @@
       <div class="cl-main-widget-dashboard-rewards-list-right"></div>
     </div>
   </div>
-    {{#if isInstantWins}}
-        <div class="cl-main-widget-dashboard-instant-wins">
-            <div class="cl-main-widget-dashboard-instant-wins-title">{{ instantWinsTitle }}</div>
-            <div class="cl-main-widget-dashboard-instant-wins-wrapp">
-                <div class="cl-main-widget-dashboard-instant-wins-wheel">
-                    <div class="cl-main-widget-dashboard-instant-wins-wheel-title-mobile">{{ instantWinsWheelTitle }}</div>
-                    <div class="cl-main-widget-dashboard-instant-wins-wheel-body">
-                        <div class="cl-main-widget-dashboard-instant-wins-wheel-title">{{ instantWinsWheelTitle }}</div>
-                        <div class="cl-main-widget-dashboard-instant-wins-wheel-description"></div>
-                        <div class="cl-main-widget-dashboard-instant-wins-wheel-button">{{ instantWinsWheelButton }}</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    {{/if}}
   {{#if isAchievements}}
     <div class="cl-main-widget-dashboard-achievements">
       <div class="cl-main-widget-dashboard-achievements-header">

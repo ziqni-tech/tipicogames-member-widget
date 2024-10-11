@@ -1,7 +1,20 @@
 <div class="play-single-wheel-back-btn"></div>
-<div class="play-single-wheel-title">{{ title }}</div>
-<div class="play-single-wheel-title-sub">{{ subTitle }}</div>
+<div class="play-single-wheel-header">
+  <div class="play-single-wheel-title">{{ title }}</div>
+  <div class="play-single-wheel-title-sub">{{ subTitle }}</div>
+  <div class="play-single-wheel-spins">{{ spinsLeft }}</div>
+</div>
 <div class="play-single-wheel-body">
     <div class="play-single-wheel-spinner" id="play-single-wheel"></div>
 </div>
+<div class="play-single-wheel-decline">Decline Reward</div>
+
+<div class="play-single-wheel-drawer">
+  <div class="play-single-wheel-drawer-icon"></div>
+  <div class="play-single-wheel-drawer-title">{{ drawerTitle }}</div>
+  <div class="play-single-wheel-drawer-description">{{ drawerDescription }}</div>
+  <div class="play-single-wheel-drawer-btn-claim">{{ drawerClimeBtn }}</div>
+  <div class="play-single-wheel-btn-decline">{{ drawerDeclineBtn }}</div>
+</div>
+
 <canvas id="confetti"></canvas>

@@ -4233,7 +4233,12 @@ export const MainWidget = function (options) {
     wrapper.innerHTML = template({
       title: singleWheelData[0].name,
       subTitle: 'Spin and win',
-      buttonLabel: 'Play'
+      spinsLeft: '1x spin available',
+      buttonLabel: 'Play',
+      drawerTitle: 'Don’t leave, your spins will be lost!',
+      drawerDescription: 'If you close the wheel of fortune you won’t be able to claim it again.',
+      drawerClimeBtn: 'Stay',
+      drawerDeclineBtn: 'Leave'
     });
 
     section.appendChild(wrapper);
@@ -4265,7 +4270,8 @@ export const MainWidget = function (options) {
         const { isCompleted } = giftValue;
         console.log('isCompleted => ', isCompleted);
         console.log('Wheel stopped on prize section:', giftValue);
-      }
+      },
+      true
     );
 
     const wheel = document.querySelector('.play-single-wheel');
@@ -4274,6 +4280,11 @@ export const MainWidget = function (options) {
       if (spinnerWheel && spinnerWheel.spinWheel) {
         spinnerWheel.spinWheel(3);
       }
+
+      const spinsLeftEl = document.querySelector('.play-single-wheel-spins');
+      const declineEl = document.querySelector('.play-single-wheel-decline');
+      spinsLeftEl.classList.add('hidden');
+      declineEl.classList.add('hidden');
 
       const requestStartTime = Date.now();
       const playData = await this.settings.lbWidget.playInstantWin(id);

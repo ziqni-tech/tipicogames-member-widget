@@ -1310,6 +1310,24 @@ export const LbWidget = function (options) {
     });
   };
 
+  this.getFileUri = async (id) => {
+    if (!this.settings.apiWs.filesApiWsClient) {
+      this.settings.apiWs.filesApiWsClient = new FilesApiWs(this.apiClientStomp);
+    }
+
+    const fileRequest = {
+      ids: [id],
+      limit: 1,
+      skip: 0
+    };
+
+    return new Promise((resolve) => {
+      this.settings.apiWs.filesApiWsClient.getFiles(fileRequest, (res) => {
+        resolve(res.data[0].uri);
+      });
+    });
+  };
+
   this.getAchievementDataById = function (achievementId) {
     return this.settings.achievements.list.filter(a => a.id === achievementId)[0];
   };
@@ -2350,6 +2368,13 @@ export const LbWidget = function (options) {
       }
     }
 
+    if (!el.closest('.play-single-wheel-drawer')) {
+      const drawer = document.querySelector('.play-single-wheel-drawer');
+      if (drawer) {
+        drawer.classList.remove('active');
+      }
+    }
+
     // mini scoreboard opt-in action
     if (hasClass(el, 'cl-widget-ms-optin-action') && !hasClass(el, 'checking')) {
       addClass(el, 'checking');
@@ -3269,8 +3294,8 @@ export const LbWidget = function (options) {
       });
 
       // load spinner wheel
-    } else if (hasClass(el, 'cl-main-widget-dashboard-instant-wins-wheel-button')) {
-      this.settings.mainWidget.loadSingleWheel('iMWab5IBrvel7IsqyXWd');
+    } else if (hasClass(el, 'cl-main-widget-dashboard-body-wheel')) {
+      this.settings.mainWidget.loadSingleWheel('UrOydZIB7XpvLiZR0RFg');
 
       // play spinner back button
     } else if (hasClass(el, 'play-single-wheel-back-btn')) {
@@ -3519,10 +3544,24 @@ export const LbWidget = function (options) {
         });
       });
 
-      // Award Details Forfeit
-    } else if (hasClass(el, 'cl-main-widget-reward-details-forfeit')) {
-      const drawer = document.querySelector('.cl-main-widget-reward-details-drawer');
+      // Leave wheel of fortune
+    } else if (hasClass(el, 'play-single-wheel-decline')) {
+      const drawer = document.querySelector('.play-single-wheel-drawer');
       drawer.classList.add('active');
+
+      // Leave wheel of fortune
+    } else if (hasClass(el, 'play-single-wheel-drawer-btn-claim')) {
+      const drawer = document.querySelector('.play-single-wheel-drawer');
+      drawer.classList.remove('active');
+
+      // Leave wheel of fortune
+    } else if (hasClass(el, 'play-single-wheel-drawer-btn-claim')) {
+      const drawer = document.querySelector('.play-single-wheel-drawer');
+      drawer.classList.remove('active');
+
+      // Award Details Forfeit
+    } else if (hasClass(el, 'play-single-wheel-btn-decline')) {
+      _this.settings.mainWidget.hideSingleWheel();
 
       // Award Details Drawer Keep
     } else if (hasClass(el, 'cl-main-widget-reward-details-drawer-btn-claim')) {

@@ -215,7 +215,6 @@ li {
   justify-content: center;
   top: 0;
   left: 0;
-  padding: 20px;
   border-radius: 10px;
   border: 1px solid #223241;
   z-index: 9;
@@ -234,6 +233,14 @@ li {
     cursor: pointer;
   }
 
+  .play-single-wheel-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: absolute;
+    top: 80px;
+  }
+
   .play-single-wheel-title {
     color: var(--ui-color-text-secondary);
     font-style: normal;
@@ -241,7 +248,6 @@ li {
     font-size: 10px;
     line-height: 12px;
     text-transform: uppercase;
-    margin-top: 80px;
   }
 
   .play-single-wheel-title-sub {
@@ -252,10 +258,41 @@ li {
     line-height: 26px;
   }
 
+  .play-single-wheel-spins {
+    color: #141414;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 18px;
+    text-align: center;
+    background-color: #ffffff;
+    border-radius: 10px;
+    padding: 0 10px;
+    margin-top: 16px;
+    transition: opacity .5s;
+
+    &.hidden {
+      opacity: 0;
+    }
+  }
+
+  .play-single-wheel-decline {
+    color: #5F5F5F;
+    text-decoration: underline;
+    cursor: pointer;
+    text-align: center;
+    position: absolute;
+    bottom: 56px;
+    transition: opacity .5s;
+
+    &.hidden {
+      opacity: 0;
+    }
+  }
+
   .play-single-wheel-body {
-    min-width: 500px;
     width: 100%;
     height: 100%;
+    padding-top: 60px;
   }
 
   .play-single-wheel-spinner {
@@ -290,6 +327,82 @@ li {
     z-index: 5;
     display: none;
   }
+
+  .play-single-wheel-drawer {
+    position: absolute;
+    width: 100%;
+    bottom: -100%;
+    left: 0;
+    z-index: 2;
+    height: auto;
+    background: var(--card-default);
+    border-radius: 24px 24px 0 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 32px 50px 32px;
+    transition: all .3s ease;
+
+    &.active {
+      bottom: 0;
+    }
+
+    .play-single-wheel-drawer-icon {
+      width: 53px;
+      height: 53px;
+      background: url(../../images/warning-icon.svg) no-repeat center;
+    }
+
+    .play-single-wheel-drawer-title {
+      font-size: 20px;
+      font-weight: 600;
+      line-height: 26px;
+      text-align: center;
+      color: var(--Primary-White);
+      margin-top: 30px;
+      margin-bottom: 8px;
+    }
+
+    .play-single-wheel-drawer-description {
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 21px;
+      text-align: center;
+      color: var(--ui-color-gray-10);
+    }
+
+    .play-single-wheel-drawer-btn-claim {
+      display: flex;
+      width: 100%;
+      align-items: center;
+      justify-content: center;
+      height: 40px;
+      border-radius: 8px;
+      background: #fff;
+      color: var(--Primary-Dark);
+      margin-top: 32px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .play-single-wheel-btn-decline {
+      margin-top: 8px;
+      width: 100%;
+      height: 40px;
+      border: solid 1px #fff;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 21px;
+      text-align: center;
+      color: var(--Primary-White);
+      text-decoration: none;
+    }
+  }
+
 }
 
 .cl-widget-ms-wrapper .cl-widget-ms-information-wrapper.cl-show {
@@ -1652,12 +1765,45 @@ li {
   padding-top: 48px;
 }
 
+.cl-main-widget-dashboard-body-label-wrapp {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-body .cl-main-widget-dashboard-body-label {
   text-align: left;
   line-height: 31px;
   color: var(--Primary-White);
   font-size: 24px;
   font-weight: 600;
+}
+
+.cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-body .cl-main-widget-dashboard-body-wheel {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  margin-left: 20px;
+  background-image: url(../../images/dashboard-wheel.svg);
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  box-shadow: 0 0 0 rgba(206, 40, 59, 0.6);
+  animation: pulse 2s infinite;
+  position: relative;
+  z-index: 5;
+  cursor: pointer;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(206, 40, 59, 0.6);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(206, 40, 59, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(206, 40, 59, 0);
+  }
 }
 
 .cl-main-widget-wrapper .cl-main-widget-section-container .cl-main-widget-dashboard-body::-webkit-scrollbar {
