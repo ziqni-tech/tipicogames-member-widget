@@ -38,6 +38,7 @@ import {
   FilesApiWs,
   InstantWinPlayRequest,
   InstantWinRequest,
+  InstantWinAvailablePlaysRequest,
   InstantWinsApiWs,
   LeaderboardApiWs,
   LeaderboardSubscriptionRequest,
@@ -1230,7 +1231,7 @@ export const LbWidget = function (options) {
       currencyKey: this.settings.currency,
       instantWinFilter: {
         instantWinTypes: [1],
-        limit: 20,
+        limit: 1,
         skip: 0
       }
     }, null);
@@ -1240,6 +1241,8 @@ export const LbWidget = function (options) {
     if (typeof callback === 'function') {
       callback(singleWheels.data);
     }
+
+    return singleWheels.data;
   };
 
   this.getSingleWheel = async function (id) {
@@ -1256,6 +1259,24 @@ export const LbWidget = function (options) {
     const wheel = await this.getInstantWinsApi(request);
 
     return wheel.data;
+  };
+
+  this.getInstantWinAvailablePlays = async function (id) {
+    if (!this.settings.apiWs.instantWinsApiWsClient) {
+      this.settings.apiWs.instantWinsApiWsClient = new InstantWinsApiWs(this.apiClientStomp);
+    }
+
+    const request = InstantWinAvailablePlaysRequest.constructFromObject({
+      instantWinIds: [id]
+    }, null);
+
+    console.log('request:', request);
+
+    return new Promise((resolve, reject) => {
+      this.settings.apiWs.instantWinsApiWsClient.getInstantWinAvailablePlays(request, (json) => {
+        resolve(json);
+      });
+    });
   };
 
   this.playInstantWin = async function (id) {
@@ -4360,6 +4381,14 @@ export const LbWidget = function (options) {
             this.settings.mainWidget.initLayout(function () {});
 
             await this.checkForNotClaimedAwards();
+
+            const instantWins = await this.getSingleWheels();
+            if (instantWins && instantWins.length > 0) {
+              this.getInstantWinAvailablePlays(instantWins[0].id)
+                .then(availablePlays => {
+                  console.log('availablePlays:', availablePlays);
+                });
+            }
 
             // await this.checkForAvailableCompetitions();
 
