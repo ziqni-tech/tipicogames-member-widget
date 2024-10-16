@@ -273,6 +273,11 @@ li {
     &.hidden {
       opacity: 0;
     }
+
+    .play-single-wheel-spins-remaining {
+      color: #141414;
+      line-height: 18px;
+    }
   }
 
   .play-single-wheel-decline {
@@ -5278,10 +5283,9 @@ li {
   margin-top: 8px;
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
-  max-height: 492px;
-  overflow: hidden;
-  transition: max-height .3s;
+  justify-content: flex-start;
+  height: 164px;
+  overflow: auto;
   cursor: pointer;
 }
 
@@ -5292,12 +5296,18 @@ li {
 .cl-main-widget-ach-details-game-item {
   width: 109px;
   height: 156px;
+  flex-shrink: 0;
+  margin-right: 16px;
   border-radius: 4px;
   border: 1px solid rgba(255, 255, 255, 0.16);
   background-repeat: no-repeat;
   margin-bottom: 8px;
   background-size: cover;
   background-position: center;
+}
+
+.cl-main-widget-ach-details-game-item:last-child {
+  margin-right: 0;
 }
 
 .cl-main-widget-ach-details-game-full {

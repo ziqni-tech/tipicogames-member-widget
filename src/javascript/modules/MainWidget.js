@@ -2649,9 +2649,9 @@ export const MainWidget = function (options) {
 
     const gamesWrapp = document.querySelector('.cl-main-widget-ach-details-games.ach-games');
     const gameItems = gamesWrapp.querySelector('.cl-main-widget-ach-details-game-items');
-    const gameFull = gamesWrapp.querySelector('.cl-main-widget-ach-details-game-full');
-    const gameOverlay = gamesWrapp.querySelector('.cl-main-widget-ach-details-game-overlay');
-    let isExpand = false;
+    // const gameFull = gamesWrapp.querySelector('.cl-main-widget-ach-details-game-full');
+    // const gameOverlay = gamesWrapp.querySelector('.cl-main-widget-ach-details-game-overlay');
+    // let isExpand = false;
 
     progress.dataset.id = data.id;
 
@@ -2666,22 +2666,22 @@ export const MainWidget = function (options) {
     }
 
     if (data.products && data.products.length) {
-      if (data.products.length > 9) {
-        isExpand = true;
-      }
+      // if (data.products.length > 9) {
+      //   isExpand = true;
+      // }
       data.products.forEach(product => {
         const gameItem = this.createGameItem(product);
         games.appendChild(gameItem);
       });
     }
 
-    if (isExpand) {
-      gameFull.style.display = 'flex';
-      gameOverlay.style.display = 'block';
-    } else {
-      gameFull.style.display = 'none';
-      gameOverlay.style.display = 'none';
-    }
+    // if (isExpand) {
+    //   gameFull.style.display = 'flex';
+    //   gameOverlay.style.display = 'block';
+    // } else {
+    //   gameFull.style.display = 'none';
+    //   gameOverlay.style.display = 'none';
+    // }
 
     if (data.reward) {
       rewardTitle.innerHTML = data.reward.name;
@@ -3515,7 +3515,11 @@ export const MainWidget = function (options) {
       this.awardTAndC = contest[0].termsAndConditions;
     }
 
-    if (awardData.rewardType.customFields.productReferenceIds && Array.isArray(awardData.rewardType.customFields.productReferenceIds)) {
+    if (
+      awardData.rewardType.customFields &&
+      awardData.rewardType.customFields.productReferenceIds &&
+      Array.isArray(awardData.rewardType.customFields.productReferenceIds)
+    ) {
       products = await this.settings.lbWidget.getProductsByRefIds(awardData.rewardType.customFields.productReferenceIds);
     }
 
@@ -4224,6 +4228,9 @@ export const MainWidget = function (options) {
 
   this.loadSingleWheel = async function (id) {
     const singleWheelData = await this.settings.lbWidget.getSingleWheel(id);
+    const availablePlaysData = await this.settings.lbWidget.getInstantWinAvailablePlays(id);
+    const remainingPlays = availablePlaysData[0].remainingPlays;
+
     const section = document.querySelector('.cl-main-widget-dashboard-body');
     const wrapper = document.createElement('div');
     const template = require('../templates/mainWidget/singleWheel.hbs');
@@ -4233,7 +4240,8 @@ export const MainWidget = function (options) {
     wrapper.innerHTML = template({
       title: singleWheelData[0].name,
       subTitle: 'Spin and win',
-      spinsLeft: '1x spin available',
+      remainingPlays: remainingPlays,
+      spinsLeft: 'x spin available',
       buttonLabel: 'Play',
       drawerTitle: 'Don’t leave, your spins will be lost!',
       drawerDescription: 'If you close the wheel of fortune you won’t be able to claim it again.',
@@ -4257,6 +4265,9 @@ export const MainWidget = function (options) {
     const instantWin = { tiles, settingsData };
 
     const containerId = document.querySelector('#play-single-wheel');
+
+    const spinsLeftEl = document.querySelector('.play-single-wheel-spins');
+    const declineEl = document.querySelector('.play-single-wheel-decline');
     // const messageSettings = instantWin.settingsData.messageSettings;
     // const prizeSection = 1;
 
@@ -4270,6 +4281,17 @@ export const MainWidget = function (options) {
         const { isCompleted } = giftValue;
         console.log('isCompleted => ', isCompleted);
         console.log('Wheel stopped on prize section:', giftValue);
+        setTimeout(() => {
+          spinnerWheel.resetWheel();
+          const remainingEl = document.querySelector('.play-single-wheel-spins-remaining');
+          spinsLeftEl.classList.remove('hidden');
+          declineEl.classList.remove('hidden');
+          this.settings.lbWidget.getInstantWinAvailablePlays(id)
+            .then(remainingPlays => {
+              remainingEl.innerHTML = remainingPlays[0].remainingPlays;
+              console.log('remainingPlays[0].remainingPlays:', remainingPlays[0].remainingPlays);
+            });
+        }, 2000);
       },
       true
     );
@@ -4281,8 +4303,6 @@ export const MainWidget = function (options) {
         spinnerWheel.spinWheel(3);
       }
 
-      const spinsLeftEl = document.querySelector('.play-single-wheel-spins');
-      const declineEl = document.querySelector('.play-single-wheel-decline');
       spinsLeftEl.classList.add('hidden');
       declineEl.classList.add('hidden');
 

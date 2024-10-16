@@ -1274,7 +1274,7 @@ export const LbWidget = function (options) {
 
     return new Promise((resolve, reject) => {
       this.settings.apiWs.instantWinsApiWsClient.getInstantWinAvailablePlays(request, (json) => {
-        resolve(json);
+        resolve(json.data);
       });
     });
   };
@@ -2599,23 +2599,23 @@ export const LbWidget = function (options) {
       container.scrollTop = topPos - 55;
 
       // Achievement show all games action
-    } else if (hasClass(el, 'cl-main-widget-ach-details-game-full') || hasClass(el, 'cl-main-widget-ach-details-game-overlay')) {
-      const wrapp = el.closest('.cl-main-widget-ach-details-games');
-      const container = wrapp.querySelector('.cl-main-widget-ach-details-game-items');
-      const full = wrapp.querySelector('.cl-main-widget-ach-details-game-full');
-      const overlay = wrapp.querySelector('.cl-main-widget-ach-details-game-overlay');
-
-      if (full.classList.contains('expanded')) {
-        container.classList.remove('expanded');
-        overlay.style.display = 'block';
-        setTimeout(function () {
-          full.classList.remove('expanded');
-        }, 300);
-      } else {
-        container.classList.add('expanded');
-        full.classList.add('expanded');
-        overlay.style.display = 'none';
-      }
+      // } else if (hasClass(el, 'cl-main-widget-ach-details-game-full') || hasClass(el, 'cl-main-widget-ach-details-game-overlay')) {
+      //   const wrapp = el.closest('.cl-main-widget-ach-details-games');
+      //   const container = wrapp.querySelector('.cl-main-widget-ach-details-game-items');
+      //   const full = wrapp.querySelector('.cl-main-widget-ach-details-game-full');
+      //   const overlay = wrapp.querySelector('.cl-main-widget-ach-details-game-overlay');
+      //
+      //   if (full.classList.contains('expanded')) {
+      //     container.classList.remove('expanded');
+      //     overlay.style.display = 'block';
+      //     setTimeout(function () {
+      //       full.classList.remove('expanded');
+      //     }, 300);
+      //   } else {
+      //     container.classList.add('expanded');
+      //     full.classList.add('expanded');
+      //     overlay.style.display = 'none';
+      //   }
 
       // Award game click
     } else if (hasClass(el, 'cl-main-widget-ach-details-game-item') && el.closest('.reward-games')) {
@@ -4330,6 +4330,24 @@ export const LbWidget = function (options) {
       }
     });
 
+    // const memberTokenRequestMT = {
+    //   member: this.settings.memberRefId,
+    //   apiKey: this.settings.apiKey,
+    //   isReferenceId: true,
+    //   expires: this.settings.expires
+    // };
+    //
+    // const responseMT = await fetch('https://member-api.ziqni.com/member-token', {
+    //   method: 'post',
+    //   body: JSON.stringify(memberTokenRequestMT),
+    //   headers: {
+    //     Accept: 'application/json',
+    //     'Content-Type': 'application/json'
+    //   }
+    // });
+    //
+    // console.log('responseMT:', responseMT);
+
     const body = await response.json();
 
     if (body.data && body.data.jwtToken) {
@@ -4384,15 +4402,18 @@ export const LbWidget = function (options) {
 
             const instantWins = await this.getSingleWheels();
             if (instantWins && instantWins.length > 0) {
-              this.getInstantWinAvailablePlays(instantWins[0].id)
+              // this.getInstantWinAvailablePlays(instantWins[0].id)
+              //   .then(availablePlays => {
+              //     console.log('availablePlays:', availablePlays);
+              //   });
+              this.getInstantWinAvailablePlays('IPkka5IBrvel7Isq6wtJ')
                 .then(availablePlays => {
                   console.log('availablePlays:', availablePlays);
+                  if (availablePlays.length && availablePlays[0].remainingPlays) {
+                    this.settings.mainWidget.loadSingleWheel('IPkka5IBrvel7Isq6wtJ');
+                  }
                 });
             }
-
-            // await this.checkForAvailableCompetitions();
-
-            // this.settings.mainWidget.loadLeaderboard();
 
             this.settings.isLoadComplete = true;
             if (typeof this.settings.callbacks.onLoadComplete === 'function') {
