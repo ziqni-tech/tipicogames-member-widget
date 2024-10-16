@@ -2025,6 +2025,13 @@ export const MainWidget = function (options) {
     listResContainer.innerHTML = '';
     listResContainer.appendChild(accordionObj);
 
+    const menuResultItem = document.querySelector('.cl-main-accordion-container-menu-item.finishedTournaments');
+    if (!finishedTotalCount) {
+      menuResultItem.style.display = 'none';
+    } else {
+      menuResultItem.style.display = 'block';
+    }
+
     if (finishedPaginator) {
       const finishedContainer = query(listResContainer, '.finishedCompetitions');
       if (finishedContainer) {
@@ -2544,6 +2551,13 @@ export const MainWidget = function (options) {
 
     achList.innerHTML = '';
     achList.appendChild(accordionObj);
+
+    const menuPastItem = document.querySelector('.cl-main-accordion-container-menu-item.pastAchievements');
+    if (!pastTotalCount) {
+      menuPastItem.style.display = 'none';
+    } else {
+      menuPastItem.style.display = 'block';
+    }
 
     if (paginator) {
       const paginatorItems = query(paginator, '.paginator-item');
