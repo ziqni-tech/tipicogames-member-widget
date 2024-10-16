@@ -5802,6 +5802,7 @@ li {
   left: 0;
   z-index: 2;
   height: auto;
+  width: 100%;
   background: var(--card-default);
   border-radius: 24px 24px 0 0;
   display: flex;
@@ -5878,6 +5879,7 @@ li {
   left: 0;
   z-index: 10;
   height: auto;
+  width: 100%;
   background: var(--card-default);
   border-radius: 24px 24px 0 0;
   display: flex;
@@ -7956,6 +7958,9 @@ li {
   transition: all .3s ease;
 }
 
+.cl-main-widget-wrapper .cl-main-widget-reward-details-container .cl-main-widget-reward-details-tc-body ul,
+.cl-main-widget-wrapper .cl-main-widget-reward-details-container .cl-main-widget-reward-details-tc-body ol,
+.cl-main-widget-wrapper .cl-main-widget-reward-details-container .cl-main-widget-reward-details-tc-body li,
 .cl-main-widget-wrapper .cl-main-widget-reward-details-container .cl-main-widget-reward-details-tc-body p {
   max-height: 0;
   font-size: 0;
@@ -7983,6 +7988,9 @@ li {
     font-weight: 600;
     line-height: 18px;
   }
+  .cl-main-widget-reward-details-tc-body ul,
+  .cl-main-widget-reward-details-tc-body ol,
+  .cl-main-widget-reward-details-tc-body li,
   .cl-main-widget-reward-details-tc-body p {
     color: var(--ui-color-text-secondary);
     font-size: 12px;

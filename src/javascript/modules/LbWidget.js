@@ -3581,9 +3581,14 @@ export const LbWidget = function (options) {
       const drawer = document.querySelector('.play-single-wheel-drawer');
       drawer.classList.remove('active');
 
-      // Award Details Forfeit
+      // Wheel Decline
     } else if (hasClass(el, 'play-single-wheel-btn-decline')) {
       _this.settings.mainWidget.hideSingleWheel();
+
+      // Award Details Forfeit
+    } else if (hasClass(el, 'cl-main-widget-reward-details-forfeit')) {
+      const drawer = document.querySelector('.cl-main-widget-reward-details-drawer');
+      drawer.classList.add('active');
 
       // Award Details Drawer Keep
     } else if (hasClass(el, 'cl-main-widget-reward-details-drawer-btn-claim')) {
