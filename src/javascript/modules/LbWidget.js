@@ -108,7 +108,8 @@ export const LbWidget = function (options) {
     scrollButtons: {
       rewards: false,
       missions: false,
-      tournaments: false
+      tournaments: false,
+      games: false
     },
     competition: {
       activeCompetitionId: null,
@@ -2599,23 +2600,23 @@ export const LbWidget = function (options) {
       container.scrollTop = topPos - 55;
 
       // Achievement show all games action
-      // } else if (hasClass(el, 'cl-main-widget-ach-details-game-full') || hasClass(el, 'cl-main-widget-ach-details-game-overlay')) {
-      //   const wrapp = el.closest('.cl-main-widget-ach-details-games');
-      //   const container = wrapp.querySelector('.cl-main-widget-ach-details-game-items');
-      //   const full = wrapp.querySelector('.cl-main-widget-ach-details-game-full');
-      //   const overlay = wrapp.querySelector('.cl-main-widget-ach-details-game-overlay');
-      //
-      //   if (full.classList.contains('expanded')) {
-      //     container.classList.remove('expanded');
-      //     overlay.style.display = 'block';
-      //     setTimeout(function () {
-      //       full.classList.remove('expanded');
-      //     }, 300);
-      //   } else {
-      //     container.classList.add('expanded');
-      //     full.classList.add('expanded');
-      //     overlay.style.display = 'none';
-      //   }
+    } else if (hasClass(el, 'cl-main-widget-ach-details-game-full') || hasClass(el, 'cl-main-widget-ach-details-game-overlay')) {
+      const wrapp = el.closest('.cl-main-widget-ach-details-games');
+      const container = wrapp.querySelector('.cl-main-widget-ach-details-game-items');
+      const full = wrapp.querySelector('.cl-main-widget-ach-details-game-full');
+      const overlay = wrapp.querySelector('.cl-main-widget-ach-details-game-overlay');
+
+      if (full.classList.contains('expanded')) {
+        container.classList.remove('expanded');
+        overlay.style.display = 'block';
+        setTimeout(function () {
+          full.classList.remove('expanded');
+        }, 300);
+      } else {
+        container.classList.add('expanded');
+        full.classList.add('expanded');
+        overlay.style.display = 'none';
+      }
 
       // Award game click
     } else if (hasClass(el, 'cl-main-widget-ach-details-game-item') && el.closest('.reward-games')) {
