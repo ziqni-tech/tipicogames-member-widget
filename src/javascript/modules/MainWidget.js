@@ -2892,7 +2892,7 @@ export const MainWidget = function (options) {
       }
     }
 
-    if (data.rewardType.customFields.productReferenceIds && Array.isArray(data.rewardType.customFields.productReferenceIds)) {
+    if (data.rewardType.customFields && data.rewardType.customFields.productReferenceIds && Array.isArray(data.rewardType.customFields.productReferenceIds)) {
       products = await this.settings.lbWidget.getProductsByRefIds(data.rewardType.customFields.productReferenceIds);
     }
 
@@ -3449,7 +3449,7 @@ export const MainWidget = function (options) {
       for (const award of currentAwards) {
         let products = [];
 
-        if (award.rewardType.customFields.productReferenceIds && Array.isArray(award.rewardType.customFields.productReferenceIds)) {
+        if (award.rewardType.customFields && award.rewardType.customFields.productReferenceIds && Array.isArray(award.rewardType.customFields.productReferenceIds)) {
           products = await this.settings.lbWidget.getProductsByRefIds(award.rewardType.customFields.productReferenceIds);
         }
 
@@ -4291,10 +4291,7 @@ export const MainWidget = function (options) {
       containerId,
       instantWin.tiles,
       instantWin.settingsData,
-      (giftValue) => {
-        const { isCompleted } = giftValue;
-        console.log('isCompleted => ', isCompleted);
-        console.log('Wheel stopped on prize section:', giftValue);
+      () => {
         setTimeout(() => {
           spinnerWheel.resetWheel();
           const remainingEl = document.querySelector('.play-single-wheel-spins-remaining');
@@ -4303,7 +4300,7 @@ export const MainWidget = function (options) {
           this.settings.lbWidget.getInstantWinAvailablePlays(id)
             .then(remainingPlays => {
               remainingEl.innerHTML = remainingPlays[0].remainingPlays;
-              console.log('remainingPlays[0].remainingPlays:', remainingPlays[0].remainingPlays);
+              console.log('remainingPlays:', remainingPlays[0].remainingPlays);
             });
         }, 2000);
       },
@@ -4313,21 +4310,20 @@ export const MainWidget = function (options) {
     const wheel = document.querySelector('.play-single-wheel');
     const wheelButtonElement = wheel.querySelector('.spin-button');
     wheelButtonElement.addEventListener('click', async () => {
-      if (spinnerWheel && spinnerWheel.spinWheel) {
-        spinnerWheel.spinWheel(3);
-      }
-
-      spinsLeftEl.classList.add('hidden');
-      declineEl.classList.add('hidden');
-
-      const requestStartTime = Date.now();
       const playData = await this.settings.lbWidget.playInstantWin(id);
+      if (playData[0] && playData[0].results && playData[0].results.tiles[0] && playData[0].results.tiles[0].location) {
+        const winSection = playData[0].results.tiles[0].location.col;
 
-      const responseTime = Date.now();
-      const responseDuration = responseTime - requestStartTime;
-      const responseDurationInSeconds = responseDuration / 1000;
-      console.log(`Duration: (${responseDurationInSeconds.toFixed(2)} sec)`);
-      console.log('playData:', playData);
+        if (spinnerWheel && spinnerWheel.spinWheel) {
+          spinnerWheel.spinWheel(winSection)
+            .then(() => {});
+        }
+
+        spinsLeftEl.classList.add('hidden');
+        declineEl.classList.add('hidden');
+      } else {
+        console.log('Something went wrong... ', playData);
+      }
     });
   };
 
@@ -4501,7 +4497,7 @@ export const MainWidget = function (options) {
     dashboardContainer.classList.add('cl-main-active-section');
 
     let products = [];
-    if (award.rewardType.customFields.productReferenceIds && Array.isArray(award.rewardType.customFields.productReferenceIds)) {
+    if (award.rewardType.customFields && award.rewardType.customFields.productReferenceIds && Array.isArray(award.rewardType.customFields.productReferenceIds)) {
       products = await this.settings.lbWidget.getProductsByRefIds(award.rewardType.customFields.productReferenceIds);
     }
 

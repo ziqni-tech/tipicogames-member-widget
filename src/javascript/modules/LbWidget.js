@@ -1271,8 +1271,6 @@ export const LbWidget = function (options) {
       instantWinIds: [id]
     }, null);
 
-    console.log('request:', request);
-
     return new Promise((resolve, reject) => {
       this.settings.apiWs.instantWinsApiWsClient.getInstantWinAvailablePlays(request, (json) => {
         resolve(json.data);
@@ -1286,14 +1284,12 @@ export const LbWidget = function (options) {
     }
 
     const request = InstantWinPlayRequest.constructFromObject({
-      instantWinId: id,
-      languageKey: this.settings.language,
-      currencyKey: this.settings.currency
+      instantWinId: id
     }, null);
 
     return new Promise((resolve, reject) => {
       this.settings.apiWs.instantWinsApiWsClient.playInstantWin(request, (json) => {
-        resolve(json);
+        resolve(json.data);
       });
     });
   };
@@ -1858,24 +1854,6 @@ export const LbWidget = function (options) {
       const errorPage = document.querySelector('.cl-main-widget-error');
       errorPage.classList.add('active');
     }
-  };
-
-  this.playInstantWin = async function (id) {
-    if (!this.settings.apiWs.instantWinsApiWsClient) {
-      this.settings.apiWs.instantWinsApiWsClient = new InstantWinsApiWs(this.apiClientStomp);
-    }
-
-    const request = InstantWinPlayRequest.constructFromObject({
-      instantWinId: id,
-      languageKey: this.settings.language,
-      currencyKey: this.settings.currency
-    }, null);
-
-    return new Promise((resolve, reject) => {
-      this.settings.apiWs.instantWinsApiWsClient.playInstantWin(request, (json) => {
-        resolve(json);
-      });
-    });
   };
 
   this.getInstantWinsApi = async function (instantWinRequest) {
@@ -3315,10 +3293,6 @@ export const LbWidget = function (options) {
         }
       });
 
-      // load spinner wheel
-    } else if (hasClass(el, 'cl-main-widget-dashboard-body-wheel')) {
-      this.settings.mainWidget.loadSingleWheel('UrOydZIB7XpvLiZR0RFg');
-
       // play spinner back button
     } else if (hasClass(el, 'play-single-wheel-back-btn')) {
       _this.settings.mainWidget.hideSingleWheel();
@@ -4408,15 +4382,10 @@ export const LbWidget = function (options) {
 
             const instantWins = await this.getSingleWheels();
             if (instantWins && instantWins.length > 0) {
-              // this.getInstantWinAvailablePlays(instantWins[0].id)
-              //   .then(availablePlays => {
-              //     console.log('availablePlays:', availablePlays);
-              //   });
-              this.getInstantWinAvailablePlays('IPkka5IBrvel7Isq6wtJ')
+              this.getInstantWinAvailablePlays(instantWins[0].id)
                 .then(availablePlays => {
-                  console.log('availablePlays:', availablePlays);
                   if (availablePlays.length && availablePlays[0].remainingPlays) {
-                    this.settings.mainWidget.loadSingleWheel('IPkka5IBrvel7Isq6wtJ');
+                    this.settings.mainWidget.loadSingleWheel(instantWins[0].id);
                   }
                 });
             }
