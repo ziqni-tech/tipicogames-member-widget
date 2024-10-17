@@ -1677,7 +1677,7 @@ export const LbWidget = function (options) {
     });
 
     const currentAwards = await this.getAwardsApi(currentAwardRequest);
-    this.settings.awards.currentAwards = currentAwards.data;
+    this.settings.awards.currentAwards = currentAwards.data || [];
 
     const rewardIds = this.settings.awards.currentAwards.map(c => c.rewardId);
     if (rewardIds.length) {
@@ -1736,7 +1736,6 @@ export const LbWidget = function (options) {
       });
     }
 
-    // this.settings.awards.pastAwards = [...this.settings.awards.claimedAwards, ...this.settings.awards.expiredAwards];
     this.settings.awards.pastTotalCount = pastAwards.meta ? pastAwards.meta.totalRecordsFound : 0;
 
     if (typeof callback === 'function') {
