@@ -4299,8 +4299,11 @@ export const MainWidget = function (options) {
           declineEl.classList.remove('hidden');
           this.settings.lbWidget.getInstantWinAvailablePlays(id)
             .then(remainingPlays => {
-              remainingEl.innerHTML = remainingPlays[0].remainingPlays;
-              console.log('remainingPlays:', remainingPlays[0].remainingPlays);
+              if (remainingPlays[0].remainingPlays) {
+                remainingEl.innerHTML = remainingPlays[0].remainingPlays;
+              } else {
+                this.hideSingleWheel();
+              }
             });
         }, 2000);
       },

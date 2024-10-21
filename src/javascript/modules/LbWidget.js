@@ -1232,7 +1232,7 @@ export const LbWidget = function (options) {
       currencyKey: this.settings.currency,
       instantWinFilter: {
         instantWinTypes: [1],
-        limit: 1,
+        limit: 10,
         skip: 0
       }
     }, null);
@@ -4211,7 +4211,10 @@ export const LbWidget = function (options) {
               _this.settings.awards.awardCelebrationData = awardData.data[0];
               if (awardData.data && awardData.data.length) {
                 if (!awardData.data[0].claimed) {
-                  _this.settings.mainWidget.showAwardCelebration(awardData.data[0]);
+                  const timeout = awardData.data[0].entityType === 'InstantWin' ? 2000 : 5;
+                  setTimeout(async function () {
+                    _this.settings.mainWidget.showAwardCelebration(awardData.data[0]);
+                  }, timeout);
                 }
               }
             }, 2000);
