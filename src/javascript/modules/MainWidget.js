@@ -2672,6 +2672,10 @@ export const MainWidget = function (options) {
     gameItems.classList.remove('expanded');
 
     games.innerHTML = '';
+    games.classList.remove('single');
+    pickUpBtn.dataset.id = '';
+    pickUpBtn.dataset.refId = '';
+    pickUpBtn.dataset.name = '';
 
     if (backToDashboard) {
       backBtn.classList.add('backToDashboard');
@@ -2680,9 +2684,13 @@ export const MainWidget = function (options) {
     }
 
     if (data.products && data.products.length) {
-      // if (data.products.length > 9) {
-      //   isExpand = true;
-      // }
+      if (data.products.length === 1) {
+        games.classList.add('single');
+        pickUpBtn.dataset.id = data.products[0].id;
+        pickUpBtn.dataset.refId = data.products[0].productRefId;
+        pickUpBtn.dataset.name = data.products[0].name;
+      }
+
       data.products.forEach(product => {
         const gameItem = this.createGameItem(product);
         games.appendChild(gameItem);
@@ -4267,7 +4275,6 @@ export const MainWidget = function (options) {
 
     const tiles = singleWheelData[0].tiles;
     const settingsData = await this.settings.lbWidget.getSettingsFile(id);
-
     if (settingsData && settingsData.wheelSettings) {
       await this.replaceImageIdsWithUris(settingsData.wheelSettings);
     }
@@ -4282,10 +4289,6 @@ export const MainWidget = function (options) {
 
     const spinsLeftEl = document.querySelector('.play-single-wheel-spins');
     const declineEl = document.querySelector('.play-single-wheel-decline');
-    // const messageSettings = instantWin.settingsData.messageSettings;
-    // const prizeSection = 1;
-
-    // const congratulationsModal = require('../helpers/wheelSpinner/modal');
 
     const spinnerWheel = await createSpinnerWheelWithAnimation(
       containerId,

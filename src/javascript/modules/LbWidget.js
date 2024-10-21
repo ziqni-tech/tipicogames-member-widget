@@ -2576,6 +2576,16 @@ export const LbWidget = function (options) {
 
       container.scrollTop = topPos - 55;
 
+      if (el.dataset.id) {
+        const product = {
+          id: el.dataset.id,
+          refId: el.dataset.refId,
+          name: el.dataset.name
+        };
+
+        this.settings.callbacks.onGameSelected(product);
+      }
+
       // Achievement show all games action
     } else if (hasClass(el, 'cl-main-widget-ach-details-game-full') || hasClass(el, 'cl-main-widget-ach-details-game-overlay')) {
       const wrapp = el.closest('.cl-main-widget-ach-details-games');
